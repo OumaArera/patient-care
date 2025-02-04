@@ -115,7 +115,7 @@ const Login = () => {
                 />
                 <label htmlFor="remember" className="text-gray-600">Remember me</label>
               </div>
-              <a href="#" className="text-blue-500 hover:underline text-sm">Forgot Password?</a>
+              {/* <a href="#" className="text-blue-500 hover:underline text-sm">Forgot Password?</a> */}
             </div>
 
             {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
@@ -130,7 +130,7 @@ const Login = () => {
           </form>
 
           <p className="text-gray-600 text-center mt-4">
-            Don't have an account? <a href="#" className="text-blue-500 hover:underline">Sign up</a>
+            {/* Don't have an account? <a href="#" className="text-blue-500 hover:underline">Sign up</a> */}
           </p>
         </div>
       </div>
