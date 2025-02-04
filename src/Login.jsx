@@ -27,14 +27,14 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch('https://patient-care-server.onrender.com/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       });
-      
+
       const data = await response.json();
       if (data.successful) {
         const { token } = data.responseObject;
@@ -59,45 +59,79 @@ const Login = () => {
   return (
     <div className="flex h-screen">
       {/* Left Side - Image */}
-      <div className="w-1/2 bg-cover bg-center" style={{ backgroundImage: `url(${background})`}}>
-      </div>
+      <div
+        className="w-1/2 bg-cover bg-center"
+        style={{ backgroundImage: `url(${background})` }}
+      ></div>
 
       {/* Right Side - Login Form */}
-      <div className="w-1/2 flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded shadow-md w-96">
-          <h2 className="text-2xl font-bold text-center">Login</h2>
-          <form onSubmit={handleLogin} className="mt-4">
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              value={credentials.username}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mt-2"
-              required
-            />
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={credentials.password}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded mt-2"
-              required
-            />
-            <div className="flex items-center mt-2">
-              <input type="checkbox" onChange={() => setShowPassword(!showPassword)} />
-              <label className="ml-2">Show Password</label>
+      <div className="w-1/2 flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200">
+        <div className="bg-white p-10 rounded-2xl shadow-xl w-96">
+          <h2 className="text-3xl font-bold text-center text-gray-700">Welcome Back</h2>
+          <p className="text-center text-gray-500 mt-1">Login to your account</p>
+
+          <form onSubmit={handleLogin} className="mt-6">
+            <div className="mb-4">
+              <label className="block text-gray-600 font-medium">Username</label>
+              <input
+                type="text"
+                name="username"
+                placeholder="Enter your username"
+                value={credentials.username}
+                onChange={handleInputChange}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                required
+              />
             </div>
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+
+            <div className="mb-4">
+              <label className="block text-gray-600 font-medium">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  placeholder="Enter your password"
+                  value={credentials.password}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? '🙈' : '👁'}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="remember"
+                  className="mr-2"
+                />
+                <label htmlFor="remember" className="text-gray-600">Remember me</label>
+              </div>
+              <a href="#" className="text-blue-500 hover:underline text-sm">Forgot Password?</a>
+            </div>
+
+            {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
+
             <button
               type="submit"
-              className={`w-full p-2 mt-4 text-white rounded ${loading ? 'bg-gray-400' : 'bg-blue-500'}`}
+              className="w-full p-3 mt-3 text-white rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition duration-200 shadow-lg"
               disabled={loading}
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
+
+          <p className="text-gray-600 text-center mt-4">
+            Don't have an account? <a href="#" className="text-blue-500 hover:underline">Sign up</a>
+          </p>
         </div>
       </div>
     </div>
