@@ -9,7 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/caregiver" element={<CareGiverDashboard role="Caregiver" />} />
+        <Route path="/care giver" element={<CareGiverDashboard role="Caregiver" />} />
         <Route path="/manager" element={<Dashboard role="Manager" />} />
         <Route path="/superuser" element={<Dashboard role="Superuser" />} />
       </Routes>

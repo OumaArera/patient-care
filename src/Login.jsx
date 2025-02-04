@@ -14,11 +14,11 @@ const Login = () => {
     const token = localStorage.getItem('token');
     if (token) {
       const decoded = jwtDecode(token);
-      if (decoded.role === "care giver"){
-        navigate("/caregiver")
-      }else{
-        navigate(`/${decoded.role}`);
-      }
+      // if (decoded.role === "care giver"){
+      //   navigate("/caregiver")
+      // }else{
+      navigate(`/${decoded.role}`);
+      
       
     }
   }, [navigate]);
