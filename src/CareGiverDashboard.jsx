@@ -18,7 +18,7 @@ const CareGiverDashboard = () => {
     <div className="flex h-screen bg-black text-white">
       {/* Sidebar */}
       <div className="w-64 bg-gray-900 p-5 flex flex-col">
-        <h1 className="text-xl font-bold text-blue-500 mb-6">Dashboard</h1>
+        <h1 className="text-xl font-bold text-blue-500 mb-6">Workflow</h1>
         
         <button className={`p-3 flex items-center gap-2 ${activeTab === "charts" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("charts")}>
           <FaChartBar /> Charts
