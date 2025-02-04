@@ -12,6 +12,7 @@ const Login = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    console.log("Token", token)
     if (token) {
       const decoded = jwtDecode(token);
       // if (decoded.role === "care giver"){
