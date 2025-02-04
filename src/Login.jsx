@@ -41,6 +41,8 @@ const Login = () => {
         const decoded = jwtDecode(token);
 
         localStorage.setItem('token', token);
+        localStorage.setItem('patients', patients);
+        localStorage.setItem('userId', user_id);
         localStorage.setItem('username', decoded.username);
         localStorage.setItem('fullName', decoded.fullName);
         localStorage.setItem('role', decoded.role);
