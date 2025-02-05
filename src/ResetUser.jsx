@@ -1,50 +1,58 @@
 import { useState, useEffect } from "react";
-const PASSWORD_RESET_URL ="https://patient-care-server.onrender.com/api/v1/auth/reset-password";
+import { FaUserLock, FaUserSlash, FaUserCheck } from "react-icons/fa";
 
+const PASSWORD_RESET_URL = "https://patient-care-server.onrender.com/api/v1/auth/reset-password";
+const BLOCK_PASSWORD_URL = "https://patient-care-server.onrender.com/api/v1/auth/block-users";
+const UNBLOCK_PASSWORD_URL = "https://patient-care-server.onrender.com/api/v1/auth/unblock-users";
 
-const ResetUser = () => {
+const ManageUser = () => {
   const [username, setUsername] = useState("");
+  const [action, setAction] = useState("reset");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState("");
 
   useEffect(() => {
-      const token = localStorage.getItem("token");
-      setToken(token)
-      
-    }, []);
+    const savedToken = localStorage.getItem("token");
+    setToken(savedToken);
+  }, []);
 
-  const handleReset = async () => {
+  const handleSubmit = async () => {
     if (!username) {
-      setError("Username is required");
+      setError("Please enter a username.");
       return;
     }
+
+    const confirmMessage = `Are you sure you want to ${action} the user ${username}?`;
+    if (!window.confirm(confirmMessage)) return;
 
     setLoading(true);
     setError(null);
     setMessage(null);
 
+    let url = "";
+    if (action === "reset") url = PASSWORD_RESET_URL;
+    if (action === "block") url = BLOCK_PASSWORD_URL;
+    if (action === "unblock") url = UNBLOCK_PASSWORD_URL;
+
     try {
-      const response = await fetch(
-        PASSWORD_RESET_URL,
-        {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-          body: JSON.stringify({ username: username.toLowerCase() }),
-        }
-      );
+        body: JSON.stringify({ username: username.toLowerCase() }),
+      });
 
       const data = await response.json();
 
       if (data.successful) {
-        setUsername("")
-        setMessage("Password reset link has been sent to your email.");
+        setUsername("");
+        setMessage(`User ${username} has been ${action}ed successfully.`);
       } else {
-        setError(data.message || "Failed to reset password. Try again.");
+        setError(data.message || `Failed to ${action} user. Try again.`);
       }
     } catch (err) {
       setError("An error occurred. Please try again later.");
@@ -54,38 +62,50 @@ const ResetUser = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-black relative p-4">
-      <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-blue-500 to-gray-900"></div>
-      
-      <div className="relative w-full max-w-md bg-gray-800 bg-opacity-50 backdrop-blur-md p-8 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-semibold text-white text-center">Reset Password</h2>
-        <p className="text-gray-300 text-center mt-2">Enter username to reset password.</p>
+    <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-96 mx-auto mt-10">
+      <h2 className="text-xl font-bold text-blue-400 mb-4">Manage User</h2>
 
-        <div className="mt-6">
-          <label className="text-gray-300 block">Username</label>
-          <input
-            type="text"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-3 mt-2 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+      <label className="block mb-2">Select Action:</label>
+      <select
+        value={action}
+        onChange={(e) => setAction(e.target.value)}
+        className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+      >
+        <option value="reset">Reset User</option>
+        <option value="block">Block User</option>
+        <option value="unblock">Unblock User</option>
+      </select>
 
-        {error && <p className="text-red-400 text-center mt-3">{error}</p>}
-        {message && <p className="text-green-400 text-center mt-3">{message}</p>}
+      <label className="block mt-4 mb-2">Enter Username:</label>
+      <input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value.toLowerCase())}
+        className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+        placeholder="Enter username in lowercase"
+      />
 
-        <button
-          onClick={handleReset}
-          className="w-full p-3 mt-6 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white rounded-lg transition duration-200 shadow-md"
-          disabled={loading}
-        >
-          {loading ? "Processing..." : "Reset Password"}
-        </button>
-      </div>
+      {error && <p className="text-red-400 text-center mt-3">{error}</p>}
+      {message && <p className="text-green-400 text-center mt-3">{message}</p>}
+
+      <button
+        onClick={handleSubmit}
+        disabled={loading}
+        className={`mt-4 w-full flex items-center justify-center gap-2 p-3 rounded text-white ${
+          action === "reset"
+            ? "bg-blue-500 hover:bg-blue-600"
+            : action === "block"
+            ? "bg-red-500 hover:bg-red-600"
+            : "bg-green-500 hover:bg-green-600"
+        }`}
+      >
+        {action === "reset" && <FaUserLock />}
+        {action === "block" && <FaUserSlash />}
+        {action === "unblock" && <FaUserCheck />}
+        {loading ? "Processing..." : `${action.charAt(0).toUpperCase() + action.slice(1)} User`}
+      </button>
     </div>
   );
 };
 
-export default ResetUser;
+export default ManageUser;

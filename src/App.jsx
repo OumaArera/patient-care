@@ -6,7 +6,8 @@ import SuperUserDashboard from "./SuperUserDashboard";
 import ManagerDashboard from "./ManagerDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import CreateUser from "./CreateUser";
-import ResetUser from "./ResetUser";
+// import ResetUser from "./ResetUser";
+import ManageUser from "./ResetUser";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -44,7 +45,7 @@ function App() {
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["superuser"]} />}>
-          <Route path="/resetUser" element={<ResetUser role="superuser" />} />
+          <Route path="/resetUser" element={<ManageUser role="superuser" />} />
         </Route>
 
         
