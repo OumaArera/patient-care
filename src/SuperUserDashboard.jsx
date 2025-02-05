@@ -14,6 +14,7 @@ import CreateUser from "./CreateUser";
 import ManageUser from "./ManageUser";
 import Users from "./Users";
 import Facilities from "./Facilities";
+import Branches from "./Branches";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -126,7 +127,8 @@ const SuperUserDashboard = () => {
         {activeTab === "createUser" && <CreateUser />}
         {activeTab === "manageUser" && <ManageUser />}
         {activeTab === "users" && <Users />}
-        {activeTab === "facilities" && <Facilities />}    
+        {activeTab === "facilities" && <Facilities />}
+        {activeTab === "branches" && <Branches />}    
       </div>
     </div>
   );
