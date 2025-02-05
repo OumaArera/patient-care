@@ -27,16 +27,47 @@ const Patients = () => {
   });
 
   useEffect(() => {
-    fetchPatients(pageNumber, pageSize).then((data) => {
-      setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
-    }).catch(() => setError("Failed to fetch patients."));
-  }, [pageNumber]);
+    setLoading(true);
+    fetchPatients(pageNumber, pageSize)
+      .then((data) => {
+        setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("Failed to fetch patients.");
+        setLoading(false);
+      });
+  }, [pageNumber, pageSize]);
 
   useEffect(() => {
-    fetchBranches(pageNumber, pageSize).then((data) => {
+    fetchBranches().then((data) => {
       setBranches(Array.isArray(data.responseObject) ? data.responseObject : []);
     }).catch(() => setError("Failed to fetch branches."));
-  }, [pageNumber]);
+  }, []);
+
+  const handleNextPage = () => {
+    if (patients.length > 0) {
+      setPageNumber((prevPage) => prevPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (pageNumber > 1) {
+      setPageNumber((prevPage) => prevPage - 1);
+    }
+  };
+
+//   useEffect(() => {
+//     fetchPatients(pageNumber, pageSize).then((data) => {
+//       setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
+//     }).catch(() => setError("Failed to fetch patients."));
+//   }, [pageNumber]);
+
+//   useEffect(() => {
+//     fetchBranches(pageNumber, pageSize).then((data) => {
+//       setBranches(Array.isArray(data.responseObject) ? data.responseObject : []);
+//     }).catch(() => setError("Failed to fetch branches."));
+//   }, [pageNumber]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -171,6 +202,23 @@ const Patients = () => {
         ) : (
           <p className="text-gray-400">No patients found.</p>
         )}
+      </div>
+
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={handlePrevPage}
+          disabled={pageNumber === 1}
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg disabled:bg-gray-400"
+        >
+          Previous
+        </button>
+        <button
+          onClick={handleNextPage}
+          disabled={patients.length === 0}
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg disabled:bg-gray-400"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
