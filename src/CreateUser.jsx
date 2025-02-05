@@ -95,18 +95,30 @@ const CreateUser = () => {
           <div className="mt-4">
             <label className="block text-gray-300 mb-1">Phone Number</label>
             <PhoneInput
-              country={defaultCountry}
-              value={formData.phoneNumber}
-              onChange={handlePhoneChange}
-              inputStyle={{
-                width: '100%',
-                backgroundColor: '#374151',
-                borderColor: '#4b5563',
-                color: 'white',
-                height: '45px',
-              }}
-              buttonStyle={{ backgroundColor: '#4b5563', borderColor: '#4b5563' }}
+                country=""
+                value={formData.phoneNumber}
+                onChange={(value, country) => {
+                    if (value.startsWith("+")) {
+                    setFormData((prev) => ({ ...prev, phoneNumber: value }));
+                    } else {
+                    setFormData((prev) => ({ ...prev, phoneNumber: `+${value}` }));
+                    }
+                }}
+                inputProps={{
+                    required: true,
+                    placeholder: "+254123456789",
+                }}
+                enableSearch={true}
+                inputStyle={{
+                    width: '100%',
+                    backgroundColor: '#374151',
+                    borderColor: '#4b5563',
+                    color: 'white',
+                    height: '45px',
+                }}
+                buttonStyle={{ backgroundColor: '#4b5563', borderColor: '#4b5563' }}
             />
+
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
