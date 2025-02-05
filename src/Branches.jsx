@@ -51,7 +51,7 @@ const Branches = () => {
         setErrors([]);
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
-        setErrors(Array.isArray(result.responseObject.errors) ? result.responseObject.errors : ["Failed to add branch"]);
+        setErrors(JSON.parse(result.responseObject.errors) ? result.responseObject.errors : ["Failed to add branch"]);
       }
     } catch (error) {
       setErrors(["An error occurred. Please try again."]);
@@ -116,7 +116,7 @@ const Branches = () => {
           {isSubmitting ? "Submitting..." : "Add Branch"}
         </button>
         {errors.length > 0 && (
-        <div className="mb-4 p-3 bg-red-700 text-white rounded">
+        <div className="mb-4 p-3 bg-yellow-300 text-white rounded">
           {errors.map((error, index) => (
             <p key={index} className="text-sm">⚠ {error}</p>
           ))}
