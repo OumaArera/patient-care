@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import handleLogout from "./Logout";
 
-const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
+const INACTIVITY_TIMEOUT = 2 * 60 * 1000;
 
 const useAuth = () => {
   const navigate = useNavigate();
