@@ -21,16 +21,14 @@ const Facilities = () => {
     }
   };
 
-  // Validate Facility Name Format
   const isValidFacilityName = (name) => {
-    return /^[A-Za-z0-9\s&]+$/.test(name); // Allow letters, numbers, spaces, and "&"
+    return /^[A-Za-z0-9\s&]+$/.test(name);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage("");
-
     const token = localStorage.getItem("token");
 
     try {
@@ -42,113 +40,96 @@ const Facilities = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            facilityName,
-            facilityAddress,
-          }),
+          body: JSON.stringify({ facilityName, facilityAddress }),
         }
       );
-
       const result = await response.json();
-
       if (response.ok) {
-        setMessage("Facility added successfully!");
+        setMessage("✅ Facility added successfully!");
         setFacilityName("");
         setFacilityAddress("");
-        loadFacilities(); // Refresh the list
+        loadFacilities();
       } else {
-        setMessage(result.statusMessage || "Failed to add facility");
+        setMessage(result.statusMessage || "❌ Failed to add facility");
       }
     } catch (error) {
-      setMessage("An error occurred. Please try again.");
+      setMessage("❌ An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Add New Facility</h2>
-      <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded-lg shadow-md bg-white">
-        {/* Facility Name Input */}
+    <div className="container mx-auto p-6 bg-gray-900 text-white min-h-screen">
+      <h2 className="text-2xl font-bold mb-4 text-blue-400">Add New Facility</h2>
+      <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded-lg shadow-md bg-gray-800">
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-1">Facility Name</label>
+          <label className="block text-gray-300 font-semibold mb-1">Facility Name</label>
           <input
             type="text"
             value={facilityName}
             onChange={(e) => setFacilityName(e.target.value)}
-            className={`border p-2 w-full rounded ${
+            className={`border p-2 w-full rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 ${
               facilityName
                 ? isValidFacilityName(facilityName)
                   ? "border-green-500"
                   : "border-red-500"
-                : "border-gray-300"
+                : "border-gray-500"
             }`}
+            placeholder="Enter facility name"
             required
           />
-          {facilityName && (
-            <p className={`text-sm mt-1 ${isValidFacilityName(facilityName) ? "text-green-600" : "text-red-600"}`}>
-              {isValidFacilityName(facilityName)
-                ? "✅ Format looks good!"
-                : "⚠️ Only letters, numbers, spaces, and '&' are allowed."}
-            </p>
-          )}
         </div>
 
-        {/* Facility Address Input */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-semibold mb-1">Facility Address</label>
+          <label className="block text-gray-300 font-semibold mb-1">Facility Address</label>
           <input
             type="text"
             placeholder="123 Main St, Springfield, IL 62704"
             value={facilityAddress}
             onChange={(e) => setFacilityAddress(e.target.value)}
-            className="border p-2 w-full rounded border-gray-300"
+            className="border p-2 w-full rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 border-gray-500"
             required
           />
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded w-full"
+          className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 disabled:opacity-50"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Submitting..." : "Add Facility"}
         </button>
 
-        {/* Success/Error Message */}
-        {message && <p className="mt-3 text-center font-medium">{message}</p>}
+        {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
       </form>
 
-      {/* Facilities List */}
-      <h2 className="text-2xl font-bold mb-4">Facilities</h2>
+      <h2 className="text-2xl font-bold mb-4 text-blue-400">Facilities</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {facilities.length > 0 ? (
           facilities.map((facility) => (
-            <div key={facility.facilityId} className="border p-4 rounded-lg shadow-md bg-white">
-              <h3 className="font-semibold">{facility.facilityName}</h3>
-              <p className="text-gray-600">{facility.facilityAddress}</p>
+            <div key={facility.facilityId} className="border p-4 rounded-lg shadow-md bg-gray-800 text-white">
+              <h3 className="font-semibold text-blue-300">{facility.facilityName}</h3>
+              <p className="text-gray-400">{facility.facilityAddress}</p>
             </div>
           ))
         ) : (
-          <p>No facilities found</p>
+          <p className="text-gray-400">No facilities found</p>
         )}
       </div>
 
-      {/* Pagination */}
       <div className="mt-4 flex justify-between">
         <button
           onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
           disabled={pageNumber === 1}
-          className="bg-gray-300 px-4 py-2 disabled:opacity-50 rounded"
+          className="bg-gray-700 text-white px-4 py-2 rounded disabled:opacity-50"
         >
           Previous
         </button>
-        <span className="font-semibold">Page {pageNumber}</span>
+        <span className="font-semibold text-blue-300">Page {pageNumber}</span>
         <button
           onClick={() => setPageNumber((prev) => prev + 1)}
-          className="bg-gray-300 px-4 py-2 rounded"
+          className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
         >
           Next
         </button>
