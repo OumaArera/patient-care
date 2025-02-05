@@ -52,19 +52,20 @@ const Branches = () => {
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
         const errorString = result.responseObject.errors;
+        setErrors(errorString)
         console.log("Errors", errorString);
-        let errorArray = [];
+        // let errorArray = [];
 
-        try {
-            errorArray = JSON.parse(errorString);
-            if (!Array.isArray(errorArray)) {
-            errorArray = ["An unknown error occurred."];
-        }
-        } catch (err) {
-            errorArray = ["An error occurred. Please try again."]; 
-        }
+        // try {
+        //     errorArray = JSON.parse(errorString);
+        //     if (!Array.isArray(errorArray)) {
+        //     errorArray = ["An unknown error occurred."];
+        // }
+        // } catch (err) {
+        //     errorArray = ["An error occurred. Please try again."]; 
+        // }
 
-    setErrors(errorArray);
+        // setErrors(errorArray);
 
       }
     } catch (error) {
