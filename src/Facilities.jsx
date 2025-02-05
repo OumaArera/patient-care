@@ -8,6 +8,7 @@ const Facilities = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
+  const [showAddressExample, setShowAddressExample] = useState(false);
   const pageSize = 10;
 
   useEffect(() => {
@@ -21,19 +22,25 @@ const Facilities = () => {
     }
   };
 
-  const isValidFacilityName = (name) => /^[A-Za-z0-9\s&]+$/.test(name);
-  
-  const isValidAddress = (address) => /^[0-9]+\s[A-Za-z0-9\s]+,\s[A-Za-z\s]+,\s[A-Z]{2}\s\d{5}$/.test(address);
+  const isValidFacilityName = (name) => {
+    return /^[A-Za-z0-9\s&]+$/.test(name);
+  };
+
+  const isValidUSAddress = (address) => {
+    return /\d{1,5}\s[A-Za-z0-9\s]+,\s[A-Za-z\s]+,\s[A-Z]{2}\s\d{5}/.test(address);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isValidFacilityName(facilityName) || !isValidAddress(facilityAddress)) return;
     setIsSubmitting(true);
     setMessage("");
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token || !isValidFacilityName(facilityName) || !isValidUSAddress(facilityAddress)) return;
 
-    const facility = { facilityName, facilityAddress };
+    const facility = {
+      facilityName: facilityName,
+      facilityAddress: facilityAddress,
+    };
 
     try {
       const response = await fetch(
@@ -74,11 +81,7 @@ const Facilities = () => {
             value={facilityName}
             onChange={(e) => setFacilityName(e.target.value)}
             className={`border p-2 w-full rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 ${
-              facilityName
-                ? isValidFacilityName(facilityName)
-                  ? "border-green-500"
-                  : "border-red-500"
-                : "border-gray-500"
+              facilityName && !isValidFacilityName(facilityName) ? "border-red-500" : "border-gray-500"
             }`}
             placeholder="Enter facility name"
             required
@@ -89,37 +92,63 @@ const Facilities = () => {
           <label className="block text-gray-300 font-semibold mb-1">Facility Address</label>
           <input
             type="text"
-            placeholder="123 Main St, Springfield, IL 62704"
             value={facilityAddress}
-            onChange={(e) => setFacilityAddress(e.target.value)}
+            onChange={(e) => {
+              setFacilityAddress(e.target.value);
+              setShowAddressExample(true);
+            }}
             className={`border p-2 w-full rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 ${
-              facilityAddress
-                ? isValidAddress(facilityAddress)
-                  ? "border-green-500"
-                  : "border-red-500"
-                : "border-gray-500"
+              facilityAddress && !isValidUSAddress(facilityAddress) ? "border-red-500" : "border-gray-500"
             }`}
+            placeholder="123 Main St, Springfield, IL 62704"
             required
           />
-          {facilityAddress && (
-            <p className={`text-sm mt-1 ${isValidAddress(facilityAddress) ? "text-green-600" : "text-red-600"}`}>
-              {isValidAddress(facilityAddress)
-                ? "✅ Format looks good!"
-                : "⚠️ Format: 123 Main St, Springfield, IL 62704"}
-            </p>
+          {showAddressExample && !isValidUSAddress(facilityAddress) && (
+            <p className="text-red-400 text-sm mt-1">Example: 123 Main St, Springfield, IL 62704</p>
           )}
         </div>
 
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 disabled:opacity-50"
-          disabled={isSubmitting || !isValidFacilityName(facilityName) || !isValidAddress(facilityAddress)}
+          disabled={!facilityName || !facilityAddress || !isValidFacilityName(facilityName) || !isValidUSAddress(facilityAddress) || isSubmitting}
         >
           {isSubmitting ? "Submitting..." : "Add Facility"}
         </button>
 
         {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
       </form>
+
+      <h2 className="text-2xl font-bold mb-4 text-blue-400">Facilities</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {facilities.length > 0 ? (
+          facilities.map((facility) => (
+            <div key={facility.facilityId} className="border p-4 rounded-lg shadow-md bg-gray-800 text-white">
+              <h3 className="font-semibold text-blue-300">{facility.facilityName}</h3>
+              <p className="text-gray-400">{facility.facilityAddress}</p>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-400">No facilities found</p>
+        )}
+      </div>
+
+      <div className="mt-4 flex justify-between">
+        <button
+          onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+          disabled={pageNumber === 1}
+          className="bg-gray-700 text-white px-4 py-2 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="font-semibold text-blue-300">Page {pageNumber}</span>
+        <button
+          onClick={() => setPageNumber((prev) => prev + 1)}
+          className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
