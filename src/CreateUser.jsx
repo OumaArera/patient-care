@@ -17,6 +17,7 @@ const CreateUser = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [defaultCountry, setDefaultCountry] = useState('us');
+  const [token, setToken] = useState("")
 
   useEffect(() => {
     // Fetch user's country based on IP
@@ -30,6 +31,12 @@ const CreateUser = () => {
       .catch(() => setDefaultCountry('us'));
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setToken(token)
+    
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: name === 'email' ? value.toLowerCase() : value }));
@@ -40,6 +47,7 @@ const CreateUser = () => {
   };
 
   const handleSubmit = async (e) => {
+    if (!token) return
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -48,7 +56,10 @@ const CreateUser = () => {
     try {
       const response = await fetch('https://patient-care-server.onrender.com/api/v1/users', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
         body: JSON.stringify(formData),
       });
 
