@@ -7,7 +7,8 @@ const Patients = () => {
   const [patients, setPatients] = useState([]);
   const [branches, setBranches] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     middleNames: "",
@@ -22,18 +23,17 @@ const Patients = () => {
     cart: "",
     file: null,
   });
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchPatients(pageNumber, pageSize).then((data) =>
-      setPatients(data.responseObject || [])
-    );
+    fetchPatients(pageNumber, pageSize).then((data) => {
+      setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
+    }).catch(() => setError("Failed to fetch patients."));
   }, [pageNumber]);
 
   useEffect(() => {
-    fetchBranches(pageNumber, pageSize).then((data) =>
-      setBranches(data.responseObject || [])
-    );
+    fetchBranches(pageNumber, pageSize).then((data) => {
+      setBranches(Array.isArray(data.responseObject) ? data.responseObject : []);
+    }).catch(() => setError("Failed to fetch branches."));
   }, [pageNumber]);
 
   const handleInputChange = (e) => {
@@ -72,10 +72,11 @@ const Patients = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h2 className="text-xl font-bold mb-4">Manage Patients</h2>
-      {error && <div className="bg-red-200 text-red-800 p-3 mb-3">{error}</div>}
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="p-6 bg-gray-900 min-h-screen text-white">
+      <h2 className="text-2xl font-bold mb-4 text-blue-400">Manage Patients</h2>
+      {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
+      
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-800 p-6 rounded-lg shadow">
         {Object.keys(formData).map((key) =>
           key === "file" ? (
             <input
@@ -83,7 +84,7 @@ const Patients = () => {
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="border p-2 rounded w-full"
+              className="border p-2 rounded w-full bg-gray-700 text-white"
               required
             />
           ) : key === "branch" ? (
@@ -92,7 +93,7 @@ const Patients = () => {
               name={key}
               value={formData[key]}
               onChange={handleInputChange}
-              className="border p-2 rounded w-full"
+              className="border p-2 rounded w-full bg-gray-700 text-white"
               required
             >
               <option value="">Select a Branch</option>
@@ -109,19 +110,22 @@ const Patients = () => {
               name={key}
               value={formData[key]}
               onChange={handleInputChange}
-              className="border p-2 rounded w-full"
+              className="border p-2 rounded w-full bg-gray-700 text-white"
               required
             />
           )
         )}
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
           Submit
         </button>
       </form>
+      
       <div className="mt-6 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {patients.map((patient) => (
-          <PatientCard key={patient.patientId} patient={patient} />
-        ))}
+        {patients.length > 0 ? (
+          patients.map((patient) => <PatientCard key={patient.patientId} patient={patient} />)
+        ) : (
+          <p className="text-gray-400">No patients found.</p>
+        )}
       </div>
     </div>
   );
