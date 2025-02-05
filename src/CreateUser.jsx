@@ -157,7 +157,7 @@ const CreateUser = () => {
           {error && <p className="text-red-400 mt-2 text-center">{error}</p>}
           {successMessage && <p className="text-green-400 mt-2 text-center">{successMessage}</p>}
 
-          <button type="submit" className="w-full p-3 mt-6 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200" disabled={loading}>
+          <button type="submit" className="w-full p-3 mt-6 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200 shadow-lg" disabled={loading}>
             {loading ? 'Creating User...' : 'Create User'}
           </button>
         </form>
