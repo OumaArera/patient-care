@@ -53,7 +53,7 @@ const Medication = () => {
           })
           .catch(() => {
             setError("Failed to fetch patients.");
-            setLoading(false);
+            // setLoading(false);
           });
       }, [pageNumber, pageSize]);
 
