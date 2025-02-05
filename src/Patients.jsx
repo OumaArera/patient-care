@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import PatientCard from "./PatientCard";
 import { fetchPatients } from "./fetchPatients";
 import { fetchBranches } from "./fetchBranches";
+import PatientCard from "./PatientsCard";
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
