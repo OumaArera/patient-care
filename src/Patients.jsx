@@ -88,6 +88,15 @@ const Patients = () => {
                 className="border p-2 rounded w-full bg-gray-700 text-white"
                 required
               />
+            ):key === "middleNames" ? (
+                <input
+                  type="text"
+                  name={key}
+                  value={formData[key]}
+                  onChange={handleInputChange}
+                  placeholder={`Enter ${key}`}
+                  className="border p-2 rounded w-full bg-gray-700 text-white"
+                />
             ) : key === "branch" ? (
               <select
                 name={key}
