@@ -9,6 +9,8 @@ const Patients = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize] = useState(10);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     middleNames: "",
@@ -48,10 +50,14 @@ const Patients = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
+    setSuccessMessage("");
     const token = localStorage.getItem("token");
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
-      formDataToSend.append(key, formData[key]);
+      if (formData[key]) {
+        formDataToSend.append(key, formData[key]);
+      }
     });
 
     try {
@@ -66,8 +72,25 @@ const Patients = () => {
       const result = await response.json();
       if (!result.successful) throw new Error(result.responseObject.errors);
       setPatients([...patients, result.responseObject]);
+      setSuccessMessage("Patient added successfully!");
+      setFormData({
+        firstName: "",
+        middleNames: "",
+        lastName: "",
+        dateOfBirth: "",
+        diagnosis: "",
+        allergies: "",
+        physicianName: "",
+        pcpOrDoctor: "",
+        branch: "",
+        room: "",
+        cart: "",
+        file: null,
+      });
     } catch (err) {
       setError(Array.isArray(err.message) ? err.message.join(", ") : err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,6 +98,8 @@ const Patients = () => {
     <div className="p-6 bg-gray-900 min-h-screen text-white">
       <h2 className="text-3xl font-bold mb-6 text-blue-400">Manage Patients</h2>
       {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
+      {successMessage && <div className="bg-green-500 text-white p-3 mb-3 rounded">{successMessage}</div>}
+      {loading && <div className="bg-yellow-500 text-white p-3 mb-3 rounded">Submitting data...</div>}
       
       <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-md grid gap-4">
         {Object.keys(formData).map((key) => (
@@ -88,7 +113,7 @@ const Patients = () => {
                 className="border p-2 rounded w-full bg-gray-700 text-white"
                 required
               />
-            ):key === "middleNames" ? (
+            ) : key === "middleNames" ? (
                 <input
                   type="text"
                   name={key}
@@ -135,8 +160,8 @@ const Patients = () => {
             )}
           </div>
         ))}
-        <button type="submit" className="bg-blue-500 text-white p-3 rounded hover:bg-blue-600 w-full">
-          Submit
+        <button type="submit" className="bg-blue-500 text-white p-3 rounded hover:bg-blue-600 w-full" disabled={loading}>
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
       
