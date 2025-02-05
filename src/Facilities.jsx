@@ -21,22 +21,19 @@ const Facilities = () => {
     }
   };
 
-  const isValidFacilityName = (name) => {
-    return /^[A-Za-z0-9\s&]+$/.test(name);
-  };
+  const isValidFacilityName = (name) => /^[A-Za-z0-9\s&]+$/.test(name);
+  
+  const isValidAddress = (address) => /^[0-9]+\s[A-Za-z0-9\s]+,\s[A-Za-z\s]+,\s[A-Z]{2}\s\d{5}$/.test(address);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isValidFacilityName(facilityName) || !isValidAddress(facilityAddress)) return;
     setIsSubmitting(true);
     setMessage("");
     const token = localStorage.getItem("token");
-    if (!token) return
+    if (!token) return;
 
-    const facility = {
-        facilityName: facilityName,
-        facilityAddress: facilityAddress
-    }
-    console.log(`Facility details ${facility}`)
+    const facility = { facilityName, facilityAddress };
 
     try {
       const response = await fetch(
@@ -52,15 +49,15 @@ const Facilities = () => {
       );
       const result = await response.json();
       if (response.ok) {
-        setMessage("✅ Facility added successfully!");
+        setMessage("Facility added successfully!");
         setFacilityName("");
         setFacilityAddress("");
         loadFacilities();
       } else {
-        setMessage(result.statusMessage || "❌ Failed to add facility");
+        setMessage(result.statusMessage || "Failed to add facility");
       }
     } catch (error) {
-      setMessage("❌ An error occurred. Please try again.");
+      setMessage("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -95,52 +92,34 @@ const Facilities = () => {
             placeholder="123 Main St, Springfield, IL 62704"
             value={facilityAddress}
             onChange={(e) => setFacilityAddress(e.target.value)}
-            className="border p-2 w-full rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 border-gray-500"
+            className={`border p-2 w-full rounded bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-blue-400 ${
+              facilityAddress
+                ? isValidAddress(facilityAddress)
+                  ? "border-green-500"
+                  : "border-red-500"
+                : "border-gray-500"
+            }`}
             required
           />
+          {facilityAddress && (
+            <p className={`text-sm mt-1 ${isValidAddress(facilityAddress) ? "text-green-600" : "text-red-600"}`}>
+              {isValidAddress(facilityAddress)
+                ? "✅ Format looks good!"
+                : "⚠️ Format: 123 Main St, Springfield, IL 62704"}
+            </p>
+          )}
         </div>
 
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600 disabled:opacity-50"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isValidFacilityName(facilityName) || !isValidAddress(facilityAddress)}
         >
           {isSubmitting ? "Submitting..." : "Add Facility"}
         </button>
 
         {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
       </form>
-
-      <h2 className="text-2xl font-bold mb-4 text-blue-400">Facilities</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {facilities.length > 0 ? (
-          facilities.map((facility) => (
-            <div key={facility.facilityId} className="border p-4 rounded-lg shadow-md bg-gray-800 text-white">
-              <h3 className="font-semibold text-blue-300">{facility.facilityName}</h3>
-              <p className="text-gray-400">{facility.facilityAddress}</p>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-400">No facilities found</p>
-        )}
-      </div>
-
-      <div className="mt-4 flex justify-between">
-        <button
-          onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-          disabled={pageNumber === 1}
-          className="bg-gray-700 text-white px-4 py-2 rounded disabled:opacity-50"
-        >
-          Previous
-        </button>
-        <span className="font-semibold text-blue-300">Page {pageNumber}</span>
-        <button
-          onClick={() => setPageNumber((prev) => prev + 1)}
-          className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
-        >
-          Next
-        </button>
-      </div>
     </div>
   );
 };
