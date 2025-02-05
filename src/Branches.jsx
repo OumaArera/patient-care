@@ -51,7 +51,20 @@ const Branches = () => {
         setErrors([]);
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
-        setErrors(JSON.parse(result.responseObject.errors) ? result.responseObject.errors : ["Failed to add branch"]);
+        const errorString = result.responseObject.errors;
+    let errorArray = [];
+
+    try {
+      errorArray = JSON.parse(errorString);
+      if (!Array.isArray(errorArray)) {
+        errorArray = ["An unknown error occurred."];
+      }
+    } catch (err) {
+      errorArray = ["An error occurred. Please try again."]; 
+    }
+
+    setErrors(errorArray);
+
       }
     } catch (error) {
       setErrors(["An error occurred. Please try again."]);
