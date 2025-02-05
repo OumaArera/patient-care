@@ -41,6 +41,7 @@ const ResetUser = () => {
       const data = await response.json();
 
       if (data.successful) {
+        setUsername("")
         setMessage("Password reset link has been sent to your email.");
       } else {
         setError(data.message || "Failed to reset password. Try again.");
