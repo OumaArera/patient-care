@@ -29,7 +29,12 @@ const Medication = () => {
         setLoadingMedications(true);
         fetchMedications(pageNumber, pageSize)
             .then((data) => {
-                setMedications(data);
+                // Ensure that responseObject is an array and it's correctly set
+                if (Array.isArray(data.responseObject)) {
+                    setMedications(data.responseObject);
+                } else {
+                    setError("Unexpected data format");
+                }
                 setLoadingMedications(false);
             })
             .catch(() => {
@@ -37,6 +42,7 @@ const Medication = () => {
                 setLoadingMedications(false);
             });
     }, [pageNumber, pageSize]);
+    
 
     useEffect(() => {
         setLoading(true);
