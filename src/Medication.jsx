@@ -49,7 +49,7 @@ const Medication = () => {
         fetchPatients(pageNumber, pageSize)
           .then((data) => {
             setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
-            setLoading(false);
+            // setLoading(false);
           })
           .catch(() => {
             setError("Failed to fetch patients.");
