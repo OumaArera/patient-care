@@ -52,8 +52,13 @@ const Branches = () => {
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
         const errorString = result.responseObject.errors;
-        console.log("Errors: ", errorString)
-        setErrors(errorString || ["There was an error"])
+
+        // Ensure it's parsed correctly as an array
+        const parsedErrors = Array.isArray(errorString) 
+        ? errorString 
+        : JSON.parse(errorString.replace(/'/g, '"')); 
+
+        setErrors(parsedErrors || ["There was an error"]);
       }
     } catch (error) {
       setErrors(["An error occurred. Please try again."]);
