@@ -24,7 +24,7 @@ import ApprovedMedications from "./ApprovedMedications";
 import Updates from "./Updates";
 import Statistics from "./Statistics";
 import UserManagement from "./UserManagement";
-import Administration from "./Administration";
+// import Administration from "./Administration";
 import handleLogout from "./Logout";
 
 const SuperUserDashboard = () => {
