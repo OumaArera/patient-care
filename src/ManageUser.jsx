@@ -62,36 +62,36 @@ const ManageUser = () => {
   };
 
   return (
-    <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-96 mx-auto mt-10">
-      <h2 className="text-xl font-bold text-blue-400 mb-4">Manage User</h2>
+    <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg w-full max-w-2xl mx-auto mt-10">
+      <h2 className="text-2xl font-bold text-blue-400 mb-6 text-center">Manage User</h2>
 
-      <label className="block mb-2">Select Action:</label>
+      <label className="block mb-2 text-lg">Select Action:</label>
       <select
         value={action}
         onChange={(e) => setAction(e.target.value)}
-        className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+        className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700"
       >
         <option value="reset">Reset User</option>
         <option value="block">Block User</option>
         <option value="unblock">Unblock User</option>
       </select>
 
-      <label className="block mt-4 mb-2">Enter Username:</label>
+      <label className="block mt-6 mb-2 text-lg">Enter Username:</label>
       <input
         type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value.toLowerCase())}
-        className="w-full p-2 rounded bg-gray-800 text-white border border-gray-700"
+        className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700"
         placeholder="Enter username in lowercase"
       />
 
-      {error && <p className="text-red-400 text-center mt-3">{error}</p>}
-      {message && <p className="text-green-400 text-center mt-3">{message}</p>}
+      {error && <p className="text-red-400 text-center mt-4">{error}</p>}
+      {message && <p className="text-green-400 text-center mt-4">{message}</p>}
 
       <button
         onClick={handleSubmit}
         disabled={loading}
-        className={`mt-4 w-full flex items-center justify-center gap-2 p-3 rounded text-white ${
+        className={`mt-6 w-full flex items-center justify-center gap-3 p-4 rounded text-white text-lg ${
           action === "reset"
             ? "bg-blue-500 hover:bg-blue-600"
             : action === "block"

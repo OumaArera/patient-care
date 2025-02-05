@@ -10,10 +10,9 @@ import PendingMedications from "./PendingMedications";
 import Updates from "./Updates";
 import Statistics from "./Statistics";
 import UserManagement from "./UserManagement";
-// import ResetUser from "./ResetUser";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
-import ManageUser from "./ResetUser";
+import ManageUser from "./ManageUser";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -55,14 +54,8 @@ const SuperUserDashboard = () => {
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("createUser")}>
                 <FaUserPlus /> Create User
               </button>
-              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("resetUser")}>
+              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("manageUser")}>
                 <FaUndo /> Manage Users
-              </button>
-              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("blockUser")}>
-                <FaUserTimes /> Block User
-              </button>
-              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("unblockUser")}>
-                <FaUser /> Unblock User
               </button>
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("users")}>
                 <FaUsers /> Users
@@ -131,7 +124,7 @@ const SuperUserDashboard = () => {
         {activeTab === "statistics" && <Statistics />}
         {activeTab === "users" && <UserManagement />}
         {activeTab === "createUser" && <CreateUser />}
-        {activeTab === "resetUser" && <ManageUser />}  
+        {activeTab === "manageUser" && <ManageUser />}  
       </div>
     </div>
   );
