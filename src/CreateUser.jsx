@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 
+const USERS_URL = 'https://patient-care-server.onrender.com/api/v1/users';
+
 const CreateUser = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -54,7 +56,7 @@ const CreateUser = () => {
     setSuccessMessage(null);
 
     try {
-      const response = await fetch('https://patient-care-server.onrender.com/api/v1/users', {
+      const response = await fetch(USERS_URL, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
@@ -69,7 +71,7 @@ const CreateUser = () => {
         setFormData({ email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver' });
       } else {
         const errors = JSON.parse(data.responseObject.errors);
-        delete errors.username; // Remove username errors
+        delete errors.username;
         setError(Object.values(errors).flat().join(' '));
       }
     } catch (err) {
