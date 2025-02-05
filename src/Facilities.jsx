@@ -32,7 +32,7 @@ const Facilities = () => {
     const token = localStorage.getItem("token");
     if (!token) return
 
-    facility = {
+    const facility = {
         facilityName: facilityName,
         facilityAddress: facilityAddress
     }
