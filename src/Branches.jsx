@@ -139,13 +139,13 @@ const Branches = () => {
           {isSubmitting ? "Submitting..." : "Add Branch"}
         </button>
         {errors.length > 0 && (
-        <div className="mb-4 p-3 rounded">
-          {errors.map((error, index) => (
-            <p key={index} className="text-sm bg-red-500 text-white">{error}</p>
-          ))}
-          {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
-        </div>
+            <div className="mb-4 p-3 rounded">
+                {errors.map((error, index) => (
+                    <p key={index} className="text-sm bg-red-500 text-white">{error}</p>
+                ))}
+            </div>
       )}
+      {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
       </form>
 
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Branches</h2>
