@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import background from './assets/background.jpg';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -12,15 +11,9 @@ const Login = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    console.log("Token", token)
     if (token) {
       const decoded = jwtDecode(token);
-      // if (decoded.role === "care giver"){
-      //   navigate("/caregiver")
-      // }else{
       navigate(`/${decoded.role}`);
-      
-      
     }
   }, [navigate]);
 
@@ -40,22 +33,19 @@ const Login = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
       });
-
+      
       const data = await response.json();
       if (data.successful) {
         const { token } = data.responseObject;
         const decoded = jwtDecode(token);
-      
         localStorage.setItem("token", token);
         localStorage.setItem("userId", decoded.user_id);
         localStorage.setItem("username", decoded.username);
         localStorage.setItem("fullName", decoded.fullName);
         localStorage.setItem("role", decoded.role);
         localStorage.setItem("lastActivity", Date.now()); 
-      
         navigate(`/${decoded.role}`);
       }
-      
     } catch (err) {
       setError('An error occurred. Try again.');
     } finally {
@@ -64,48 +54,49 @@ const Login = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Left Side - Image */}
-      <div
-        className="w-1/2 bg-cover bg-center"
-        style={{ backgroundImage: `url(${background})` }}
-      ></div>
+    <div className="h-screen flex items-center justify-center bg-black relative">
+      <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-blue-500 to-gray-900"></div>
+      
+      <div className="relative flex w-[800px] bg-opacity-40 backdrop-blur-md bg-gray-800 p-10 rounded-xl shadow-lg">
+        {/* Left Side - Welcome Section */}
+        <div className="w-1/2 text-white p-5 flex flex-col justify-center">
+          <h1 className="text-4xl font-bold">Welcome!</h1>
+          <p className="mt-2 text-gray-300">Login to continue your journey with us.</p>
+          <button className="mt-4 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">Learn More</button>
+        </div>
 
-      {/* Right Side - Login Form */}
-      <div className="w-1/2 flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200">
-        <div className="bg-white p-10 rounded-2xl shadow-xl w-96">
-          <h2 className="text-3xl font-bold text-center text-gray-700">Welcome Back</h2>
-          <p className="text-center text-gray-500 mt-1">Login to your account</p>
-
-          <form onSubmit={handleLogin} className="mt-6">
+        {/* Right Side - Login Form */}
+        <div className="w-1/2 p-5 bg-gray-900 bg-opacity-50 rounded-lg">
+          <h2 className="text-2xl font-semibold text-white text-center">Sign In</h2>
+          <form onSubmit={handleLogin} className="mt-4">
             <div className="mb-4">
-              <label className="block text-gray-600 font-medium">Username</label>
+              <label className="text-gray-300 block">Username</label>
               <input
                 type="text"
                 name="username"
-                placeholder="Enter your username"
+                placeholder="Enter username"
                 value={credentials.username}
                 onChange={handleInputChange}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                className="w-full p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div className="mb-4">
-              <label className="block text-gray-600 font-medium">Password</label>
+              <label className="text-gray-300 block">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
-                  placeholder="Enter your password"
+                  placeholder="Enter password"
                   value={credentials.password}
                   onChange={handleInputChange}
-                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                  className="w-full p-3 bg-gray-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500"
                   required
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-200"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? '🙈' : '👁'}
@@ -113,32 +104,22 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  className="mr-2"
-                />
-                <label htmlFor="remember" className="text-gray-600">Remember me</label>
-              </div>
-              {/* <a href="#" className="text-blue-500 hover:underline text-sm">Forgot Password?</a> */}
-            </div>
-
-            {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
+            {error && <p className="text-red-400 text-center">{error}</p>}
 
             <button
               type="submit"
-              className="w-full p-3 mt-3 text-white rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition duration-200 shadow-lg"
+              className="w-full p-3 mt-4 bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white rounded-lg transition duration-200 shadow-md"
               disabled={loading}
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
-
-          <p className="text-gray-600 text-center mt-4">
-            {/* Don't have an account? <a href="#" className="text-blue-500 hover:underline">Sign up</a> */}
-          </p>
+          
+          <div className="flex justify-center gap-4 mt-4">
+            <span className="text-gray-400">🔵</span>
+            <span className="text-gray-400">⚫</span>
+            <span className="text-gray-400">⚪</span>
+          </div>
         </div>
       </div>
     </div>
