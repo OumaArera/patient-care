@@ -62,7 +62,30 @@ const Facilities = () => {
         setFacilityAddress("");
         loadFacilities();
       } else {
-        setErrors(Array.isArray(result.responseObject.errors) ? result.responseObject.errors : ["Failed to add facility"]);
+        let errorString = result?.responseObject?.errors;
+
+        let parsedErrors = [];
+        if (typeof errorString === "string") {
+            try {
+                parsedErrors = JSON.parse(errorString.replace(/'/g, '"'));
+            } catch (parseError) {
+                console.log("JSON Parse Error:", parseError);
+                parsedErrors = [errorString];
+            }
+            } else if (Array.isArray(errorString)) {
+            parsedErrors = errorString;
+            } else {
+            parsedErrors = ["An unknown error occurred."];
+            }
+
+        const formattedErrors = parsedErrors.map((err) => {
+        if (typeof err === "string" && err.includes(":")) {
+            return err.split(":")[1].trim();
+        }
+        return err;
+        });
+
+        setErrors(formattedErrors);
       }
     } catch (error) {
       setMessage("An error occurred. Please try again.");
