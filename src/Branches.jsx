@@ -50,7 +50,7 @@ const Branches = () => {
         setBranchAddress("");
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
-        setMessage(result.responseObject.error || "Failed to add branch");
+        setMessage(result.responseObject.errors || "Failed to add branch");
       }
     } catch (error) {
       setMessage("An error occurred. Please try again.");
