@@ -35,7 +35,7 @@ function App() {
         <Route path="*" element={userRole ? <Navigate to={`/${userRole}`} /> : <Navigate to="/" />} />
 
         <Route element={<ProtectedRoute allowedRoles={["care giver"]} />}>
-          <Route path="/care-giver" element={<CareGiverDashboard role="care giver" />} />
+          <Route path="/care giver" element={<CareGiverDashboard role="care giver" />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["superuser"]} />}>
