@@ -52,6 +52,7 @@ const Branches = () => {
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
         const errorString = result.responseObject.errors;
+        console.log("Errors", errorString);
         let errorArray = [];
 
         try {
