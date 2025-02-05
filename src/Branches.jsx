@@ -141,7 +141,7 @@ const Branches = () => {
         {errors.length > 0 && (
             <div className="mb-4 p-3 rounded">
                 {errors.map((error, index) => (
-                    <p key={index} className="text-sm text-red-500">{error}</p>
+                    <p key={index} className="text-sm text-red-600">{error}</p>
                 ))}
             </div>
       )}
