@@ -40,7 +40,7 @@ const Branches = () => {
       const response = await fetch("https://patient-care-server.onrender.com/api/v1/branches", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ branchName, branchAddress, facilityId }),
+        body: JSON.stringify({ branchName, branchAddress, facility: facilityId }),
       });
       const result = await response.json();
 
