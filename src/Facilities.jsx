@@ -9,6 +9,7 @@ const Facilities = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [showAddressExample, setShowAddressExample] = useState(false);
+  const [errors, setErrors] = useState([]);
   const pageSize = 10;
 
   useEffect(() => {
@@ -61,7 +62,7 @@ const Facilities = () => {
         setFacilityAddress("");
         loadFacilities();
       } else {
-        setMessage(result.responseObject.errors  || "Failed to add facility");
+        setErrors(Array.isArray(result.responseObject.errors) ? result.responseObject.errors : ["Failed to add facility"]);
       }
     } catch (error) {
       setMessage("An error occurred. Please try again.");
@@ -115,6 +116,14 @@ const Facilities = () => {
         >
           {isSubmitting ? "Submitting..." : "Add Facility"}
         </button>
+
+        {errors.length > 0 && (
+        <div className="mb-4 p-3 bg-red-700 text-white rounded">
+          {errors.map((error, index) => (
+            <p key={index} className="text-sm">⚠ {error}</p>
+          ))}
+        </div>
+      )}
 
         {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
       </form>

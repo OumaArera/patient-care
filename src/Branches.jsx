@@ -3,8 +3,8 @@ import { fetchFacilities } from "./fetchFacilities";
 import { fetchBranches } from "./fetchBranches";
 
 const isValidAddress = (address) => {
-    return /\d{1,5}\s\w+(\s\w+)*,\s\w+,\s[A-Z]{2}\s\d{5}/.test(address);
-  };
+  return /\d{1,5}\s\w+(\s\w+)*,\s\w+,\s[A-Z]{2}\s\d{5}/.test(address);
+};
 
 const Branches = () => {
   const [branchName, setBranchName] = useState("");
@@ -12,16 +12,15 @@ const Branches = () => {
   const [facilityId, setFacilityId] = useState("");
   const [facilities, setFacilities] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [message, setMessage] = useState("");
   const [pageNumber, setPageNumber] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState([]);
   const pageSize = 10;
 
   useEffect(() => {
     fetchFacilities(pageNumber, pageSize).then((data) => setFacilities(data.responseObject || []));
   }, [pageNumber]);
-
-
 
   useEffect(() => {
     fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
@@ -33,6 +32,7 @@ const Branches = () => {
 
     setIsSubmitting(true);
     setMessage("");
+    setErrors([]);
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -45,23 +45,26 @@ const Branches = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setMessage("Branch added successfully!");
         setBranchName("");
         setBranchAddress("");
+        setMessage("Branch added successfully!");
+        setErrors([]);
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
-        setMessage(result.responseObject.errors || "Failed to add branch");
+        setErrors(Array.isArray(result.responseObject.errors) ? result.responseObject.errors : ["Failed to add branch"]);
       }
     } catch (error) {
-      setMessage("An error occurred. Please try again.");
+      setErrors(["An error occurred. Please try again."]);
     } finally {
       setIsSubmitting(false);
+      setTimeout(() => setErrors([]), 5000);
     }
   };
 
   return (
     <div className="container mx-auto p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Add New Branch</h2>
+      
       <form onSubmit={handleSubmit} className="mb-6 p-4 border rounded-lg shadow-md bg-gray-800">
         <div className="mb-4">
           <label className="block text-gray-300 font-semibold mb-1">Branch Name</label>
@@ -112,8 +115,14 @@ const Branches = () => {
         >
           {isSubmitting ? "Submitting..." : "Add Branch"}
         </button>
-
-        {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
+        {errors.length > 0 && (
+        <div className="mb-4 p-3 bg-red-700 text-white rounded">
+          {errors.map((error, index) => (
+            <p key={index} className="text-sm">⚠ {error}</p>
+          ))}
+          {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
+        </div>
+      )}
       </form>
 
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Branches</h2>
