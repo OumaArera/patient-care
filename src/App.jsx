@@ -25,7 +25,7 @@ function App() {
         <Route path="/" element={<Login />} />
 
         {/* Redirect to home (Login) if user reloads without a role */}
-        {!userRole && <Route path="*" element={<Navigate to="/" />} />}
+        {<Route path="*" element={<Navigate to="/" />} />}
 
         <Route element={<ProtectedRoute allowedRoles={["care giver"]} />}>
           <Route path="/care-giver" element={<CareGiverDashboard role="care giver" />} />
