@@ -6,12 +6,12 @@ const ProtectedRoute = ({ allowedRoles }) => {
   const role = localStorage.getItem("role");
 
   if (!token) {
-    handleLogout();
+    // handleLogout();
     return <Navigate to="/" replace />;
   }
 
   if (!allowedRoles.includes(role)) {
-    handleLogout();
+    // handleLogout();
     return <Navigate to="/" replace />;
   }
 
