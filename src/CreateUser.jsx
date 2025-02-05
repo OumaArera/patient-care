@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 
@@ -16,6 +16,19 @@ const CreateUser = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [defaultCountry, setDefaultCountry] = useState('us');
+
+  useEffect(() => {
+    // Fetch user's country based on IP
+    fetch('https://ip-api.com/json/')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.countryCode) {
+          setDefaultCountry(data.countryCode.toLowerCase());
+        }
+      })
+      .catch(() => setDefaultCountry('us'));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,32 +70,63 @@ const CreateUser = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 p-4">
-      <div className="bg-gray-800 text-white p-10 rounded-xl shadow-xl w-full max-w-2xl">
+      <div className="bg-gray-800 text-white p-10 rounded-xl shadow-xl w-full max-w-3xl">
         <h2 className="text-3xl font-bold text-center text-blue-500">Create User</h2>
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" />
-            <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" />
-            <input type="text" name="middleNames" placeholder="Middle Names (Optional)" value={formData.middleNames} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" />
-            <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" />
+            <div>
+              <label className="block text-gray-300 mb-1">Email</label>
+              <input type="email" name="email" placeholder="Enter email" value={formData.email} onChange={handleChange} required className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" />
+            </div>
+            <div>
+              <label className="block text-gray-300 mb-1">First Name</label>
+              <input type="text" name="firstName" placeholder="Enter first name" value={formData.firstName} onChange={handleChange} required className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" />
+            </div>
+            <div>
+              <label className="block text-gray-300 mb-1">Middle Names</label>
+              <input type="text" name="middleNames" placeholder="Enter middle names (optional)" value={formData.middleNames} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" />
+            </div>
+            <div>
+              <label className="block text-gray-300 mb-1">Last Name</label>
+              <input type="text" name="lastName" placeholder="Enter last name" value={formData.lastName} onChange={handleChange} required className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" />
+            </div>
           </div>
 
           <div className="mt-4">
-            <PhoneInput country={'us'} value={formData.phoneNumber} onChange={handlePhoneChange} inputClass="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" required/>
+            <label className="block text-gray-300 mb-1">Phone Number</label>
+            <PhoneInput
+              country={defaultCountry}
+              value={formData.phoneNumber}
+              onChange={handlePhoneChange}
+              inputStyle={{
+                width: '100%',
+                backgroundColor: '#374151',
+                borderColor: '#4b5563',
+                color: 'white',
+                height: '45px',
+              }}
+              buttonStyle={{ backgroundColor: '#4b5563', borderColor: '#4b5563' }}
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <select name="sex" value={formData.sex} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
+            <div>
+              <label className="block text-gray-300 mb-1">Sex</label>
+              <select name="sex" value={formData.sex} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
 
-            <select name="role" value={formData.role} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
-              <option value="care giver">Care Giver</option>
-              <option value="manager">Manager</option>
-              <option value="superuser">Superuser</option>
-            </select>
+            <div>
+              <label className="block text-gray-300 mb-1">Role</label>
+              <select name="role" value={formData.role} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
+                <option value="care giver">Care Giver</option>
+                <option value="manager">Manager</option>
+                <option value="superuser">Superuser</option>
+              </select>
+            </div>
           </div>
 
           {error && <p className="text-red-400 mt-2 text-center">{error}</p>}
