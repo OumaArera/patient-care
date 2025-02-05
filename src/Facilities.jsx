@@ -139,15 +139,13 @@ const Facilities = () => {
         >
           {isSubmitting ? "Submitting..." : "Add Facility"}
         </button>
-
         {errors.length > 0 && (
-        <div className="mb-4 p-3 bg-red-700 text-white rounded">
-          {errors.map((error, index) => (
-            <p key={index} className="text-sm">⚠ {error}</p>
-          ))}
-        </div>
-      )}
-
+          <div className="mb-4 p-3 rounded">
+            {errors.map((error, index) => (
+                <p key={index} className="text-sm text-red-600">{error}</p>
+            ))}
+          </div>
+        )}
         {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
       </form>
 
