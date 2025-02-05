@@ -9,11 +9,11 @@ import PendingCharts from "./PendingCharts";
 import PendingMedications from "./PendingMedications";
 import Updates from "./Updates";
 import Statistics from "./Statistics";
-import UserManagement from "./UserManagement";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
 import ManageUser from "./ManageUser";
 import Users from "./Users";
+import Facilities from "./Facilities";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -123,10 +123,10 @@ const SuperUserDashboard = () => {
         {activeTab === "medications" && <PendingMedications />}
         {activeTab === "updates" && <Updates />}
         {activeTab === "statistics" && <Statistics />}
-        {/* {activeTab === "users" && <UserManagement />} */}
         {activeTab === "createUser" && <CreateUser />}
         {activeTab === "manageUser" && <ManageUser />}
-        {activeTab === "users" && <Users />}   
+        {activeTab === "users" && <Users />}
+        {activeTab === "facilities" && <Facilities />}    
       </div>
     </div>
   );
