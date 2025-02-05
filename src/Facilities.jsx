@@ -30,6 +30,12 @@ const Facilities = () => {
     setIsSubmitting(true);
     setMessage("");
     const token = localStorage.getItem("token");
+    if (!token) return
+
+    facility = {
+        facilityName: facilityName,
+        facilityAddress: facilityAddress
+    }
 
     try {
       const response = await fetch(
@@ -40,7 +46,7 @@ const Facilities = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ facilityName, facilityAddress }),
+          body: JSON.stringify(facility),
         }
       );
       const result = await response.json();
