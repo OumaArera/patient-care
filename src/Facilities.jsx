@@ -61,7 +61,7 @@ const Facilities = () => {
         setFacilityAddress("");
         loadFacilities();
       } else {
-        setMessage(result.statusMessage || "Failed to add facility");
+        setMessage(result.responseObject.error  || "Failed to add facility");
       }
     } catch (error) {
       setMessage("An error occurred. Please try again.");
