@@ -45,18 +45,17 @@ const Login = () => {
       if (data.successful) {
         const { token } = data.responseObject;
         const decoded = jwtDecode(token);
-
-        localStorage.setItem('token', token);
-        localStorage.setItem('patients', decoded.patients);
-        localStorage.setItem('userId', decoded.user_id);
-        localStorage.setItem('username', decoded.username);
-        localStorage.setItem('fullName', decoded.fullName);
-        localStorage.setItem('role', decoded.role);
-
+      
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", decoded.user_id);
+        localStorage.setItem("username", decoded.username);
+        localStorage.setItem("fullName", decoded.fullName);
+        localStorage.setItem("role", decoded.role);
+        localStorage.setItem("lastActivity", Date.now()); 
+      
         navigate(`/${decoded.role}`);
-      } else {
-        setError(data.responseObject.errors);
       }
+      
     } catch (err) {
       setError('An error occurred. Try again.');
     } finally {
