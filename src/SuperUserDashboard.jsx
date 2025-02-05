@@ -6,13 +6,11 @@ import {
   FaUserInjured, FaMapMarkerAlt, FaDatabase
 } from "react-icons/fa";
 import PendingCharts from "./PendingCharts";
-import ApprovedCharts from "./ApprovedCharts";
 import PendingMedications from "./PendingMedications";
-import ApprovedMedications from "./ApprovedMedications";
 import Updates from "./Updates";
 import Statistics from "./Statistics";
 import UserManagement from "./UserManagement";
-// import CreateUser from "./CreateUser"; 
+import ResetUser from "./ResetUser";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
 
@@ -131,7 +129,8 @@ const SuperUserDashboard = () => {
         {activeTab === "updates" && <Updates />}
         {activeTab === "statistics" && <Statistics />}
         {activeTab === "users" && <UserManagement />}
-        {activeTab === "createUser" && <CreateUser />} 
+        {activeTab === "createUser" && <CreateUser />}
+        {activeTab === "resetUser" && <ResetUser />}  
       </div>
     </div>
   );

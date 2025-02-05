@@ -19,7 +19,7 @@ const CreateUser = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [defaultCountry, setDefaultCountry] = useState('us');
-  const [token, setToken] = useState("")
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     // Fetch user's country based on IP
