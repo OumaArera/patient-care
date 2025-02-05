@@ -29,11 +29,7 @@ const Medication = () => {
         setLoadingMedications(true);
         fetchMedications(pageNumber, pageSize)
             .then((data) => {
-                if (Array.isArray(data.responseObject)) {
-                    setMedications(data.responseObject);
-                } else {
-                    setError("Unexpected data format");
-                }
+                setMedications(data);
                 setLoadingMedications(false);
             })
             .catch(() => {
@@ -41,20 +37,19 @@ const Medication = () => {
                 setLoadingMedications(false);
             });
     }, [pageNumber, pageSize]);
-    
 
     useEffect(() => {
-        setLoadingPatients(true);
+        setLoading(true);
         fetchPatients(pageNumber, pageSize)
-            .then((data) => {
-                setPatients(data);
-                setLoadingPatients(false);
-            })
-            .catch(() => {
-                setError("Failed to fetch patients.");
-                setLoadingPatients(false);
-            });
-    }, [pageNumber, pageSize]);
+          .then((data) => {
+            setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
+            setLoading(false);
+          })
+          .catch(() => {
+            setError("Failed to fetch patients.");
+            setLoading(false);
+          });
+      }, [pageNumber, pageSize]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
