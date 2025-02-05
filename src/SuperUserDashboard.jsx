@@ -12,8 +12,9 @@ import ApprovedMedications from "./ApprovedMedications";
 import Updates from "./Updates";
 import Statistics from "./Statistics";
 import UserManagement from "./UserManagement";
-import CreateUser from "./CreateUser"; 
+// import CreateUser from "./CreateUser"; 
 import handleLogout from "./Logout";
+import CreateUser from "./CreateUser";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
