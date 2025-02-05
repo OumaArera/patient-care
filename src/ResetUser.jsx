@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 const PASSWORD_RESET_URL ="https://patient-care-server.onrender.com/api/v1/auth/reset-password";
 
 
