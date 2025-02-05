@@ -110,7 +110,7 @@ const Facilities = () => {
 
         <button
           type="submit"
-          className="w-full p-3 mt-6 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200 shadow-lg"
+          className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 disabled:opacity-100"
           disabled={!facilityName || !facilityAddress || !isValidFacilityName(facilityName) || !isValidUSAddress(facilityAddress) || isSubmitting}
         >
           {isSubmitting ? "Submitting..." : "Add Facility"}
