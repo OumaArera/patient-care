@@ -51,14 +51,22 @@ const Branches = () => {
         setErrors([]);
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
-        const errorString = result.responseObject.errors;
+        let errorString = result?.responseObject?.errors;
 
-        // Ensure it's parsed correctly as an array
-        const parsedErrors = Array.isArray(errorString) 
-        ? errorString 
-        : JSON.parse(errorString.replace(/'/g, '"')); 
-
-        setErrors(parsedErrors || ["There was an error"]);
+        let parsedErrors = [];
+        if (typeof errorString === "string") {
+            try {
+                parsedErrors = JSON.parse(errorString.replace(/'/g, '"'));
+            } catch (parseError) {
+                console.log("JSON Parse Error:", parseError);
+                parsedErrors = [errorString]; // If parsing fails, use as-is
+            }
+        } else if (Array.isArray(errorString)) {
+        parsedErrors = errorString;
+        } else {
+        parsedErrors = ["An unknown error occurred."];
+        }
+        setErrors(parsedErrors);
       }
     } catch (error) {
       setErrors(["An error occurred. Please try again."]);
