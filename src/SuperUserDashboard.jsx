@@ -13,6 +13,7 @@ import UserManagement from "./UserManagement";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
 import ManageUser from "./ManageUser";
+import Users from "./Users";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -124,7 +125,8 @@ const SuperUserDashboard = () => {
         {activeTab === "statistics" && <Statistics />}
         {activeTab === "users" && <UserManagement />}
         {activeTab === "createUser" && <CreateUser />}
-        {activeTab === "manageUser" && <ManageUser />}  
+        {activeTab === "manageUser" && <ManageUser />}
+        {activeTab === "users" && <Users />}   
       </div>
     </div>
   );
