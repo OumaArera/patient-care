@@ -10,6 +10,7 @@ const Patients = () => {
   const [pageSize] = useState(10);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false); // Separate submitting state
   const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
@@ -26,6 +27,7 @@ const Patients = () => {
     file: null,
   });
 
+  // Fetch patients when pageNumber or pageSize changes
   useEffect(() => {
     setLoading(true);
     fetchPatients(pageNumber, pageSize)
@@ -39,10 +41,13 @@ const Patients = () => {
       });
   }, [pageNumber, pageSize]);
 
+  // Fetch branches only once
   useEffect(() => {
-    fetchBranches().then((data) => {
-      setBranches(Array.isArray(data.responseObject) ? data.responseObject : []);
-    }).catch(() => setError("Failed to fetch branches."));
+    fetchBranches()
+      .then((data) => {
+        setBranches(Array.isArray(data.responseObject) ? data.responseObject : []);
+      })
+      .catch(() => setError("Failed to fetch branches."));
   }, []);
 
   const handleNextPage = () => {
@@ -57,18 +62,6 @@ const Patients = () => {
     }
   };
 
-//   useEffect(() => {
-//     fetchPatients(pageNumber, pageSize).then((data) => {
-//       setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
-//     }).catch(() => setError("Failed to fetch patients."));
-//   }, [pageNumber]);
-
-//   useEffect(() => {
-//     fetchBranches(pageNumber, pageSize).then((data) => {
-//       setBranches(Array.isArray(data.responseObject) ? data.responseObject : []);
-//     }).catch(() => setError("Failed to fetch branches."));
-//   }, [pageNumber]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -81,7 +74,7 @@ const Patients = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setSubmitting(true); // Set submitting state to true
     setSuccessMessage("");
     const token = localStorage.getItem("token");
     const formDataToSend = new FormData();
@@ -121,7 +114,7 @@ const Patients = () => {
     } catch (err) {
       setError(Array.isArray(err.message) ? err.message.join(", ") : err.message);
     } finally {
-      setLoading(false);
+      setSubmitting(false); // Set submitting state to false once done
     }
   };
 
@@ -130,7 +123,7 @@ const Patients = () => {
       <h2 className="text-3xl font-bold mb-6 text-blue-400">Manage Patients</h2>
       {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
       {successMessage && <div className="bg-green-500 text-white p-3 mb-3 rounded">{successMessage}</div>}
-      {loading && <div className="bg-yellow-500 text-white p-3 mb-3 rounded">Submitting data...</div>}
+      {loading && <div className="bg-yellow-500 text-white p-3 mb-3 rounded">Fetching data...</div>}
       
       <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-md grid gap-4">
         {Object.keys(formData).map((key) => (
@@ -191,8 +184,8 @@ const Patients = () => {
             )}
           </div>
         ))}
-        <button type="submit" className="bg-blue-500 text-white p-3 rounded hover:bg-blue-600 w-full" disabled={loading}>
-          {loading ? "Submitting..." : "Submit"}
+        <button type="submit" className="bg-blue-500 text-white p-3 rounded hover:bg-blue-600 w-full" disabled={submitting}>
+          {submitting ? "Submitting..." : "Submit"}
         </button>
       </form>
       
