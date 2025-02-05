@@ -36,6 +36,7 @@ const Facilities = () => {
         facilityName: facilityName,
         facilityAddress: facilityAddress
     }
+    console.log(`Facility details ${facility}`)
 
     try {
       const response = await fetch(
