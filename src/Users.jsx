@@ -1,67 +1,88 @@
-import { useContext, useState } from "react";
-import { UserContext } from "./UserContext";
+import { useState, useEffect } from "react";
 import { fetchUsers } from "./fetchUsers";
-// import { UserContext, UserProvider } from "./UserContext";
 
 const Users = () => {
-  const { users, setUsers, token } = useContext(UserContext);
-  const [pageNumber, setPageNumber] = useState(1);
-  const pageSize = 10;
+    const [users, setUsers] = useState([]);
+    const [pageNumber, setPageNumber] = useState(1);
+    const pageSize = 10;
+    const [loading, setLoading] = useState(false);
+    const token = localStorage.getItem("token");
 
-  const fetchNextPage = async () => {
-    const nextPage = pageNumber + 1;
-    const newUsers = await fetchUsers(nextPage, pageSize, token);
+    useEffect(() => {
+        loadUsers(pageNumber);
+    }, [pageNumber]);
 
-    if (newUsers.length === pageSize) {
-      setUsers(newUsers);
-      setPageNumber(nextPage);
-    }
-  };
+    const loadUsers = async (page) => {
+        setLoading(true);
+        const fetchedUsers = await fetchUsers(page, pageSize, token);
+        setUsers(fetchedUsers);
+        setLoading(false);
+    };
 
-  return (
-    <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-full">
-      <h2 className="text-xl font-bold text-blue-400 mb-4">Users List</h2>
+    return (
+        <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-10">
+        <h2 className="text-xl font-bold text-blue-400 mb-4">User Management</h2>
+        <div className="overflow-x-auto">
+            <table className="w-full table-auto border-collapse border border-gray-700">
+            <thead>
+                <tr className="bg-gray-800 text-white">
+                <th className="p-3 border border-gray-700">ID</th>
+                <th className="p-3 border border-gray-700">Full Name</th>
+                <th className="p-3 border border-gray-700">Email</th>
+                <th className="p-3 border border-gray-700">Phone</th>
+                <th className="p-3 border border-gray-700">Sex</th>
+                <th className="p-3 border border-gray-700">Role</th>
+                <th className="p-3 border border-gray-700">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {loading ? (
+                <tr>
+                    <td colSpan="7" className="text-center p-4 text-white">
+                    Loading...
+                    </td>
+                </tr>
+                ) : users.length > 0 ? (
+                users.map((user) => (
+                    <tr key={user.userId} className="text-white bg-gray-800">
+                    <td className="p-3 border border-gray-700">{user.userId}</td>
+                    <td className="p-3 border border-gray-700">{user.fullName}</td>
+                    <td className="p-3 border border-gray-700">{user.email}</td>
+                    <td className="p-3 border border-gray-700">{user.phoneNumber}</td>
+                    <td className="p-3 border border-gray-700">{user.sex}</td>
+                    <td className="p-3 border border-gray-700">{user.role}</td>
+                    <td className="p-3 border border-gray-700">{user.status}</td>
+                    </tr>
+                ))
+                ) : (
+                <tr>
+                    <td colSpan="7" className="text-center p-4 text-gray-400">
+                    No users found.
+                    </td>
+                </tr>
+                )}
+            </tbody>
+            </table>
+        </div>
 
-      {/* Make table occupy most of the available width */}
-      <div className="overflow-x-auto w-full">
-        <table className="w-full max-w-none bg-gray-800 border border-gray-700">
-          <thead>
-            <tr className="text-white bg-gray-700">
-              <th className="p-3 text-left">User ID</th>
-              <th className="p-3 text-left">Full Name</th>
-              <th className="p-3 text-left">Email</th>
-              <th className="p-3 text-left">Phone</th>
-              <th className="p-3 text-left">Sex</th>
-              <th className="p-3 text-left">Role</th>
-              <th className="p-3 text-left">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.userId} className="border-b border-gray-700 hover:bg-gray-750">
-                <td className="p-3">{user.userId}</td>
-                <td className="p-3">{user.fullName}</td>
-                <td className="p-3">{user.email}</td>
-                <td className="p-3">{user.phoneNumber}</td>
-                <td className="p-3">{user.sex}</td>
-                <td className="p-3">{user.role}</td>
-                <td className="p-3">{user.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Load More Button */}
-      <button
-        onClick={fetchNextPage}
-        className={`mt-4 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded ${users.length < pageSize ? "opacity-50 cursor-not-allowed" : ""}`}
-        disabled={users.length < pageSize}
-      >
-        Load More
-      </button>
-    </div>
-  );
+        <div className="flex justify-between mt-4">
+            <button
+            disabled={pageNumber === 1 || loading}
+            onClick={() => setPageNumber(pageNumber - 1)}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded disabled:bg-gray-600"
+            >
+            Previous
+            </button>
+            <button
+            disabled={users.length < pageSize || loading}
+            onClick={() => setPageNumber(pageNumber + 1)}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded disabled:bg-gray-600"
+            >
+            Next
+            </button>
+        </div>
+        </div>
+    );
 };
 
 export default Users;
