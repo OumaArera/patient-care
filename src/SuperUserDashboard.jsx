@@ -123,6 +123,7 @@ const SuperUserDashboard = () => {
         {activeTab === "medications" && <PendingMedications />}
         {activeTab === "updates" && <Updates />}
         {activeTab === "statistics" && <Statistics />}
+        {/* {activeTab === "users" && <UserManagement />} */}
         {activeTab === "createUser" && <CreateUser />}
         {activeTab === "manageUser" && <ManageUser />}
         {activeTab === "users" && <Users />}   

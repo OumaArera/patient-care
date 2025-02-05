@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 import { fetchUsers } from "./fetchUsers";
+import { UserContext, UserProvider } from "./UserContext";
 
 const Users = () => {
   const { users, setUsers, token } = useContext(UserContext);
