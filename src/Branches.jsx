@@ -51,9 +51,9 @@ const Branches = () => {
         setErrors([]);
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
-        const errorString = result.responseObject.errors;
-        setErrors(errorString)
-        console.log("Errors", errorString);
+        // const errorString = result.responseObject.errors;
+        setErrors(Array.isArray(result.responseObject.errors))
+        // console.log("Errors", errorString);
         // let errorArray = [];
 
         // try {
