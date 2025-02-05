@@ -45,7 +45,7 @@ const Medication = () => {
     
 
     useEffect(() => {
-        setLoading(true);
+        // setLoading(true);
         fetchPatients(pageNumber, pageSize)
           .then((data) => {
             setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
