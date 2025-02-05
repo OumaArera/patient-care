@@ -73,54 +73,65 @@ const Patients = () => {
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-white">
-      <h2 className="text-2xl font-bold mb-4 text-blue-400">Manage Patients</h2>
+      <h2 className="text-3xl font-bold mb-6 text-blue-400">Manage Patients</h2>
       {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
       
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-800 p-6 rounded-lg shadow">
-        {Object.keys(formData).map((key) =>
-          key === "file" ? (
-            <input
-              key={key}
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="border p-2 rounded w-full bg-gray-700 text-white"
-              required
-            />
-          ) : key === "branch" ? (
-            <select
-              key={key}
-              name={key}
-              value={formData[key]}
-              onChange={handleInputChange}
-              className="border p-2 rounded w-full bg-gray-700 text-white"
-              required
-            >
-              <option value="">Select a Branch</option>
-              {branches.map((branch) => (
-                <option key={branch.branchId} value={branch.branchId}>
-                  {branch.branchName}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <input
-              key={key}
-              type={key === "dateOfBirth" ? "date" : "text"}
-              name={key}
-              value={formData[key]}
-              onChange={handleInputChange}
-              className="border p-2 rounded w-full bg-gray-700 text-white"
-              required
-            />
-          )
-        )}
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+      <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-md grid gap-4">
+        {Object.keys(formData).map((key) => (
+          <div key={key} className="flex flex-col">
+            <label className="text-sm mb-1 capitalize" htmlFor={key}>{key.replace(/([A-Z])/g, ' $1').trim()}</label>
+            {key === "file" ? (
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="border p-2 rounded w-full bg-gray-700 text-white"
+                required
+              />
+            ) : key === "branch" ? (
+              <select
+                name={key}
+                value={formData[key]}
+                onChange={handleInputChange}
+                className="border p-2 rounded w-full bg-gray-700 text-white"
+                required
+              >
+                <option value="">Select a Branch</option>
+                {branches.map((branch) => (
+                  <option key={branch.branchId} value={branch.branchId}>
+                    {branch.branchName}
+                  </option>
+                ))}
+              </select>
+            ) : key === "diagnosis" || key === "allergies" ? (
+              <textarea
+                name={key}
+                value={formData[key]}
+                onChange={handleInputChange}
+                rows="4"
+                placeholder={`Enter ${key}`}
+                className="border p-2 rounded w-full bg-gray-700 text-white"
+                required
+              ></textarea>
+            ) : (
+              <input
+                type={key === "dateOfBirth" ? "date" : "text"}
+                name={key}
+                value={formData[key]}
+                onChange={handleInputChange}
+                placeholder={`Enter ${key}`}
+                className="border p-2 rounded w-full bg-gray-700 text-white"
+                required
+              />
+            )}
+          </div>
+        ))}
+        <button type="submit" className="bg-blue-500 text-white p-3 rounded hover:bg-blue-600 w-full">
           Submit
         </button>
       </form>
       
-      <div className="mt-6 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {patients.length > 0 ? (
           patients.map((patient) => <PatientCard key={patient.patientId} patient={patient} />)
         ) : (
