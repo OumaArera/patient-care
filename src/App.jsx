@@ -7,6 +7,7 @@ import ManagerDashboard from "./ManagerDashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import CreateUser from "./CreateUser";
 import ManageUser from "./ManageUser";
+import Users from "./Users";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -45,6 +46,10 @@ function App() {
 
         <Route element={<ProtectedRoute allowedRoles={["superuser"]} />}>
           <Route path="/manageUser" element={<ManageUser role="superuser" />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={["superuser"]} />}>
+          <Route path="/users" element={<Users role="superuser" />} />
         </Route>
 
         

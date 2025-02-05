@@ -53,7 +53,7 @@ const Users = () => {
       <button
         onClick={fetchNextPage}
         className="mt-4 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded"
-        disabled={users.length < pageSize} // Disable if no full page of results
+        disabled={users.length < pageSize}
       >
         Load More
       </button>
