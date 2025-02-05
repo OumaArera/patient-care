@@ -13,6 +13,7 @@ function App() {
 
   useEffect(() => {
     const storedRole = localStorage.getItem("role");
+    console.log("role", storedRole)
     if (!storedRole) {
       setUserRole(null);
     } else {
