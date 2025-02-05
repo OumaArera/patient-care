@@ -9,6 +9,7 @@ import CreateUser from "./CreateUser";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const storedRole = localStorage.getItem("role");
@@ -17,7 +18,12 @@ function App() {
     } else {
       setUserRole(storedRole);
     }
+    setIsLoading(false);
   }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>
@@ -25,7 +31,7 @@ function App() {
         <Route path="/" element={<Login />} />
 
         {/* Redirect to home (Login) if user reloads without a role */}
-        {<Route path="*" element={<Navigate to="/" />} />}
+        <Route path="*" element={userRole ? <Navigate to={`/${userRole}`} /> : <Navigate to="/" />} />
 
         <Route element={<ProtectedRoute allowedRoles={["care giver"]} />}>
           <Route path="/care-giver" element={<CareGiverDashboard role="care giver" />} />

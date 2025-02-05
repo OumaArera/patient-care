@@ -5,13 +5,13 @@ const ProtectedRoute = ({ allowedRoles }) => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-  if (!token) {
-    // handleLogout();
+  if (!token || !role) {
+    handleLogout();
     return <Navigate to="/" replace />;
   }
 
   if (!allowedRoles.includes(role)) {
-    // handleLogout();
+    handleLogout();
     return <Navigate to="/" replace />;
   }
 
