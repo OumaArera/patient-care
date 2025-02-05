@@ -39,17 +39,22 @@ const Medication = () => {
     }, [pageNumber, pageSize]);
 
     useEffect(() => {
-        setLoadingPatients(true);
-        fetchPatients(pageNumber, pageSize)
+        setLoadingMedications(true);
+        fetchMedications(pageNumber, pageSize)
             .then((data) => {
-                setPatients(data);
-                setLoadingPatients(false);
+                if (Array.isArray(data.responseObject)) {
+                    setMedications(data.responseObject);
+                } else {
+                    setError("Unexpected data format");
+                }
+                setLoadingMedications(false);
             })
             .catch(() => {
-                setError("Failed to fetch patients.");
-                setLoadingPatients(false);
+                setError("Failed to fetch medications.");
+                setLoadingMedications(false);
             });
     }, [pageNumber, pageSize]);
+    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -157,7 +162,7 @@ const Medication = () => {
                 <div className="bg-yellow-500 text-white p-3 mt-4 rounded">Loading medications...</div>
             ) : (
                 <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {medications.length > 0 ? (
+                    {Array.isArray(medications) && medications.length > 0 ? (
                         medications.map((med) => <MedicationCard key={med.medicationId} medication={med} />)
                     ) : (
                         <p className="text-gray-400">No medications found.</p>
