@@ -18,8 +18,10 @@ const Branches = () => {
   const pageSize = 10;
 
   useEffect(() => {
-    fetchFacilities().then((data) => setFacilities(data.responseObject || []));
-  }, []);
+    fetchFacilities(pageNumber, pageSize).then((data) => setFacilities(data.responseObject || []));
+  }, [pageNumber]);
+
+
 
   useEffect(() => {
     fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
