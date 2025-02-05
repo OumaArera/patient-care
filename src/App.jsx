@@ -4,6 +4,7 @@ import CareGiverDashboard from "./CareGiverDashboard";
 import SuperUserDashboard from "./SuperUserDashboard";
 import ManagerDashboard from "./ManagerDashboard";
 import ProtectedRoute from "./ProtectedRoute";
+import CreateUser from "./CreateUser";
 
 function App() {
   return (
@@ -13,6 +14,9 @@ function App() {
 
         <Route element={<ProtectedRoute allowedRoles={["care giver"]} />}>
           <Route path="/care giver" element={<CareGiverDashboard role="care giver" />} />
+        </Route>
+        <Route element={<ProtectedRoute allowedRoles={["superuser"]} />}>
+          <Route path="/createUser" element={<CreateUser role="superuser" />} />
         </Route>
 
         <Route element={<ProtectedRoute allowedRoles={["manager"]} />}>
