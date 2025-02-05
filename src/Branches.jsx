@@ -59,14 +59,22 @@ const Branches = () => {
                 parsedErrors = JSON.parse(errorString.replace(/'/g, '"'));
             } catch (parseError) {
                 console.log("JSON Parse Error:", parseError);
-                parsedErrors = [errorString]; // If parsing fails, use as-is
+                parsedErrors = [errorString];
             }
-        } else if (Array.isArray(errorString)) {
-        parsedErrors = errorString;
-        } else {
-        parsedErrors = ["An unknown error occurred."];
+            } else if (Array.isArray(errorString)) {
+            parsedErrors = errorString;
+            } else {
+            parsedErrors = ["An unknown error occurred."];
+            }
+
+        const formattedErrors = parsedErrors.map((err) => {
+        if (typeof err === "string" && err.includes(":")) {
+            return err.split(":")[1].trim();
         }
-        setErrors(parsedErrors);
+        return err;
+        });
+
+        setErrors(formattedErrors);
       }
     } catch (error) {
       setErrors(["An error occurred. Please try again."]);
