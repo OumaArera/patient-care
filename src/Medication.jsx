@@ -9,7 +9,7 @@ const Medication = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize] = useState(10);
     const [loadingPatients, setLoadingPatients] = useState(false);
-    const [loadingMedications, setLoadingMedications] = useState(false);
+    const [loadingMedications, setLoadingMedications] = useState(false); // Track medication loading state
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -26,36 +26,34 @@ const Medication = () => {
     });
 
     useEffect(() => {
-        setLoadingMedications(true);
+        setLoadingMedications(true); 
         fetchMedications(pageNumber, pageSize)
             .then((data) => {
-                // Ensure that responseObject is an array and it's correctly set
                 if (Array.isArray(data.responseObject)) {
                     setMedications(data.responseObject);
                 } else {
                     setError("Unexpected data format");
                 }
-                setLoadingMedications(false);
+                setLoadingMedications(false); 
             })
             .catch(() => {
                 setError("Failed to fetch medications.");
-                setLoadingMedications(false);
+                setLoadingMedications(false); 
             });
     }, [pageNumber, pageSize]);
-    
 
     useEffect(() => {
-        // setLoading(true);
+        setLoadingPatients(true);
         fetchPatients(pageNumber, pageSize)
-          .then((data) => {
-            setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
-            // setLoading(false);
-          })
-          .catch(() => {
-            setError("Failed to fetch patients.");
-            // setLoading(false);
-          });
-      }, [pageNumber, pageSize]);
+            .then((data) => {
+                setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
+                setLoadingPatients(false); 
+            })
+            .catch(() => {
+                setError("Failed to fetch patients.");
+                setLoadingPatients(false); 
+            });
+    }, [pageNumber, pageSize]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
