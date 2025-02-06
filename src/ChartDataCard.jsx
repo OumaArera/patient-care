@@ -1,197 +1,139 @@
 import React, { useState, useEffect } from "react";
-import { fetchChartData } from "../services/fetchChartData";
-import { updateChartData } from "../services/updateChartData";
-import { fetchPatients } from "../services/fetchPatients";
-import { errorHandler } from "../services/errorHandler";
+import { fetchChartData } from "../services/fetchChartData"; // Assuming fetchChartData is implemented.
+import { updateChartData } from "../services/updateChartData"; // Assuming updateChartData is implemented.
+import { errorHandler } from "../services/errorHandler"; // Assuming errorHandler is implemented.
 
 const ChartDataCard = () => {
     const [chartData, setChartData] = useState([]);
-    const [patients, setPatients] = useState([]);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize] = useState(10);
-    const [loading, setLoading] = useState(false);
-    const [loadingPatients, setLoadingPatients] = useState(false);
-    const [error, setError] = useState(null);
+    const [timeToBeTaken, setTimeToBeTaken] = useState("");
+    const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState([]);
 
     useEffect(() => {
-        setLoading(true);
-        fetchChartData(pageNumber, pageSize)
+        fetchChartData()
             .then((data) => {
-                setChartData(
-                    data.responseObject.map((chart) => ({
-                        ...chart,
-                        behaviors: Object.assign({}, ...chart.behaviors) // Convert array to object
-                    }))
-                );
-                setLoading(false);
+                if (data.successful) {
+                    setChartData(data.responseObject);
+                    setTimeToBeTaken(data.responseObject[0]?.timeToBeTaken || ""); // Set initial timeToBeTaken
+                } else {
+                    setErrors(["Failed to fetch chart data."]);
+                }
             })
             .catch(() => {
-                setError("Failed to fetch chart data.");
-                setLoading(false);
+                setErrors(["Failed to fetch chart data."]);
             });
-    }, [pageNumber, pageSize]);
+    }, []);
 
-    useEffect(() => {
-        setLoadingPatients(true);
-        fetchPatients(pageNumber, pageSize)
-            .then((data) => {
-                setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
-                setLoadingPatients(false);
-            })
-            .catch(() => {
-                setError("Failed to fetch patients.");
-                setLoadingPatients(false);
-            });
-    }, [pageNumber, pageSize]);
-
-    // Toggle behavior value (true ↔ false)
-    const handleToggle = (chartId, category, key) => {
-        setChartData((prevData) =>
-            prevData.map((chart) =>
-                chart.chartDataId === chartId
+    const handleToggle = (chartDataId, behavior, category) => {
+        setChartData((prev) =>
+            prev.map((chart) =>
+                chart.chartDataId === chartDataId
                     ? {
                           ...chart,
-                          behaviors: {
-                              ...chart.behaviors,
-                              [category]: {
-                                  ...chart.behaviors[category],
-                                  [key]: !chart.behaviors[category][key],
-                              },
-                          },
+                          behaviors: chart.behaviors.map((item) =>
+                              item.behavior === behavior && item.category === category
+                                  ? { ...item, status: !item.status }
+                                  : item
+                          ),
                       }
                     : chart
             )
         );
     };
 
-    // Add new behavior dynamically
-    const handleAddBehavior = (chartId, category, newBehavior) => {
-        if (!newBehavior) return;
-        setChartData((prevData) =>
-            prevData.map((chart) =>
-                chart.chartDataId === chartId
-                    ? {
-                          ...chart,
-                          behaviors: {
-                              ...chart.behaviors,
-                              [category]: {
-                                  ...chart.behaviors[category],
-                                  [newBehavior]: false, // Default to false
-                              },
-                          },
-                      }
-                    : chart
-            )
-        );
+    const handleTimeChange = (e) => {
+        setTimeToBeTaken(e.target.value);
     };
 
-    // Update API with modified data
-    const handleUpdate = async (chartId) => {
-        const updatedChart = chartData.find((chart) => chart.chartDataId === chartId);
-        const response = await updateChartData(chartId, updatedChart);
-        if (response?.error) {
-            setErrors(errorHandler(response.error));
-        } else {
-            alert("Chart data updated successfully");
+    const handleSubmit = async () => {
+        setSubmitting(true);
+        setErrors([]);
+
+        const updatedChartData = chartData.map((chart) => ({
+            ...chart,
+            behaviors: chart.behaviors.map((behavior) => ({
+                ...behavior,
+                status: behavior.status ? "Yes" : "No",
+            })),
+            timeToBeTaken,
+        }));
+
+        try {
+            const response = await updateChartData(updatedChartData);
+            if (response?.error) {
+                setErrors(errorHandler(response.error));
+            } else {
+                setErrors(["Chart data updated successfully."]);
+            }
+        } catch (err) {
+            setErrors(["Something went wrong. Please try again."]);
+        } finally {
+            setSubmitting(false);
         }
     };
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
-            <h2 className="text-2xl font-bold mb-4 text-blue-400">Chart Data Overview</h2>
-
-            {loading && <p className="text-yellow-400">Loading chart data...</p>}
-            {error && <p className="text-red-500">{error}</p>}
-            {loadingPatients && <p className="text-yellow-400">Loading patients...</p>}
+            <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 bg-red-800 rounded">
+                    {errors.map((error, index) => (
+                        <p key={index} className="text-sm text-white">
+                            {error}
+                        </p>
+                    ))}
+                </div>
+            )}
 
             {chartData.map((chart) => (
-                <div key={chart.chartDataId} className="mb-6 p-6 bg-gray-800 rounded-lg shadow">
-                    <h3 className="text-lg font-bold text-blue-300">Patient: {chart.patientName}</h3>
-
-                    <label className="block mt-2 text-gray-300">Select Patient:</label>
-                    <select
-                        value={chart.patientId}
-                        onChange={(e) =>
-                            setChartData((prev) =>
-                                prev.map((item) =>
-                                    item.chartDataId === chart.chartDataId
-                                        ? { ...item, patientId: e.target.value }
-                                        : item
-                                )
-                            )
-                        }
-                        className="border p-2 rounded w-full text-black"
-                    >
-                        {patients.map((p) => (
-                            <option key={p.patientId} value={p.patientId}>
-                                {p.firstName} {p.lastName}
-                            </option>
-                        ))}
-                    </select>
+                <div key={chart.chartDataId} className="mb-6">
+                    <label className="block text-gray-300">Time to be Taken:</label>
+                    <input
+                        type="time"
+                        value={timeToBeTaken}
+                        onChange={handleTimeChange}
+                        className="border p-2 rounded w-full text-white"
+                    />
 
                     <table className="w-full mt-4 border-collapse border border-gray-700">
                         <thead>
                             <tr>
-                                <th className="border border-gray-600 p-2">Category</th>
                                 <th className="border border-gray-600 p-2">Behavior</th>
+                                <th className="border border-gray-600 p-2">Category</th>
                                 <th className="border border-gray-600 p-2">Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.entries(chart.behaviors).map(([category, items]) =>
-                                Object.entries(items).map(([key, value]) => (
-                                    <tr key={key}>
-                                        <td className="border border-gray-600 p-2">{category}</td>
-                                        <td className="border border-gray-600 p-2">{key.replace(/_/g, " ")}</td>
-                                        <td className="border border-gray-600 p-2">
-                                            <button
-                                                onClick={() => handleToggle(chart.chartDataId, category, key)}
-                                                className={`p-2 rounded ${
-                                                    value ? "bg-green-500" : "bg-red-500"
-                                                } text-white`}
-                                            >
-                                                {value.toString()}
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
+                            {chart.behaviors.map((behavior) => (
+                                <tr key={behavior.behavior}>
+                                    <td className="border border-gray-600 p-2">{behavior.behavior}</td>
+                                    <td className="border border-gray-600 p-2">{behavior.category}</td>
+                                    <td className="border border-gray-600 p-2">
+                                        <button
+                                            onClick={() =>
+                                                handleToggle(chart.chartDataId, behavior.behavior, behavior.category)
+                                            }
+                                            className={`p-2 rounded ${
+                                                behavior.status === "Yes" ? "bg-green-500" : "bg-red-500"
+                                            } text-white`}
+                                        >
+                                            {behavior.status}
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
 
-                    {/* Add new behavior */}
-                    <div className="mt-4">
-                        <label className="block text-gray-300">Add New Behavior:</label>
-                        <input
-                            type="text"
-                            placeholder="Enter behavior name"
-                            className="border p-2 rounded w-full text-black"
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    handleAddBehavior(chart.chartDataId, "Resistive", e.target.value);
-                                    e.target.value = "";
-                                }
-                            }}
-                        />
-                    </div>
-
                     <button
-                        onClick={() => handleUpdate(chart.chartDataId)}
-                        className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        onClick={handleSubmit}
+                        className={`mt-4 p-2 rounded ${submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
+                        disabled={submitting}
                     >
-                        Update Chart Data
+                        {submitting ? "Submitting..." : "Update Chart Data"}
                     </button>
                 </div>
             ))}
-
-            {errors.length > 0 && (
-                <div className="mb-4 p-3 rounded">
-                    {errors.map((error, index) => (
-                        <p key={index} className="text-sm text-red-600">{error}</p>
-                    ))}
-                </div>
-            )}
         </div>
     );
 };
