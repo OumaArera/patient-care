@@ -12,30 +12,31 @@ const ChartDataCard = () => {
     const [itemsPerPage] = useState(1);  // Ensure one patient's data is shown at a time.
     const [selectedPatientName, setSelectedPatientName] = useState(null);
 
-    // Fetch data with pagination
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await fetchChartData(currentPage, itemsPerPage);
                 if (data.successful && data.responseObject.length > 0) {
-                    // Filter to ensure we are only showing data for the selected patient
-                    const filteredData = data.responseObject.filter(
-                        (chart) => chart.patientName === selectedPatientName
-                    );
-                    setChartData(filteredData);
-                    setTimeToBeTaken(filteredData[0]?.timeToBeTaken || ""); // Set initial timeToBeTaken for the selected patient
+                    setChartData(data.responseObject);
+                    setTimeToBeTaken(data.responseObject[0]?.timeToBeTaken || ""); // Set initial timeToBeTaken for the first item
                 } else {
-                    setErrors(["No data available for the selected patient."]);
+                    setErrors(["No data available."]);
                 }
-            } catch {
+            } catch (error) {
                 setErrors(["Failed to fetch chart data."]);
             }
         };
-
-        if (selectedPatientName) {
-            fetchData();
-        }
-    }, [currentPage, itemsPerPage, selectedPatientName]);
+    
+        fetchData();
+    }, [currentPage, itemsPerPage]);
+    
+    // Fetch and display patient names only after data is fetched
+    const handlePatientNameChange = (e) => {
+        setSelectedPatientName(e.target.value);
+    };
+    
+    // Dynamically generate patient name options in the select dropdown
+    const patientNames = [...new Set(chartData.map((chart) => chart.patientName))];
 
     const handleToggle = (chartDataId, behavior, category) => {
         setChartData((prev) =>
@@ -104,7 +105,7 @@ const ChartDataCard = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
-
+    
             {/* Errors */}
             {errors.length > 0 && (
                 <div className="mb-4 p-3 bg-red-800 rounded">
@@ -115,79 +116,81 @@ const ChartDataCard = () => {
                     ))}
                 </div>
             )}
-
+    
             {/* Patient Selector */}
             <div className="mb-4">
                 <select
-                    onChange={(e) => setSelectedPatientName(e.target.value)}
+                    onChange={handlePatientNameChange}
                     className="p-2 rounded bg-gray-800"
+                    value={selectedPatientName || ""}
                 >
                     <option value="">Select Patient</option>
-                    {/* Dynamically populate patient names based on available data */}
-                    {chartData.length > 0 &&
-                        [...new Set(chartData.map((chart) => chart.patientName))].map((patientName, index) => (
+                    {patientNames.length > 0 &&
+                        patientNames.map((patientName, index) => (
                             <option key={index} value={patientName}>
                                 {patientName}
                             </option>
                         ))}
                 </select>
             </div>
-
-            {/* Chart Data */}
+    
+            {/* Filtered Chart Data */}
             {chartData.length === 0 ? (
                 <p>No chart data available for the selected patient.</p>
             ) : (
-                chartData.map((chart) => (
-                    <div key={chart.chartDataId} className="mb-6">
-                        <label className="block text-gray-300">Time to be Taken:</label>
-                        <input
-                            type="time"
-                            value={timeToBeTaken}
-                            onChange={handleTimeChange}
-                            className="border p-2 rounded w-full text-white"
-                        />
-
-                        <table className="w-full mt-4 border-collapse border border-gray-700">
-                            <thead>
-                                <tr>
-                                    <th className="border border-gray-600 p-2">Behavior</th>
-                                    <th className="border border-gray-600 p-2">Category</th>
-                                    <th className="border border-gray-600 p-2">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {chart.behaviors.map((behavior) => (
-                                    <tr key={behavior.behavior}>
-                                        <td className="border border-gray-600 p-2">{behavior.behavior}</td>
-                                        <td className="border border-gray-600 p-2">{behavior.category}</td>
-                                        <td className="border border-gray-600 p-2">
-                                            <button
-                                                onClick={() =>
-                                                    handleToggle(chart.chartDataId, behavior.behavior, behavior.category)
-                                                }
-                                                className={`p-2 rounded ${
-                                                    behavior.status ? "bg-green-500" : "bg-red-500"
-                                                } text-white`}
-                                            >
-                                                {behavior.status ? "Yes" : "No"} {/* Display Yes or No */}
-                                            </button>
-                                        </td>
+                chartData
+                    .filter((chart) => chart.patientName === selectedPatientName)
+                    .map((chart) => (
+                        <div key={chart.chartDataId} className="mb-6">
+                            <label className="block text-gray-300">Time to be Taken:</label>
+                            <input
+                                type="time"
+                                value={timeToBeTaken}
+                                onChange={handleTimeChange}
+                                className="border p-2 rounded w-full text-white"
+                            />
+    
+                            <table className="w-full mt-4 border-collapse border border-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-600 p-2">Behavior</th>
+                                        <th className="border border-gray-600 p-2">Category</th>
+                                        <th className="border border-gray-600 p-2">Status</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-
-                        <button
-                            onClick={handleSubmit}
-                            className={`mt-4 p-2 rounded ${submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
-                            disabled={submitting}
-                        >
-                            {submitting ? "Submitting..." : "Update Chart Data"}
-                        </button>
-                    </div>
-                ))
+                                </thead>
+                                <tbody>
+                                    {chart.behaviors.map((behavior) => (
+                                        <tr key={behavior.behavior}>
+                                            <td className="border border-gray-600 p-2">{behavior.behavior}</td>
+                                            <td className="border border-gray-600 p-2">{behavior.category}</td>
+                                            <td className="border border-gray-600 p-2">
+                                                <button
+                                                    onClick={() =>
+                                                        handleToggle(chart.chartDataId, behavior.behavior, behavior.category)
+                                                    }
+                                                    className={`p-2 rounded ${
+                                                        behavior.status ? "bg-green-500" : "bg-red-500"
+                                                    } text-white`}
+                                                >
+                                                    {behavior.status ? "Yes" : "No"}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+    
+                            <button
+                                onClick={handleSubmit}
+                                className={`mt-4 p-2 rounded ${submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
+                                disabled={submitting}
+                            >
+                                {submitting ? "Submitting..." : "Update Chart Data"}
+                            </button>
+                        </div>
+                    ))
             )}
-
+    
             {/* Pagination Controls */}
             <div className="mt-4 flex justify-between">
                 <button
