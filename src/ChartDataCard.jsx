@@ -32,7 +32,7 @@ const ChartDataCard = () => {
                           ...chart,
                           behaviors: chart.behaviors.map((item) =>
                               item.behavior === behavior && item.category === category
-                                  ? { ...item, status: !item.status }
+                                  ? { ...item, status: !item.status } // Toggle status
                                   : item
                           ),
                       }
@@ -49,11 +49,12 @@ const ChartDataCard = () => {
         setSubmitting(true);
         setErrors([]);
 
+        // Update chart data with proper "Yes" or "No" status
         const updatedChartData = chartData.map((chart) => ({
             ...chart,
             behaviors: chart.behaviors.map((behavior) => ({
                 ...behavior,
-                status: behavior.status ? "Yes" : "No",
+                status: behavior.status ? "Yes" : "No", // Pass "Yes" or "No" based on status
             })),
             timeToBeTaken,
         }));
@@ -114,10 +115,10 @@ const ChartDataCard = () => {
                                                 handleToggle(chart.chartDataId, behavior.behavior, behavior.category)
                                             }
                                             className={`p-2 rounded ${
-                                                behavior.status === "Yes" ? "bg-green-500" : "bg-red-500"
+                                                behavior.status ? "bg-green-500" : "bg-red-500"
                                             } text-white`}
                                         >
-                                            {behavior.status}
+                                            {behavior.status ? "Yes" : "No"} {/* Display Yes or No */}
                                         </button>
                                     </td>
                                 </tr>
