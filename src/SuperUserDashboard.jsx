@@ -17,6 +17,8 @@ import Facilities from "./Facilities";
 import Branches from "./Branches";
 import Patients from "./Patients";
 import Medication from "./Medication";
+import ChartData from "./ChartData";
+import ChartDataCard from "./ChartDataCard";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -87,6 +89,9 @@ const SuperUserDashboard = () => {
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("chartData")}>
                 <FaChartPie /> Chart Data
               </button>
+              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("chartDataUpdate")}>
+                <FaUserTimes /> Chart Data Update
+              </button>
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("medicationsAdmin")}>
                 <FaPills /> Medications
               </button>
@@ -132,7 +137,9 @@ const SuperUserDashboard = () => {
         {activeTab === "facilities" && <Facilities />}
         {activeTab === "branches" && <Branches />}    
         {activeTab === "patients" && <Patients />}
-        {activeTab === "medicationsAdmin" && <Medication />}    
+        {activeTab === "medicationsAdmin" && <Medication />}
+        {activeTab === "chartData" && <ChartData />}
+        {activeTab === "chartDataUpdate" && <ChartDataCard />}  
         
       </div>
     </div>
