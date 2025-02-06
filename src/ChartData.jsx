@@ -59,7 +59,6 @@ const ChartData = () => {
         Care_Giver_Intervention: true,
         Reported_Provider_And_Careteam: true,
     });
-    
     const [timeToBeTaken, setTimeToBeTaken] = useState("");
     const [patients, setPatients] = useState([]);
     const [patient, setPatient] = useState(null);
@@ -69,7 +68,7 @@ const ChartData = () => {
     const [errors, setErrors] = useState([]);
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
-    
+
     useEffect(() => {
         setLoadingPatients(true);
         fetchPatients(pageNumber, pageSize)
@@ -82,7 +81,7 @@ const ChartData = () => {
                 setLoadingPatients(false);
             });
     }, [pageNumber, pageSize]);
-    
+
     const handleToggle = (category, key) => {
         setBehaviors((prev) => ({
             ...prev,
@@ -92,8 +91,6 @@ const ChartData = () => {
             }
         }));
     };
-    
-    
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -102,11 +99,10 @@ const ChartData = () => {
         const behaviorsArray = Object.entries(behaviors).flatMap(([category, items]) =>
             Object.entries(items).map(([key, value]) => ({
                 category,
-                behavior: key,
-                status: value
+                behavior: key, 
+                status: value 
             }))
         );
-
         const behaviorsDescriptionArray = Object.entries(behaviorsDescription).map(([key, value]) => ({
             descriptionType: key,
             status: value
@@ -115,8 +111,8 @@ const ChartData = () => {
         const data = {
             patient,
             behaviors: behaviorsArray,
-            timeToBeTaken,
-            behaviorsDescription: behaviorsDescriptionArray
+            behaviorsDescription: behaviorsDescriptionArray,
+            timeToBeTaken
         };
 
         try {
@@ -131,7 +127,6 @@ const ChartData = () => {
         }
     };
 
-    
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
@@ -157,19 +152,27 @@ const ChartData = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {Object.entries(behaviors).map(([category, items]) => (
-                        Object.entries(items).map(([key, value]) => (
+                    {Object.entries(behaviors).map(([category, items]) => {
+                        const keys = Object.keys(items);
+                        return keys.map((key, index) => (
                             <tr key={key}>
-                                <td className="border border-gray-600 p-2">{category}</td>
+                                {index === 0 && (
+                                    <td className="border border-gray-600 p-2 font-bold bg-gray-800" rowSpan={keys.length}>
+                                        {category}
+                                    </td>
+                                )}
                                 <td className="border border-gray-600 p-2">{key.replace(/_/g, " ")}</td>
                                 <td className="border border-gray-600 p-2">
-                                    <button onClick={() => handleToggle(category, key)} className={`p-2 rounded ${value ? "bg-green-500" : "bg-red-500"} text-white`}>
-                                        {value.toString()}
+                                    <button 
+                                        onClick={() => handleToggle(category, key)} 
+                                        className={`p-2 rounded ${items[key] ? "bg-green-500" : "bg-red-500"} text-white`}
+                                    >
+                                        {items[key] ? "True" : "False"}
                                     </button>
                                 </td>
                             </tr>
-                        ))
-                    ))}
+                        ));
+                    })}
                 </tbody>
             </table>
             
