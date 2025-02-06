@@ -3,16 +3,18 @@ import { fetchUsers } from "../services/fetchUsers";
 
 const Users = () => {
     const [users, setUsers] = useState([]);
+    const [pageNumber, setPageNumber] = useState(1);
+    const pageSize = 10;
     const [loading, setLoading] = useState(false);
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        loadUsers();
-    }, []);
+        loadUsers(pageNumber);
+    }, [pageNumber]);
 
-    const loadUsers = async () => {
+    const loadUsers = async (page) => {
         setLoading(true);
-        const fetchedUsers = await fetchUsers(token);
+        const fetchedUsers = await fetchUsers(page, pageSize, token);
         setUsers(fetchedUsers);
         setLoading(false);
     };
@@ -61,6 +63,23 @@ const Users = () => {
                 )}
             </tbody>
             </table>
+        </div>
+
+        <div className="flex justify-between mt-4">
+            <button
+            disabled={pageNumber === 1 || loading}
+            onClick={() => setPageNumber(pageNumber - 1)}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded disabled:bg-gray-600"
+            >
+            Previous
+            </button>
+            <button
+            disabled={users.length < pageSize || loading}
+            onClick={() => setPageNumber(pageNumber + 1)}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded disabled:bg-gray-600"
+            >
+            Next
+            </button>
         </div>
         </div>
     );

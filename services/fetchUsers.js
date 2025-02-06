@@ -1,5 +1,5 @@
-export const fetchUsers = async (token) => {
-    const API_URL = `https://patient-care-server.onrender.com/api/v1/users`;
+export const fetchUsers = async (pageNumber, pageSize, token) => {
+    const API_URL = `https://patient-care-server.onrender.com/api/v1/users?pageSize=${pageSize}&pageNumber=${pageNumber}`;
     try {
       const response = await fetch(API_URL, {
         method: "GET",

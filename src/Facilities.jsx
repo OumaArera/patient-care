@@ -6,16 +6,19 @@ const Facilities = () => {
   const [facilityName, setFacilityName] = useState("");
   const [facilityAddress, setFacilityAddress] = useState("");
   const [facilities, setFacilities] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [showAddressExample, setShowAddressExample] = useState(false);
   const [errors, setErrors] = useState([]);
+  const pageSize = 10;
+
   useEffect(() => {
     loadFacilities();
-  }, []);
+  }, [pageNumber]);
 
   const loadFacilities = async () => {
-    const data = await fetchFacilities();
+    const data = await fetchFacilities(pageNumber, pageSize);
     if (data && data.successful) {
       setFacilities(data.responseObject);
     }
@@ -137,6 +140,23 @@ const Facilities = () => {
         ) : (
           <p className="text-gray-400">No facilities found</p>
         )}
+      </div>
+
+      <div className="mt-4 flex justify-between">
+        <button
+          onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+          disabled={pageNumber === 1}
+          className="bg-gray-700 text-white px-4 py-2 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="font-semibold text-blue-300">Page {pageNumber}</span>
+        <button
+          onClick={() => setPageNumber((prev) => prev + 1)}
+          className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
