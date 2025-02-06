@@ -3,7 +3,7 @@ export const fetchChartData = async (pageNumber, pageSize) => {
 
     try {
         const response = await fetch(
-            `https://patient-care-server.onrender.com/api/v1/charts-data${pageNumber}&pageSize=${pageSize}`,
+            `https://patient-care-server.onrender.com/api/v1/charts-data?pageNumber=${pageNumber}&pageSize=${pageSize}`,
             {
                 method: "GET",
                 headers: {
