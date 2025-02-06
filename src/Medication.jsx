@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "./fetchPatients";
 import { fetchMedications } from "./fetchMedications";
 import MedicationCard from "./MedicationCard";
+import { errorHandler } from "../services/errorHandler";
 
 const Medication = () => {
     const [medications, setMedications] = useState([]);
@@ -13,6 +14,7 @@ const Medication = () => {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const [errors, setErrors] = useState([]);
 
     const [formData, setFormData] = useState({
         medicationName: "",
@@ -59,6 +61,7 @@ const Medication = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
+        setErrors("");
         setError("");
         setSuccessMessage("");
 
@@ -74,20 +77,23 @@ const Medication = () => {
             });
 
             const result = await response.json();
-            if (!result.successful) throw new Error(result.statusMessage);
-
-            setMedications([...medications, result.responseObject]);
-            setSuccessMessage("Medication added successfully!");
-            setFormData({
-                medicationName: "",
-                medicationCode: "",
-                equivalentTo: "",
-                instructions: "",
-                quantity: "",
-                diagnosis: "",
-                medicationTime: "",
-                patient: "",
-            });
+            if (!response.ok){
+                let errorString = result?.responseObject?.errors;
+                setErrors(errorHandler(errorString));
+            }else{
+                setMedications([...medications, result.responseObject]);
+                setSuccessMessage("Medication added successfully!");
+                setFormData({
+                    medicationName: "",
+                    medicationCode: "",
+                    equivalentTo: "",
+                    instructions: "",
+                    quantity: "",
+                    diagnosis: "",
+                    medicationTime: "",
+                    patient: "",
+                });
+            }
         } catch (error) {
             setError(error.message || "Failed to add medication.");
         } finally {
@@ -153,6 +159,13 @@ const Medication = () => {
                 >
                     {submitting ? "Submitting..." : "Submit"}
                 </button>
+                {errors.length > 0 && (
+                    <div className="mb-4 p-3 rounded">
+                        {errors.map((error, index) => (
+                            <p key={index} className="text-sm text-red-600">{error}</p>
+                        ))}
+                    </div>
+                )}
             </form>
 
             {loadingMedications ? (
