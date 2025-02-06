@@ -10,14 +10,15 @@ export const updateChartData = async (chartDataId, updatedData) => {
             body: JSON.stringify(updatedData),
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            throw new Error("Failed to update chart data");
+            return { error: data?.message || "Failed to update chart data" };
         }
 
-        const data = await response.json();
         return data;
     } catch (error) {
         console.error("Error updating chart data:", error);
-        return null;
+        return { error: "An unexpected error occurred while updating." };
     }
 };

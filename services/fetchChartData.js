@@ -18,7 +18,7 @@ export const fetchChartData = async (pageNumber = 1, pageSize = 10) => {
         }
 
         const data = await response.json();
-        return data.responseObject;
+        return data;
     } catch (error) {
         console.error("Error fetching chart data:", error);
         return null;
