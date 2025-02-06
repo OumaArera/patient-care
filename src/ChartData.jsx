@@ -68,17 +68,22 @@ const ChartData = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize] = useState(10);
     const [errors, setErrors] = useState([]);
+    const [error, setError] = useState("")
     
+
     useEffect(() => {
-        loadPatients();
-    }, [pageNumber]);
+            setLoadingPatients(true);
+            fetchPatients(pageNumber, pageSize)
+                .then((data) => {
+                    setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
+                    setLoadingPatients(false);
+                })
+                .catch(() => {
+                    setError("Failed to fetch patients.");
+                    setLoadingPatients(false);
+                });
+        }, [pageNumber, pageSize]);
     
-    const loadPatients = async () => {
-        setLoadingPatients(true);
-        const response = await fetchPatients(pageNumber, pageSize);
-        setPatients((prev) => [...prev, ...response]);
-        setLoadingPatients(false);
-    };
     
     const handleToggle = (category, key) => {
         setBehaviors((prev) => ({
@@ -108,7 +113,7 @@ const ChartData = () => {
     return (
         <div className="p-4 bg-gray-100">
             <h2 className="text-xl font-bold mb-4">Chart Data</h2>
-            
+            {error && <p className="text-red-500">{error}</p>}
             <label>Time to be Taken:</label>
             <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full" />
             
