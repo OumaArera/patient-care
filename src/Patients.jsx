@@ -45,7 +45,7 @@ const Patients = () => {
 
   // Fetch branches only once
   useEffect(() => {
-    fetchBranches()
+    fetchBranches(pageNumber, pageSize)
       .then((data) => {
         setBranches(Array.isArray(data.responseObject) ? data.responseObject : []);
       })

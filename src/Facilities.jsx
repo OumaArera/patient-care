@@ -6,17 +6,19 @@ const Facilities = () => {
   const [facilityName, setFacilityName] = useState("");
   const [facilityAddress, setFacilityAddress] = useState("");
   const [facilities, setFacilities] = useState([]);
+  const [pageNumber, setPageNumber] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [showAddressExample, setShowAddressExample] = useState(false);
   const [errors, setErrors] = useState([]);
+  const pageSize = 10;
 
   useEffect(() => {
     loadFacilities();
-  }, []);
+  }, [pageNumber]);
 
   const loadFacilities = async () => {
-    const data = await fetchFacilities();
+    const data = await fetchFacilities(pageNumber, pageSize);
     if (data && data.successful) {
       setFacilities(data.responseObject);
     }
@@ -140,7 +142,7 @@ const Facilities = () => {
         )}
       </div>
 
-      {/* <div className="mt-4 flex justify-between">
+      <div className="mt-4 flex justify-between">
         <button
           onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
           disabled={pageNumber === 1}
@@ -155,7 +157,7 @@ const Facilities = () => {
         >
           Next
         </button>
-      </div> */}
+      </div>
     </div>
   );
 };
