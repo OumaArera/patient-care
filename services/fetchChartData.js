@@ -1,4 +1,4 @@
-export const fetchChartData = async (pageNumber = 1, pageSize = 10) => {
+export const fetchChartData = async (pageNumber, pageSize) => {
     const token = localStorage.getItem("token");
 
     try {

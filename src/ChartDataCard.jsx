@@ -9,23 +9,27 @@ const ChartDataCard = () => {
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Show 5 items per page
-    const [selectedUser, setSelectedUser] = useState(null); // Store the selected user
+    const [itemsPerPage] = useState(5); 
+    const [selectedUser, setSelectedUser] = useState(null); 
 
+    // Fetch data with pagination
     useEffect(() => {
-        fetchChartData()
-            .then((data) => {
+        const fetchData = async () => {
+            try {
+                const data = await fetchChartData(currentPage, itemsPerPage);
                 if (data.successful) {
                     setChartData(data.responseObject);
                     setTimeToBeTaken(data.responseObject[0]?.timeToBeTaken || ""); // Set initial timeToBeTaken
                 } else {
                     setErrors(["Failed to fetch chart data."]);
                 }
-            })
-            .catch(() => {
+            } catch {
                 setErrors(["Failed to fetch chart data."]);
-            });
-    }, []);
+            }
+        };
+        
+        fetchData();
+    }, [currentPage, itemsPerPage]);
 
     const handleToggle = (chartDataId, behavior, category) => {
         setChartData((prev) =>
@@ -79,19 +83,17 @@ const ChartDataCard = () => {
         }
     };
 
-    // Pagination Logic
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentChartData = chartData.slice(indexOfFirstItem, indexOfLastItem);
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+    // Handle next page navigation
+    const handleNextPage = () => {
+        setCurrentPage(prevPage => prevPage + 1);
     };
 
-    // Filter chart data by user if needed (assuming each chart has a userId)
-    const filteredChartData = selectedUser
-        ? chartData.filter((chart) => chart.userId === selectedUser)
-        : chartData;
+    // Handle previous page navigation
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(prevPage => prevPage - 1);
+        }
+    };
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -123,10 +125,10 @@ const ChartDataCard = () => {
             </div>
 
             {/* Chart Data */}
-            {filteredChartData.length === 0 ? (
+            {chartData.length === 0 ? (
                 <p>No chart data available for the selected user.</p>
             ) : (
-                filteredChartData.map((chart) => (
+                chartData.map((chart) => (
                     <div key={chart.chartDataId} className="mb-6">
                         <label className="block text-gray-300">Time to be Taken:</label>
                         <input
@@ -177,10 +179,10 @@ const ChartDataCard = () => {
                 ))
             )}
 
-            {/* Pagination */}
+            {/* Pagination Controls */}
             <div className="mt-4 flex justify-between">
                 <button
-                    onClick={() => handlePageChange(currentPage - 1)}
+                    onClick={handlePreviousPage}
                     disabled={currentPage === 1}
                     className="p-2 rounded bg-blue-500 text-white"
                 >
@@ -190,8 +192,7 @@ const ChartDataCard = () => {
                     Page {currentPage}
                 </span>
                 <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={indexOfLastItem >= chartData.length}
+                    onClick={handleNextPage}
                     className="p-2 rounded bg-blue-500 text-white"
                 >
                     Next
