@@ -52,15 +52,6 @@ const ChartData = () => {
         }
     });
     
-    const [behaviorsDescription, setBehaviorsDescription] = useState({
-        Date: true,
-        Outcome: true,
-        Trigger: true,
-        Behavior_Description: true,
-        Care_Giver_Intervention: true,
-        Reported_Provider_And_Careteam: true
-    });
-    
     const [timeToBeTaken, setTimeToBeTaken] = useState("");
     const [patients, setPatients] = useState([]);
     const [patient, setPatient] = useState(null);
@@ -70,20 +61,18 @@ const ChartData = () => {
     const [errors, setErrors] = useState([]);
     const [error, setError] = useState("")
     
-
     useEffect(() => {
-            setLoadingPatients(true);
-            fetchPatients(pageNumber, pageSize)
-                .then((data) => {
-                    setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
-                    setLoadingPatients(false);
-                })
-                .catch(() => {
-                    setError("Failed to fetch patients.");
-                    setLoadingPatients(false);
-                });
-        }, [pageNumber, pageSize]);
-    
+        setLoadingPatients(true);
+        fetchPatients(pageNumber, pageSize)
+            .then((data) => {
+                setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
+                setLoadingPatients(false);
+            })
+            .catch(() => {
+                setError("Failed to fetch patients.");
+                setLoadingPatients(false);
+            });
+    }, [pageNumber, pageSize]);
     
     const handleToggle = (category, key) => {
         setBehaviors((prev) => ({
@@ -99,48 +88,45 @@ const ChartData = () => {
         const data = {
             patientId: patient,
             behaviors,
-            behaviorsDescription,
             timeToBeTaken
         };
-
         const response = await createChartData(data);
-
         if (response?.error) {
             setErrors(errorHandler(response.error));
         }
     };
     
     return (
-        <div className="p-4 bg-gray-100">
-            <h2 className="text-xl font-bold mb-4">Chart Data</h2>
+        <div className="p-6 bg-gray-900 text-white min-h-screen">
+            <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
             {error && <p className="text-red-500">{error}</p>}
-            <label>Time to be Taken:</label>
-            <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full" />
+            <label className="block text-gray-300">Time to be Taken:</label>
+            <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full text-black" />
             
-            <label>Select Patient:</label>
-            <select value={patient} onChange={(e) => setPatient(e.target.value)} className="border p-2 rounded w-full" disabled={loadingPatients}>
+            <label className="block mt-2 text-gray-300">Select Patient:</label>
+            <select value={patient} onChange={(e) => setPatient(e.target.value)} className="border p-2 rounded w-full text-black" disabled={loadingPatients}>
                 <option value="">{loadingPatients ? "Loading patients..." : "Select a Patient"}</option>
                 {patients.map((p) => (
                     <option key={p.patientId} value={p.patientId}>{p.firstName} {p.lastName}</option>
                 ))}
             </select>
-            <button onClick={() => setPageNumber(pageNumber + 1)} className="mt-2 p-2 bg-blue-500 text-white rounded">Load More Patients</button>
+            <button onClick={() => setPageNumber(pageNumber + 1)} className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Load More Patients</button>
             
-            <table className="w-full mt-4 border-collapse border border-gray-400">
+            <table className="w-full mt-4 border-collapse border border-gray-700">
                 <thead>
                     <tr>
-                        <th className="border border-gray-300 p-2">Category</th>
-                        <th className="border border-gray-300 p-2">Behavior</th>
-                        <th className="border border-gray-300 p-2">Status</th>
+                        <th className="border border-gray-600 p-2">Category</th>
+                        <th className="border border-gray-600 p-2">Behavior</th>
+                        <th className="border border-gray-600 p-2">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {Object.entries(behaviors).map(([category, items]) => (
                         Object.entries(items).map(([key, value]) => (
                             <tr key={key}>
-                                <td className="border border-gray-300 p-2">{category}</td>
-                                <td className="border border-gray-300 p-2">{key.replace(/_/g, " ")}</td>
-                                <td className="border border-gray-300 p-2">
+                                <td className="border border-gray-600 p-2">{category}</td>
+                                <td className="border border-gray-600 p-2">{key.replace(/_/g, " ")}</td>
+                                <td className="border border-gray-600 p-2">
                                     <button onClick={() => handleToggle(category, key)} className={`p-2 rounded ${value ? "bg-green-500" : "bg-red-500"} text-white`}>
                                         {value.toString()}
                                     </button>
@@ -151,11 +137,11 @@ const ChartData = () => {
                 </tbody>
             </table>
             
-            <button onClick={handleSubmit} className="mt-4 p-2 bg-blue-500 text-white rounded">Submit</button>
+            <button onClick={handleSubmit} className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Submit</button>
             {errors.length > 0 && (
-                <div className="mb-4 p-3 rounded">
+                <div className="mb-4 p-3 bg-red-800 rounded">
                     {errors.map((error, index) => (
-                        <p key={index} className="text-sm text-red-600">{error}</p>
+                        <p key={index} className="text-sm text-white">{error}</p>
                     ))}
                 </div>
             )}
