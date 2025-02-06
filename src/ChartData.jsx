@@ -67,7 +67,8 @@ const ChartData = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize] = useState(10);
     const [errors, setErrors] = useState([]);
-    const [error, setError] = useState("")
+    const [error, setError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
     
     useEffect(() => {
         setLoadingPatients(true);
@@ -92,18 +93,44 @@ const ChartData = () => {
         }));
     };
     
+    
+
     const handleSubmit = async () => {
+        setSubmitting(true);
+        setErrors([]);
+
+        const behaviorsArray = Object.entries(behaviors).flatMap(([category, items]) =>
+            Object.entries(items).map(([key, value]) => ({
+                category,
+                behavior: key,
+                status: value
+            }))
+        );
+
+        const behaviorsDescriptionArray = Object.entries(behaviorsDescription).map(([key, value]) => ({
+            descriptionType: key,
+            status: value
+        }));
+
         const data = {
             patient,
-            behaviors,
+            behaviors: behaviorsArray,
             timeToBeTaken,
-            behaviorsDescription
+            behaviorsDescription: behaviorsDescriptionArray
         };
-        const response = await createChartData(data);
-        if (response?.error) {
-            setErrors(errorHandler(response.error));
+
+        try {
+            const response = await createChartData(data);
+            if (response?.error) {
+                setErrors(errorHandler(response.error));
+            }
+        } catch (err) {
+            setErrors(["Something went wrong. Please try again."]);
+        } finally {
+            setSubmitting(false);
         }
     };
+
     
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -146,7 +173,13 @@ const ChartData = () => {
                 </tbody>
             </table>
             
-            <button onClick={handleSubmit} className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Submit</button>
+            <button 
+                onClick={handleSubmit} 
+                className={`mt-4 p-2 rounded ${submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
+                disabled={submitting}
+            >
+                {submitting ? "Submitting..." : "Submit"}
+            </button>
             {errors.length > 0 && (
                 <div className="mb-4 p-3 bg-red-800 rounded">
                     {errors.map((error, index) => (
