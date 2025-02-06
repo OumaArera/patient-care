@@ -9,7 +9,7 @@ const Medication = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize] = useState(10);
     const [loadingPatients, setLoadingPatients] = useState(false);
-    const [loadingMedications, setLoadingMedications] = useState(false); // Track medication loading state
+    const [loadingMedications, setLoadingMedications] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -26,19 +26,15 @@ const Medication = () => {
     });
 
     useEffect(() => {
-        setLoadingMedications(true); 
+        setLoadingMedications(true);
         fetchMedications(pageNumber, pageSize)
             .then((data) => {
-                if (Array.isArray(data.responseObject)) {
-                    setMedications(data.responseObject);
-                } else {
-                    setError("Unexpected data format");
-                }
-                setLoadingMedications(false); 
+                setMedications(data);
+                setLoadingMedications(false);
             })
             .catch(() => {
                 setError("Failed to fetch medications.");
-                setLoadingMedications(false); 
+                setLoadingMedications(false);
             });
     }, [pageNumber, pageSize]);
 
@@ -67,6 +63,8 @@ const Medication = () => {
         setSuccessMessage("");
 
         const token = localStorage.getItem("token");
+
+        console.log(JSON.stringify(formData, null, 2));
 
         try {
             const response = await fetch("https://patient-care-server.onrender.com/api/v1/medications", {
