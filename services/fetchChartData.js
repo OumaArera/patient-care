@@ -1,9 +1,9 @@
-export const fetchChartData = async (pageNumber, pageSize) => {
+export const fetchChartData = async () => {
     const token = localStorage.getItem("token");
 
     try {
         const response = await fetch(
-            `https://patient-care-server.onrender.com/api/v1/charts-data?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+            `https://patient-care-server.onrender.com/api/v1/charts-data`,
             {
                 method: "GET",
                 headers: {

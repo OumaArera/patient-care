@@ -14,18 +14,16 @@ const Branches = () => {
   const [facilities, setFacilities] = useState([]);
   const [branches, setBranches] = useState([]);
   const [message, setMessage] = useState("");
-  const [pageNumber, setPageNumber] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState([]);
-  const pageSize = 10;
 
   useEffect(() => {
-    fetchFacilities(pageNumber, pageSize).then((data) => setFacilities(data.responseObject || []));
-  }, [pageNumber]);
+    fetchFacilities().then((data) => setFacilities(data.responseObject || []));
+  }, []);
 
   useEffect(() => {
-    fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
-  }, [pageNumber]);
+    fetchBranches().then((data) => setBranches(data.responseObject || []));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -50,7 +48,7 @@ const Branches = () => {
         setBranchAddress("");
         setMessage("Branch added successfully!");
         setErrors([]);
-        fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
+        fetchBranches().then((data) => setBranches(data.responseObject || []));
       } else {
         let errorString = result?.responseObject?.errors;
         setErrors(errorHandler(errorString));
@@ -140,12 +138,6 @@ const Branches = () => {
         ) : (
           <p className="text-gray-400">No branches found</p>
         )}
-      </div>
-
-      <div className="mt-4 flex justify-between">
-        <button onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))} className="bg-gray-700 px-4 py-2 rounded">Previous</button>
-        <span className="font-semibold text-blue-300">Page {pageNumber}</span>
-        <button onClick={() => setPageNumber((prev) => prev + 1)} className="bg-gray-700 px-4 py-2 rounded">Next</button>
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
-export const fetchBranches = async (pageNumber, pageSize) => {
+export const fetchBranches = async () => {
     const token = localStorage.getItem("token");
     if (!token) return { responseObject: [] };
   
     try {
       const response = await fetch(
-        `https://patient-care-server.onrender.com/api/v1/branches?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+        `https://patient-care-server.onrender.com/api/v1/branches`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },

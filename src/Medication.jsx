@@ -42,7 +42,7 @@ const Medication = () => {
 
     useEffect(() => {
         setLoadingPatients(true);
-        fetchPatients(pageNumber, pageSize)
+        fetchPatients()
             .then((data) => {
                 setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
                 setLoadingPatients(false); 
@@ -51,7 +51,7 @@ const Medication = () => {
                 setError("Failed to fetch patients.");
                 setLoadingPatients(false); 
             });
-    }, [pageNumber, pageSize]);
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;

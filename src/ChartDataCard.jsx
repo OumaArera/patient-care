@@ -8,15 +8,13 @@ const ChartDataCard = () => {
     const [timeToBeTaken, setTimeToBeTaken] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);  
     const [selectedPatientName, setSelectedPatientName] = useState("");
     const [message, setMessage] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await fetchChartData(currentPage, itemsPerPage);
+                const data = await fetchChartData();
                 if (data.successful && data.responseObject.length > 0) {
                     setChartData(data.responseObject);
 
@@ -36,7 +34,7 @@ const ChartDataCard = () => {
         };
     
         fetchData();
-    }, [currentPage, itemsPerPage]);
+    }, []);
 
     const handlePatientNameChange = (e) => {
         setSelectedPatientName(e.target.value);
@@ -96,15 +94,7 @@ const ChartDataCard = () => {
         }
     };
 
-    const handleNextPage = () => {
-        setCurrentPage((prevPage) => prevPage + 1);
-    };
 
-    const handlePreviousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage((prevPage) => prevPage - 1);
-        }
-    };
 
     // **Filter Data for Selected Patient**
     const filteredChartData = chartData.filter(chart => chart.patientName === selectedPatientName);
@@ -196,25 +186,6 @@ const ChartDataCard = () => {
                 ))
             )}
 
-            {/* Pagination Controls */}
-            <div className="mt-4 flex justify-between">
-                <button
-                    onClick={handlePreviousPage}
-                    disabled={currentPage === 1}
-                    className="p-2 rounded bg-blue-500 text-white"
-                >
-                    Previous
-                </button>
-                <span className="p-2 text-white">
-                    Page {currentPage}
-                </span>
-                <button
-                    onClick={handleNextPage}
-                    className="p-2 rounded bg-blue-500 text-white"
-                >
-                    Next
-                </button>
-            </div>
         </div>
     );
 };

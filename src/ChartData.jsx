@@ -64,8 +64,6 @@ const ChartData = () => {
     const [patients, setPatients] = useState([]);
     const [patient, setPatient] = useState(null);
     const [loadingPatients, setLoadingPatients] = useState(false);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize] = useState(10);
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState(null)
     const [error, setError] = useState("");
@@ -73,7 +71,7 @@ const ChartData = () => {
 
     useEffect(() => {
         setLoadingPatients(true);
-        fetchPatients(pageNumber, pageSize)
+        fetchPatients()
             .then((data) => {
                 setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
                 setLoadingPatients(false);
@@ -82,7 +80,7 @@ const ChartData = () => {
                 setError("Failed to fetch patients.");
                 setLoadingPatients(false);
             });
-    }, [pageNumber, pageSize]);
+    }, []);
 
     const handleToggle = (category, key) => {
         setBehaviors((prev) => ({
@@ -147,7 +145,6 @@ const ChartData = () => {
                     <option className="text-white" key={p.patientId} value={p.patientId}>{p.firstName} {p.lastName}</option>
                 ))}
             </select>
-            <button onClick={() => setPageNumber(pageNumber + 1)} className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Load More Patients</button>
             
             <table className="w-full mt-4 border-collapse border border-gray-700">
                 <thead>
