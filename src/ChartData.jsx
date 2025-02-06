@@ -99,7 +99,7 @@ const ChartData = () => {
         const behaviorsArray = Object.entries(behaviors).flatMap(([category, items]) =>
             Object.entries(items).map(([key, value]) => ({
                 category,
-                behavior: key, 
+                behavior: key.replace(/_/g, " "),
                 status: value 
             }))
         );
