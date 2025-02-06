@@ -51,6 +51,14 @@ const ChartData = () => {
             Blood_sugar_high: true
         }
     });
+    const [behaviorsDescription, setBehaviorsDescription] = useState({
+        Date: true,
+        Outcome: true,
+        Trigger: true,
+        Behavior_Description: true,
+        Care_Giver_Intervention: true,
+        Reported_Provider_And_Careteam: true,
+    });
     
     const [timeToBeTaken, setTimeToBeTaken] = useState("");
     const [patients, setPatients] = useState([]);
@@ -86,9 +94,10 @@ const ChartData = () => {
     
     const handleSubmit = async () => {
         const data = {
-            patientId: patient,
+            patient,
             behaviors,
-            timeToBeTaken
+            timeToBeTaken,
+            behaviorsDescription
         };
         const response = await createChartData(data);
         if (response?.error) {
