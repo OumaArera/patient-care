@@ -169,10 +169,10 @@ const ChartDataCard = () => {
                                                         handleToggle(chart.chartDataId, behavior.behavior, behavior.category)
                                                     }
                                                     className={`p-2 rounded ${
-                                                        behavior.status ? "bg-green-500" : "bg-red-500"
+                                                        behavior.status === "Yes" ?  "bg-green-500" : "bg-red-500"
                                                     } text-white`}
                                                 >
-                                                    {behavior.status ? "Yes" : "No"}
+                                                    {behavior.status}
                                                 </button>
                                             </td>
                                         </tr>

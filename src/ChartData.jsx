@@ -6,51 +6,52 @@ import { errorHandler } from "../services/errorHandler";
 const ChartData = () => {
     const [behaviors, setBehaviors] = useState({
         Resistive: {
-            Meals: true,
-            Shower: true,
-            Grooming: true,
-            Medication: true,
-            Log_in_and_out: true,
-            Walk_activities: true,
-            Change_of_clothing: true,
-            Coming_back_late_hours: true,
-            To_speak_care_provider: true
+            Meals: "Yes",
+            Shower: "Yes",
+            Grooming: "Yes",
+            Medication: "Yes",
+            Log_in_and_out: "Yes",
+            Walk_activities: "Yes",
+            Change_of_clothing: "Yes",
+            Coming_back_late_hours: "Yes",
+            To_speak_care_provider: "Yes"
         },
         Behavior: {
-            Pacing: true,
-            Anxiety: true,
-            Agitated: true,
-            Drunkard: true,
-            Freezing: true,
-            Suicidal: true,
-            Elopement: true,
-            Long_naps: true,
-            Delusional: true,
-            Naked_Nude: true,
-            Gaslighting: true,
-            Short_memory: true,
-            Hallucination: true,
-            Sexual_acting_out: true,
-            Yelling_screaming: true,
-            Extreme_mood_swing: true,
-            Sleep_disturbances: true,
-            Disruptive_at_night: true,
-            Abusive_cursing_words: true,
-            Incontinent_urination: true,
-            Intentional_self_HARM: true,
-            Wandering_seeking_exit: true
+            Pacing: "Yes",
+            Anxiety: "Yes",
+            Agitated: "Yes",
+            Drunkard: "Yes",
+            Freezing: "Yes",
+            Suicidal: "Yes",
+            Elopement: "Yes",
+            Long_naps: "Yes",
+            Delusional: "Yes",
+            Naked_Nude: "Yes",
+            Gaslighting: "Yes",
+            Short_memory: "Yes",
+            Hallucination: "Yes",
+            Sexual_acting_out: "Yes",
+            Yelling_screaming: "Yes",
+            Extreme_mood_swing: "Yes",
+            Sleep_disturbances: "Yes",
+            Disruptive_at_night: "Yes",
+            Abusive_cursing_words: "Yes",
+            Incontinent_urination: "Yes",
+            Intentional_self_HARM: "Yes",
+            Wandering_seeking_exit: "Yes"
         },
         Others: {
-            BP_low: true,
-            BP_high: true,
-            Accident: true,
-            Dehydration: true,
-            Constipation: true,
-            Sick_911_call: true,
-            Blood_sugar_low: true,
-            Blood_sugar_high: true
+            BP_low: "Yes",
+            BP_high: "Yes",
+            Accident: "Yes",
+            Dehydration: "Yes",
+            Constipation: "Yes",
+            Sick_911_call: "Yes",
+            Blood_sugar_low: "Yes",
+            Blood_sugar_high: "Yes"
         }
     });
+
     const [behaviorsDescription, setBehaviorsDescription] = useState({
         Date: true,
         Outcome: true,
@@ -165,9 +166,9 @@ const ChartData = () => {
                                 <td className="border border-gray-600 p-2">
                                     <button 
                                         onClick={() => handleToggle(category, key)} 
-                                        className={`p-2 rounded ${items[key] ? "bg-green-500" : "bg-red-500"} text-white`}
+                                        className={`p-2 rounded ${items[key] === "Yes" ? "bg-green-500" : "bg-red-500"} text-white`}
                                     >
-                                        {items[key] ? "True" : "False"}
+                                        {items[key]}
                                     </button>
                                 </td>
                             </tr>
