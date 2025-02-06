@@ -172,7 +172,7 @@ const ChartDataCard = () => {
                                                         behavior.status === "Yes" ?  "bg-green-500" : "bg-red-500"
                                                     } text-white`}
                                                 >
-                                                    {behavior.status}
+                                                    {behavior.status=== "Yes" ? "Yes" : "No"}
                                                 </button>
                                             </td>
                                         </tr>
