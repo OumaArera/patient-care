@@ -9,27 +9,33 @@ const ChartDataCard = () => {
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); 
-    const [selectedUser, setSelectedUser] = useState(null); 
+    const [itemsPerPage] = useState(1);  // Ensure one patient's data is shown at a time.
+    const [selectedPatientName, setSelectedPatientName] = useState(null);
 
     // Fetch data with pagination
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await fetchChartData(currentPage, itemsPerPage);
-                if (data.successful) {
-                    setChartData(data.responseObject);
-                    setTimeToBeTaken(data.responseObject[0]?.timeToBeTaken || ""); // Set initial timeToBeTaken
+                if (data.successful && data.responseObject.length > 0) {
+                    // Filter to ensure we are only showing data for the selected patient
+                    const filteredData = data.responseObject.filter(
+                        (chart) => chart.patientName === selectedPatientName
+                    );
+                    setChartData(filteredData);
+                    setTimeToBeTaken(filteredData[0]?.timeToBeTaken || ""); // Set initial timeToBeTaken for the selected patient
                 } else {
-                    setErrors(["Failed to fetch chart data."]);
+                    setErrors(["No data available for the selected patient."]);
                 }
             } catch {
                 setErrors(["Failed to fetch chart data."]);
             }
         };
-        
-        fetchData();
-    }, [currentPage, itemsPerPage]);
+
+        if (selectedPatientName) {
+            fetchData();
+        }
+    }, [currentPage, itemsPerPage, selectedPatientName]);
 
     const handleToggle = (chartDataId, behavior, category) => {
         setChartData((prev) =>
@@ -85,20 +91,20 @@ const ChartDataCard = () => {
 
     // Handle next page navigation
     const handleNextPage = () => {
-        setCurrentPage(prevPage => prevPage + 1);
+        setCurrentPage((prevPage) => prevPage + 1);
     };
 
     // Handle previous page navigation
     const handlePreviousPage = () => {
         if (currentPage > 1) {
-            setCurrentPage(prevPage => prevPage - 1);
+            setCurrentPage((prevPage) => prevPage - 1);
         }
     };
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
-            
+
             {/* Errors */}
             {errors.length > 0 && (
                 <div className="mb-4 p-3 bg-red-800 rounded">
@@ -110,23 +116,26 @@ const ChartDataCard = () => {
                 </div>
             )}
 
-            {/* User Selector */}
+            {/* Patient Selector */}
             <div className="mb-4">
                 <select
-                    onChange={(e) => setSelectedUser(e.target.value)}
+                    onChange={(e) => setSelectedPatientName(e.target.value)}
                     className="p-2 rounded bg-gray-800"
                 >
-                    <option value="">Select User</option>
-                    {/* Replace these options with actual user IDs */}
-                    <option value="1">User 1</option>
-                    <option value="2">User 2</option>
-                    <option value="3">User 3</option>
+                    <option value="">Select Patient</option>
+                    {/* Dynamically populate patient names based on available data */}
+                    {chartData.length > 0 &&
+                        [...new Set(chartData.map((chart) => chart.patientName))].map((patientName, index) => (
+                            <option key={index} value={patientName}>
+                                {patientName}
+                            </option>
+                        ))}
                 </select>
             </div>
 
             {/* Chart Data */}
             {chartData.length === 0 ? (
-                <p>No chart data available for the selected user.</p>
+                <p>No chart data available for the selected patient.</p>
             ) : (
                 chartData.map((chart) => (
                     <div key={chart.chartDataId} className="mb-6">
