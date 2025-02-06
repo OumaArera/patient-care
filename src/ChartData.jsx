@@ -135,7 +135,7 @@ const ChartData = () => {
             <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full text-white" />
             
             <label className="block mt-2 text-gray-300">Select Patient:</label>
-            <select value={patient} onChange={(e) => setPatient(e.target.value)} className="border p-2 rounded w-full text-white" disabled={loadingPatients}>
+            <select value={patient} onChange={(e) => setPatient(e.target.value)} className="border p-2 rounded w-full bg-black text-white" disabled={loadingPatients}>
                 <option value="">{loadingPatients ? "Loading patients..." : "Select a Patient"}</option>
                 {patients.map((p) => (
                     <option key={p.patientId} value={p.patientId}>{p.firstName} {p.lastName}</option>
