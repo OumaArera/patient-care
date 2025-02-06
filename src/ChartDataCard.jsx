@@ -18,7 +18,12 @@ const ChartDataCard = () => {
         setLoading(true);
         fetchChartData(pageNumber, pageSize)
             .then((data) => {
-                setChartData(Array.isArray(data.responseObject) ? data.responseObject : []);
+                setChartData(
+                    data.responseObject.map((chart) => ({
+                        ...chart,
+                        behaviors: Object.assign({}, ...chart.behaviors) // Convert array to object
+                    }))
+                );
                 setLoading(false);
             })
             .catch(() => {
@@ -40,6 +45,7 @@ const ChartDataCard = () => {
             });
     }, [pageNumber, pageSize]);
 
+    // Toggle behavior value (true ↔ false)
     const handleToggle = (chartId, category, key) => {
         setChartData((prevData) =>
             prevData.map((chart) =>
@@ -59,6 +65,28 @@ const ChartDataCard = () => {
         );
     };
 
+    // Add new behavior dynamically
+    const handleAddBehavior = (chartId, category, newBehavior) => {
+        if (!newBehavior) return;
+        setChartData((prevData) =>
+            prevData.map((chart) =>
+                chart.chartDataId === chartId
+                    ? {
+                          ...chart,
+                          behaviors: {
+                              ...chart.behaviors,
+                              [category]: {
+                                  ...chart.behaviors[category],
+                                  [newBehavior]: false, // Default to false
+                              },
+                          },
+                      }
+                    : chart
+            )
+        );
+    };
+
+    // Update API with modified data
     const handleUpdate = async (chartId) => {
         const updatedChart = chartData.find((chart) => chart.chartDataId === chartId);
         const response = await updateChartData(chartId, updatedChart);
@@ -75,12 +103,11 @@ const ChartDataCard = () => {
 
             {loading && <p className="text-yellow-400">Loading chart data...</p>}
             {error && <p className="text-red-500">{error}</p>}
-
-            {loadingPatients && <p className="text-yellow-400">Loading patients, please wait...</p>}
+            {loadingPatients && <p className="text-yellow-400">Loading patients...</p>}
 
             {chartData.map((chart) => (
                 <div key={chart.chartDataId} className="mb-6 p-6 bg-gray-800 rounded-lg shadow">
-                    <h3 className="text-lg font-bold text-blue-300">Patient ID: {chart.patientId}</h3>
+                    <h3 className="text-lg font-bold text-blue-300">Patient: {chart.patientName}</h3>
 
                     <label className="block mt-2 text-gray-300">Select Patient:</label>
                     <select
@@ -133,14 +160,28 @@ const ChartDataCard = () => {
                         </tbody>
                     </table>
 
+                    {/* Add new behavior */}
+                    <div className="mt-4">
+                        <label className="block text-gray-300">Add New Behavior:</label>
+                        <input
+                            type="text"
+                            placeholder="Enter behavior name"
+                            className="border p-2 rounded w-full text-black"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    handleAddBehavior(chart.chartDataId, "Resistive", e.target.value);
+                                    e.target.value = "";
+                                }
+                            }}
+                        />
+                    </div>
+
                     <button
                         onClick={() => handleUpdate(chart.chartDataId)}
                         className="mt-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                     >
                         Update Chart Data
                     </button>
-
-
                 </div>
             ))}
 
@@ -151,13 +192,6 @@ const ChartDataCard = () => {
                     ))}
                 </div>
             )}
-
-            <button
-                onClick={() => setPageNumber(pageNumber + 1)}
-                className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-                Load More
-            </button>
         </div>
     );
 };
