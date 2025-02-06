@@ -9,7 +9,7 @@ const ChartDataCard = () => {
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);  // Load multiple patients per fetch
+    const [itemsPerPage] = useState(10);  
     const [selectedPatientName, setSelectedPatientName] = useState("");
 
     useEffect(() => {
@@ -18,10 +18,11 @@ const ChartDataCard = () => {
                 const data = await fetchChartData(currentPage, itemsPerPage);
                 if (data.successful && data.responseObject.length > 0) {
                     setChartData(data.responseObject);
-                    
-                    // Auto-select first patient on initial load
-                    if (!selectedPatientName) {
-                        setSelectedPatientName(data.responseObject[0]?.patientName || "");
+
+                    // If no patient is selected or the selected one is not in the new data, select the first patient
+                    const firstPatient = data.responseObject[0]?.patientName || "";
+                    if (!selectedPatientName || !data.responseObject.some(chart => chart.patientName === selectedPatientName)) {
+                        setSelectedPatientName(firstPatient);
                     }
 
                     setTimeToBeTaken(data.responseObject[0]?.timeToBeTaken || "");
@@ -102,6 +103,9 @@ const ChartDataCard = () => {
         }
     };
 
+    // **Filter Data for Selected Patient**
+    const filteredChartData = chartData.filter(chart => chart.patientName === selectedPatientName);
+
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
@@ -132,63 +136,61 @@ const ChartDataCard = () => {
                 </select>
             </div>
 
-            {/* Filtered Chart Data */}
-            {chartData.length === 0 ? (
+            {/* Display Chart Data for Selected Patient */}
+            {filteredChartData.length === 0 ? (
                 <p>No chart data available for the selected patient.</p>
             ) : (
-                chartData
-                    .filter((chart) => chart.patientName === selectedPatientName)
-                    .map((chart) => (
-                        <div key={chart.chartDataId} className="mb-6">
-                            <label className="block text-gray-300">Time to be Taken:</label>
-                            <input
-                                type="time"
-                                value={timeToBeTaken}
-                                onChange={handleTimeChange}
-                                className="border p-2 rounded w-full text-white"
-                            />
+                filteredChartData.map((chart) => (
+                    <div key={chart.chartDataId} className="mb-6">
+                        <label className="block text-gray-300">Time to be Taken:</label>
+                        <input
+                            type="time"
+                            value={timeToBeTaken}
+                            onChange={handleTimeChange}
+                            className="border p-2 rounded w-full text-white"
+                        />
 
-                            <table className="w-full mt-4 border-collapse border border-gray-700">
-                                <thead>
-                                    <tr>
-                                        <th className="border border-gray-600 p-2">Behavior</th>
-                                        <th className="border border-gray-600 p-2">Category</th>
-                                        <th className="border border-gray-600 p-2">Status</th>
+                        <table className="w-full mt-4 border-collapse border border-gray-700">
+                            <thead>
+                                <tr>
+                                    <th className="border border-gray-600 p-2">Behavior</th>
+                                    <th className="border border-gray-600 p-2">Category</th>
+                                    <th className="border border-gray-600 p-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {chart.behaviors.map((behavior) => (
+                                    <tr key={behavior.behavior}>
+                                        <td className="border border-gray-600 p-2">{behavior.behavior}</td>
+                                        <td className="border border-gray-600 p-2">{behavior.category}</td>
+                                        <td className="border border-gray-600 p-2">
+                                            <button
+                                                onClick={() =>
+                                                    handleToggle(chart.chartDataId, behavior.behavior, behavior.category)
+                                                }
+                                                className={`p-2 rounded ${
+                                                    behavior.status === "Yes" ?  "bg-green-500" : "bg-red-500"
+                                                } text-white`}
+                                            >
+                                                {behavior.status === "Yes" ? "Yes" : "No"}
+                                            </button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {chart.behaviors.map((behavior) => (
-                                        <tr key={behavior.behavior}>
-                                            <td className="border border-gray-600 p-2">{behavior.behavior}</td>
-                                            <td className="border border-gray-600 p-2">{behavior.category}</td>
-                                            <td className="border border-gray-600 p-2">
-                                                <button
-                                                    onClick={() =>
-                                                        handleToggle(chart.chartDataId, behavior.behavior, behavior.category)
-                                                    }
-                                                    className={`p-2 rounded ${
-                                                        behavior.status === "Yes" ?  "bg-green-500" : "bg-red-500"
-                                                    } text-white`}
-                                                >
-                                                    {behavior.status === "Yes" ? "Yes" : "No"}
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                ))}
+                            </tbody>
+                        </table>
 
-                            <button
-                                onClick={handleSubmit}
-                                className={`mt-4 p-2 rounded ${
-                                    submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-                                } text-white`}
-                                disabled={submitting}
-                            >
-                                {submitting ? "Submitting..." : "Update Chart Data"}
-                            </button>
-                        </div>
-                    ))
+                        <button
+                            onClick={handleSubmit}
+                            className={`mt-4 p-2 rounded ${
+                                submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+                            } text-white`}
+                            disabled={submitting}
+                        >
+                            {submitting ? "Submitting..." : "Update Chart Data"}
+                        </button>
+                    </div>
+                ))
             )}
 
             {/* Pagination Controls */}
