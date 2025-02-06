@@ -46,7 +46,7 @@ const ChartDataCard = () => {
                           ...chart,
                           behaviors: chart.behaviors.map((item) =>
                               item.behavior === behavior && item.category === category
-                                  ? { ...item, status: !item.status } // Toggle status
+                                  ? { ...item, status: item.status === "Yes" ? "No" : "Yes" } // Properly toggles between Yes and No
                                   : item
                           ),
                       }
@@ -54,6 +54,7 @@ const ChartDataCard = () => {
             )
         );
     };
+    
 
     const handleTimeChange = (e) => {
         setTimeToBeTaken(e.target.value);
@@ -172,7 +173,7 @@ const ChartDataCard = () => {
                                                         behavior.status === "Yes" ?  "bg-green-500" : "bg-red-500"
                                                     } text-white`}
                                                 >
-                                                    {behavior.status=== "Yes" ? "Yes" : "No"}
+                                                    {behavior.status === "Yes" ? "Yes" : "No"}
                                                 </button>
                                             </td>
                                         </tr>
