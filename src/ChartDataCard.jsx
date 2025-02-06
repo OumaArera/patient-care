@@ -11,6 +11,7 @@ const ChartDataCard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);  
     const [selectedPatientName, setSelectedPatientName] = useState("");
+    const [message, setMessage] = useState(null)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -85,9 +86,11 @@ const ChartDataCard = () => {
                     setErrors(errorHandler(response.error));
                 }
             }
-            setErrors(["Chart data updated successfully."]);
+            setMessage(["Chart data updated successfully."]);
+            setTimeout(() => setMessage(""), 5000);
         } catch (err) {
             setErrors(["Something went wrong. Please try again."]);
+            setTimeout(() => setErrors(""), 5000);
         } finally {
             setSubmitting(false);
         }
@@ -109,7 +112,6 @@ const ChartDataCard = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
-
             {errors.length > 0 && (
                 <div className="mb-4 p-3 bg-red-800 rounded">
                     {errors.map((error, index) => (
@@ -189,6 +191,7 @@ const ChartDataCard = () => {
                         >
                             {submitting ? "Submitting..." : "Update Chart Data"}
                         </button>
+                        {message && <p className="text-green-600">{message}</p>}
                     </div>
                 ))
             )}

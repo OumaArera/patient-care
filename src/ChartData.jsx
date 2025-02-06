@@ -67,6 +67,7 @@ const ChartData = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize] = useState(10);
     const [errors, setErrors] = useState([]);
+    const [message, setMessage] = useState(null)
     const [error, setError] = useState("");
     const [submitting, setSubmitting] = useState(false);
 
@@ -88,10 +89,11 @@ const ChartData = () => {
             ...prev,
             [category]: {
                 ...prev[category],
-                [key]: !prev[category][key]
+                [key]: prev[category][key] === "Yes" ? "No" : "Yes"
             }
         }));
     };
+    
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -120,9 +122,13 @@ const ChartData = () => {
             const response = await createChartData(data);
             if (response?.error) {
                 setErrors(errorHandler(response.error));
+            }else{
+                setMessage(["Chart data posted successfully."]);
+                setTimeout(() => setMessage(""), 5000);
             }
         } catch (err) {
             setErrors(["Something went wrong. Please try again."]);
+            setTimeout(() => setErrors(""), 5000);
         } finally {
             setSubmitting(false);
         }
@@ -132,6 +138,7 @@ const ChartData = () => {
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
             {error && <p className="text-red-500">{error}</p>}
+            {message && <p className="text-green-600">{message}</p>}
             <label className="block text-gray-300">Time to be Taken:</label>
             <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full text-white" />
             
