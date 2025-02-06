@@ -137,8 +137,6 @@ const ChartData = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
-            {error && <p className="text-red-500">{error}</p>}
-            {message && <p className="text-green-600">{message}</p>}
             <label className="block text-gray-300">Time to be Taken:</label>
             <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full text-white" />
             
@@ -191,6 +189,8 @@ const ChartData = () => {
             >
                 {submitting ? "Submitting..." : "Submit"}
             </button>
+            {error && <p className="text-red-500">{error}</p>}
+            {message && <p className="text-green-600">{message}</p>}
             {errors.length > 0 && (
                 <div className="mb-4 p-3 bg-red-800 rounded">
                     {errors.map((error, index) => (
