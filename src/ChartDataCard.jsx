@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { fetchChartData } from "../services/fetchChartData"; // Assuming fetchChartData is implemented.
-import { updateChartData } from "../services/updateChartData"; // Assuming updateChartData is implemented.
-import { errorHandler } from "../services/errorHandler"; // Assuming errorHandler is implemented.
+import { fetchChartData } from "../services/fetchChartData";
+import { updateChartData } from "../services/updateChartData";
+import { errorHandler } from "../services/errorHandler";
 
 const ChartDataCard = () => {
     const [chartData, setChartData] = useState([]);
@@ -9,8 +9,8 @@ const ChartDataCard = () => {
     const [submitting, setSubmitting] = useState(false);
     const [errors, setErrors] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(1);  // Ensure one patient's data is shown at a time.
-    const [selectedPatientName, setSelectedPatientName] = useState(null);
+    const [itemsPerPage] = useState(10);  // Load multiple patients per fetch
+    const [selectedPatientName, setSelectedPatientName] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,7 +18,13 @@ const ChartDataCard = () => {
                 const data = await fetchChartData(currentPage, itemsPerPage);
                 if (data.successful && data.responseObject.length > 0) {
                     setChartData(data.responseObject);
-                    setTimeToBeTaken(data.responseObject[0]?.timeToBeTaken || ""); // Set initial timeToBeTaken for the first item
+                    
+                    // Auto-select first patient on initial load
+                    if (!selectedPatientName) {
+                        setSelectedPatientName(data.responseObject[0]?.patientName || "");
+                    }
+
+                    setTimeToBeTaken(data.responseObject[0]?.timeToBeTaken || "");
                 } else {
                     setErrors(["No data available."]);
                 }
@@ -29,13 +35,11 @@ const ChartDataCard = () => {
     
         fetchData();
     }, [currentPage, itemsPerPage]);
-    
-    // Fetch and display patient names only after data is fetched
+
     const handlePatientNameChange = (e) => {
         setSelectedPatientName(e.target.value);
     };
-    
-    // Dynamically generate patient name options in the select dropdown
+
     const patientNames = [...new Set(chartData.map((chart) => chart.patientName))];
 
     const handleToggle = (chartDataId, behavior, category) => {
@@ -46,7 +50,7 @@ const ChartDataCard = () => {
                           ...chart,
                           behaviors: chart.behaviors.map((item) =>
                               item.behavior === behavior && item.category === category
-                                  ? { ...item, status: item.status === "Yes" ? "No" : "Yes" } // Properly toggles between Yes and No
+                                  ? { ...item, status: item.status === "Yes" ? "No" : "Yes" }
                                   : item
                           ),
                       }
@@ -54,7 +58,6 @@ const ChartDataCard = () => {
             )
         );
     };
-    
 
     const handleTimeChange = (e) => {
         setTimeToBeTaken(e.target.value);
@@ -64,19 +67,17 @@ const ChartDataCard = () => {
         setSubmitting(true);
         setErrors([]);
 
-        // Update chart data with proper "Yes" or "No" status
         const updatedChartData = chartData.map((chart) => ({
-            chartDataId: chart.chartDataId, // Include chartDataId
+            chartDataId: chart.chartDataId,
             ...chart,
             behaviors: chart.behaviors.map((behavior) => ({
                 ...behavior,
-                status: behavior.status ? "Yes" : "No", 
+                status: behavior.status ? "Yes" : "No",
             })),
             timeToBeTaken,
         }));
 
         try {
-            // Loop through the chart data and update each entry
             for (let chart of updatedChartData) {
                 const response = await updateChartData(chart.chartDataId, chart);
                 if (response?.error) {
@@ -91,12 +92,10 @@ const ChartDataCard = () => {
         }
     };
 
-    // Handle next page navigation
     const handleNextPage = () => {
         setCurrentPage((prevPage) => prevPage + 1);
     };
 
-    // Handle previous page navigation
     const handlePreviousPage = () => {
         if (currentPage > 1) {
             setCurrentPage((prevPage) => prevPage - 1);
@@ -106,8 +105,7 @@ const ChartDataCard = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
-    
-            {/* Errors */}
+
             {errors.length > 0 && (
                 <div className="mb-4 p-3 bg-red-800 rounded">
                     {errors.map((error, index) => (
@@ -117,15 +115,14 @@ const ChartDataCard = () => {
                     ))}
                 </div>
             )}
-    
+
             {/* Patient Selector */}
             <div className="mb-4">
                 <select
                     onChange={handlePatientNameChange}
                     className="p-2 rounded bg-gray-800"
-                    value={selectedPatientName || ""}
+                    value={selectedPatientName}
                 >
-                    <option value="">Select Patient</option>
                     {patientNames.length > 0 &&
                         patientNames.map((patientName, index) => (
                             <option key={index} value={patientName}>
@@ -134,7 +131,7 @@ const ChartDataCard = () => {
                         ))}
                 </select>
             </div>
-    
+
             {/* Filtered Chart Data */}
             {chartData.length === 0 ? (
                 <p>No chart data available for the selected patient.</p>
@@ -150,7 +147,7 @@ const ChartDataCard = () => {
                                 onChange={handleTimeChange}
                                 className="border p-2 rounded w-full text-white"
                             />
-    
+
                             <table className="w-full mt-4 border-collapse border border-gray-700">
                                 <thead>
                                     <tr>
@@ -180,10 +177,12 @@ const ChartDataCard = () => {
                                     ))}
                                 </tbody>
                             </table>
-    
+
                             <button
                                 onClick={handleSubmit}
-                                className={`mt-4 p-2 rounded ${submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
+                                className={`mt-4 p-2 rounded ${
+                                    submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+                                } text-white`}
                                 disabled={submitting}
                             >
                                 {submitting ? "Submitting..." : "Update Chart Data"}
@@ -191,7 +190,7 @@ const ChartDataCard = () => {
                         </div>
                     ))
             )}
-    
+
             {/* Pagination Controls */}
             <div className="mt-4 flex justify-between">
                 <button
