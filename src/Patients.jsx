@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { fetchPatients } from "./fetchPatients";
-import { fetchBranches } from "./fetchBranches";
+import { fetchPatients } from "../services/fetchPatients";
+import { fetchBranches } from "../services/fetchBranches";
 import PatientCard from "./PatientsCard";
+import { errorHandler } from "../services/errorHandler";
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
@@ -10,8 +11,9 @@ const Patients = () => {
   const [pageSize] = useState(10);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false); // Separate submitting state
+  const [submitting, setSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errors, setErrors] = useState([]);
   const [formData, setFormData] = useState({
     firstName: "",
     middleNames: "",
@@ -94,7 +96,7 @@ const Patients = () => {
         }
       );
       const result = await response.json();
-      if (!result.successful) throw new Error(result.responseObject.errors);
+      if (!response.ok) setErrors(errorHandler(result?.responseObject?.errors));
       setPatients([...patients, result.responseObject]);
       setSuccessMessage("Patient added successfully!");
       setFormData({
@@ -114,7 +116,7 @@ const Patients = () => {
     } catch (err) {
       setError(Array.isArray(err.message) ? err.message.join(", ") : err.message);
     } finally {
-      setSubmitting(false); // Set submitting state to false once done
+      setSubmitting(false); 
     }
   };
 
@@ -187,6 +189,13 @@ const Patients = () => {
         <button type="submit" className="bg-blue-500 text-white p-3 rounded hover:bg-blue-600 w-full" disabled={submitting}>
           {submitting ? "Submitting..." : "Submit"}
         </button>
+        {errors.length > 0 && (
+          <div className="mb-4 p-3 rounded">
+            {errors.map((error, index) => (
+              <p key={index} className="text-sm text-red-600">{error}</p>
+            ))}
+          </div>
+        )}
       </form>
       
       <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

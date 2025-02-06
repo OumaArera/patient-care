@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { fetchFacilities } from "./fetchFacilities";
+import { fetchFacilities } from "../services/fetchFacilities";
+import { errorHandler } from "../services/errorHandler";
 
 const Facilities = () => {
   const [facilityName, setFacilityName] = useState("");
@@ -63,29 +64,7 @@ const Facilities = () => {
         loadFacilities();
       } else {
         let errorString = result?.responseObject?.errors;
-
-        let parsedErrors = [];
-        if (typeof errorString === "string") {
-            try {
-                parsedErrors = JSON.parse(errorString.replace(/'/g, '"'));
-            } catch (parseError) {
-                console.log("JSON Parse Error:", parseError);
-                parsedErrors = [errorString];
-            }
-            } else if (Array.isArray(errorString)) {
-            parsedErrors = errorString;
-            } else {
-            parsedErrors = ["An unknown error occurred."];
-            }
-
-        const formattedErrors = parsedErrors.map((err) => {
-        if (typeof err === "string" && err.includes(":")) {
-            return err.split(":")[1].trim();
-        }
-        return err;
-        });
-
-        setErrors(formattedErrors);
+        setErrors(errorHandler(errorString));
       }
     } catch (error) {
       setMessage("An error occurred. Please try again.");
@@ -142,7 +121,7 @@ const Facilities = () => {
         {errors.length > 0 && (
           <div className="mb-4 p-3 rounded">
             {errors.map((error, index) => (
-                <p key={index} className="text-sm text-red-600">{error}</p>
+              <p key={index} className="text-sm text-red-600">{error}</p>
             ))}
           </div>
         )}

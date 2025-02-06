@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { fetchFacilities } from "./fetchFacilities";
-import { fetchBranches } from "./fetchBranches";
+import { fetchBranches } from "../services/fetchBranches";
+import { fetchFacilities } from "../services/fetchFacilities";
+import { errorHandler } from "../services/errorHandler";
 
 const isValidAddress = (address) => {
   return /\d{1,5}\s\w+(\s\w+)*,\s\w+,\s[A-Z]{2}\s\d{5}/.test(address);
@@ -52,29 +53,7 @@ const Branches = () => {
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
       } else {
         let errorString = result?.responseObject?.errors;
-
-        let parsedErrors = [];
-        if (typeof errorString === "string") {
-            try {
-                parsedErrors = JSON.parse(errorString.replace(/'/g, '"'));
-            } catch (parseError) {
-                console.log("JSON Parse Error:", parseError);
-                parsedErrors = [errorString];
-            }
-            } else if (Array.isArray(errorString)) {
-            parsedErrors = errorString;
-            } else {
-            parsedErrors = ["An unknown error occurred."];
-            }
-
-        const formattedErrors = parsedErrors.map((err) => {
-        if (typeof err === "string" && err.includes(":")) {
-            return err.split(":")[1].trim();
-        }
-        return err;
-        });
-
-        setErrors(formattedErrors);
+        setErrors(errorHandler(errorString));
       }
     } catch (error) {
       setErrors(["An error occurred. Please try again."]);

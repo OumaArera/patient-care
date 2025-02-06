@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { fetchPatients } from "./fetchPatients";
-import { fetchMedications } from "./fetchMedications";
+import { fetchPatients } from "../services/fetchPatients";
+import { fetchMedications } from "../services/fetchMedications";
 import MedicationCard from "./MedicationCard";
 import { errorHandler } from "../services/errorHandler";
 
@@ -142,7 +142,7 @@ const Medication = () => {
                             </select>
                         ) : (
                             <input
-                                type={key === "medicationTime" ? "datetime-local" : "text"}
+                                type={key === "medicationTime" ? "time" : "text"}
                                 name={key}
                                 value={formData[key]}
                                 onChange={handleInputChange}

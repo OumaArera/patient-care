@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { errorHandler } from '../services/errorHandler';
 
 const USERS_URL = 'https://patient-care-server.onrender.com/api/v1/users';
 
@@ -18,6 +19,7 @@ const CreateUser = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState([]);
   const [defaultCountry, setDefaultCountry] = useState('us');
   const [token, setToken] = useState("");
 
@@ -72,7 +74,9 @@ const CreateUser = () => {
       } else {
         const errors = JSON.parse(data.responseObject.errors);
         delete errors.username;
-        setError(Object.values(errors).flat().join(' '));
+        // setError(Object.values(errors).flat().join(' '));
+        let errorString = data?.responseObject?.errors;
+        setErrors(errorHandler(errorString));
       }
     } catch (err) {
       setError('An error occurred while processing your request.');
@@ -153,7 +157,13 @@ const CreateUser = () => {
               </select>
             </div>
           </div>
-
+          {errors.length > 0 && (
+            <div className="mb-4 p-3 rounded">
+              {errors.map((error, index) => (
+                <p key={index} className="text-sm text-red-600">{error}</p>
+              ))}
+            </div>
+          )}
           {error && <p className="text-red-400 mt-2 text-center">{error}</p>}
           {successMessage && <p className="text-green-400 mt-2 text-center">{successMessage}</p>}
 
