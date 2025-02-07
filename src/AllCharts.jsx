@@ -1,136 +1,95 @@
-import React, { useState, useEffect, useRef } from "react";
-import moment from "moment";
-import { Check, X } from "lucide-react";
-import { jsPDF } from "jspdf";
-import { fetchPatients } from "../services/fetchPatients";
-import { getCharts } from "../services/getCharts";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const AllCharts = () => {
-    const [patients, setPatients] = useState([]);
-    const [charts, setCharts] = useState([]);
-    const [filteredCharts, setFilteredCharts] = useState([]);
-    const [selectedYear, setSelectedYear] = useState(moment().year());
-    const [selectedMonth, setSelectedMonth] = useState(null);
-    const [loadingPatients, setLoadingPatients] = useState(false);
-    const [loadingCharts, setLoadingCharts] = useState(false);
-    const role = localStorage.getItem("role");
-    const pdfRef = useRef();
+const AllCharts = ({ residentId, year, month, userRole }) => {
+  const [data, setData] = useState([]);
+  const [dates, setDates] = useState([]);
 
-    useEffect(() => {
-        setLoadingPatients(true);
-        fetchPatients()
-            .then((data) => {
-                setPatients(data?.responseObject || []);
-                setLoadingPatients(false);
-            })
-            .catch(() => setLoadingPatients(false));
-    }, []);
-
-    const getAllCharts = (patientId) => {
-        setLoadingCharts(true);
-        getCharts(patientId)
-            .then((data) => {
-                setCharts(data?.responseObject || []);
-                setLoadingCharts(false);
-            })
-            .catch(() => setLoadingCharts(false));
-    };
-
-    useEffect(() => {
-        if (selectedMonth) {
-            const filtered = charts.filter(chart => 
-                moment(chart.dateTaken).year() === selectedYear &&
-                moment(chart.dateTaken).month() + 1 === selectedMonth
-            );
-            setFilteredCharts(filtered);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/behavior-data/${residentId}?year=${year}&month=${month}`);
+        let filteredData = response.data;
+        
+        if (userRole === "manager") {
+          filteredData = filteredData.filter(item => item.status === "approved");
         }
-    }, [selectedYear, selectedMonth, charts]);
-
-    const downloadPDF = () => {
-        const doc = new jsPDF();
-        doc.text("Patient Chart Report", 10, 10);
-        doc.save("chart-report.pdf");
+        
+        setData(filteredData);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
     };
 
-    return (
-        <div className="p-6 bg-gray-100 text-black">
-            <h2 className="text-xl font-semibold mb-4">Patient Charts</h2>
-            {loadingPatients ? (
-                <p className="text-gray-500">Loading patients, please wait...</p>
-            ) : (
-                <select 
-                    onChange={(e) => getAllCharts(e.target.value)} 
-                    className="border border-gray-300 bg-white text-black rounded p-2 mb-4 w-full"
-                >
-                    <option value="">Select Patient</option>
-                    {patients.map((p) => (
-                        <option key={p.patientId} value={p.patientId}>
-                            {p.firstName} {p.lastName}
-                        </option>
-                    ))}
-                </select>
-            )}
-            
-            {charts.length > 0 && (
-                <div className="flex gap-4 mb-4">
-                    <select 
-                        onChange={(e) => setSelectedYear(Number(e.target.value))}
-                        className="border border-gray-300 bg-white text-black rounded p-2"
-                    >
-                        {Array.from({ length: 10 }, (_, i) => moment().year() - i).map((year) => (
-                            <option key={year} value={year}>{year}</option>
-                        ))}
-                    </select>
-                    <select 
-                        onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                        className="border border-gray-300 bg-white text-black rounded p-2"
-                    >
-                        {Array.from({ length: selectedYear === moment().year() ? moment().month() + 1 : 12 }, (_, i) => i + 1).map((month) => (
-                            <option key={month} value={month}>{moment().month(month - 1).format("MMMM")}</option>
-                        ))}
-                    </select>
-                </div>
-            )}
-            
-            {loadingCharts ? (
-                <p className="text-gray-500 mt-4">Loading charts, please wait...</p>
-            ) : (
-                filteredCharts.length > 0 && (
-                    <div className="overflow-x-auto overflow-y-auto max-h-96 mt-4 border rounded p-4 bg-white" ref={pdfRef}>
-                        <table className="w-full border">
-                            <thead>
-                                <tr className="bg-blue-600 text-white">
-                                    <th className="border p-2">Category</th>
-                                    {Array.from({ length: moment(`${selectedYear}-${selectedMonth}`, "YYYY-MM").daysInMonth() }, (_, i) => i + 1).map(day => (
-                                        <th key={day} className="border p-2">{day}</th>
-                                    ))}
-                                    {role === "superuser" && <th className="border p-2">Reason Not Filled</th>}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredCharts.filter(chart => !(role === "manager" && chart.status === "pending")).map(chart => (
-                                    <tr key={chart.chartId} className="hover:bg-gray-100">
-                                        <td className="border p-2">{chart.behaviorsCategory}</td>
-                                        {Array.from({ length: moment(`${selectedYear}-${selectedMonth}`, "YYYY-MM").daysInMonth() }, (_, i) => i + 1).map(day => {
-                                            const entry = chart.behaviors.find(b => moment(b.dateTaken).date() === day);
-                                            return <td key={day} className="border p-2">{entry ? (entry.status === "Yes" ? <Check className="text-green-500" /> : <X className="text-red-500" />) : (role === "superuser" ? "Missing" : "")}</td>;
-                                        })}
-                                        {role === "superuser" && <td className="border p-2">{chart.reasonNotFilled || ""}</td>}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )
-            )}
-            
-            {filteredCharts.length > 0 && (
-                <button onClick={downloadPDF} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
-                    Download PDF
-                </button>
-            )}
-        </div>
-    );
+    const generateDates = () => {
+      const daysInMonth = new Date(year, month, 0).getDate();
+      setDates(Array.from({ length: daysInMonth }, (_, i) => i + 1));
+    };
+
+    fetchData();
+    generateDates();
+  }, [residentId, year, month, userRole]);
+
+  return (
+    <div className="p-4">
+      <h2 className="text-xl font-bold">Name: 1st EDMONDS - FILBERTROAD ADULT FAMILY HOME</h2>
+      <h3 className="text-lg">Resident Name: {residentId}</h3>
+      <h4 className="text-lg">Date: {year}-{month}</h4>
+      
+      <table className="w-full border-collapse border mt-4">
+        <thead>
+          <tr>
+            <th className="border p-2">Behavior Category</th>
+            <th className="border p-2">Behavior</th>
+            {dates.map(date => (
+              <th key={date} className="border p-2">{date}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((item, index) => (
+            <tr key={index}>
+              <td className="border p-2">{item.category}</td>
+              <td className="border p-2">{item.behavior}</td>
+              {dates.map(date => (
+                <td key={date} className="border p-2 text-center">
+                  {item.records?.[date] === true ? "✔" : item.records?.[date] === false ? "✖" : ""}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      
+      <div className="mt-4">
+        <h3 className="text-lg font-bold">Behavior Descriptions</h3>
+        <table className="w-full border-collapse border mt-2">
+          <thead>
+            <tr>
+              <th className="border p-2">Behavior</th>
+              <th className="border p-2">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <tr key={index}>
+                <td className="border p-2">{item.behavior}</td>
+                <td className="border p-2">{item.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-6">
+        <label className="block font-bold">Care Giver 1:</label>
+        <input type="text" className="border p-2 w-full" placeholder="Signature" />
+        
+        <label className="block font-bold mt-4">Care Giver 2:</label>
+        <input type="text" className="border p-2 w-full" placeholder="Signature" />
+      </div>
+    </div>
+  );
 };
 
 export default AllCharts;
