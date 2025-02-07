@@ -119,7 +119,7 @@ const Charts = () => {
               <p className="text-gray-500 mt-2">Loading charts...</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-96">
               <table className="w-full border-collapse border border-gray-300 text-black">
                 <thead className="bg-gray-200">
                   <tr>
@@ -209,7 +209,9 @@ const Charts = () => {
       )}
 
       {showChartCard && selectedChart && (
-        <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+        </div>
       )}
     </div>
   );
