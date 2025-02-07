@@ -4,11 +4,15 @@ import html2canvas from "html2canvas";
 export const generatePDFReport = async (charts, selectedYear, selectedMonth) => {
     if (charts.length === 0) return;
 
-    // Extract common details from the first entry
+    // Extract details from the first entry
     const { facilityName, branchName, patientName } = charts[0];
 
-    // Generate HTML for the PDF
-    let tableHTML = `
+    // Create a container div for the table (avoiding full document capture)
+    const container = document.createElement("div");
+    container.style.padding = "20px";
+    container.style.fontFamily = "Arial, sans-serif";
+    container.style.color = "#000"; // Ensure no `oklch()` colors
+    container.innerHTML = `
         <div style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px;">
             ${facilityName} _ ${branchName}
         </div>
@@ -64,22 +68,24 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     tableHTML += `</tbody></table>`;
 
     // Caregiver sign-off section
-    tableHTML += `
+    container.innerHTML += `
         <div style="font-size: 12px; margin-top: 20px;">
             <p>Care Giver 1: ..........................   Sign: ........................</p>
             <p>Care Giver 2: ..........................   Sign: ........................</p>
         </div>`;
 
-    // Convert the HTML to a PDF
-    const pdf = new jsPDF();
-    const canvas = await html2canvas(document.body, { scale: 2 });
+    // Append container to body (temporarily)
+    document.body.appendChild(container);
 
-    pdf.html(tableHTML, {
-        callback: (doc) => {
-            doc.save(`Behavior_Log_${selectedYear}_${selectedMonth}.pdf`);
-        },
-        x: 10,
-        y: 10,
-        width: 190
-    });
+    // Capture only the table container using `html2canvas`
+    const canvas = await html2canvas(container, { scale: 2 });
+
+    // Remove container after capturing
+    document.body.removeChild(container);
+
+    // Convert canvas to PDF
+    const pdf = new jsPDF();
+    const imgData = canvas.toDataURL("image/png");
+    pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
+    pdf.save(`Behavior_Log_${selectedYear}_${selectedMonth}.pdf`);
 };

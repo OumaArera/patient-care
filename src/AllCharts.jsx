@@ -72,18 +72,6 @@ const AllCharts = () => {
         }
     };
 
-    const downloadReport = () => {
-        const pdf = new jsPDF();
-        pdf.text("Behavior Log Report", 14, 10);
-        pdf.autoTable({
-            html: "#behaviorTable",
-            startY: 20,
-            styles: { fontSize: 8 },
-            theme: "grid",
-        });
-        pdf.save("Behavior_Log.pdf");
-    };
-
     return (
         <div className="p-6 bg-white text-gray-900">
             <h2 className="text-2xl font-bold text-center mb-4">1st EDMONDS</h2>
