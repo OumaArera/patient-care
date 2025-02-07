@@ -70,64 +70,39 @@ const AllCharts = () => {
             {charts.length > 0 && (
                 <>
                     <h3 className="font-semibold text-lg">Behavior Log</h3>
-                    <table id="behaviorTable" className="border w-full text-sm">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border p-2">Category</th>
-                                <th className="border p-2">Log</th>
-                                {/* Generate column headers based on days in the month */}
-                                {[...Array(31)].map((_, i) => (
-                                    <th key={i} className="border p-2">{i + 1}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {charts.map((chart) =>
-                                chart.behaviors.map((behavior, index) => (
-                                    <tr key={index}>
-                                        <td className="border p-2">{behavior.category}</td>
-                                        <td className="border p-2">{behavior.behavior}</td>
-                                        {[...Array(31)].map((_, i) => (
-                                            <td key={i} className="border p-2 text-center">
-                                                {new Date(chart.dateTaken).getDate() === i + 1 ?
-                                                    (behavior.status === "Yes" ? "✔️" : "❌")
-                                                    : ""}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                    <h3 className="text-lg font-semibold mt-6">Behavior Description</h3>
-                    <table id="descriptionTable" className="border w-full text-sm">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="border p-2">Date</th>
-                                <th className="border p-2">Outcome</th>
-                                <th className="border p-2">Trigger</th>
-                                <th className="border p-2">Behavior Description</th>
-                                <th className="border p-2">Care Giver Intervention</th>
-                                <th className="border p-2">Reported Provider & Careteam</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {charts.map((chart, index) => (
-                                <tr key={index}>
-                                    <td className="border p-2">{new Date(chart.dateTaken).toLocaleDateString()}</td>
-                                    {chart.behaviorsDescription.map((desc, i) => (
-                                        <td key={i} className="border p-2">{desc.response}</td>
+                    <div className="overflow-x-auto max-w-full">
+                        <table id="behaviorTable" className="border w-full text-sm">
+                            <thead>
+                                <tr className="bg-gray-200">
+                                    <th className="border p-2">Category</th>
+                                    <th className="border p-2">Log</th>
+                                    {[...Array(31)].map((_, i) => (
+                                        <th key={i} className="border p-2">{i + 1}</th>
                                     ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className="mt-6">
-                        <h4 className="font-semibold">Caregiver Signature</h4>
-                        <div className="flex gap-4 mt-2">
-                            <div className="border p-4 w-1/2">Caregiver 1: __________________</div>
-                            <div className="border p-4 w-1/2">Caregiver 2: __________________</div>
-                        </div>
+                            </thead>
+                            <tbody>
+                                {charts.reduce((acc, chart) => {
+                                    chart.behaviors.forEach((behavior) => {
+                                        let existingRow = acc.find(row => row.category === behavior.category && row.behavior === behavior.behavior);
+                                        if (!existingRow) {
+                                            existingRow = { category: behavior.category, behavior: behavior.behavior, days: Array(31).fill("") };
+                                            acc.push(existingRow);
+                                        }
+                                        existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
+                                    });
+                                    return acc;
+                                }, []).map((row, index) => (
+                                    <tr key={index}>
+                                        <td className="border p-2">{row.category}</td>
+                                        <td className="border p-2">{row.behavior}</td>
+                                        {row.days.map((status, i) => (
+                                            <td key={i} className="border p-2 text-center">{status}</td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                     <button
                         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
