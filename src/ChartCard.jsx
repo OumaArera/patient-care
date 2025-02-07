@@ -62,10 +62,10 @@ const ChartCard = ({ chart, onClose }) => {
             <XCircle className="w-6 h-6" />
           </button>
 
-          <h2 className="text-xl font-bold mb-4 text-gray-900">
+          {/* <h2 className="text-xl font-bold mb-4 text-gray-900">
             Behavior Chart for {chart.patientName}
-          </h2>
-          <div className="text-sm mb-4 text-gray-700">
+          </h2> */}
+          <div className="text-lg mb-4 font-bold  text-gray-900">
             <p>Name: {chart.patientName}</p>
             <p>Date: {formattedDate}</p>
             <p>Care Giver: {chart.careGiver}</p>
