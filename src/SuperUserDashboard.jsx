@@ -128,7 +128,7 @@ const SuperUserDashboard = () => {
         </div>
 
         {/* Dynamic Content Rendering */}
-        {activeTab === "charts" && <PendingCharts />}
+        {/* {activeTab === "charts" && <PendingCharts />} */}
         {activeTab === "medications" && <PendingMedications />}
         {activeTab === "updates" && <Updates />}
         {activeTab === "statistics" && <Statistics />}
