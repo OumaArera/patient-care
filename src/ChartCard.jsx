@@ -1,7 +1,4 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableHead, TableRow, TableCell, TableBody } from "@/components/ui/table";
-
 import { Check, X } from "lucide-react";
 import moment from "moment";
 
@@ -24,61 +21,100 @@ const ChartCard = ({ chart }) => {
   }, {});
 
   return (
-    <Card className="p-4 w-full shadow-lg">
-      <CardContent>
-        <h2 className="text-xl font-bold mb-4">Behavior Chart for {chart.patientName}</h2>
-        
+    <div className="p-4 w-full shadow-lg border rounded-lg bg-white">
+      <div className="p-4">
+        <h2 className="text-xl font-bold mb-4">
+          Behavior Chart for {chart.patientName}
+        </h2>
+
         {/* Behaviors Table */}
         <h3 className="text-lg font-semibold mb-2">Behaviors</h3>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell className="font-bold">Category</TableCell>
-              <TableCell className="font-bold">Log</TableCell>
-              <TableCell className="font-bold">Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.entries(behaviorsByCategory).map(([category, behaviors]) => (
-              behaviors.map((behavior, index) => (
-                <TableRow key={behavior.behavior}>
-                  {index === 0 && (
-                    <TableCell rowSpan={behaviors.length} className="font-semibold align-middle">{category}</TableCell>
-                  )}
-                  <TableCell>{behavior.behavior}</TableCell>
-                  <TableCell>{behavior.status === "Yes" ? <Check className="text-green-500" /> : <X className="text-red-500" />}</TableCell>
-                </TableRow>
-              ))
-            ))}
-          </TableBody>
-        </Table>
-        
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="border border-gray-300 px-4 py-2">Category</th>
+                <th className="border border-gray-300 px-4 py-2">Log</th>
+                <th className="border border-gray-300 px-4 py-2">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(behaviorsByCategory).map(([category, behaviors]) =>
+                behaviors.map((behavior, index) => (
+                  <tr key={behavior.behavior} className="text-center">
+                    {index === 0 && (
+                      <td
+                        rowSpan={behaviors.length}
+                        className="border border-gray-300 px-4 py-2 font-semibold align-middle"
+                      >
+                        {category}
+                      </td>
+                    )}
+                    <td className="border border-gray-300 px-4 py-2">
+                      {behavior.behavior}
+                    </td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {behavior.status === "Yes" ? (
+                        <Check className="text-green-500 inline" />
+                      ) : (
+                        <X className="text-red-500 inline" />
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
         {/* Behavior Description Table */}
-        <h3 className="text-lg font-semibold mt-6 mb-2">Behavior Description</h3>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell className="font-bold">Date</TableCell>
-              <TableCell className="font-bold">Outcome</TableCell>
-              <TableCell className="font-bold">Trigger</TableCell>
-              <TableCell className="font-bold">Behavior Description</TableCell>
-              <TableCell className="font-bold">Care Giver Intervention</TableCell>
-              <TableCell className="font-bold">Reported Provider And Careteam</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>{formattedDate}</TableCell>
-              <TableCell>{behaviorDescriptions["Outcome"]}</TableCell>
-              <TableCell>{behaviorDescriptions["Trigger"]}</TableCell>
-              <TableCell>{behaviorDescriptions["Behavior Description"]}</TableCell>
-              <TableCell>{behaviorDescriptions["Care Giver Intervention"]}</TableCell>
-              <TableCell>{behaviorDescriptions["Reported Provider And Careteam"]}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+        <h3 className="text-lg font-semibold mt-6 mb-2">
+          Behavior Description
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="border border-gray-300 px-4 py-2">Date</th>
+                <th className="border border-gray-300 px-4 py-2">Outcome</th>
+                <th className="border border-gray-300 px-4 py-2">Trigger</th>
+                <th className="border border-gray-300 px-4 py-2">
+                  Behavior Description
+                </th>
+                <th className="border border-gray-300 px-4 py-2">
+                  Care Giver Intervention
+                </th>
+                <th className="border border-gray-300 px-4 py-2">
+                  Reported Provider And Careteam
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="text-center">
+                <td className="border border-gray-300 px-4 py-2">
+                  {formattedDate}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {behaviorDescriptions["Outcome"]}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {behaviorDescriptions["Trigger"]}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {behaviorDescriptions["Behavior Description"]}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {behaviorDescriptions["Care Giver Intervention"]}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {behaviorDescriptions["Reported Provider And Careteam"]}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 };
 
