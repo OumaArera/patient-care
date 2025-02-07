@@ -1,95 +1,144 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { fetchPatients } from "../services/fetchPatients";
+import { getCharts } from "../services/getCharts";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
 
-const AllCharts = ({ residentId, year, month, userRole }) => {
-  const [data, setData] = useState([]);
-  const [dates, setDates] = useState([]);
+const AllCharts = () => {
+    const [patients, setPatients] = useState([]);
+    const [selectedPatient, setSelectedPatient] = useState(null);
+    const [charts, setCharts] = useState([]);
+    const [loadingPatients, setLoadingPatients] = useState(false);
+    const [loadingCharts, setLoadingCharts] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`/api/behavior-data/${residentId}?year=${year}&month=${month}`);
-        let filteredData = response.data;
-        
-        if (userRole === "manager") {
-          filteredData = filteredData.filter(item => item.status === "approved");
+    useEffect(() => {
+        setLoadingPatients(true);
+        fetchPatients()
+            .then((data) => {
+                setPatients(data?.responseObject || []);
+                setLoadingPatients(false);
+            })
+            .catch(() => setLoadingPatients(false));
+    }, []);
+
+    const handlePatientChange = (e) => {
+        const patientId = e.target.value;
+        setSelectedPatient(patientId);
+        if (patientId) {
+            fetchCharts(patientId);
         }
-        
-        setData(filteredData);
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
     };
 
-    const generateDates = () => {
-      const daysInMonth = new Date(year, month, 0).getDate();
-      setDates(Array.from({ length: daysInMonth }, (_, i) => i + 1));
+    const fetchCharts = (patientId) => {
+        setLoadingCharts(true);
+        getCharts(patientId)
+            .then((data) => {
+                setCharts(data?.responseObject || []);
+                setLoadingCharts(false);
+            })
+            .catch(() => setLoadingCharts(false));
     };
 
-    fetchData();
-    generateDates();
-  }, [residentId, year, month, userRole]);
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        doc.text("1st EDMONDS", 14, 15);
+        doc.autoTable({ html: "#behaviorTable" });
+        doc.autoTable({ html: "#descriptionTable" });
+        doc.save("Behavior_Log.pdf");
+    };
 
-  return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold">Name: 1st EDMONDS - FILBERTROAD ADULT FAMILY HOME</h2>
-      <h3 className="text-lg">Resident Name: {residentId}</h3>
-      <h4 className="text-lg">Date: {year}-{month}</h4>
-      
-      <table className="w-full border-collapse border mt-4">
-        <thead>
-          <tr>
-            <th className="border p-2">Behavior Category</th>
-            <th className="border p-2">Behavior</th>
-            {dates.map(date => (
-              <th key={date} className="border p-2">{date}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td className="border p-2">{item.category}</td>
-              <td className="border p-2">{item.behavior}</td>
-              {dates.map(date => (
-                <td key={date} className="border p-2 text-center">
-                  {item.records?.[date] === true ? "✔" : item.records?.[date] === false ? "✖" : ""}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      
-      <div className="mt-4">
-        <h3 className="text-lg font-bold">Behavior Descriptions</h3>
-        <table className="w-full border-collapse border mt-2">
-          <thead>
-            <tr>
-              <th className="border p-2">Behavior</th>
-              <th className="border p-2">Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td className="border p-2">{item.behavior}</td>
-                <td className="border p-2">{item.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="mt-6">
-        <label className="block font-bold">Care Giver 1:</label>
-        <input type="text" className="border p-2 w-full" placeholder="Signature" />
-        
-        <label className="block font-bold mt-4">Care Giver 2:</label>
-        <input type="text" className="border p-2 w-full" placeholder="Signature" />
-      </div>
-    </div>
-  );
+    return (
+        <div className="p-6 bg-white text-gray-900">
+            <h2 className="text-2xl font-bold text-center mb-4">1st EDMONDS</h2>
+            <div className="mb-4">
+            {loadingPatients && <p>Loading patients...</p>}
+                <label className="font-semibold">Select Patient: </label>
+                <select
+                    className="border px-4 py-2 ml-2"
+                    onChange={handlePatientChange}
+                    value={selectedPatient || ""}
+                >
+                    <option value="">-- Select --</option>
+                    {patients.map((p) => (
+                        <option key={p.patientId} value={p.patientId}>
+                            {p.firstName} {p.lastName}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            {loadingCharts && <p>Loading charts...</p>}
+            {charts.length > 0 && (
+                <>
+                    <h3 className="font-semibold text-lg">Behavior Log</h3>
+                    <table id="behaviorTable" className="border w-full text-sm">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="border p-2">Category</th>
+                                <th className="border p-2">Log</th>
+                                {/* Generate column headers based on days in the month */}
+                                {[...Array(31)].map((_, i) => (
+                                    <th key={i} className="border p-2">{i + 1}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {charts.map((chart) =>
+                                chart.behaviors.map((behavior, index) => (
+                                    <tr key={index}>
+                                        <td className="border p-2">{behavior.category}</td>
+                                        <td className="border p-2">{behavior.behavior}</td>
+                                        {[...Array(31)].map((_, i) => (
+                                            <td key={i} className="border p-2 text-center">
+                                                {new Date(chart.dateTaken).getDate() === i + 1 ?
+                                                    (behavior.status === "Yes" ? "✔️" : "❌")
+                                                    : ""}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                    <h3 className="text-lg font-semibold mt-6">Behavior Description</h3>
+                    <table id="descriptionTable" className="border w-full text-sm">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="border p-2">Date</th>
+                                <th className="border p-2">Outcome</th>
+                                <th className="border p-2">Trigger</th>
+                                <th className="border p-2">Behavior Description</th>
+                                <th className="border p-2">Care Giver Intervention</th>
+                                <th className="border p-2">Reported Provider & Careteam</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {charts.map((chart, index) => (
+                                <tr key={index}>
+                                    <td className="border p-2">{new Date(chart.dateTaken).toLocaleDateString()}</td>
+                                    {chart.behaviorsDescription.map((desc, i) => (
+                                        <td key={i} className="border p-2">{desc.response}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="mt-6">
+                        <h4 className="font-semibold">Caregiver Signature</h4>
+                        <div className="flex gap-4 mt-2">
+                            <div className="border p-4 w-1/2">Caregiver 1: __________________</div>
+                            <div className="border p-4 w-1/2">Caregiver 2: __________________</div>
+                        </div>
+                    </div>
+                    <button
+                        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                        onClick={generatePDF}
+                    >
+                        Download PDF
+                    </button>
+                </>
+            )}
+        </div>
+    );
 };
 
 export default AllCharts;
