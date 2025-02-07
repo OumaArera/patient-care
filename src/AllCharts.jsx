@@ -81,6 +81,7 @@ const AllCharts = () => {
                     ))}
                 </select>
             </div>
+            {loadingCharts && <p>Loading charts...</p>}
             {charts.length > 0 && (
                 <div className="mb-4">
                     <label className="font-semibold">Select Year: </label>
