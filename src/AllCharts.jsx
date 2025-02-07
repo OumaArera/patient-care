@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
+import { generatePDFReport } from "../services/generatePDFReport";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
@@ -122,7 +123,9 @@ const AllCharts = () => {
             )}
             {filteredCharts.length > 0 && (
                 <>
-                    <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={downloadReport}>Download Report</button>
+                    <>
+                        <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}>Download Report</button>
+                    </>
                     <div className="border p-4 overflow-auto max-h-[600px]" ref={reportRef}>
                         <h3 className="font-semibold text-lg">Behavior Log</h3>
                         <div className="overflow-x-auto max-w-full">
