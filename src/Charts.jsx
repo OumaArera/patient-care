@@ -163,7 +163,7 @@ const Charts = () => {
                           {chart && (
                             <>
                               <button
-                                className="text-gray-600 hover:text-gray-800"
+                                className="fixed inset-0 flex justify-center items-center z-50 bg-opacity-50 text-gray-600 hover:text-gray-800"
                                 onClick={() => setStatusMenu(chart.chartId)}
                               >
                                 ⋮
@@ -187,7 +187,7 @@ const Charts = () => {
                                     <option value="declined">Decline</option>
                                   </select>
                                   <button
-                                    className="ml-2 bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+                                    className="ml-2 bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
                                     onClick={() => handleChartUpdate(chart.chartId)}
                                     disabled={submitting || !selectedStatus[chart.chartId]}
                                   >
