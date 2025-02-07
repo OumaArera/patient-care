@@ -1,5 +1,5 @@
 export const getCharts = async (patient) => {
-    const url = new URL(`https://patient-care-server.onrender.com/api/v1/charts?pageNumber=1&pageSize=20&patient=${patient}`);
+    const url = new URL(`https://patient-care-server.onrender.com/api/v1/charts?pageNumber=1&pageSize=366&patient=${patient}`);
 
     const token = localStorage.getItem("token");
     try {
