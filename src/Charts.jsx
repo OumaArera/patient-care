@@ -19,6 +19,19 @@ const Charts = () => {
   const [message, setMessage] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState({});
+  const statusMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (statusMenuRef.current && !statusMenuRef.current.contains(event.target)) {
+        setStatusMenu(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     setLoadingPatients(true);
@@ -160,43 +173,44 @@ const Charts = () => {
                           )}
                         </td>
                         <td className="border border-gray-300 px-4 py-2">
-                          {chart && (
-                            <>
-                              <button
-                                className="fixed inset-0 flex justify-center items-center z-50 bg-opacity-50 text-gray-600 hover:text-gray-800"
-                                onClick={() => setStatusMenu(chart.chartId)}
+                        {chart && (
+                          <>
+                            <button
+                              className="text-gray-600 hover:text-gray-800"
+                              onClick={() => setStatusMenu(chart.chartId)}
+                            >
+                              ⋮
+                            </button>
+                            {statusMenu === chart.chartId && (
+                              <div
+                                ref={statusMenuRef} // Attach ref here
+                                className="absolute bg-white shadow-md rounded-md p-2"
                               >
-                                ⋮
-                              </button>
-                              {statusMenu === chart.chartId && (
-                                <div className="absolute bg-white shadow-md rounded-md p-2">
-                                  <select
-                                    value={selectedStatus[chart.chartId] || ""}
-                                    onChange={(e) =>
-                                      setSelectedStatus({
-                                        ...selectedStatus,
-                                        [chart.chartId]: e.target.value,
-                                      })
-                                    }
-                                    className="border border-gray-300 p-2 rounded-md"
-                                  >
-                                    <option value="">Select</option>
-                                    {chart.status !== "approved" && (
-                                      <option value="approved">Approve</option>
-                                    )}
-                                    <option value="declined">Decline</option>
-                                  </select>
-                                  <button
-                                    className="ml-2 bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-                                    onClick={() => handleChartUpdate(chart.chartId)}
-                                    disabled={submitting || !selectedStatus[chart.chartId]}
-                                  >
-                                    {submitting ? "Submitting..." : "Submit"}
-                                  </button>
-                                </div>
-                              )}
-                            </>
-                          )}
+                                <select
+                                  value={selectedStatus[chart.chartId] || ""}
+                                  onChange={(e) =>
+                                    setSelectedStatus({
+                                      ...selectedStatus,
+                                      [chart.chartId]: e.target.value,
+                                    })
+                                  }
+                                  className="border border-gray-300 p-2 rounded-md"
+                                >
+                                  <option value="">Select</option>
+                                  {chart.status !== "approved" && <option value="approved">Approve</option>}
+                                  <option value="declined">Decline</option>
+                                </select>
+                                <button
+                                  className="ml-2 bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+                                  onClick={() => handleChartUpdate(chart.chartId)}
+                                  disabled={submitting || !selectedStatus[chart.chartId]}
+                                >
+                                  {submitting ? "Submitting..." : "Submit"}
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        )}
                         </td>
                       </tr>
                     );
