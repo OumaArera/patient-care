@@ -53,12 +53,15 @@ const AllCharts = () => {
     };
 
     return (
-        <div className="p-6">
-            <h2 className="text-xl font-semibold">Patient Charts</h2>
+        <div className="p-6 bg-gray-100 text-black">
+            <h2 className="text-xl font-semibold mb-4">Patient Charts</h2>
             {loadingPatients ? (
                 <p className="text-gray-500">Loading patients, please wait...</p>
             ) : (
-                <select onChange={(e) => getAllCharts(e.target.value)}>
+                <select 
+                    onChange={(e) => getAllCharts(e.target.value)} 
+                    className="border border-gray-300 bg-white text-black rounded p-2 mb-4 w-full"
+                >
                     <option value="">Select Patient</option>
                     {patients.map((p) => (
                         <option key={p.patientId} value={p.patientId}>
@@ -67,45 +70,64 @@ const AllCharts = () => {
                     ))}
                 </select>
             )}
-            <select onChange={(e) => setSelectedYear(Number(e.target.value))}>
-                {Array.from({ length: 10 }, (_, i) => moment().year() - i).map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                ))}
-            </select>
-            <select onChange={(e) => setSelectedMonth(Number(e.target.value))}>
-                {Array.from({ length: selectedYear === moment().year() ? moment().month() + 1 : 12 }, (_, i) => i + 1).map((month) => (
-                    <option key={month} value={month}>{moment().month(month - 1).format("MMMM")}</option>
-                ))}
-            </select>
-            <button onClick={downloadPDF} className="bg-blue-600 text-white px-4 py-2 rounded">Download PDF</button>
+            
+            {charts.length > 0 && (
+                <div className="flex gap-4 mb-4">
+                    <select 
+                        onChange={(e) => setSelectedYear(Number(e.target.value))}
+                        className="border border-gray-300 bg-white text-black rounded p-2"
+                    >
+                        {Array.from({ length: 10 }, (_, i) => moment().year() - i).map((year) => (
+                            <option key={year} value={year}>{year}</option>
+                        ))}
+                    </select>
+                    <select 
+                        onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                        className="border border-gray-300 bg-white text-black rounded p-2"
+                    >
+                        {Array.from({ length: selectedYear === moment().year() ? moment().month() + 1 : 12 }, (_, i) => i + 1).map((month) => (
+                            <option key={month} value={month}>{moment().month(month - 1).format("MMMM")}</option>
+                        ))}
+                    </select>
+                </div>
+            )}
+            
             {loadingCharts ? (
                 <p className="text-gray-500 mt-4">Loading charts, please wait...</p>
             ) : (
-                <div className="overflow-x-auto overflow-y-auto max-h-96 mt-4 border rounded p-4 bg-white" ref={pdfRef}>
-                    <table className="w-full border">
-                        <thead>
-                            <tr>
-                                <th className="border p-2">Category</th>
-                                {Array.from({ length: moment(`${selectedYear}-${selectedMonth}`, "YYYY-MM").daysInMonth() }, (_, i) => i + 1).map(day => (
-                                    <th key={day} className="border p-2">{day}</th>
-                                ))}
-                                {role === "superuser" && <th className="border p-2">Reason Not Filled</th>}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredCharts.filter(chart => !(role === "manager" && chart.status === "pending")).map(chart => (
-                                <tr key={chart.chartId}>
-                                    <td className="border p-2">{chart.behaviorsCategory}</td>
-                                    {Array.from({ length: moment(`${selectedYear}-${selectedMonth}`, "YYYY-MM").daysInMonth() }, (_, i) => i + 1).map(day => {
-                                        const entry = chart.behaviors.find(b => moment(b.dateTaken).date() === day);
-                                        return <td key={day} className="border p-2">{entry ? (entry.status === "Yes" ? <Check className="text-green-500" /> : <X className="text-red-500" />) : (role === "superuser" ? "Missing" : "")}</td>;
-                                    })}
-                                    {role === "superuser" && <td className="border p-2">{chart.reasonNotFilled || ""}</td>}
+                filteredCharts.length > 0 && (
+                    <div className="overflow-x-auto overflow-y-auto max-h-96 mt-4 border rounded p-4 bg-white" ref={pdfRef}>
+                        <table className="w-full border">
+                            <thead>
+                                <tr className="bg-blue-600 text-white">
+                                    <th className="border p-2">Category</th>
+                                    {Array.from({ length: moment(`${selectedYear}-${selectedMonth}`, "YYYY-MM").daysInMonth() }, (_, i) => i + 1).map(day => (
+                                        <th key={day} className="border p-2">{day}</th>
+                                    ))}
+                                    {role === "superuser" && <th className="border p-2">Reason Not Filled</th>}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {filteredCharts.filter(chart => !(role === "manager" && chart.status === "pending")).map(chart => (
+                                    <tr key={chart.chartId} className="hover:bg-gray-100">
+                                        <td className="border p-2">{chart.behaviorsCategory}</td>
+                                        {Array.from({ length: moment(`${selectedYear}-${selectedMonth}`, "YYYY-MM").daysInMonth() }, (_, i) => i + 1).map(day => {
+                                            const entry = chart.behaviors.find(b => moment(b.dateTaken).date() === day);
+                                            return <td key={day} className="border p-2">{entry ? (entry.status === "Yes" ? <Check className="text-green-500" /> : <X className="text-red-500" />) : (role === "superuser" ? "Missing" : "")}</td>;
+                                        })}
+                                        {role === "superuser" && <td className="border p-2">{chart.reasonNotFilled || ""}</td>}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )
+            )}
+            
+            {filteredCharts.length > 0 && (
+                <button onClick={downloadPDF} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+                    Download PDF
+                </button>
             )}
         </div>
     );
