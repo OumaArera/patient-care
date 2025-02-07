@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
 import { updateChartStatus } from "../services/updateCharts";
