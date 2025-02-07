@@ -19,8 +19,6 @@ const Charts = () => {
   const [message, setMessage] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState({});
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     setLoadingPatients(true);
@@ -70,12 +68,10 @@ const Charts = () => {
     }
   };
 
-  const filteredCharts = charts.filter((chart) => {
-    const chartDate = new Date(chart.dateTaken);
-    return (
-      chartDate.getFullYear() === selectedYear &&
-      chartDate.getMonth() + 1 === selectedMonth
-    );
+  const last20Days = [...Array(20)].map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    return d.toISOString().split("T")[0];
   });
 
   return (
@@ -102,58 +98,120 @@ const Charts = () => {
         </select>
       )}
 
-      <div className="flex space-x-4 mb-4">
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-          className="border border-gray-300 p-2 rounded-md"
-        >
-          {[...Array(12)].map((_, i) => (
-            <option key={i + 1} value={i + 1}>
-              {new Date(0, i).toLocaleString("default", { month: "long" })}
-            </option>
+      {message && (
+        <p className="text-green-600 bg-green-100 p-2 rounded-md text-center mb-4">
+          {message}
+        </p>
+      )}
+      {errors.length > 0 && (
+        <div className="bg-red-100 p-3 rounded-md mb-4">
+          {errors.map((error, index) => (
+            <p key={index} className="text-red-700 text-sm">{error}</p>
           ))}
-        </select>
-
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-          className="border border-gray-300 p-2 rounded-md"
-        >
-          {[...Array(5)].map((_, i) => (
-            <option key={i} value={new Date().getFullYear() - i}>
-              {new Date().getFullYear() - i}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {loadingCharts ? (
-        <div className="text-center">
-          <Loader className="animate-spin text-gray-500 mx-auto" size={20} />
-          <p className="text-gray-500 mt-2">Loading charts...</p>
         </div>
-      ) : (
-        <table className="w-full border-collapse border border-gray-300 text-black">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="border border-gray-300 px-4 py-2">Date</th>
-              <th className="border border-gray-300 px-4 py-2">Patient</th>
-              <th className="border border-gray-300 px-4 py-2">Status</th>
-              <th className="border border-gray-300 px-4 py-2">Reason Not Filed</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCharts.map((chart) => (
-              <tr key={chart.chartId} className="text-center hover:bg-gray-100">
-                <td className="border border-gray-300 px-4 py-2">{chart.dateTaken}</td>
-                <td className="border border-gray-300 px-4 py-2">{chart.patientName}</td>
-                <td className="border border-gray-300 px-4 py-2">{chart.status}</td>
-                <td className="border border-gray-300 px-4 py-2">{chart.reasonNotFiled || "—"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      )}
+
+      {selectedPatient && (
+        <>
+          {loadingCharts ? (
+            <div className="text-center">
+              <Loader className="animate-spin text-gray-500 mx-auto" size={20} />
+              <p className="text-gray-500 mt-2">Loading charts...</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto max-h-96">
+              <table className="w-full border-collapse border border-gray-300 text-black">
+                <thead className="bg-gray-200">
+                  <tr>
+                    <th className="border border-gray-300 px-4 py-2">Date</th>
+                    <th className="border border-gray-300 px-4 py-2">Patient</th>
+                    <th className="border border-gray-300 px-4 py-2">Status</th>
+                    <th className="border border-gray-300 px-4 py-2">Reason Not Filed</th>
+                    <th className="border border-gray-300 px-4 py-2">View</th>
+                    <th className="border border-gray-300 px-4 py-2">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {last20Days.map((date) => {
+                    const chart = charts.find((c) => c.dateTaken.startsWith(date));
+                    return (
+                      <tr key={date} className="text-center hover:bg-gray-100">
+                        <td className="border border-gray-300 px-4 py-2">{date}</td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          {chart ? chart.patientName : "Missing"}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          {chart ? chart.status : "Missing"}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2 text-gray-600">
+                          {chart?.reasonNotFiled || "—"}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          {chart && (
+                            <button
+                              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                              onClick={() => {
+                                setShowChartCard(true);
+                                setSelectedChart(chart);
+                              }}
+                            >
+                              View
+                            </button>
+                          )}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          {chart && (
+                            <>
+                              <button
+                                className="text-gray-600 hover:text-gray-800"
+                                onClick={() => setStatusMenu(chart.chartId)}
+                              >
+                                ⋮
+                              </button>
+                              {statusMenu === chart.chartId && (
+                                <div className="absolute bg-white shadow-md rounded-md p-2">
+                                  <select
+                                    value={selectedStatus[chart.chartId] || ""}
+                                    onChange={(e) =>
+                                      setSelectedStatus({
+                                        ...selectedStatus,
+                                        [chart.chartId]: e.target.value,
+                                      })
+                                    }
+                                    className="border border-gray-300 p-2 rounded-md"
+                                  >
+                                    <option value="">Select</option>
+                                    {chart.status !== "approved" && (
+                                      <option value="approved">Approve</option>
+                                    )}
+                                    <option value="declined">Decline</option>
+                                  </select>
+                                  <button
+                                    className="ml-2 bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
+                                    onClick={() => handleChartUpdate(chart.chartId)}
+                                    disabled={submitting || !selectedStatus[chart.chartId]}
+                                  >
+                                    {submitting ? "Submitting..." : "Submit"}
+                                  </button>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
+      )}
+
+      {showChartCard && selectedChart && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+        </div>
       )}
     </div>
   );
