@@ -12,7 +12,8 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     container.style.padding = "20px";
     container.style.fontFamily = "Arial, sans-serif";
     container.style.color = "#000"; // Ensure no `oklch()` colors
-    container.innerHTML = `
+
+    let tableHTML = `
         <div style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px;">
             ${facilityName} _ ${branchName}
         </div>
@@ -68,11 +69,14 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     tableHTML += `</tbody></table>`;
 
     // Caregiver sign-off section
-    container.innerHTML += `
+    tableHTML += `
         <div style="font-size: 12px; margin-top: 20px;">
             <p>Care Giver 1: ..........................   Sign: ........................</p>
             <p>Care Giver 2: ..........................   Sign: ........................</p>
         </div>`;
+
+    // Append the generated HTML to the container
+    container.innerHTML = tableHTML;
 
     // Append container to body (temporarily)
     document.body.appendChild(container);
