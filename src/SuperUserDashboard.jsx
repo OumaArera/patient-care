@@ -42,7 +42,7 @@ const SuperUserDashboard = () => {
         <button className={`p-3 flex items-center gap-2 ${activeTab === "charts" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("charts")}>
           <FaChartBar /> Charts
         </button>
-        <button className={`p-3 flex items-center gap-2 ${activeTab === "charts" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("allCharts")}>
+        <button className={`p-3 flex items-center gap-2 ${activeTab === "allCharts" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("allCharts")}>
           <FaChartBar /> All Charts
         </button>
         <button className={`p-3 flex items-center gap-2 ${activeTab === "medications" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("medications")}>
