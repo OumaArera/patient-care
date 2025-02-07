@@ -1,4 +1,3 @@
-// fetchPatients.js
 export const fetchPatients = async (pageSize=20, pageNumber=1) => {
   const token = localStorage.getItem("token");
   const response = await fetch(

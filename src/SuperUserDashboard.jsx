@@ -19,6 +19,7 @@ import Patients from "./Patients";
 import Medication from "./Medication";
 import ChartData from "./ChartData";
 import ChartDataCard from "./ChartDataCard";
+import Charts from "./Charts";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -140,6 +141,8 @@ const SuperUserDashboard = () => {
         {activeTab === "medicationsAdmin" && <Medication />}
         {activeTab === "chartData" && <ChartData />}
         {activeTab === "chartDataUpdate" && <ChartDataCard />}  
+        {activeTab === "charts" && <Charts />}  
+        
         
       </div>
     </div>
