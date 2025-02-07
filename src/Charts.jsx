@@ -76,7 +76,7 @@ const Charts = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Patient Charts</h2>
+      <h2 className="text-2xl font-bold mb-4 text-black">Patient Charts</h2>
 
       {loadingPatients ? (
         <div className="flex items-center space-x-2">
@@ -87,7 +87,7 @@ const Charts = () => {
         <select
           onChange={handleSelectPatient}
           value={selectedPatient || ""}
-          className="w-full border border-gray-300 p-2 rounded-md mb-4"
+          className="w-full border border-gray-300 p-2 rounded-md mb-4 bg-white text-gray-700"
         >
           <option value="">Select Patient</option>
           {patients.map((patient) => (
@@ -120,7 +120,7 @@ const Charts = () => {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-300">
+              <table className="w-full border-collapse border border-gray-300 text-black">
                 <thead className="bg-gray-200">
                   <tr>
                     <th className="border border-gray-300 px-4 py-2">Date</th>
