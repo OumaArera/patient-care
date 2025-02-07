@@ -108,7 +108,8 @@ const ChartData = () => {
         );
         const behaviorsDescriptionArray = Object.entries(behaviorsDescription).map(([key, value]) => ({
             descriptionType: key,
-            status: value
+            status: value,
+            response: null
         }));
 
         const data = {

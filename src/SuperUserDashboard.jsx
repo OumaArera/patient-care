@@ -20,6 +20,7 @@ import Medication from "./Medication";
 import ChartData from "./ChartData";
 import ChartDataCard from "./ChartDataCard";
 import Charts from "./Charts";
+import AllCharts from "./AllCharts";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -40,6 +41,9 @@ const SuperUserDashboard = () => {
         {/* Sidebar Buttons */}
         <button className={`p-3 flex items-center gap-2 ${activeTab === "charts" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("charts")}>
           <FaChartBar /> Charts
+        </button>
+        <button className={`p-3 flex items-center gap-2 ${activeTab === "charts" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("allCharts")}>
+          <FaChartBar /> All Charts
         </button>
         <button className={`p-3 flex items-center gap-2 ${activeTab === "medications" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("medications")}>
           <FaPills /> Medications
@@ -142,6 +146,7 @@ const SuperUserDashboard = () => {
         {activeTab === "chartData" && <ChartData />}
         {activeTab === "chartDataUpdate" && <ChartDataCard />}  
         {activeTab === "charts" && <Charts />}  
+        {activeTab === "allCharts" && <AllCharts />}  
         
         
       </div>
