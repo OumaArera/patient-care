@@ -21,16 +21,16 @@ const ChartCard = ({ chart }) => {
   }, {});
 
   return (
-    <div className="p-4 w-full shadow-lg border rounded-lg bg-white">
-      <div className="p-4">
-        <h2 className="text-xl font-bold mb-4">
+    <div className="p-4 max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+      <div className="p-6">
+        <h2 className="text-xl font-bold mb-4 text-gray-900">
           Behavior Chart for {chart.patientName}
         </h2>
 
         {/* Behaviors Table */}
-        <h3 className="text-lg font-semibold mb-2">Behaviors</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-300">
+        <h3 className="text-lg font-semibold mb-2 text-gray-800">Behaviors</h3>
+        <div className="overflow-x-auto max-h-[400px] mb-6">
+          <table className="w-full border-collapse border border-gray-300 text-gray-800">
             <thead className="bg-gray-200">
               <tr>
                 <th className="border border-gray-300 px-4 py-2">Category</th>
@@ -41,19 +41,19 @@ const ChartCard = ({ chart }) => {
             <tbody>
               {Object.entries(behaviorsByCategory).map(([category, behaviors]) =>
                 behaviors.map((behavior, index) => (
-                  <tr key={behavior.behavior} className="text-center">
+                  <tr key={behavior.behavior} className="text-center hover:bg-gray-100">
                     {index === 0 && (
                       <td
                         rowSpan={behaviors.length}
-                        className="border border-gray-300 px-4 py-2 font-semibold align-middle"
+                        className="border border-gray-300 px-4 py-2 font-semibold align-middle text-gray-800"
                       >
                         {category}
                       </td>
                     )}
-                    <td className="border border-gray-300 px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 text-gray-800">
                       {behavior.behavior}
                     </td>
-                    <td className="border border-gray-300 px-4 py-2">
+                    <td className="border border-gray-300 px-4 py-2 text-gray-800">
                       {behavior.status === "Yes" ? (
                         <Check className="text-green-500 inline" />
                       ) : (
@@ -68,47 +68,27 @@ const ChartCard = ({ chart }) => {
         </div>
 
         {/* Behavior Description Table */}
-        <h3 className="text-lg font-semibold mt-6 mb-2">
-          Behavior Description
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-300">
+        <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">Behavior Description</h3>
+        <div className="overflow-x-auto max-h-[400px] mb-6">
+          <table className="w-full border-collapse border border-gray-300 text-gray-800">
             <thead className="bg-gray-200">
               <tr>
                 <th className="border border-gray-300 px-4 py-2">Date</th>
                 <th className="border border-gray-300 px-4 py-2">Outcome</th>
                 <th className="border border-gray-300 px-4 py-2">Trigger</th>
-                <th className="border border-gray-300 px-4 py-2">
-                  Behavior Description
-                </th>
-                <th className="border border-gray-300 px-4 py-2">
-                  Care Giver Intervention
-                </th>
-                <th className="border border-gray-300 px-4 py-2">
-                  Reported Provider And Careteam
-                </th>
+                <th className="border border-gray-300 px-4 py-2">Behavior Description</th>
+                <th className="border border-gray-300 px-4 py-2">Care Giver Intervention</th>
+                <th className="border border-gray-300 px-4 py-2">Reported Provider And Careteam</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="text-center">
-                <td className="border border-gray-300 px-4 py-2">
-                  {formattedDate}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {behaviorDescriptions["Outcome"]}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {behaviorDescriptions["Trigger"]}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {behaviorDescriptions["Behavior Description"]}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {behaviorDescriptions["Care Giver Intervention"]}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {behaviorDescriptions["Reported Provider And Careteam"]}
-                </td>
+              <tr className="text-center hover:bg-gray-100">
+                <td className="border border-gray-300 px-4 py-2">{formattedDate}</td>
+                <td className="border border-gray-300 px-4 py-2">{behaviorDescriptions["Outcome"]}</td>
+                <td className="border border-gray-300 px-4 py-2">{behaviorDescriptions["Trigger"]}</td>
+                <td className="border border-gray-300 px-4 py-2">{behaviorDescriptions["Behavior Description"]}</td>
+                <td className="border border-gray-300 px-4 py-2">{behaviorDescriptions["Care Giver Intervention"]}</td>
+                <td className="border border-gray-300 px-4 py-2">{behaviorDescriptions["Reported Provider And Careteam"]}</td>
               </tr>
             </tbody>
           </table>
