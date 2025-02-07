@@ -14,20 +14,20 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     container.style.color = "#000"; // Ensure no `oklch()` colors
 
     let tableHTML = `
-        <div style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px;">
+        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
             ${facilityName} _ ${branchName}
         </div>
-        <div style="font-size: 12px; margin-bottom: 10px;">
+        <div style="font-size: 14px; margin-bottom: 15px;">
             <strong>Year:</strong> ${selectedYear} &nbsp;&nbsp;&nbsp;
             <strong>Month:</strong> ${selectedMonth} &nbsp;&nbsp;&nbsp;
             <strong>Resident Name:</strong> ${patientName}
         </div>
-        <table border="1" style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 10px;">
+        <table border="1" style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
             <thead>
-                <tr style="background: #f0f0f0; text-align: center;">
-                    <th style="padding: 5px;">Category</th>
-                    <th style="padding: 5px;">Log</th>
-                    ${Array.from({ length: 31 }, (_, i) => `<th style="padding: 5px;">${i + 1}</th>`).join("")}
+                <tr style="background: #f0f0f0; text-align: center; font-size: 12px; font-weight: bold;">
+                    <th style="padding: 8px; border: 1px solid #000;">Category</th>
+                    <th style="padding: 8px; border: 1px solid #000;">Log</th>
+                    ${Array.from({ length: 31 }, (_, i) => `<th style="padding: 8px; border: 1px solid #000;">${i + 1}</th>`).join("")}
                 </tr>
             </thead>
             <tbody>`;
@@ -57,11 +57,11 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
         tableHTML += `<tr>`;
         if (index === 0 || arr[index - 1].category !== row.category) {
             const rowspan = arr.filter(r => r.category === row.category).length;
-            tableHTML += `<td style="padding: 5px; text-align: center;" rowspan="${rowspan}">${row.category}</td>`;
+            tableHTML += `<td style="padding: 8px; border: 1px solid #000; text-align: center;" rowspan="${rowspan}">${row.category}</td>`;
         }
-        tableHTML += `<td style="padding: 5px; text-align: center;">${row.behavior}</td>`;
+        tableHTML += `<td style="padding: 8px; border: 1px solid #000; text-align: left;">${row.behavior}</td>`;
         row.days.forEach((status) => {
-            tableHTML += `<td style="padding: 5px; text-align: center;">${status}</td>`;
+            tableHTML += `<td style="padding: 8px; border: 1px solid #000; text-align: center;">${status}</td>`;
         });
         tableHTML += `</tr>`;
     });
@@ -70,7 +70,7 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
 
     // Caregiver sign-off section
     tableHTML += `
-        <div style="font-size: 12px; margin-top: 20px;">
+        <div style="font-size: 14px; margin-top: 20px;">
             <p>Care Giver 1: ..........................   Sign: ........................</p>
             <p>Care Giver 2: ..........................   Sign: ........................</p>
         </div>`;
