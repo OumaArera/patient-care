@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
+import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
@@ -10,6 +11,7 @@ const AllCharts = () => {
     const [charts, setCharts] = useState([]);
     const [loadingPatients, setLoadingPatients] = useState(false);
     const [loadingCharts, setLoadingCharts] = useState(false);
+    const reportRef = useRef();
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -39,12 +41,13 @@ const AllCharts = () => {
             .catch(() => setLoadingCharts(false));
     };
 
-    const generatePDF = () => {
-        const doc = new jsPDF();
-        doc.text("1st EDMONDS", 14, 15);
-        doc.autoTable({ html: "#behaviorTable" });
-        doc.autoTable({ html: "#descriptionTable" });
-        doc.save("Behavior_Log.pdf");
+    const downloadReport = () => {
+        html2canvas(reportRef.current).then((canvas) => {
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jsPDF("p", "mm", "a4");
+            pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
+            pdf.save("Behavior_Log.pdf");
+        });
     };
 
     return (
@@ -68,7 +71,7 @@ const AllCharts = () => {
             </div>
             {loadingCharts && <p>Loading charts...</p>}
             {charts.length > 0 && (
-                <>
+                <div className="border p-4 overflow-auto max-h-[600px]" ref={reportRef}>
                     <h3 className="font-semibold text-lg">Behavior Log</h3>
                     <div className="overflow-x-auto max-w-full">
                         <table id="behaviorTable" className="border w-full text-sm">
@@ -84,17 +87,21 @@ const AllCharts = () => {
                             <tbody>
                                 {charts.reduce((acc, chart) => {
                                     chart.behaviors.forEach((behavior) => {
-                                        let existingRow = acc.find(row => row.category === behavior.category && row.behavior === behavior.behavior);
+                                        let existingRow = acc.find(row => row.behavior === behavior.behavior);
                                         if (!existingRow) {
-                                            existingRow = { category: behavior.category, behavior: behavior.behavior, days: Array(31).fill("") };
+                                            existingRow = { category: behavior.category, behavior: behavior.behavior, days: Array(31).fill(""), rowspan: 1 };
                                             acc.push(existingRow);
+                                        } else {
+                                            existingRow.rowspan++;
                                         }
                                         existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
                                     });
                                     return acc;
-                                }, []).map((row, index) => (
+                                }, []).map((row, index, arr) => (
                                     <tr key={index}>
-                                        <td className="border p-2">{row.category}</td>
+                                        {index === 0 || arr[index - 1].category !== row.category ? (
+                                            <td className="border p-2" rowSpan={arr.filter(r => r.category === row.category).length}>{row.category}</td>
+                                        ) : null}
                                         <td className="border p-2">{row.behavior}</td>
                                         {row.days.map((status, i) => (
                                             <td key={i} className="border p-2 text-center">{status}</td>
@@ -106,11 +113,11 @@ const AllCharts = () => {
                     </div>
                     <button
                         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-                        onClick={generatePDF}
+                        onClick={downloadReport}
                     >
-                        Download PDF
+                        Download Report
                     </button>
-                </>
+                </div>
             )}
         </div>
     );
