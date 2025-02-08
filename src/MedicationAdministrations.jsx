@@ -63,7 +63,7 @@ const MedicationAdministration = () => {
 
     const handleStatusUpdate = async (medicationAdministrationId) => {
         setUpdating(true);
-        if (!statusUpdate) return;
+        // if (!statusUpdate) return;
         console.log("ID:", medicationAdministrationId);
         console.log("Status:", statusUpdate);
         try {
