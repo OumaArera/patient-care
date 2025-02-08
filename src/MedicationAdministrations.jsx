@@ -18,7 +18,7 @@ const MedicationAdministration = () => {
     const [actionOverlay, setActionOverlay] = useState(null);
     const [updating, setUpdating] = useState(false);
     const [statusUpdate, setStatusUpdate] = useState("");
-    const [errors, setErrors] = useState(null);
+    const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
