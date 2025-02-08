@@ -6,7 +6,7 @@ import {
   FaUserInjured, FaMapMarkerAlt, FaDatabase
 } from "react-icons/fa";
 import Updates from "./Updates";
-import Statistics from "./Statistics";
+// import Statistics from "./Statistics";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
 import ManageUser from "./ManageUser";
@@ -51,9 +51,9 @@ const SuperUserDashboard = () => {
         <button className={`p-3 flex items-center gap-2 ${activeTab === "updates" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("updates")}>
           <FaNewspaper /> Updates
         </button>
-        <button className={`p-3 flex items-center gap-2 ${activeTab === "statistics" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("statistics")}>
+        {/* <button className={`p-3 flex items-center gap-2 ${activeTab === "statistics" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("statistics")}>
           <FaChartPie /> Statistics
-        </button>
+        </button> */}
 
         {/* User Management Dropdown */}
         <div>
@@ -138,7 +138,7 @@ const SuperUserDashboard = () => {
         {/* {activeTab === "charts" && <PendingCharts />} */}
         {activeTab === "assignPatient" && <PatientManager />}
         {activeTab === "updates" && <Updates />}
-        {activeTab === "statistics" && <Statistics />}
+        {/* {activeTab === "statistics" && <Statistics />} */}
         {activeTab === "createUser" && <CreateUser />}
         {activeTab === "manageUser" && <ManageUser />}
         {activeTab === "users" && <Users />}

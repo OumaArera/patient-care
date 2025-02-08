@@ -71,7 +71,7 @@ const Updates = () => {
                     ))}
                 </select>
               )}
-                {patients &&(
+                {patients.length>0 &&(
                   <>
                     <select
                       className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
