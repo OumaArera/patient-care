@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaChartBar, FaPills, FaNewspaper, FaUser, FaSignOutAlt, FaLock
@@ -6,8 +6,8 @@ import {
 import Updates from "./Updates";
 import handleLogout from "./Logout";
 import ChangePassword from "./ChangePassword";
+import Charts from "./Charts";
 import Medication from "./Medication";
-import ChartPatient from "./ChartPatient";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -69,7 +69,7 @@ const CareGiverDashboard = () => {
         {/* Dynamic Content Rendering */}
         {activeTab === "updates" && <Updates />}
         {activeTab === "changePassword" && <ChangePassword />}
-        {activeTab === "charts" && <ChartPatient />}  
+        {activeTab === "charts" && <Charts />}  
         {activeTab === "medications" && <Medication />}  
       </div>
     </div>
