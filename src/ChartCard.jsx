@@ -48,7 +48,7 @@ const ChartCard = ({ chart, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-50 bg-gray-900 bg-opacity-50">
+    <div className="bg-gray-900 text-white min-h-screen fixed inset-0 flex justify-center items-center z-50 bg-opacity-50">
       <div
         ref={cardRef}
         className="p-4 max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden"

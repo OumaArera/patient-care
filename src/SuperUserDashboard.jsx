@@ -21,6 +21,7 @@ import Charts from "./Charts";
 import AllCharts from "./AllCharts";
 import MedicationAdministration from "./MedicationAdministrations";
 import PatientManager from "./PatientManagers";
+import ChangePassword from "./ChangePassword";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -138,7 +139,7 @@ const SuperUserDashboard = () => {
         {/* {activeTab === "charts" && <PendingCharts />} */}
         {activeTab === "assignPatient" && <PatientManager />}
         {activeTab === "updates" && <Updates />}
-        {/* {activeTab === "statistics" && <Statistics />} */}
+        {activeTab === "changePassword" && <ChangePassword />}
         {activeTab === "createUser" && <CreateUser />}
         {activeTab === "manageUser" && <ManageUser />}
         {activeTab === "users" && <Users />}
