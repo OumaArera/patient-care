@@ -177,47 +177,60 @@ const MedicationAdministration = () => {
                                     <th className="p-3">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {filteredMedAdmin.map((entry, index) => (
-                                    <tr key={entry.medicationAdministrationId} className="border-t border-gray-700">
-                                        <td className="p-3 border-t border-gray-700">{index === 0 || entry.patientName !== filteredMedAdmin[index - 1]?.patientName ? entry.patientName : ""}</td>
-                                        <td className="p-3 ">{new Date(entry.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</td>
-                                        <td className="p-3">{entry.timeAdministered}</td>
-                                        <td className="p-3">{entry.careGiverName}</td>
-                                        <td className="p-3">{entry.reasonNotFiled || ""}</td>
-                                        <td className="p-3">{entry.status}</td>
-                                        <td className="p-3 relative">
-                                            <button onClick={() => setActionOverlay(entry.medicationAdministrationId)}>
-                                                <MoreVertical className="text-white" />
-                                            </button>
-                                            {actionOverlay === entry.medicationAdministrationId && (
-                                                <div
-                                                    ref={overlayRef} // Attach the ref
-                                                    className="absolute bg-gray-800 p-4 shadow-md rounded-lg right-0 top-10 mt-1 z-50"
-                                                >
-                                                    <select
-                                                        className="border px-4 py-2 bg-gray-700 text-white rounded"
-                                                        onChange={(e) => setStatusUpdate(e.target.value)}
-                                                    >
-                                                        <option value="">Select Status</option>
-                                                        <option value="approved">Approve</option>
-                                                        <option value="declined">Decline</option>
-                                                    </select>
-                                                    <button
-                                                        onClick={() => handleStatusUpdate(entry.medicationAdministrationId, statusUpdate)}
-                                                        className="bg-blue-500 text-white px-4 py-2 rounded mt-2 block w-full"
-                                                        disabled={updating || !statusUpdate}
-                                                    >
-                                                        {updating ? "Updating..." : "Submit"}
-                                                    </button>
+                                <tbody>
+                                    {filteredMedAdmin.reduce((acc, entry, index, arr) => {
+                                        const isNewPatient = index === 0 || entry.patientName !== arr[index - 1]?.patientName;
+                                        const rowspan = arr.filter((e) => e.patientName === entry.patientName).length;
 
-                                                    {message && <p className="text-green-600">{message}</p>}
-                                                </div>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
+                                        acc.push(
+                                            <tr key={entry.medicationAdministrationId} className="border border-gray-700">
+                                                {isNewPatient && (
+                                                    <td
+                                                        className="p-3 border border-gray-700 text-center align-middle"
+                                                        rowSpan={rowspan} 
+                                                    >
+                                                        {entry.patientName}
+                                                    </td>
+                                                )}
+                                                <td className="p-3 border border-gray-700">{new Date(entry.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</td>
+                                                <td className="p-3 border border-gray-700">{entry.timeAdministered}</td>
+                                                <td className="p-3 border border-gray-700">{entry.careGiverName}</td>
+                                                <td className="p-3 border border-gray-700">{entry.reasonNotFiled || ""}</td>
+                                                <td className="p-3 border border-gray-700">{entry.status}</td>
+                                                <td className="p-3 border border-gray-700 relative">
+                                                    <button onClick={() => setActionOverlay(entry.medicationAdministrationId)}>
+                                                        <MoreVertical className="text-white" />
+                                                    </button>
+                                                    {actionOverlay === entry.medicationAdministrationId && (
+                                                        <div
+                                                            ref={overlayRef} // Attach the ref
+                                                            className="absolute bg-gray-800 p-4 shadow-md rounded-lg right-0 top-10 mt-1 z-50"
+                                                        >
+                                                            <select
+                                                                className="border px-4 py-2 bg-gray-700 text-white rounded"
+                                                                onChange={(e) => setStatusUpdate(e.target.value)}
+                                                            >
+                                                                <option value="">Select Status</option>
+                                                                <option value="approved">Approve</option>
+                                                                <option value="declined">Decline</option>
+                                                            </select>
+                                                            <button
+                                                                onClick={() => handleStatusUpdate(entry.medicationAdministrationId, statusUpdate)}
+                                                                className="bg-blue-500 text-white px-4 py-2 rounded mt-2 block w-full"
+                                                                disabled={updating || !statusUpdate}
+                                                            >
+                                                                {updating ? "Updating..." : "Submit"}
+                                                            </button>
+
+                                                            {message && <p className="text-green-600">{message}</p>}
+                                                        </div>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                        return acc;
+                                    }, [])}
+                                </tbody>
                         </table>
                     </div>
                 </>
