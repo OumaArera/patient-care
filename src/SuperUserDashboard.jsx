@@ -5,7 +5,6 @@ import {
   FaUserPlus, FaUserTimes, FaUndo, FaChartPie, FaLock, FaHospital,
   FaUserInjured, FaMapMarkerAlt, FaDatabase
 } from "react-icons/fa";
-import PendingMedications from "./PendingMedications";
 import Updates from "./Updates";
 import Statistics from "./Statistics";
 import handleLogout from "./Logout";
@@ -133,7 +132,7 @@ const SuperUserDashboard = () => {
 
         {/* Dynamic Content Rendering */}
         {/* {activeTab === "charts" && <PendingCharts />} */}
-        {activeTab === "medications" && <PendingMedications />}
+        {/* {activeTab === "medications" && <PendingMedications />} */}
         {activeTab === "updates" && <Updates />}
         {activeTab === "statistics" && <Statistics />}
         {activeTab === "createUser" && <CreateUser />}
