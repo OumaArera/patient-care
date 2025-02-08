@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { postCharts } from "../services/postCharts"; // Method to handle form submission
+import { postCharts } from "../services/postCharts";
 import { Loader } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
