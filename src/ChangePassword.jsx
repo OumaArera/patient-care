@@ -12,6 +12,8 @@ const ChangePassword = ({ onClose }) => {
     const token = localStorage.getItem("token");
     const modalRef = useRef(null);
 
+    console.log(`User ID: ${localStorage.getItem("userId")}`)
+
     const API_URL = "https://patient-care-server.onrender.com/api/v1/auth/change-password";
 
     // Password Validation Checks
