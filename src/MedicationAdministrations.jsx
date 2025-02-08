@@ -176,7 +176,20 @@ const MedicationAdministration = () => {
                                                 <MoreVertical className="text-white" />
                                             </button>
                                             {actionOverlay === entry.medicationAdministrationId && (
-                                                <div className="absolute bg-gray-800 p-4 shadow-md rounded-lg right-0 mt-2">
+                                                <div
+                                                    className="absolute bg-gray-800 p-4 shadow-md rounded-lg right-0 top-full mt-2 z-10"
+                                                    ref={(ref) => {
+                                                        if (ref) {
+                                                            const handleClickOutside = (event) => {
+                                                                if (!ref.contains(event.target)) {
+                                                                    setActionOverlay(null);
+                                                                }
+                                                            };
+                                                            document.addEventListener("mousedown", handleClickOutside);
+                                                            return () => document.removeEventListener("mousedown", handleClickOutside);
+                                                        }
+                                                    }}
+                                                >
                                                     <select className="border px-4 py-2 bg-gray-700 text-white rounded" onChange={(e) => setStatusUpdate(e.target.value)}>
                                                         <option value="approved">Approve</option>
                                                         <option value="declined">Decline</option>
@@ -192,6 +205,7 @@ const MedicationAdministration = () => {
                                                 </div>
                                             )}
                                         </td>
+
                                     </tr>
                                 ))}
                             </tbody>
