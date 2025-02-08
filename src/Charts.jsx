@@ -97,18 +97,21 @@ const Charts = () => {
           <p className="text-gray-400">Loading patients...</p>
         </div>
       ) : (
-        <select
-          onChange={handleSelectPatient}
-          value={selectedPatient || ""}
-          className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
-        >
-          <option value="">Select Patient</option>
-          {patients.map((patient) => (
-            <option key={patient.patientId} value={patient.patientId}>
-              {patient.firstName} {patient.lastName}
-            </option>
-          ))}
-        </select>
+        <>
+          <label className="block mb-2 text-lg">Select Patient:</label>
+          <select
+            onChange={handleSelectPatient}
+            value={selectedPatient || ""}
+            className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+          >
+            <option value="">Select Patient</option>
+            {patients.map((patient) => (
+              <option key={patient.patientId} value={patient.patientId}>
+                {patient.firstName} {patient.lastName}
+              </option>
+            ))}
+          </select>
+        </>
       )}
 
       {message && (
