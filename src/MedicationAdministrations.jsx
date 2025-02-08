@@ -153,12 +153,12 @@ const MedicationAdministration = () => {
                         <table className="w-full border-collapse border border-gray-700">
                             <thead>
                                 <tr className="bg-gray-800 text-white">
-                                    <th className="p-3">Patient</th>
-                                    <th className="p-3">Date Administered</th>
-                                    <th className="p-3">Time Administered</th>
-                                    <th className="p-3">Care Giver</th>
-                                    <th className="p-3">Reason Not Filled</th>
-                                    <th className="p-3">Status</th>
+                                    <th className="p-3 border-r border-gray-700">Patient</th>
+                                    <th className="p-3 border-r border-gray-700">Date Administered</th>
+                                    <th className="p-3 border-r border-gray-700">Time Administered</th>
+                                    <th className="p-3 border-r border-gray-700">Care Giver</th>
+                                    <th className="p-3 border-r border-gray-700">Reason Not Filled</th>
+                                    <th className="p-3 border-r border-gray-700">Status</th>
                                     <th className="p-3">Action</th>
                                 </tr>
                             </thead>
@@ -166,7 +166,7 @@ const MedicationAdministration = () => {
                                 {filteredMedAdmin.map((entry, index) => (
                                     <tr key={entry.medicationAdministrationId} className="border-t border-gray-700">
                                         <td className="p-3">{index === 0 || entry.patientName !== filteredMedAdmin[index - 1]?.patientName ? entry.patientName : ""}</td>
-                                        <td className="p-3">{new Date(entry.createdAt).toLocaleDateString()}</td>
+                                        <td className="p-3 border-r border-gray-700">{new Date(entry.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</td>
                                         <td className="p-3">{entry.timeAdministered}</td>
                                         <td className="p-3">{entry.careGiverName}</td>
                                         <td className="p-3">{entry.reasonNotFiled || ""}</td>
