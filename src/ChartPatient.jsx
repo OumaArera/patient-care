@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getpatientManagers } from "../services/getPatientManagers";
 import { getCharts } from "../services/getCharts";
 import { getChartsData } from "../services/getChartData";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
+import NewCharts from "./NewCharts";
 
 const ChartPatient = () => {
   const [patientManagers, setPatientManagers] = useState([]);
@@ -11,31 +12,31 @@ const ChartPatient = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [loadingCharts, setLoadingCharts] = useState(false);
-  const [errors, setErrors] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [charts, setCharts] = useState([]);
+  const [showNewCharts, setShowNewCharts] = useState(false);
+  const overlayRef = useRef(null);
 
+  const fetchCharts = (patientId) => {
+    setLoadingCharts(true);
+    getCharts(patientId)
+      .then((data) => {
+        setCharts(data?.responseObject || []);
+        setLoadingCharts(false);
+      })
+      .catch(() => setLoadingCharts(false));
+  };
 
-    const fetchCharts = (patientId) => {
-        setLoadingCharts(true);
-        getCharts(patientId)
-        .then((data) => {
-            setCharts(data?.responseObject || []);
-            setLoadingCharts(false);
-        })
-        .catch(() => setLoadingCharts(false));
-    };
+  const fetchChartsData = (patientId) => {
+    setLoadingCharts(true);
+    getChartsData(patientId)
+      .then((data) => {
+        setChartData(data?.responseObject || []);
+        setLoadingCharts(false);
+      })
+      .catch(() => setLoadingCharts(false));
+  };
 
-    const fetchChartsData = (patientId) => {
-        setLoadingCharts(true);
-        getChartsData(patientId)
-        .then((data) => {
-            setChartData(data?.responseObject || []);
-            setLoadingCharts(false);
-        })
-        .catch(() => setLoadingCharts(false));
-    };
-  
   const patientsPerPage = 3;
 
   useEffect(() => {
@@ -49,6 +50,26 @@ const ChartPatient = () => {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (overlayRef.current && !overlayRef.current.contains(event.target)) {
+        setShowNewCharts(false);
+      }
+    };
+
+    if (showNewCharts) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showNewCharts]);
+
+  const handleChartsClick = (patientId) => {
+    fetchCharts(patientId);
+    fetchChartsData(patientId);
+    setShowNewCharts(true);
+  };
 
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
@@ -69,7 +90,7 @@ const ChartPatient = () => {
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Patient Managers</h2>
-      
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader className="animate-spin" size={32} />
@@ -79,7 +100,7 @@ const ChartPatient = () => {
           {/* Patient Selection Dropdown */}
           <div className="mb-4">
             <label className="block mb-2 text-gray-400">Select Patient</label>
-            <select 
+            <select
               className="p-2 bg-gray-800 border border-gray-700 rounded w-full"
               onChange={(e) => setSelectedPatientId(e.target.value)}
               value={selectedPatientId || ""}
@@ -109,17 +130,19 @@ const ChartPatient = () => {
                   <p className="text-sm text-gray-400">Branch: {patient.branchName}</p>
                   <p className="text-sm text-gray-400">Room: {patient.room} | Cart: {patient.cart}</p>
                   <div className="flex justify-between mt-4">
-                    <button className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100">
-                        Charts
+                    <button
+                      className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                      onClick={() => handleChartsClick(patient.patientId)}
+                    >
+                      Charts
                     </button>
                     <button className="px-4 py-2 border border-yellow-500 text-yellow-600 rounded-md hover:bg-yellow-100">
-                        Updates
+                      Updates
                     </button>
                     <button className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100">
-                        Medications
+                      Medications
                     </button>
-                </div>
-
+                  </div>
                 </div>
               ))}
           </div>
@@ -127,30 +150,42 @@ const ChartPatient = () => {
           {/* Pagination Controls */}
           {patientManagers.length > patientsPerPage && (
             <div className="flex justify-between mt-6">
-                <button 
-                    onClick={prevPage} 
-                    disabled={currentPage === 1} 
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600"
-                >Previous
-                </button>
-                
-                <button 
-                    onClick={nextPage} 
-                    disabled={indexOfLastPatient >= patientManagers.length} 
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600"
-                >Next
-            </button>
-          </div>
-          
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600"
+              >
+                Previous
+              </button>
+
+              <button
+                onClick={nextPage}
+                disabled={indexOfLastPatient >= patientManagers.length}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600"
+              >
+                Next
+              </button>
+            </div>
           )}
         </>
+      )}
+
+      {/* Overlay for NewCharts */}
+      {showNewCharts && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div ref={overlayRef} className="bg-gray-900 p-6 rounded-lg w-11/12 max-w-4xl">
+            <button
+              className="absolute top-4 right-4 text-white hover:text-gray-400"
+              onClick={() => setShowNewCharts(false)}
+            >
+              ✖
+            </button>
+            <NewCharts charts={charts} chartsData={chartData} />
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
 export default ChartPatient;
-
-
-
-    
