@@ -29,7 +29,6 @@ export const generateMedicationPDFReport = async (medications, selectedYear, sel
                     <th style="padding: 8px; border: 1px solid #000;">Time Administered</th>
                     <th style="padding: 8px; border: 1px solid #000;">Care Giver</th>
                     <th style="padding: 8px; border: 1px solid #000;">Status</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Reason Not Filled</th>
                 </tr>
             </thead>
             <tbody>`;
@@ -43,7 +42,6 @@ export const generateMedicationPDFReport = async (medications, selectedYear, sel
                 <td style="padding: 8px; border: 1px solid #000; text-align: center;">${entry.timeAdministered}</td>
                 <td style="padding: 8px; border: 1px solid #000; text-align: center;">${entry.careGiverName}</td>
                 <td style="padding: 8px; border: 1px solid #000; text-align: center;">${entry.status}</td>
-                <td style="padding: 8px; border: 1px solid #000; text-align: center;">${entry.reasonNotFiled || "N/A"}</td>
             </tr>`;
     });
 
