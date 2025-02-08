@@ -1,6 +1,8 @@
 export const updateMedAdmin = async (medicationAdministrationId, updatedData) => {
     const token = localStorage.getItem("token");
     const url = "https://patient-care-server.onrender.com/api/v1/medication-administrations";
+    console.log("ID on Method:", medicationAdministrationId);
+        console.log("Status on Method:", updatedData);
     try {
         const response = await fetch(`${url}/${medicationAdministrationId}`, {
             method: "PUT",
