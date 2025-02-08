@@ -99,7 +99,7 @@ const AllCharts = () => {
             {charts.length > 0 && (
                 <div className="mb-4">
                     <label className="font-semibold">Select Year: </label>
-                    <select className="border px-4 py-2 ml-2" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+                    <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
                         <option value="">-- Select Year --</option>
                         {getAvailableYears().map(year => (
                             <option key={year} value={year}>{year}</option>
@@ -107,7 +107,7 @@ const AllCharts = () => {
                     </select>
 
                     <label className="font-semibold ml-4">Select Month: </label>
-                    <select className="border px-4 py-2 ml-2" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} disabled={!selectedYear}>
+                    <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} disabled={!selectedYear}>
                         <option value="">-- Select Month --</option>
                         {getAvailableMonths().map(month => (
                             <option key={month} value={month}>{month}</option>
