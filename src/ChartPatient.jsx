@@ -152,28 +152,4 @@ const ChartPatient = () => {
 export default ChartPatient;
 
 
-
-
-
-
-
-
-const [patientManagers, setPatientManagers] = useState([]);
-  const [loadingManagers, setLoadingManagers] = useState(false);
-  
-  
-
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-    setLoadingManagers(true);
-    getpatientManagers(userId)
-      .then((data) => {
-        setPatientManagers(data?.responseObject || []);
-        setLoadingManagers(false);
-      })
-      .catch(() => setLoadingManagers(false));
-  }, []);
-
-
     

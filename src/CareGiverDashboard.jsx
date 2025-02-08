@@ -6,8 +6,8 @@ import {
 import Updates from "./Updates";
 import handleLogout from "./Logout";
 import ChangePassword from "./ChangePassword";
-import Charts from "./Charts";
 import Medication from "./Medication";
+import ChartPatient from "./ChartPatient";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -69,7 +69,7 @@ const CareGiverDashboard = () => {
         {/* Dynamic Content Rendering */}
         {activeTab === "updates" && <Updates />}
         {activeTab === "changePassword" && <ChangePassword />}
-        {activeTab === "charts" && <Charts />}  
+        {activeTab === "charts" && <ChartPatient />}  
         {activeTab === "medications" && <Medication />}  
       </div>
     </div>
