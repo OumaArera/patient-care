@@ -140,7 +140,10 @@ const ChartData = () => {
         <div className="bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Chart Data</h2>
             <label className="block text-gray-300">Time to be Taken:</label>
-            <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full text-white" />
+            <input 
+                type="time" 
+                value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} 
+                className="border p-2 rounded w-full bg-gray-700 text-white" />
             
             <label className="block mt-2 text-gray-300">Select Patient:</label>
             {loadingPatients ? (
