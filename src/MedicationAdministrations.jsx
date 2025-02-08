@@ -3,6 +3,7 @@ import { fetchPatients } from "../services/fetchPatients";
 import { getMedicationAdmininstration } from "../services/getMedicationAdministration";
 import { updateMedAdmin } from "../services/updateMedAdmin";
 import { errorHandler } from "../services/errorHandler";
+import { generateMedicationPDFReport } from "../services/generateMedicationReport";
 import { Loader, MoreVertical } from "lucide-react";
 
 const MedicationAdministration = () => {
@@ -161,7 +162,20 @@ const MedicationAdministration = () => {
                                 </option>
                             ))}
                         </select>
-                        <button className="bg-blue-500 px-4 py-2 rounded text-white">Load Report</button>
+                        <div className="mb-4 min-h-[40px] flex items-center">
+                            {filteredMedAdmin.length > 0 && selectedYear && selectedMonth && (
+                                <button 
+                                    className="bg-blue-500 text-white px-4 py-2 rounded" 
+                                    onClick={() => generateMedicationPDFReport(
+                                        filteredMedAdmin, 
+                                        selectedYear, 
+                                        selectedMonth
+                                    )}
+                                >
+                                    Load Report
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="bg-gray-800 p-4 rounded-lg overflow-auto">
