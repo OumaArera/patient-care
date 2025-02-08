@@ -48,53 +48,59 @@ const Updates = () => {
         );
     });
 
+    // Count occurrences of each patientName
+    const patientNameCounts = {};
+    filteredUpdates.forEach((update) => {
+        patientNameCounts[update.patientName] = (patientNameCounts[update.patientName] || 0) + 1;
+    });
+
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold mb-4 text-blue-400">Patient Updates</h2>
             <div className="mb-4 flex space-x-4">
-              {loadingPatients?(
-                <div className="flex justify-center items-center">
-                <Loader className="animate-spin text-blue-400" size={24} />
-                <p className="text-gray-400">Loading patients...</p>
-            </div>
-              ):(
-                <select
-                    className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
-                    onChange={handlePatientChange}
-                    value={selectedPatient || ""}
-                >
-                    <option value="">Select a Patient</option>
-                    {patients.map((patient) => (
-                        <option key={patient.patientId} value={patient.patientId}>
-                            {`${patient.firstName} ${patient.lastName}`}
-                        </option>
-                    ))}
-                </select>
-              )}
-                {patients.length>0 &&(
-                  <>
+                {loadingPatients ? (
+                    <div className="flex justify-center items-center">
+                        <Loader className="animate-spin text-blue-400" size={24} />
+                        <p className="text-gray-400">Loading patients...</p>
+                    </div>
+                ) : (
                     <select
-                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
-                      onChange={(e) => setSelectedYear(e.target.value)}
+                        className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                        onChange={handlePatientChange}
+                        value={selectedPatient || ""}
                     >
-                      <option value="">Select Year</option>
-                      {[...new Set(updates.map((u) => new Date(u.dateTaken).getFullYear()))].map((year) => (
-                          <option key={year} value={year}>{year}</option>
-                      ))}
+                        <option value="">Select a Patient</option>
+                        {patients.map((patient) => (
+                            <option key={patient.patientId} value={patient.patientId}>
+                                {`${patient.firstName} ${patient.lastName}`}
+                            </option>
+                        ))}
                     </select>
+                )}
 
-                    <select
-                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
-                      onChange={(e) => setSelectedMonth(e.target.value)}
-                    >
-                      <option value="">Select Month</option>
-                      {[...Array(12).keys()].map((month) => (
-                          <option key={month + 1} value={month + 1}>{new Date(0, month).toLocaleString('default', { month: 'long' })}</option>
-                      ))}
-                    </select>
-                  </>
-                )
-                }
+                {patients.length > 0 && (
+                    <>
+                        <select
+                            className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                        >
+                            <option value="">Select Year</option>
+                            {[...new Set(updates.map((u) => new Date(u.dateTaken).getFullYear()))].map((year) => (
+                                <option key={year} value={year}>{year}</option>
+                            ))}
+                        </select>
+
+                        <select
+                            className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                        >
+                            <option value="">Select Month</option>
+                            {[...Array(12).keys()].map((month) => (
+                                <option key={month + 1} value={month + 1}>{new Date(0, month).toLocaleString('default', { month: 'long' })}</option>
+                            ))}
+                        </select>
+                    </>
+                )}
             </div>
 
             {loadingUpdates ? (
@@ -114,16 +120,28 @@ const Updates = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredUpdates.map((update, index) => (
-                            <tr key={update.updateId} className="odd:bg-gray-800 even:bg-gray-700">
-                                <td className="border border-gray-700 p-2 text-center">{update.patientName}</td>
-                                <td className="border border-gray-700 p-2 text-center">{update.dateTaken}</td>
-                                <td className="border border-gray-700 p-2">{update.notes}</td>
-                                <td className="border border-gray-700 p-2">{update.careGiverName}</td>
-                                <td className="border border-gray-700 p-2">{update.facilityName}</td>
-                                <td className="border border-gray-700 p-2">{update.branchName}</td>
-                            </tr>
-                        ))}
+                        {filteredUpdates.map((update, index) => {
+                            const isFirstOccurrence = patientNameCounts[update.patientName] !== 0;
+                            const rowSpan = isFirstOccurrence ? patientNameCounts[update.patientName] : 1;
+                            if (isFirstOccurrence) {
+                                patientNameCounts[update.patientName] = 0;
+                            }
+
+                            return (
+                                <tr key={update.updateId} className="odd:bg-gray-800 even:bg-gray-700">
+                                    {isFirstOccurrence && (
+                                        <td className="border border-gray-700 p-2 text-center" rowSpan={rowSpan}>
+                                            {update.patientName}
+                                        </td>
+                                    )}
+                                    <td className="border border-gray-700 p-2 text-center">{update.dateTaken}</td>
+                                    <td className="border border-gray-700 p-2">{update.notes}</td>
+                                    <td className="border border-gray-700 p-2">{update.careGiverName}</td>
+                                    <td className="border border-gray-700 p-2">{update.facilityName}</td>
+                                    <td className="border border-gray-700 p-2">{update.branchName}</td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             )}
