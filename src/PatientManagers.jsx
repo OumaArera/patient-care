@@ -49,10 +49,10 @@ const PatientManager = () => {
         setSubmitting(true);
         setErrors(null);
 
-        console.log("Patient: ", selectedPatient);
-        console.log("Care Giver: ", selectedCareGiver);
+        console.log("Patient: ", selectedPatient.patientId,);
+        console.log("Care Giver: ", selectedCareGiver.userId );
 
-        const payload = { patient: selectedPatient, careGiver: selectedCareGiver };
+        const payload = { patient: selectedPatient.patientId, careGiver: selectedCareGiver.userId };
         try {
             const response = await postPatientManager(payload);
             if (response?.error) {
