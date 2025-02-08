@@ -89,18 +89,18 @@ const Charts = () => {
 
   return (
     <div className=" bg-gray-900 text-white min-h-screen">
-      <h2 className="text-2xl font-bold mb-4 text-black">Patient Charts</h2>
+      <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Patient Charts</h2>
 
       {loadingPatients ? (
         <div className="flex items-center space-x-2">
-          <Loader className="animate-spin text-gray-500" size={20} />
-          <p className="text-gray-500">Loading patients...</p>
+          <Loader className="animate-spin text-gray-400" size={20} />
+          <p className="text-gray-400">Loading patients...</p>
         </div>
       ) : (
         <select
           onChange={handleSelectPatient}
           value={selectedPatient || ""}
-          className="w-full border border-gray-300 p-2 rounded-md mb-4 bg-white text-gray-700"
+          className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
         >
           <option value="">Select Patient</option>
           {patients.map((patient) => (
@@ -112,12 +112,12 @@ const Charts = () => {
       )}
 
       {message && (
-        <p className="text-green-600 bg-green-100 p-2 rounded-md text-center mb-4">
+        <p className="text-green-600">
           {message}
         </p>
       )}
       {errors.length > 0 && (
-        <div className="bg-red-100 p-3 rounded-md mb-4">
+        <div className="p-3 rounded-md mb-4">
           {errors.map((error, index) => (
             <p key={index} className="text-red-700 text-sm">{error}</p>
           ))}
@@ -128,38 +128,38 @@ const Charts = () => {
         <>
           {loadingCharts ? (
             <div className="text-center">
-              <Loader className="animate-spin text-gray-500 mx-auto" size={20} />
-              <p className="text-gray-500 mt-2">Loading charts...</p>
+              <Loader className="animate-spin text-gray-400 mx-auto" size={20} />
+              <p className="text-gray-400 mt-2">Loading charts...</p>
             </div>
           ) : (
             <div className="overflow-x-auto max-h-96">
-              <table className="w-full border-collapse border border-gray-300 text-black">
-                <thead className="bg-gray-200">
-                  <tr>
-                    <th className="border border-gray-300 px-4 py-2">Date</th>
-                    <th className="border border-gray-300 px-4 py-2">Patient</th>
-                    <th className="border border-gray-300 px-4 py-2">Status</th>
-                    <th className="border border-gray-300 px-4 py-2">Reason Not Filed</th>
-                    <th className="border border-gray-300 px-4 py-2">View</th>
-                    <th className="border border-gray-300 px-4 py-2">Action</th>
+              <table className="w-full border-collapse border border-gray-700 text-white">
+                <thead className="">
+                  <tr className="bg-gray-700">
+                    <th className="p-3 border border-gray-600">Date</th>
+                    <th className="p-3 border border-gray-600">Patient</th>
+                    <th className="p-3 border border-gray-600">Status</th>
+                    <th className="p-3 border border-gray-600">Reason Not Filed</th>
+                    <th className="p-3 border border-gray-600">View</th>
+                    <th className="p-3 border border-gray-600">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {last20Days.map((date) => {
                     const chart = charts.find((c) => c.dateTaken.startsWith(date));
                     return (
-                      <tr key={date} className="text-center hover:bg-gray-100">
-                        <td className="border border-gray-300 px-4 py-2">{date}</td>
-                        <td className="border border-gray-300 px-4 py-2">
+                      <tr key={date} className="bg-gray-900 text-gray-300">
+                        <td className="p-2 border border-gray-700">{date}</td>
+                        <td className="p-2 border border-gray-700">
                           {chart ? chart.patientName : "Missing"}
                         </td>
-                        <td className="border border-gray-300 px-4 py-2">
+                        <td className="p-2 border border-gray-700">
                           {chart ? chart.status : "Missing"}
                         </td>
-                        <td className="border border-gray-300 px-4 py-2 text-gray-600">
+                        <td className="p-2 border border-gray-700">
                           {chart?.reasonNotFiled || "—"}
                         </td>
-                        <td className="border border-gray-300 px-4 py-2">
+                        <td className="p-2 border border-gray-700">
                           {chart && (
                             <button
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
@@ -172,11 +172,11 @@ const Charts = () => {
                             </button>
                           )}
                         </td>
-                        <td className="border border-gray-300 px-4 py-2">
+                        <td className="p-2 border border-gray-700">
                         {chart && (
                           <>
                             <button
-                              className="text-gray-600 hover:text-gray-800"
+                              className="text-gray-100 hover:text-gray-200"
                               onClick={() => setStatusMenu(chart.chartId)}
                             >
                               ⋮
@@ -194,7 +194,7 @@ const Charts = () => {
                                       [chart.chartId]: e.target.value,
                                     })
                                   }
-                                  className="border border-gray-300 p-2 rounded-md"
+                                  className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
                                 >
                                   <option value="">Select</option>
                                   {chart.status !== "approved" && <option value="approved">Approve</option>}
@@ -223,7 +223,7 @@ const Charts = () => {
       )}
 
       {showChartCard && selectedChart && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="p-6 bg-gray-900 text-white min-h-screen">
           <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
         </div>
       )}
