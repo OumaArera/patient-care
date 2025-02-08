@@ -78,7 +78,6 @@ const MedicationAdministration = () => {
                 setErrors(errorHandler(response.error));
                 setTimeout(() => setErrors(null), 5000);
             } else {
-                setStatusUpdate(null);
                 setMessage("Medication Data updated successfully.");
                 setTimeout(() => setMessage(null), 5000);
                 fetchCharts(selectedPatient);
@@ -198,10 +197,7 @@ const MedicationAdministration = () => {
                                                 >
                                                     <select
                                                         className="border px-4 py-2 bg-gray-700 text-white rounded"
-                                                        onChange={(e) => {
-                                                            console.log("Selected status:", e.target.value);
-                                                            setStatusUpdate(e.target.value);
-                                                        }}
+                                                        onChange={(e) => setStatusUpdate(e.target.value)}
                                                     >
                                                         <option value="">Select Status</option> {/* Ensure there's a default empty value */}
                                                         <option value="approved">Approve</option>
@@ -210,7 +206,7 @@ const MedicationAdministration = () => {
                                                     <button
                                                         onClick={() => handleStatusUpdate(entry.medicationAdministrationId, statusUpdate)}
                                                         className="bg-blue-500 text-white px-4 py-2 rounded mt-2 block w-full"
-                                                        disabled={updating || !statusUpdate} // Prevent clicking if status is not selected
+                                                        disabled={updating || !statusUpdate} 
                                                     >
                                                         {updating ? "Updating..." : "Submit"}
                                                     </button>
