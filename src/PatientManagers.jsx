@@ -4,14 +4,13 @@ import { getCareGivers } from "../services/getCareGivers";
 import { postPatientManager } from "../services/postPatientManagers";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
-import { FaUserCircle } from "react-icons/fa";
 
 const PatientManager = () => {
     const [loadingPatients, setLoadingPatients] = useState(false);
     const [loadingCareGivers, setLoadingCareGivers] = useState(false);
     const [patients, setPatients] = useState([]);
     const [careGivers, setCareGivers] = useState([]);
-    const [errors, setErrors] = useState(null);
+    const [errors, setErrors] = useState([]);
     const [submitting, setSubmitting] = useState(false);
     const [message, setMessage] = useState(null);
     const [patientManager, setPatientManager] = useState([]);
@@ -26,7 +25,7 @@ const PatientManager = () => {
                 setLoadingPatients(false);
             })
             .catch(() => {
-                setErrors("Failed to fetch patients.");
+                setErrors(["Failed to fetch patients."]);
                 setLoadingPatients(false);
             });
     }, []);
@@ -39,7 +38,7 @@ const PatientManager = () => {
                 setLoadingCareGivers(false);
             })
             .catch(() => {
-                setErrors("Failed to fetch caregivers.");
+                setErrors(["Failed to fetch caregivers."]);
                 setLoadingCareGivers(false);
             });
     }, []);
@@ -48,9 +47,6 @@ const PatientManager = () => {
         if (!selectedPatient || !selectedCareGiver) return;
         setSubmitting(true);
         setErrors(null);
-
-        console.log("Patient: ", selectedPatient.patientId,);
-        console.log("Care Giver: ", selectedCareGiver.userId );
 
         const payload = { patient: selectedPatient.patientId, careGiver: selectedCareGiver.userId };
         try {
@@ -62,7 +58,7 @@ const PatientManager = () => {
                 setMessage("Chart data posted successfully.");
             }
         } catch (err) {
-            setErrors("Something went wrong. Please try again.");
+            setErrors(["Something went wrong. Please try again."]);
         } finally {
             setSubmitting(false);
         }
@@ -71,7 +67,13 @@ const PatientManager = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h1 className="text-2xl font-bold mb-4">Patient Manager</h1>
-            {errors && <p className="text-red-500">{errors}</p>}
+            {errors.length > 0 && (
+                <div className="bg-red-100 p-3 rounded-md mb-4">
+                    {errors.map((error, index) => (
+                        <p key={index} className="text-red-700 text-sm">{error}</p>
+                    ))}
+                </div>
+            )}
             {message && <p className="text-green-500">{message}</p>}
 
             {/* Patient Selection */}
