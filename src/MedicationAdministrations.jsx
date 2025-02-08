@@ -78,10 +78,8 @@ const MedicationAdministration = () => {
                 setErrors(errorHandler(response.error));
                 setTimeout(() => setErrors(null), 5000);
             } else {
-                console.log("HEllo")
                 setMessage("Medication Data updated successfully.");
                 setTimeout(() => setMessage(null), 5000);
-                fetchCharts(selectedPatient);
             }
 
             
