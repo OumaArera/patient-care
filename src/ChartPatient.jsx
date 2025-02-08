@@ -15,7 +15,6 @@ const ChartPatient = () => {
   const [chartData, setChartData] = useState([]);
   const [charts, setCharts] = useState([]);
   const [showNewCharts, setShowNewCharts] = useState(false);
-  const [selectedChart, setSelectedChart] = useState(null);
   const overlayRef = useRef(null);
 
   const fetchAllChartData = async (patientId) => {
@@ -33,6 +32,8 @@ const ChartPatient = () => {
       setLoadingCharts(false);
     }
   };
+
+  const patientsPerPage = 3;
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -62,16 +63,27 @@ const ChartPatient = () => {
 
   const handleChartsClick = (patientId) => {
     fetchAllChartData(patientId);
-    setSelectedChart(patientId);
     setShowNewCharts(true);
   };
 
-  const indexOfLastPatient = currentPage * 3;
-  const indexOfFirstPatient = indexOfLastPatient - 3;
+  const indexOfLastPatient = currentPage * patientsPerPage;
+  const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
   const currentPatients = patientManagers.slice(indexOfFirstPatient, indexOfLastPatient);
 
+  const nextPage = () => {
+    if (indexOfLastPatient < patientManagers.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
-    <div className="p-6 bg-gray-900 text-white min-h-screen relative">
+    <div className="p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Patient Managers</h2>
 
       {loading ? (
@@ -119,17 +131,44 @@ const ChartPatient = () => {
                     >
                       Charts
                     </button>
+                    <button className="px-4 py-2 border border-yellow-500 text-yellow-600 rounded-md hover:bg-yellow-100">
+                      Updates
+                    </button>
+                    <button className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100">
+                      Medications
+                    </button>
                   </div>
                 </div>
               ))}
           </div>
+
+          {/* Pagination Controls */}
+          {patientManagers.length > patientsPerPage && (
+            <div className="flex justify-between mt-6">
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600"
+              >
+                Previous
+              </button>
+
+              <button
+                onClick={nextPage}
+                disabled={indexOfLastPatient >= patientManagers.length}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-600"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </>
       )}
 
-      {/* Overlay for NewCharts - Only Covers the Working Area */}
+      {/* Overlay for NewCharts */}
       {showNewCharts && charts.length > 0 && chartData.length > 0 && (
-        <div className="absolute top-0 left-0 w-full h-full flex justify-center items-start pt-12 bg-black bg-opacity-50 z-50">
-          <div ref={overlayRef} className="bg-gray-900 p-6 rounded-lg w-11/12 max-w-4xl h-[80vh] overflow-y-auto relative shadow-lg">
+        <div className="fixed inset-0 flex items-start justify-center bg-black bg-opacity-50 z-50 pt-20">
+          <div ref={overlayRef} className="bg-gray-900 p-6 rounded-lg w-11/12 max-w-4xl relative">
             <button
               className="absolute top-4 right-4 text-white hover:text-gray-400"
               onClick={() => setShowNewCharts(false)}
