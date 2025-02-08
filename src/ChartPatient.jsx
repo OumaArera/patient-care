@@ -113,7 +113,7 @@ const ChartPatient = () => {
                 {/* Overlay for NewCharts */}
                 {showNewCharts && charts.length > 0 && chartData.length > 0 && (
                   <div 
-                    className="absolute top-12 bg-gray-900 p-6 rounded-lg shadow-lg w-[80vw] h-[80vh] overflow-y-auto z-50 border border-gray-700"
+                    className="top-12 bg-gray-900 p-6 rounded-lg shadow-lg w-[80vw] h-[80vh] overflow-y-auto z-50 border border-gray-700"
                     >
                     <button
                         className="absolute top-2 right-2 text-white hover:text-gray-400"

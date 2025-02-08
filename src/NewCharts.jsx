@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { postCharts } from "../services/postCharts";
 import { Loader } from "lucide-react";
 import DatePicker from "react-datepicker";
+import { errorHandler } from "../services/errorHandler";
 import "react-datepicker/dist/react-datepicker.css";
 
 const NewCharts = ({ charts, chartsData }) => {
@@ -18,7 +19,9 @@ const NewCharts = ({ charts, chartsData }) => {
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
-  const [loadingSubmit, setLoadingSubmit] = useState(false); // State to track submission loading
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [errors, setErrors] = useState([]);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     const startOfMonth = new Date();
@@ -62,12 +65,18 @@ const NewCharts = ({ charts, chartsData }) => {
       reasonNotFiled
     };
 
-    console.log("Submitting Payload:", JSON.stringify(payload, null, 2));
-
     try {
-      await postCharts(payload);
+      const response = await postCharts(payload);
+      if (response?.error) {
+          setErrors(errorHandler(response.error));
+      }else{
+          setMessage(["Chart data posted successfully."]);
+          setTimeout(() => setMessage(""), 5000);
+      }
     } catch (error) {
       console.error("Error submitting charts:", error);
+      setErrors([`Errors: ${error}`]);
+      setTimeout(() => setErrors([]));
     } finally {
       setLoadingSubmit(false);
     }
@@ -193,6 +202,14 @@ const NewCharts = ({ charts, chartsData }) => {
         >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
+        {message && <p className="text-green-600">{message}</p>}
+        {errors.length > 0 && (
+          <div className="mb-4 p-3 bg-red-800 rounded">
+            {errors.map((error, index) => (
+              <p key={index} className="text-sm text-white">{error}</p>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
