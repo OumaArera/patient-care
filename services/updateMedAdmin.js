@@ -21,7 +21,7 @@ export const updateMedAdmin = async (medicationAdministrationId, updatedData) =>
 
         return data;
     } catch (error) {
-        console.error("Error updating chart data:", error);
+        console.error("Error updating medication:", error);
         return { error: "An unexpected error occurred while updating." };
     }
 };
