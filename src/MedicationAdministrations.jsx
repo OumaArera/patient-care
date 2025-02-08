@@ -67,31 +67,27 @@ const MedicationAdministration = () => {
             setTimeout(() => setErrors([]), 5000);
             return;
         }
+    
         setUpdating(true);
-        
+    
         try {
-            const response = await updateMedAdmin(
-                medicationAdministrationId,
-                status
-            );
+            const response = await updateMedAdmin(medicationAdministrationId, status);
             if (response?.error) {
                 setErrors(errorHandler(response.error));
                 setTimeout(() => setErrors(null), 5000);
             } else {
                 setMessage("Medication Data updated successfully.");
                 setTimeout(() => setMessage(null), 5000);
+                fetchMedAdmin(selectedPatient); 
             }
-
-            
         } catch (error) {
             setErrors(["Something went wrong. Please try again."]);
             setTimeout(() => setErrors([]), 5000);
-            
-        } finally{
+        } finally {
             setUpdating(false);
-            setActionOverlay(null);
         }
     };
+    
 
     return (
         <div className="p-6 bg-gray-900 text-white">
@@ -175,13 +171,13 @@ const MedicationAdministration = () => {
                                         <td className="p-3">{entry.careGiverName}</td>
                                         <td className="p-3">{entry.reasonNotFiled || ""}</td>
                                         <td className="p-3">{entry.status}</td>
-                                        <td className="p-3 relative">
+                                        <td className="p-3 relative"> {/* Ensure this is relative */}
                                             <button onClick={() => setActionOverlay(entry.medicationAdministrationId)}>
                                                 <MoreVertical className="text-white" />
                                             </button>
                                             {actionOverlay === entry.medicationAdministrationId && (
                                                 <div
-                                                    className="absolute bg-gray-800 p-4 shadow-md rounded-lg right-0 top-full mt-2 z-10"
+                                                    className="absolute bg-gray-800 p-4 shadow-md rounded-lg right-0 top-10 mt-1 z-50"
                                                     ref={(ref) => {
                                                         if (ref) {
                                                             const handleClickOutside = (event) => {
