@@ -49,6 +49,9 @@ const PatientManager = () => {
         setSubmitting(true);
         setErrors(null);
 
+        console.log("Patient: ", selectedPatient);
+        console.log("Care Giver: ", selectedCareGiver);
+
         const payload = { patient: selectedPatient, careGiver: selectedCareGiver };
         try {
             const response = await postPatientManager(payload);

@@ -33,7 +33,7 @@ const SuperUserDashboard = () => {
   const fullName = localStorage.getItem("fullName") || "Super User";
 
   return (
-    <div className="flex bg-black text-white">
+    <div className="flex min-h-screen bg-black text-white">
       {/* Sidebar */}
       <div className="w-64 bg-gray-900 p-5 flex flex-col">
         <h1 className="text-xl font-bold text-blue-500 mb-6">Workflow</h1>
