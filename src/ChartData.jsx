@@ -137,52 +137,65 @@ const ChartData = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-900 text-white min-h-screen">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">Chart Data</h2>
+        <div className="bg-gray-900 text-white min-h-screen">
+            <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Chart Data</h2>
             <label className="block text-gray-300">Time to be Taken:</label>
             <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full text-white" />
             
             <label className="block mt-2 text-gray-300">Select Patient:</label>
             {loadingPatients ? (
                 <div className="flex items-center space-x-2">
-                    <Loader className="animate-spin text-gray-500" size={20} />
-                    <p className="text-gray-500">Loading patients...</p>
+                    <Loader className="animate-spin text-gray-400" size={20} />
+                    <p className="text-gray-400">Loading patients...</p>
                 </div>
             ) : (
-                <select value={patient} onChange={(e) => setPatient(e.target.value)} className="border p-2 rounded w-full bg-black">
-                    <option className="text-white" value="">Select a Patient</option>
+                <select 
+                value={patient} 
+                onChange={(e) => setPatient(e.target.value)} 
+                className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded">
+                    <option className="" value="">Select a Patient</option>
                     {patients.map((p) => (
-                        <option className="text-white" key={p.patientId} value={p.patientId}>
+                        <option className="" key={p.patientId} value={p.patientId}>
                             {p.firstName} {p.lastName}
                         </option>
                     ))}
                 </select>
             )}
-            <button onClick={() => setPageNumber(pageNumber + 1)} className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Load More Patients</button>
+            <button 
+                onClick={() => setPageNumber(pageNumber + 1)} 
+                className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+            Load More Patients
+            </button>
             
-            <table className="w-full mt-4 border-collapse border border-gray-700">
+            <table className="w-full border-collapse border border-gray-700 text-white">
                 <thead>
                     <tr>
-                        <th className="border border-gray-600 p-2">Category</th>
-                        <th className="border border-gray-600 p-2">Behavior</th>
-                        <th className="border border-gray-600 p-2">Status</th>
+                        <th className="p-3 border border-gray-600">Category</th>
+                        <th className="p-3 border border-gray-600">Behavior</th>
+                        <th className="p-3 border border-gray-600">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {Object.entries(behaviors).map(([category, items]) => {
                         const keys = Object.keys(items);
                         return keys.map((key, index) => (
-                            <tr key={key}>
+                            <tr 
+                                key={key}
+                                className="bg-gray-900 text-gray-300"
+                            >
                                 {index === 0 && (
-                                    <td className="border border-gray-600 p-2 font-bold bg-gray-800" rowSpan={keys.length}>
+                                    <td 
+                                        className="p-2 border border-gray-700" 
+                                        rowSpan={keys.length}>
                                         {category}
                                     </td>
                                 )}
-                                <td className="border border-gray-600 p-2">{key.replace(/_/g, " ")}</td>
-                                <td className="border border-gray-600 p-2">
+                                <td className="p-2 border border-gray-700">{key.replace(/_/g, " ")}</td>
+                                <td className="p-2 border border-gray-700">
                                     <button 
                                         onClick={() => handleToggle(category, key)} 
-                                        className={`p-2 rounded ${items[key] === "Yes" ? "bg-green-500" : "bg-red-500"} text-white`}
+                                        className={`p-2 rounded ${items[key] === "Yes" ? "bg-gray-700" : "bg-red-500"} text-white`}
                                     >
                                         {items[key]}
                                     </button>
