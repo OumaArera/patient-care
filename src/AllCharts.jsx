@@ -71,6 +71,7 @@ const AllCharts = () => {
         }
     };
 
+    
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">1st EDMONDS</h2>
