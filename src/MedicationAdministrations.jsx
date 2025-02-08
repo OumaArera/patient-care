@@ -61,15 +61,18 @@ const MedicationAdministration = () => {
     }, [selectedYear, selectedMonth, medAdmin]);
 
 
-    const handleStatusUpdate = async (medicationAdministrationId) => {
+    const handleStatusUpdate = async (medicationAdministrationId, status) => {
+        if (!status) {
+            setErrors(["Please select a status before submitting."]);
+            setTimeout(() => setErrors([]), 5000);
+            return;
+        }
         setUpdating(true);
-        // if (!statusUpdate) return;
-        console.log("ID:", medicationAdministrationId);
-        console.log("Status:", statusUpdate);
+        
         try {
             const response = await updateMedAdmin(
                 medicationAdministrationId,
-                statusUpdate
+                status
             );
             if (response?.error) {
                 setErrors(errorHandler(response.error));
@@ -193,23 +196,25 @@ const MedicationAdministration = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <select 
-                                                    className="border px-4 py-2 bg-gray-700 text-white rounded" 
-                                                    onChange={(e) => {
-                                                        console.log("Selected status:", e.target.value);
-                                                        setStatusUpdate(e.target.value);
-                                                     }}
+                                                    <select
+                                                        className="border px-4 py-2 bg-gray-700 text-white rounded"
+                                                        onChange={(e) => {
+                                                            console.log("Selected status:", e.target.value);
+                                                            setStatusUpdate(e.target.value);
+                                                        }}
                                                     >
+                                                        <option value="">Select Status</option> {/* Ensure there's a default empty value */}
                                                         <option value="approved">Approve</option>
                                                         <option value="declined">Decline</option>
                                                     </select>
                                                     <button
-                                                        onClick={() => handleStatusUpdate(entry.medicationAdministrationId)}
+                                                        onClick={() => handleStatusUpdate(entry.medicationAdministrationId, statusUpdate)}
                                                         className="bg-blue-500 text-white px-4 py-2 rounded mt-2 block w-full"
-                                                        disabled={updating}
+                                                        disabled={updating || !statusUpdate} // Prevent clicking if status is not selected
                                                     >
                                                         {updating ? "Updating..." : "Submit"}
                                                     </button>
+                                                    
                                                     {message && <p className="text-green-600">{message}</p>}
                                                 </div>
                                             )}
