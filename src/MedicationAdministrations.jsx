@@ -165,7 +165,7 @@ const MedicationAdministration = () => {
                             <tbody>
                                 {filteredMedAdmin.map((entry, index) => (
                                     <tr key={entry.medicationAdministrationId} className="border-t border-gray-700">
-                                        <td className="p-3 border-r border-gray-700">{index === 0 || entry.patientName !== filteredMedAdmin[index - 1]?.patientName ? entry.patientName : ""}</td>
+                                        <td className="p-3 border-t border-gray-700">{index === 0 || entry.patientName !== filteredMedAdmin[index - 1]?.patientName ? entry.patientName : ""}</td>
                                         <td className="p-3 ">{new Date(entry.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</td>
                                         <td className="p-3">{entry.timeAdministered}</td>
                                         <td className="p-3">{entry.careGiverName}</td>
