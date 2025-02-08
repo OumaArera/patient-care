@@ -8,7 +8,7 @@ export const updateMedAdmin = async (medicationAdministrationId, updatedData) =>
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(updatedData),
+            body: JSON.stringify({status: updatedData}),
         });
 
         const data = await response.json();
