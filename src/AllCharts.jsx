@@ -129,10 +129,10 @@ const AllCharts = () => {
                             <table id="behaviorTable" className="w-full border-collapse border border-gray-700 text-white">
                                 <thead>
                                     <tr className="bg-gray-700">
-                                        <th className="p-3 border-gray-600">Category</th>
-                                        <th className="p-3 border-gray-600">Log</th>
+                                        <th className="p-3 border border-gray-600">Category</th>
+                                        <th className="p-3 border border-gray-600">Log</th>
                                         {[...Array(31)].map((_, i) => (
-                                            <th key={i} className="p-3 border-gray-600">{i + 1}</th>
+                                            <th key={i} className="p-3 border border-gray-600">{i + 1}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -152,11 +152,11 @@ const AllCharts = () => {
                                     }, []).map((row, index, arr) => (
                                         <tr key={index} className="bg-gray-900 text-gray-300">
                                             {index === 0 || arr[index - 1].category !== row.category ? (
-                                                <td className="p-2 border-gray-700" rowSpan={arr.filter(r => r.category === row.category).length}>{row.category}</td>
+                                                <td className="p-2 border border-gray-700" rowSpan={arr.filter(r => r.category === row.category).length}>{row.category}</td>
                                             ) : null}
-                                            <td className="p-2 border-gray-700">{row.behavior}</td>
+                                            <td className="p-2 border border-gray-700">{row.behavior}</td>
                                             {row.days.map((status, i) => (
-                                                <td key={i} className="p-2 border-gray-700 text-center">{status}</td>
+                                                <td key={i} className="p-2 border border-gray-700 text-center">{status}</td>
                                             ))}
                                         </tr>
                                     ))}
