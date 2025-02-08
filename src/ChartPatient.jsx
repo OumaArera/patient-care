@@ -84,12 +84,16 @@ const ChartPatient = () => {
           {/* Patient Cards */}
           <div className="grid md:grid-cols-3 gap-4">
             {currentPatients.map(({ patient }) => (
-              <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-center relative">
+              <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left relative">
                 <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
                 <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
                 <p className="text-sm text-gray-400">DOB: {patient.dateOfBirth}</p>
                 <p className="text-sm text-gray-400">Diagnosis: {patient.diagnosis}</p>
                 <p className="text-sm text-gray-400">Allergies: {patient.allergies}</p>
+                <p className="text-sm text-gray-400">Physician: {patient.physicianName}</p>
+                <p className="text-sm text-gray-400">Facility: {patient.facilityName}</p>
+                <p className="text-sm text-gray-400">Branch: {patient.branchName}</p>
+                <p className="text-sm text-gray-400">Room: {patient.room} | Cart: {patient.cart}</p>
                 <div className="flex justify-between mt-4">
                   {loadingCharts ? (
                     <p className="text-sm text-gray-300">Loading charts...</p>
