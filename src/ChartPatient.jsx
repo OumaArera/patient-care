@@ -10,31 +10,31 @@ const ChartPatient = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
-  const [loadingCharts, setLoadingCharts] = useState(false);
-  const [errors, setErrors] = useState([]);
-  const [chartData, setChartData] = useState([]);
-  const [charts, setCharts] = useState([]);
+//   const [loadingCharts, setLoadingCharts] = useState(false);
+//   const [errors, setErrors] = useState([]);
+//   const [chartData, setChartData] = useState([]);
+//   const [charts, setCharts] = useState([]);
 
 
-    const fetchCharts = (patientId) => {
-        setLoadingCharts(true);
-        getCharts(patientId)
-        .then((data) => {
-            setCharts(data?.responseObject || []);
-            setLoadingCharts(false);
-        })
-        .catch(() => setLoadingCharts(false));
-    };
+    // const fetchCharts = (patientId) => {
+    //     setLoadingCharts(true);
+    //     getCharts(patientId)
+    //     .then((data) => {
+    //         setCharts(data?.responseObject || []);
+    //         setLoadingCharts(false);
+    //     })
+    //     .catch(() => setLoadingCharts(false));
+    // };
 
-    const fetchChartsData = (patientId) => {
-        setLoadingCharts(true);
-        getChartsData(patientId)
-        .then((data) => {
-            setChartData(data?.responseObject || []);
-            setLoadingCharts(false);
-        })
-        .catch(() => setLoadingCharts(false));
-    };
+    // const fetchChartsData = (patientId) => {
+    //     setLoadingCharts(true);
+    //     getChartsData(patientId)
+    //     .then((data) => {
+    //         setChartData(data?.responseObject || []);
+    //         setLoadingCharts(false);
+    //     })
+    //     .catch(() => setLoadingCharts(false));
+    // };
   
   const patientsPerPage = 3;
 
