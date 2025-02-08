@@ -17,7 +17,7 @@ const MedicationAdministration = () => {
     const [selectedMonth, setSelectedMonth] = useState("");
     const [actionOverlay, setActionOverlay] = useState(null);
     const [updating, setUpdating] = useState(false);
-    const [statusUpdate, setStatusUpdate] = useState("");
+    const [statusUpdate, setStatusUpdate] = useState(null);
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState(null);
 
@@ -74,11 +74,12 @@ const MedicationAdministration = () => {
             if (response?.error) {
                 setErrors(errorHandler(response.error));
                 setTimeout(() => setErrors(null), 5000);
-              } else {
+            } else {
+                setStatusUpdate(null);
                 setMessage("Medication Data updated successfully.");
                 setTimeout(() => setMessage(null), 5000);
                 fetchCharts(selectedPatient);
-              }
+            }
 
             
         } catch (error) {
@@ -192,7 +193,13 @@ const MedicationAdministration = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <select className="border px-4 py-2 bg-gray-700 text-white rounded" onChange={(e) => setStatusUpdate(e.target.value)}>
+                                                    <select 
+                                                    className="border px-4 py-2 bg-gray-700 text-white rounded" 
+                                                    onChange={(e) => {
+                                                        console.log("Selected status:", e.target.value);
+                                                        setStatusUpdate(e.target.value);
+                                                     }}
+                                                    >
                                                         <option value="approved">Approve</option>
                                                         <option value="declined">Decline</option>
                                                     </select>
