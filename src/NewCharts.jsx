@@ -18,6 +18,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
+  const [loadingSubmit, setLoadingSubmit] = useState(false); // State to track submission loading
 
   useEffect(() => {
     const startOfMonth = new Date();
@@ -50,9 +51,26 @@ const NewCharts = ({ charts, chartsData }) => {
     );
   };
 
-  const handleSubmit = () => {
-    const payload = { behaviors, behaviorsDescription, dateTaken, reasonNotFiled };
-    postCharts(payload);
+  const handleSubmit = async () => {
+    setLoadingSubmit(true);
+
+    const payload = {
+      patient: chart.patientId, // Include patientId
+      behaviors,
+      behaviorsDescription,
+      dateTaken,
+      reasonNotFiled
+    };
+
+    console.log("Submitting Payload:", JSON.stringify(payload, null, 2));
+
+    try {
+      await postCharts(payload);
+    } catch (error) {
+      console.error("Error submitting charts:", error);
+    } finally {
+      setLoadingSubmit(false);
+    }
   };
 
   return (
@@ -170,9 +188,10 @@ const NewCharts = ({ charts, chartsData }) => {
       <div className="mt-6 text-center">
         <button
           onClick={handleSubmit}
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center"
+          disabled={loadingSubmit}
         >
-          Submit Charts
+          {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
       </div>
     </div>
