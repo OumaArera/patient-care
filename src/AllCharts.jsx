@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
 import { generatePDFReport } from "../services/generatePDFReport";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import { Loader } from "lucide-react";
 
 const AllCharts = () => {
     const [patients, setPatients] = useState([]);
@@ -76,7 +75,12 @@ const AllCharts = () => {
         <div className="p-6 bg-white text-gray-900">
             <h2 className="text-2xl font-bold text-center mb-4">1st EDMONDS</h2>
             <div className="mb-4">
-                {loadingPatients && <p>Loading patients...</p>}
+                {loadingPatients && (
+                <div className="flex items-center space-x-2">
+                    <Loader className="animate-spin text-gray-500" size={20} />
+                    <p className="text-gray-500">Loading patients...</p>
+                </div>)}
+                
                 <label className="font-semibold">Select Patient: </label>
                 <select className="border px-4 py-2 ml-2" onChange={handlePatientChange} value={selectedPatient || ""}>
                     <option value="">-- Select --</option>
@@ -87,7 +91,11 @@ const AllCharts = () => {
                     ))}
                 </select>
             </div>
-            {loadingCharts && <p>Loading charts...</p>}
+            {loadingCharts && (
+                <div className="flex items-center space-x-2">
+                    <Loader className="animate-spin text-gray-500" size={20} />
+                    <p className="text-gray-500">Loading charts...</p>
+                </div>)}
             {charts.length > 0 && (
                 <div className="mb-4">
                     <label className="font-semibold">Select Year: </label>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { createChartData } from "../services/createChartData";
 import { errorHandler } from "../services/errorHandler";
+import { Loader } from "lucide-react";
 
 const ChartData = () => {
     const [behaviors, setBehaviors] = useState({
@@ -142,12 +143,21 @@ const ChartData = () => {
             <input type="time" value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} className="border p-2 rounded w-full text-white" />
             
             <label className="block mt-2 text-gray-300">Select Patient:</label>
-            <select value={patient} onChange={(e) => setPatient(e.target.value)} className="border p-2 rounded w-full bg-black" disabled={loadingPatients}>
-                <option className="text-white"  value="">{loadingPatients ? "Loading patients..." : "Select a Patient"}</option>
-                {patients.map((p) => (
-                    <option className="text-white" key={p.patientId} value={p.patientId}>{p.firstName} {p.lastName}</option>
-                ))}
-            </select>
+            {loadingPatients ? (
+                <div className="flex items-center space-x-2">
+                    <Loader className="animate-spin text-gray-500" size={20} />
+                    <p className="text-gray-500">Loading patients...</p>
+                </div>
+            ) : (
+                <select value={patient} onChange={(e) => setPatient(e.target.value)} className="border p-2 rounded w-full bg-black">
+                    <option className="text-white" value="">Select a Patient</option>
+                    {patients.map((p) => (
+                        <option className="text-white" key={p.patientId} value={p.patientId}>
+                            {p.firstName} {p.lastName}
+                        </option>
+                    ))}
+                </select>
+            )}
             <button onClick={() => setPageNumber(pageNumber + 1)} className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600">Load More Patients</button>
             
             <table className="w-full mt-4 border-collapse border border-gray-700">

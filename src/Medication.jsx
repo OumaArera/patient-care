@@ -3,6 +3,7 @@ import { fetchPatients } from "../services/fetchPatients";
 import { fetchMedications } from "../services/fetchMedications";
 import MedicationCard from "./MedicationCard";
 import { errorHandler } from "../services/errorHandler";
+import { Loader } from "lucide-react";
 
 const Medication = () => {
     const [medications, setMedications] = useState([]);
@@ -104,11 +105,11 @@ const Medication = () => {
     return (
         <div className="p-6 bg-gray-900 min-h-screen text-white">
             <h2 className="text-3xl font-bold mb-6 text-blue-400">Manage Medications</h2>
-
+    
             {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
             {successMessage && <div className="bg-green-500 text-white p-3 mb-3 rounded">{successMessage}</div>}
             {submitting && <div className="bg-yellow-500 text-white p-3 mb-3 rounded">Submitting data...</div>}
-
+    
             <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-md grid gap-4">
                 {Object.keys(formData).map((key) => (
                     <div key={key} className="flex flex-col">
@@ -125,21 +126,29 @@ const Medication = () => {
                                 required
                             ></textarea>
                         ) : key === "patient" ? (
-                            <select
-                                name={key}
-                                value={formData[key]}
-                                onChange={handleInputChange}
-                                className="border p-2 rounded w-full bg-gray-700 text-white"
-                                required
-                                disabled={loadingPatients}
-                            >
-                                <option value="">{loadingPatients ? "Loading patients..." : "Select a Patient"}</option>
-                                {patients.map((patient) => (
-                                    <option key={patient.patientId} value={patient.patientId}>
-                                        {patient.firstName} {patient.lastName}
-                                    </option>
-                                ))}
-                            </select>
+                            <div>
+                                {loadingPatients ? (
+                                    <div className="flex items-center space-x-2">
+                                        <Loader className="animate-spin text-gray-500" size={20} />
+                                        <p className="text-gray-500">Loading patients...</p>
+                                    </div>
+                                ) : (
+                                    <select
+                                        name={key}
+                                        value={formData[key]}
+                                        onChange={handleInputChange}
+                                        className="border p-2 rounded w-full bg-gray-700 text-white"
+                                        required
+                                    >
+                                        <option value="">Select a Patient</option>
+                                        {patients.map((patient) => (
+                                            <option key={patient.patientId} value={patient.patientId}>
+                                                {patient.firstName} {patient.lastName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
+                            </div>
                         ) : (
                             <input
                                 type={key === "medicationTime" ? "time" : "text"}
@@ -167,9 +176,12 @@ const Medication = () => {
                     </div>
                 )}
             </form>
-
+    
             {loadingMedications ? (
-                <div className="bg-yellow-500 text-white p-3 mt-4 rounded">Loading medications...</div>
+                <div className="flex items-center space-x-2 mt-4">
+                    <Loader className="animate-spin text-gray-500" size={20} />
+                    <p className="text-gray-500">Loading medications...</p>
+                </div>
             ) : (
                 <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {Array.isArray(medications) && medications.length > 0 ? (
@@ -179,7 +191,7 @@ const Medication = () => {
                     )}
                 </div>
             )}
-
+    
             <div className="flex justify-between mt-4">
                 <button
                     onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
@@ -198,6 +210,7 @@ const Medication = () => {
             </div>
         </div>
     );
+    
 };
 
 export default Medication;

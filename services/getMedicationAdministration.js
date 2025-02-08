@@ -1,9 +1,9 @@
-export const getCharts = async (patient) => {
-    const url = new URL(`https://patient-care-server.onrender.com/api/v1/charts?pageNumber=1&pageSize=366&patient=${patient}`);
+export const getMedicationAdmininstration = async (patient) => {
+    const url = new URL(`https://patient-care-server.onrender.com/api/v1/medication-administrations?pageNumber=1&pageSize=366&patient=${patient}`);
 
     const token = localStorage.getItem("token");
     try {
-        const response = await fetch(url, 
+        const response = await fetch(url,
         {
             method: "GET",
             headers: {
@@ -12,7 +12,7 @@ export const getCharts = async (patient) => {
             },
         });
         if (!response.ok) {
-            throw new Error("Failed to fetch charts");
+            throw new Error("Failed to fetch medication administrations");
         }
         return await response.json();
     } catch (error) {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { fetchUsers } from "../services/fetchUsers";
+import { Loader } from "lucide-react";
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -39,7 +40,8 @@ const Users = () => {
                 {loading ? (
                 <tr>
                     <td colSpan="7" className="text-center p-4 text-white">
-                    Loading...
+                        <Loader className="animate-spin text-gray-500" size={20} />
+                        <p className="text-gray-500">Loading...</p>
                     </td>
                 </tr>
                 ) : users.length > 0 ? (

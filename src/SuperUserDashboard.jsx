@@ -5,7 +5,6 @@ import {
   FaUserPlus, FaUserTimes, FaUndo, FaChartPie, FaLock, FaHospital,
   FaUserInjured, FaMapMarkerAlt, FaDatabase
 } from "react-icons/fa";
-import PendingCharts from "./PendingCharts";
 import PendingMedications from "./PendingMedications";
 import Updates from "./Updates";
 import Statistics from "./Statistics";
@@ -21,6 +20,7 @@ import ChartData from "./ChartData";
 import ChartDataCard from "./ChartDataCard";
 import Charts from "./Charts";
 import AllCharts from "./AllCharts";
+import MedicationAdministration from "./MedicationAdministrations";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -147,7 +147,7 @@ const SuperUserDashboard = () => {
         {activeTab === "chartDataUpdate" && <ChartDataCard />}  
         {activeTab === "charts" && <Charts />}  
         {activeTab === "allCharts" && <AllCharts />}  
-        
+        {activeTab === "medications" && <MedicationAdministration />}  
         
       </div>
     </div>
