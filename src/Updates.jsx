@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getUpdates } from "../services/getUpdates";
 import { Loader } from "lucide-react";
-import { FaUserCircle } from "react-icons/fa";
 
 const Updates = () => {
     const [loadingPatients, setLoadingPatients] = useState(false);
@@ -53,6 +52,12 @@ const Updates = () => {
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold mb-4 text-blue-400">Patient Updates</h2>
             <div className="mb-4 flex space-x-4">
+              {loadingPatients?(
+                <div className="flex justify-center items-center">
+                <Loader className="animate-spin text-blue-400" size={24} />
+                <p className="text-gray-400">Loading patients...</p>
+            </div>
+              ):(
                 <select
                     className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
                     onChange={handlePatientChange}
@@ -65,26 +70,31 @@ const Updates = () => {
                         </option>
                     ))}
                 </select>
+              )}
+                {patients &&(
+                  <>
+                    <select
+                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                      onChange={(e) => setSelectedYear(e.target.value)}
+                    >
+                      <option value="">Select Year</option>
+                      {[...new Set(updates.map((u) => new Date(u.dateTaken).getFullYear()))].map((year) => (
+                          <option key={year} value={year}>{year}</option>
+                      ))}
+                    </select>
 
-                <select
-                    className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                >
-                    <option value="">Select Year</option>
-                    {[...new Set(updates.map((u) => new Date(u.dateTaken).getFullYear()))].map((year) => (
-                        <option key={year} value={year}>{year}</option>
-                    ))}
-                </select>
-
-                <select
-                    className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                >
-                    <option value="">Select Month</option>
-                    {[...Array(12).keys()].map((month) => (
-                        <option key={month + 1} value={month + 1}>{new Date(0, month).toLocaleString('default', { month: 'long' })}</option>
-                    ))}
-                </select>
+                    <select
+                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                      onChange={(e) => setSelectedMonth(e.target.value)}
+                    >
+                      <option value="">Select Month</option>
+                      {[...Array(12).keys()].map((month) => (
+                          <option key={month + 1} value={month + 1}>{new Date(0, month).toLocaleString('default', { month: 'long' })}</option>
+                      ))}
+                    </select>
+                  </>
+                )
+                }
             </div>
 
             {loadingUpdates ? (
