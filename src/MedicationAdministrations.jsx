@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getMedicationAdmininstration } from "../services/getMedicationAdministration";
 import { updateMedAdmin } from "../services/updateMedAdmin";
@@ -20,6 +20,7 @@ const MedicationAdministration = () => {
     const [statusUpdate, setStatusUpdate] = useState(null);
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState(null);
+    const overlayRef = useRef(null);
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -34,6 +35,20 @@ const MedicationAdministration = () => {
                 setLoadingPatients(false);
             });
     }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (overlayRef.current && !overlayRef.current.contains(event.target)) {
+                setActionOverlay(null); 
+            }
+        };
+    
+        if (actionOverlay !== null) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [actionOverlay]);
+    
 
     const fetchMedAdmin = (patientId) => {
         setLoadingMedAdmin(true);
@@ -171,46 +186,35 @@ const MedicationAdministration = () => {
                                         <td className="p-3">{entry.careGiverName}</td>
                                         <td className="p-3">{entry.reasonNotFiled || ""}</td>
                                         <td className="p-3">{entry.status}</td>
-                                        <td className="p-3 relative"> {/* Ensure this is relative */}
+                                        <td className="p-3 relative">
                                             <button onClick={() => setActionOverlay(entry.medicationAdministrationId)}>
                                                 <MoreVertical className="text-white" />
                                             </button>
                                             {actionOverlay === entry.medicationAdministrationId && (
                                                 <div
+                                                    ref={overlayRef} // Attach the ref
                                                     className="absolute bg-gray-800 p-4 shadow-md rounded-lg right-0 top-10 mt-1 z-50"
-                                                    ref={(ref) => {
-                                                        if (ref) {
-                                                            const handleClickOutside = (event) => {
-                                                                if (!ref.contains(event.target)) {
-                                                                    setActionOverlay(null);
-                                                                }
-                                                            };
-                                                            document.addEventListener("mousedown", handleClickOutside);
-                                                            return () => document.removeEventListener("mousedown", handleClickOutside);
-                                                        }
-                                                    }}
                                                 >
                                                     <select
                                                         className="border px-4 py-2 bg-gray-700 text-white rounded"
                                                         onChange={(e) => setStatusUpdate(e.target.value)}
                                                     >
-                                                        <option value="">Select Status</option> {/* Ensure there's a default empty value */}
+                                                        <option value="">Select Status</option>
                                                         <option value="approved">Approve</option>
                                                         <option value="declined">Decline</option>
                                                     </select>
                                                     <button
                                                         onClick={() => handleStatusUpdate(entry.medicationAdministrationId, statusUpdate)}
                                                         className="bg-blue-500 text-white px-4 py-2 rounded mt-2 block w-full"
-                                                        disabled={updating || !statusUpdate} 
+                                                        disabled={updating || !statusUpdate}
                                                     >
                                                         {updating ? "Updating..." : "Submit"}
                                                     </button>
-                                                    
+
                                                     {message && <p className="text-green-600">{message}</p>}
                                                 </div>
                                             )}
                                         </td>
-
                                     </tr>
                                 ))}
                             </tbody>
