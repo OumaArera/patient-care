@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Loader, Eye, EyeOff, CheckCircle, XCircle, X } from "lucide-react";
 
 const ChangePassword = ({ onClose }) => {
@@ -10,21 +10,17 @@ const ChangePassword = ({ onClose }) => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState("");
     const token = localStorage.getItem("token");
-    const modalRef = useRef(null);
-
-    console.log(`User ID: ${localStorage.getItem("userId")}`)
 
     const API_URL = "https://patient-care-server.onrender.com/api/v1/auth/change-password";
 
-    // Password Validation Checks
     const isLongEnough = newPassword.length >= 8;
     const hasUpperCase = /[A-Z]/.test(newPassword);
     const hasLowerCase = /[a-z]/.test(newPassword);
     const hasNumber = /\d/.test(newPassword);
     const isNotSame = currentPassword !== newPassword;
+
     const isValidPassword = isLongEnough && hasUpperCase && hasLowerCase && hasNumber && isNotSame;
 
-    // Handle Submit using fetch
     const handleChangePassword = async (e) => {
         e.preventDefault();
         setError(null);
@@ -36,12 +32,9 @@ const ChangePassword = ({ onClose }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({
-                    currentPassword,
-                    newPassword,
-                }),
+                body: JSON.stringify({ currentPassword, newPassword }),
             });
 
             const data = await response.json();
@@ -61,24 +54,23 @@ const ChangePassword = ({ onClose }) => {
     };
 
     // Close modal when clicking outside
+    const modalRef = useRef(null);
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target)) {
                 onClose();
             }
         };
-
         document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [onClose]);
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div ref={modalRef} className="max-w-md w-full bg-gray-900 text-white p-6 rounded-lg shadow-lg relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div ref={modalRef} className="max-w-md bg-gray-900 text-white p-6 rounded-lg shadow-lg relative">
                 {/* Close Button */}
-                <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-white">
+                <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-red-500">
                     <X size={24} />
                 </button>
 
@@ -163,10 +155,8 @@ const ChangePassword = ({ onClose }) => {
                         )}
                     </button>
 
-                    {/* Success Message */}
+                    {/* Success & Error Messages */}
                     {success && <p className="text-green-500 text-center mt-2">{success}</p>}
-
-                    {/* Error Message */}
                     {error && <p className="text-red-500 text-center mt-2">{error}</p>}
                 </form>
             </div>
