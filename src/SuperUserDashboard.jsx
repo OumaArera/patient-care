@@ -20,6 +20,7 @@ import ChartDataCard from "./ChartDataCard";
 import Charts from "./Charts";
 import AllCharts from "./AllCharts";
 import MedicationAdministration from "./MedicationAdministrations";
+import PatientManager from "./PatientManagers";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -99,6 +100,9 @@ const SuperUserDashboard = () => {
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("medicationsAdmin")}>
                 <FaPills /> Medications
               </button>
+              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("assignPatient")}>
+                <FaPills /> Assign Patient
+              </button>
             </div>
           )}
         </div>
@@ -132,7 +136,7 @@ const SuperUserDashboard = () => {
 
         {/* Dynamic Content Rendering */}
         {/* {activeTab === "charts" && <PendingCharts />} */}
-        {/* {activeTab === "medications" && <PendingMedications />} */}
+        {activeTab === "assignPatient" && <PatientManager />}
         {activeTab === "updates" && <Updates />}
         {activeTab === "statistics" && <Statistics />}
         {activeTab === "createUser" && <CreateUser />}
