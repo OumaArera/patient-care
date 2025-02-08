@@ -22,9 +22,9 @@ const ChartPatient = () => {
     getCharts(patientId)
       .then((data) => {
         setCharts(data?.responseObject || []);
-        setLoadingCharts(false);
       })
-      .catch(() => setLoadingCharts(false));
+      .catch(() => {})
+      .finally(() => setLoadingCharts(false));
   };
 
   const fetchChartsData = (patientId) => {
@@ -32,9 +32,9 @@ const ChartPatient = () => {
     getChartsData(patientId)
       .then((data) => {
         setChartData(data?.responseObject || []);
-        setLoadingCharts(false);
       })
-      .catch(() => setLoadingCharts(false));
+      .catch(() => {})
+      .finally(() => setLoadingCharts(false));
   };
 
   const patientsPerPage = 3;
@@ -46,9 +46,9 @@ const ChartPatient = () => {
     getpatientManagers(userId)
       .then((data) => {
         setPatientManagers(data?.responseObject || []);
-        setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -180,7 +180,15 @@ const ChartPatient = () => {
             >
               ✖
             </button>
-            <NewCharts charts={charts} chartsData={chartData} />
+
+            {loadingCharts ? (
+              <div className="flex justify-center items-center h-32">
+                <Loader className="animate-spin" size={32} />
+                <p className="ml-2">Loading charts...</p>
+              </div>
+            ) : (
+              <NewCharts charts={charts} chartsData={chartData} />
+            )}
           </div>
         </div>
       )}
