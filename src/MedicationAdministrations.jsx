@@ -64,6 +64,8 @@ const MedicationAdministration = () => {
     const handleStatusUpdate = async (medicationAdministrationId) => {
         setUpdating(true);
         if (!statusUpdate) return;
+        console.log("ID:", medicationAdministrationId);
+        console.log("Status:", statusUpdate);
         try {
             const response = await updateMedAdmin(
                 medicationAdministrationId,
