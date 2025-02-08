@@ -72,17 +72,17 @@ const AllCharts = () => {
     };
 
     return (
-        <div className="p-6 bg-white text-gray-900">
-            <h2 className="text-2xl font-bold text-center mb-4">1st EDMONDS</h2>
+        <div className="p-6 bg-gray-900 text-white min-h-screen">
+            <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">1st EDMONDS</h2>
             <div className="mb-4">
                 {loadingPatients && (
                 <div className="flex items-center space-x-2">
-                    <Loader className="animate-spin text-gray-500" size={20} />
-                    <p className="text-gray-500">Loading patients...</p>
+                    <Loader className="animate-spin text-gray-400" size={20} />
+                    <p className="text-gray-400">Loading patients...</p>
                 </div>)}
                 
                 <label className="font-semibold">Select Patient: </label>
-                <select className="border px-4 py-2 ml-2" onChange={handlePatientChange} value={selectedPatient || ""}>
+                <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={handlePatientChange} value={selectedPatient || ""}>
                     <option value="">-- Select --</option>
                     {patients.map((p) => (
                         <option key={p.patientId} value={p.patientId}>
@@ -93,8 +93,8 @@ const AllCharts = () => {
             </div>
             {loadingCharts && (
                 <div className="flex items-center space-x-2">
-                    <Loader className="animate-spin text-gray-500" size={20} />
-                    <p className="text-gray-500">Loading charts...</p>
+                    <Loader className="animate-spin text-gray-400" size={20} />
+                    <p className="text-gray-400">Loading charts...</p>
                 </div>)}
             {charts.length > 0 && (
                 <div className="mb-4">
@@ -123,16 +123,16 @@ const AllCharts = () => {
                     <>
                         <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}>Download Report</button>
                     </>
-                    <div className="border p-4 overflow-auto max-h-[600px]" ref={reportRef}>
-                        <h3 className="font-semibold text-lg">Behavior Log</h3>
+                    <div className="bg-gray-800 p-4 rounded-lg overflow-auto" ref={reportRef}>
+                        <h3 className="font-semibold text-lg text-blue-300">Behavior Log</h3>
                         <div className="overflow-x-auto max-w-full">
-                            <table id="behaviorTable" className="border w-full text-sm">
+                            <table id="behaviorTable" className="w-full border-collapse border border-gray-700 text-white">
                                 <thead>
-                                    <tr className="bg-gray-200">
-                                        <th className="border p-2">Category</th>
-                                        <th className="border p-2">Log</th>
+                                    <tr className="bg-gray-700">
+                                        <th className="p-3 border-gray-600">Category</th>
+                                        <th className="p-3 border-gray-600">Log</th>
                                         {[...Array(31)].map((_, i) => (
-                                            <th key={i} className="border p-2">{i + 1}</th>
+                                            <th key={i} className="p-3 border-gray-600">{i + 1}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -150,13 +150,13 @@ const AllCharts = () => {
                                         });
                                         return acc;
                                     }, []).map((row, index, arr) => (
-                                        <tr key={index}>
+                                        <tr key={index} className="bg-gray-900 text-gray-300">
                                             {index === 0 || arr[index - 1].category !== row.category ? (
-                                                <td className="border p-2" rowSpan={arr.filter(r => r.category === row.category).length}>{row.category}</td>
+                                                <td className="p-2 border-gray-700" rowSpan={arr.filter(r => r.category === row.category).length}>{row.category}</td>
                                             ) : null}
-                                            <td className="border p-2">{row.behavior}</td>
+                                            <td className="p-2 border-gray-700">{row.behavior}</td>
                                             {row.days.map((status, i) => (
-                                                <td key={i} className="border p-2 text-center">{status}</td>
+                                                <td key={i} className="p-2 border-gray-700 text-center">{status}</td>
                                             ))}
                                         </tr>
                                     ))}
