@@ -9,6 +9,7 @@ const ChangePassword = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState("");
+    const token = localStorage.getItem("token");
 
     const API_URL = "https://patient-care-server.onrender.com/api/v1/auth/change-password";
 
@@ -33,6 +34,7 @@ const ChangePassword = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}` 
                 },
                 body: JSON.stringify({
                     currentPassword,
