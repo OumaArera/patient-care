@@ -90,7 +90,7 @@ const MedicationAdministration = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-900 min-h-screen text-white">
+        <div className="p-6 bg-gray-900 text-white">
             <h2 className="text-3xl font-bold mb-6 text-blue-400">Medication Administration</h2>
 
             {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
@@ -146,9 +146,10 @@ const MedicationAdministration = () => {
                                 </option>
                             ))}
                         </select>
+                        <button className="bg-blue-500 px-4 py-2 rounded text-white">Load Report</button>
                     </div>
 
-                    <div className="overflow-x-auto">
+                    <div className="bg-gray-800 p-4 rounded-lg overflow-auto">
                         <table className="w-full border-collapse border border-gray-700">
                             <thead>
                                 <tr className="bg-gray-800 text-white">
