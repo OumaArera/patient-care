@@ -164,12 +164,12 @@ const ChartData = () => {
                     ))}
                 </select>
             )}
-            <button 
+            {/* <button 
                 onClick={() => setPageNumber(pageNumber + 1)} 
                 className="mt-2 p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
             Load More Patients
-            </button>
+            </button> */}
             
             <table className="w-full border-collapse border border-gray-700 text-white">
                 <thead>
