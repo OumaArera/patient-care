@@ -56,7 +56,7 @@ const NewCharts = ({ charts, chartsData }) => {
   };
 
   return (
-    <div className="p-6 bg-black text-white">
+    <div className="p-6 bg-gray-900 text-white">
       <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {chart.patientName}</h2>
 
       {/* Missing Date Selection */}
