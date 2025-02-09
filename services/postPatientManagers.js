@@ -1,5 +1,5 @@
-export const postPatientManager = async (payload) => {
-    const token = localStorage.getItem("token");
+export const postPatientManager = async (payload, token) => {
+    
     console.log("Payload 0:", payload);
 
     try {

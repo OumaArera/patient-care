@@ -16,6 +16,7 @@ const PatientManager = () => {
     const [patientManager, setPatientManager] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
+    const [token, setToken] = useState(null);
     
     useEffect(() => {
         setLoadingPatients(true);
@@ -43,15 +44,21 @@ const PatientManager = () => {
             });
     }, []);
 
+    useEffect(()=>{
+        const token = localStorage.getItem("token");
+        setToken(token);
+    }, [])
+
     const handleSubmit = async () => {
         if (!selectedPatient || !selectedCareGiver) return;
+        if (!token) return;
         setSubmitting(true);
         setErrors(null);
 
         const payload = { patient: selectedPatient.patientId, careGiver: selectedCareGiver.userId };
         console.log("Payload:", payload);
         try {
-            const response = await postPatientManager(payload);
+            const response = await postPatientManager(payload, token);
             if (response?.error) {
                 setErrors(errorHandler(response.error));
             } else {
