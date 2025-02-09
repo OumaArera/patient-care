@@ -1,8 +1,6 @@
 export const postPatientManager = async (payload) => {
     const token = localStorage.getItem("token");
     if (!token) return;
-    console.log("Payload 0:", payload);
-    console.log("Token: ", token);
 
     try {
         const response = await fetch("https://patient-care-server.onrender.com/api/v1/patient-managers", {

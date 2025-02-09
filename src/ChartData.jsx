@@ -99,7 +99,6 @@ const ChartData = () => {
     const handleSubmit = async () => {
         setSubmitting(true);
         setErrors([]);
-
         const behaviorsArray = Object.entries(behaviors).flatMap(([category, items]) =>
             Object.entries(items).map(([key, value]) => ({
                 category,
