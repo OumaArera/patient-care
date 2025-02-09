@@ -15,13 +15,13 @@ export const postPatientManager = async (payload, token) => {
         const data = await response.json();
 
         if (!response.ok) {
-            let errorString = data?.responseObject?.errors || "Failed to create chart data";
+            let errorString = data?.responseObject?.errors || "Failed to assign resident";
             return { error: errorString };
         }
 
         return data;
     } catch (error) {
-        console.error("Error creating chart data:", error);
+        console.error("Errorassigning resident:", error);
         return { error: "An unexpected error occurred. Please try again later." };
     }
 };
