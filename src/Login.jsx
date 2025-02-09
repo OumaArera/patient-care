@@ -112,7 +112,7 @@ const Login = () => {
             {error.length > 0 && (
               <div className="p-3 rounded-md mb-4">
                 {error.map((err, index) => (
-                  <p key={index} className="text-red-700 text-sm">{err}</p>
+                  <p key={index} className="text-red-700 text-lg">{err}</p>
                 ))}
               </div>
             )}
