@@ -178,7 +178,7 @@ const NewCharts = ({ charts, chartsData }) => {
                       className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                     />
                   </td>
-                  {["Behavior_Description", "Trigger",  "Care_Giver_Intervention", "Reported_to_Provider_And_Care-team", "Outcome",].map(
+                  {["Behavior_Description", "Trigger",  "Care_Giver_Intervention", "Reported_to_Provider_And_Careteam", "Outcome",].map(
                     (field, index) => (
                       <td key={index} className="p-3 border border-gray-700">
                         <input
