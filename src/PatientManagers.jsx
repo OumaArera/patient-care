@@ -16,7 +16,6 @@ const PatientManager = () => {
     const [patientManager, setPatientManager] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
-    const [token, setToken] = useState("");
     
     useEffect(() => {
         setLoadingPatients(true);
@@ -44,36 +43,26 @@ const PatientManager = () => {
             });
     }, []);
 
-    useEffect(() => {
-        const storedToken = localStorage.getItem("token");
-        if (!storedToken) {
-            setErrors(["Authentication failed. Please log in again."]);
-            return;
-        }
-        setToken(storedToken);
-    }, []);
 
     const handleSubmit = async () => {
         if (!selectedPatient || !selectedCareGiver) return;
-        if (!token) {
-            setErrors(["Unauthorized request. Please log in again."]);
-            return;
-        }
         setSubmitting(true);
-        setErrors(null);
+        setErrors([]);
 
         const payload = { patient: selectedPatient.patientId, careGiver: selectedCareGiver.userId };
         console.log("Payload:", payload);
         try {
-            const response = await postPatientManager(payload, token);
+            const response = await postPatientManager(payload);
             if (response?.error) {
                 setErrors(errorHandler(response.error));
+                setTimeout(() => setErrors([]), 5000);
             } else {
                 setPatientManager(response.responseObject);
                 setMessage("Chart data posted successfully.");
             }
         } catch (err) {
             setErrors(["Something went wrong. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
         } finally {
             setSubmitting(false);
         }

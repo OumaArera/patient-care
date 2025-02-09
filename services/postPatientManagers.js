@@ -1,6 +1,7 @@
 export const postPatientManager = async (payload, token) => {
-    
+    const token = localStorage.getItem("token");
     console.log("Payload 0:", payload);
+    console.log("Token: ", token);
 
     try {
         const response = await fetch("https://patient-care-server.onrender.com/api/v1/patient-managers", {
@@ -21,7 +22,7 @@ export const postPatientManager = async (payload, token) => {
 
         return data;
     } catch (error) {
-        console.error("Errorassigning resident:", error);
+        console.error("Error assigning resident:", error);
         return { error: "An unexpected error occurred. Please try again later." };
     }
 };
