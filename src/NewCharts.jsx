@@ -159,11 +159,11 @@ const NewCharts = ({ charts, chartsData }) => {
           <thead>
             <tr className="bg-gray-800 text-white">
               <th className="p-3 border border-gray-700">Date</th>
-              <th className="p-3 border border-gray-700">Outcome</th>
-              <th className="p-3 border border-gray-700">Triggers</th>
               <th className="p-3 border border-gray-700">Behavior Description</th>
+              <th className="p-3 border border-gray-700">Triggers</th>
               <th className="p-3 border border-gray-700">Care Giver Intervention</th>
               <th className="p-3 border border-gray-700">Reported Provider & Care Team</th>
+              <th className="p-3 border border-gray-700">Outcome</th>
             </tr>
           </thead>
           <tbody>
@@ -178,7 +178,7 @@ const NewCharts = ({ charts, chartsData }) => {
                       className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                     />
                   </td>
-                  {["Outcome", "Trigger", "Behavior_Description", "Care_Giver_Intervention", "Reported_Provider_And_Careteam"].map(
+                  {["Behavior_Description", "Trigger",  "Care_Giver_Intervention", "Reported_to_Provider_And_Care-team", "Outcome",].map(
                     (field, index) => (
                       <td key={index} className="p-3 border border-gray-700">
                         <input
