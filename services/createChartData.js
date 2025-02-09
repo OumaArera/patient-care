@@ -1,5 +1,6 @@
 export const createChartData = async (chartData) => {
     const token = localStorage.getItem("token");
+    if (!token) return;
 
     try {
         const response = await fetch("https://patient-care-server.onrender.com/api/v1/charts-data", {

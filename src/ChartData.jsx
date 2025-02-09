@@ -117,7 +117,7 @@ const ChartData = () => {
             patient,
             behaviors: behaviorsArray,
             behaviorsDescription: behaviorsDescriptionArray,
-            timeToBeTaken
+            timeToBeTaken: timeToBeTaken.toString()
         };
 
         try {
