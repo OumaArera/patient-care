@@ -124,6 +124,7 @@ const ChartData = () => {
             const response = await createChartData(data);
             if (response?.error) {
                 setErrors(errorHandler(response.error));
+                setTimeout(() => setErrors([]), 5000);
             }else{
                 setMessage(["Chart data posted successfully."]);
                 setTimeout(() => setMessage(""), 5000);

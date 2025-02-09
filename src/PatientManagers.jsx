@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCareGivers } from "../services/getCareGivers";
 import { postPatientManager } from "../services/postPatientManagers";
-import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
 
 const PatientManager = () => {
@@ -10,7 +9,7 @@ const PatientManager = () => {
     const [loadingCareGivers, setLoadingCareGivers] = useState(false);
     const [patients, setPatients] = useState([]);
     const [careGivers, setCareGivers] = useState([]);
-    const [errors, setErrors] = useState([]);
+    const [errors, setErrors] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [message, setMessage] = useState(null);
     const [patientManager, setPatientManager] = useState([]);
@@ -25,7 +24,7 @@ const PatientManager = () => {
                 setLoadingPatients(false);
             })
             .catch(() => {
-                setErrors(["Failed to fetch patients."]);
+                setErrors("Failed to fetch patients.");
                 setLoadingPatients(false);
             });
     }, []);
@@ -38,7 +37,7 @@ const PatientManager = () => {
                 setLoadingCareGivers(false);
             })
             .catch(() => {
-                setErrors(["Failed to fetch caregivers."]);
+                setErrors("Failed to fetch caregivers.");
                 setLoadingCareGivers(false);
             });
     }, []);
@@ -47,22 +46,22 @@ const PatientManager = () => {
     const handleSubmit = async () => {
         if (!selectedPatient || !selectedCareGiver) return;
         setSubmitting(true);
-        setErrors([]);
+        setErrors(null);
 
         const payload = { patient: selectedPatient.patientId, careGiver: selectedCareGiver.userId };
         console.log("Payload:", payload);
         try {
             const response = await postPatientManager(payload);
             if (response?.error) {
-                setErrors(errorHandler(response.error));
-                setTimeout(() => setErrors([]), 5000);
+                setErrors(response?.error);
+                setTimeout(() => setErrors(null), 5000);
             } else {
                 setPatientManager(response.responseObject);
                 setMessage("Chart data posted successfully.");
             }
         } catch (err) {
-            setErrors(["Something went wrong. Please try again."]);
-            setTimeout(() => setErrors([]), 5000);
+            setErrors("Something went wrong. Please try again.");
+            setTimeout(() => setErrors(null), 5000);
         } finally {
             setSubmitting(false);
         }
@@ -71,13 +70,14 @@ const PatientManager = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h1 className="text-2xl font-bold mb-4">Patient Manager</h1>
-            {errors.length > 0 && (
+            {/* {errors.length > 0 && (
                 <div className="bg-red-100 p-3 rounded-md mb-4">
                     {errors.map((error, index) => (
                         <p key={index} className="text-red-700 text-sm">{error}</p>
                     ))}
                 </div>
-            )}
+            )} */}
+            {errors && <p className="text-red-500">{errors}</p>}
             {message && <p className="text-green-500">{message}</p>}
 
             {/* Patient Selection */}

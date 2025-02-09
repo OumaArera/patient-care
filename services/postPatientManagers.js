@@ -1,5 +1,7 @@
 export const postPatientManager = async (payload, token) => {
     const token = localStorage.getItem("token");
+    
+    if (!token) return;
     console.log("Payload 0:", payload);
     console.log("Token: ", token);
 
@@ -16,10 +18,8 @@ export const postPatientManager = async (payload, token) => {
         const data = await response.json();
 
         if (!response.ok) {
-            let errorString = data?.responseObject?.errors || "Failed to assign resident";
-            return { error: errorString };
-        }
-
+            return {error: data?.responseObject?.errors} ;
+        };
         return data;
     } catch (error) {
         console.error("Error assigning resident:", error);
