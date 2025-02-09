@@ -3,7 +3,7 @@ export const createChartData = async (chartData) => {
     if (!token) return;
     console.log("Data: ", chartData);
     try {
-        const response = await fetch("https://patient-care-server.onrender.com/api/v1/charts-data", {
+        const response = await fetch("http://127.0.0.1:8000/api/v1/charts-data", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
