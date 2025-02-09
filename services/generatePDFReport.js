@@ -107,5 +107,5 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     behaviorDescriptionHTML += `</tbody></table>`;
     const secondPageImage = await captureAsImage(behaviorDescriptionHTML);
     pdf.addImage(secondPageImage, "PNG", 10, 10, 190, 0);
-    pdf.save(`Behavior_Log_${selectedYear}_${selectedMonth}.pdf`);
+    pdf.save(`Behavior_${patientName}${branchName}_Log${facilityName}_${selectedYear}_${selectedMonth}.pdf`);
 };
