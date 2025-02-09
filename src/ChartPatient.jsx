@@ -73,7 +73,7 @@ const ChartPatient = () => {
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Patients</h2>
+      <h2 className="text-2xl font-bold mb-4">Residents</h2>
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
