@@ -74,7 +74,8 @@ const CareGiverDashboard = () => {
 
         {/* Change Password Modal */}
         {showChangePassword && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div 
+            className="absolute top-2 bg-gray-900 p-6 rounded-lg shadow-lg w-[50vw] h-[40vh] overflow-y-auto z-50 border border-gray-700">
             <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
               <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
               <ChangePassword onClose={() => setShowChangePassword(false)} />
