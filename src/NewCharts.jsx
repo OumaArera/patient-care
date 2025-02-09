@@ -58,12 +58,13 @@ const NewCharts = ({ charts, chartsData }) => {
     setLoadingSubmit(true);
 
     const payload = {
-      patient: chart.patientId, // Include patientId
+      patient: chart.patientId,
       behaviors,
       behaviorsDescription,
-      dateTaken,
+      dateTaken: dateTaken ?? new Date(),
       reasonNotFiled
     };
+    console.log("Payload", payload);
 
     try {
       const response = await postCharts(payload);
