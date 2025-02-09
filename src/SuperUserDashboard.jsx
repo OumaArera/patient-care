@@ -31,6 +31,26 @@ const SuperUserDashboard = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const navigate = useNavigate();
 
+  const menuRef = useRef(null);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuRef.current && !menuRef.current.contains(event.target) &&
+        modalRef.current && !modalRef.current.contains(event.target)
+      ) {
+        setMenuOpen(false);
+        setShowChangePassword(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // Retrieve logged-in user info
   const fullName = localStorage.getItem("fullName") || "Super User";
 
