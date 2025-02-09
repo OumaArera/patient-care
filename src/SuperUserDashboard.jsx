@@ -141,7 +141,7 @@ const SuperUserDashboard = () => {
         {/* {activeTab === "charts" && <PendingCharts />} */}
         {activeTab === "assignPatient" && <PatientManager />}
         {activeTab === "updates" && <Updates />}
-        {activeTab === "changePassword" && <ChangePassword />}
+        {/* {activeTab === "changePassword" && <ChangePassword />} */}
         {activeTab === "createUser" && <CreateUser />}
         {activeTab === "manageUser" && <ManageUser />}
         {activeTab === "users" && <Users />}
@@ -154,6 +154,21 @@ const SuperUserDashboard = () => {
         {activeTab === "charts" && <Charts />}  
         {activeTab === "allCharts" && <AllCharts />}  
         {activeTab === "medications" && <MedicationAdministration />}  
+
+        {showChangePassword && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
+              <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
+              <ChangePassword onClose={() => setShowChangePassword(false)} />
+              <button 
+                onClick={() => setShowChangePassword(false)} 
+                className="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
         
       </div>
     </div>

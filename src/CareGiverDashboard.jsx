@@ -58,7 +58,6 @@ const CareGiverDashboard = () => {
                 <button className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700" onClick={() => setShowChangePassword(true)}>
                   <FaLock className="mr-2" /> Change Password
                 </button>
-                {showChangePassword && <ChangePassword onClose={() => setShowChangePassword(false)} />}
                 <button onClick={() => handleLogout(navigate)} className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700">
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>
@@ -69,10 +68,25 @@ const CareGiverDashboard = () => {
 
         {/* Dynamic Content Rendering */}
         {activeTab === "updates" && <Updates />}
-        {activeTab === "changePassword" && <ChangePassword />}
         {activeTab === "charts" && <Charts />}  
         {activeTab === "medications" && <Medication />}  
         {activeTab === "dashboard" && <ChartPatient />}  
+
+        {/* Change Password Modal */}
+        {showChangePassword && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
+              <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
+              <ChangePassword onClose={() => setShowChangePassword(false)} />
+              <button 
+                onClick={() => setShowChangePassword(false)} 
+                className="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
