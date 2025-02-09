@@ -68,8 +68,7 @@ const ChartData = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize] = useState(10);
     const [errors, setErrors] = useState([]);
-    const [message, setMessage] = useState(null)
-    const [error, setError] = useState("");
+    const [message, setMessage] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
@@ -80,7 +79,7 @@ const ChartData = () => {
                 setLoadingPatients(false);
             })
             .catch(() => {
-                setError("Failed to fetch patients.");
+                setErrors(["Failed to fetch patients."]);
                 setLoadingPatients(false);
             });
     }, [pageNumber, pageSize]);
@@ -122,7 +121,7 @@ const ChartData = () => {
         try {
             const response = await createChartData(data);
             if (response?.error) {
-                setErrors(errorHandler(response.error));
+                setErrors(errorHandler(response?.error));
                 setTimeout(() => setErrors([]), 5000);
             }else{
                 setMessage(["Chart data posted successfully."]);
@@ -210,7 +209,7 @@ const ChartData = () => {
             >
                 {submitting ? "Submitting..." : "Submit"}
             </button>
-            {error && <p className="text-red-500">{error}</p>}
+            {/* {error && <p className="text-red-500">{error}</p>} */}
             {message && <p className="text-green-600">{message}</p>}
             {errors.length > 0 && (
                 <div className="mb-4 p-3 bg-red-800 rounded">

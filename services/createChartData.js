@@ -16,6 +16,7 @@ export const createChartData = async (chartData) => {
 
         if (!response.ok) {
             let errorString = data?.responseObject?.errors || "Failed to create chart data";
+            console.log("Errord, ", errorString);
             return { error: errorString };
         }
 
