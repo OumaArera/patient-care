@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaChartBar, FaPills, FaNewspaper, FaUser, FaSignOutAlt, FaLock
@@ -15,6 +15,28 @@ const CareGiverDashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const navigate = useNavigate();
+
+  // Ref for user menu and modal
+  const menuRef = useRef(null);
+  const modalRef = useRef(null);
+
+  // Close menu and modal when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuRef.current && !menuRef.current.contains(event.target) &&
+        modalRef.current && !modalRef.current.contains(event.target)
+      ) {
+        setMenuOpen(false);
+        setShowChangePassword(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Retrieve logged-in user info
   const fullName = localStorage.getItem("fullName") || "Caregiver";
@@ -46,7 +68,7 @@ const CareGiverDashboard = () => {
           <h2 className="text-xl font-semibold">Dashboard</h2>
 
           {/* User Dropdown */}
-          <div className="relative">
+          <div className="relative" ref={menuRef}>
             <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 bg-gray-800 px-3 py-2 rounded-lg hover:bg-gray-700">
               <FaUser className="text-blue-400" />
               <span>{fullName}</span>
@@ -55,10 +77,16 @@ const CareGiverDashboard = () => {
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg">
                 <p className="p-3 border-b border-gray-700">{fullName}</p>
-                <button className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700" onClick={() => setShowChangePassword(true)}>
+                <button 
+                  className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700" 
+                  onClick={() => setShowChangePassword(true)}
+                >
                   <FaLock className="mr-2" /> Change Password
                 </button>
-                <button onClick={() => handleLogout(navigate)} className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700">
+                <button 
+                  onClick={() => handleLogout(navigate)} 
+                  className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700"
+                >
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>
               </div>
@@ -72,20 +100,17 @@ const CareGiverDashboard = () => {
         {activeTab === "medications" && <Medication />}  
         {activeTab === "dashboard" && <ChartPatient />}  
 
-        {/* Change Password Modal */}
+        {/* Change Password Overlay (only inside user menu) */}
         {showChangePassword && (
-          <div 
-            className="absolute top-2 bg-gray-900 p-6 rounded-lg shadow-lg w-[50vw] h-[40vh] overflow-y-auto z-50 border border-gray-700">
-            <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
-              <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
-              <ChangePassword onClose={() => setShowChangePassword(false)} />
-              <button 
-                onClick={() => setShowChangePassword(false)} 
-                className="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
-              >
-                Close
-              </button>
-            </div>
+          <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">
+            <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
+            <ChangePassword onClose={() => setShowChangePassword(false)} />
+            <button 
+              onClick={() => setShowChangePassword(false)} 
+              className="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
+            >
+              Close
+            </button>
           </div>
         )}
       </div>
