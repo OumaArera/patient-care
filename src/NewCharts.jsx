@@ -61,7 +61,7 @@ const NewCharts = ({ charts, chartsData }) => {
       patient: chart.patientId,
       behaviors,
       behaviorsDescription,
-      dateTaken: dateTaken ?? new Date(),
+      dateTaken: dateTaken.toISOString(),
       reasonNotFiled
     };
     console.log("Payload", payload);
@@ -90,10 +90,12 @@ const NewCharts = ({ charts, chartsData }) => {
       {/* Missing Date Selection */}
       {missingDays.length > 0 && (
         <div className="mb-4">
-          <label className="block mb-2">Select Date:</label>
+          <label className="block mb-2">Select Date & Time:</label>
           <DatePicker
             selected={dateTaken}
             onChange={(date) => setDateTaken(date)}
+            showTimeSelect
+            dateFormat="Pp" // Ensures date + time format
             className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
           />
           <label className="block mt-3">Reason Not Filed:</label>
