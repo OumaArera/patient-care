@@ -131,7 +131,7 @@ const ChartData = () => {
             }
         } catch (err) {
             setErrors(["Something went wrong. Please try again."]);
-            setTimeout(() => setErrors(""), 5000);
+            setTimeout(() => setErrors([]), 5000);
         } finally {
             setSubmitting(false);
         }
