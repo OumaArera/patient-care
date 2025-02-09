@@ -16,7 +16,7 @@ const PatientManager = () => {
     const [patientManager, setPatientManager] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
-    const [token, setToken] = useState(null);
+    const [token, setToken] = useState("");
     
     useEffect(() => {
         setLoadingPatients(true);
@@ -44,14 +44,21 @@ const PatientManager = () => {
             });
     }, []);
 
-    useEffect(()=>{
-        const token = localStorage.getItem("token");
-        setToken(token);
-    }, [])
+    useEffect(() => {
+        const storedToken = localStorage.getItem("token");
+        if (!storedToken) {
+            setErrors(["Authentication failed. Please log in again."]);
+            return;
+        }
+        setToken(storedToken);
+    }, []);
 
     const handleSubmit = async () => {
         if (!selectedPatient || !selectedCareGiver) return;
-        if (!token) return;
+        if (!token) {
+            setErrors(["Unauthorized request. Please log in again."]);
+            return;
+        }
         setSubmitting(true);
         setErrors(null);
 
