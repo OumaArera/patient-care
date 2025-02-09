@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { errorHandler } from '../services/errorHandler';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
+    setError([]);
 
     try {
       const response = await fetch('https://patient-care-server.onrender.com/api/v1/auth/login', {
@@ -45,9 +46,12 @@ const Login = () => {
         localStorage.setItem("role", decoded.role);
         localStorage.setItem("lastActivity", Date.now()); 
         navigate(`/${decoded.role}`);
+      }else{
+        setError(errorHandler(data?.responseObject?.errors));
+        setTimeout(() => setError([]), 6000);
       }
     } catch (err) {
-      setError('An error occurred. Try again.');
+      setError(['An error occurred. Try again.']);
     } finally {
       setLoading(false);
     }
@@ -104,7 +108,14 @@ const Login = () => {
               </div>
             </div>
 
-            {error && <p className="text-red-400 text-center">{error}</p>}
+            {/* {error && <p className="text-red-400 text-center">{error}</p>} */}
+            {error.length > 0 && (
+              <div className="p-3 rounded-md mb-4">
+                {error.map((err, index) => (
+                  <p key={index} className="text-red-700 text-sm">{err}</p>
+                ))}
+              </div>
+            )}
 
             <button
               type="submit"
