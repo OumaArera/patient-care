@@ -61,6 +61,15 @@ const ChartData = () => {
         Care_Giver_Intervention: true,
         Reported_Provider_And_Careteam: true,
     });
+    const [vitals, setVitals] = useState([
+        {
+            Blood_Pressure: true,
+            Pulse: true,
+            Temperature: true,
+            Oxygen_Saturation: true,
+            Pain: true
+        }
+    ])
     const [timeToBeTaken, setTimeToBeTaken] = useState("");
     const [patients, setPatients] = useState([]);
     const [patient, setPatient] = useState(null);
@@ -111,8 +120,16 @@ const ChartData = () => {
             response: null
         }));
 
+        const vitalsArray = Object.entries(vitals).map(([key, value]) => ({
+            vitalsType: key,
+            status: value,
+                response: null
+            })
+        );
+
         const data = {
             patient,
+            vitals: vitalsArray,
             behaviors: behaviorsArray,
             behaviorsDescription: behaviorsDescriptionArray,
             timeToBeTaken: timeToBeTaken.toString()
@@ -221,5 +238,4 @@ const ChartData = () => {
         </div>
     );
 };
-
 export default ChartData;
