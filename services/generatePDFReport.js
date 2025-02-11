@@ -100,7 +100,14 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
                     <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Behavior_Description" ? desc.response : ""}</td>
                     <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Care_Giver_Intervention" ? desc.response : ""}</td>
                     <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Reported_Provider_And_Careteam" ? desc.response : ""}</td>
-                </tr>`;
+                </tr>
+                <br />
+                <div style="margin-top: 30px; font-size: 16px;">
+                    <p>Caregiver 1: ................................................... Sign: ......................</p>
+                    <br />
+                    <p>Caregiver 2: ................................................... Sign: ......................</p>
+                </div>`;
+                
         });
     });
 
