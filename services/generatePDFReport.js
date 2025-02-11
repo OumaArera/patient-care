@@ -96,35 +96,34 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             </thead>
             <tbody>`;
 
-    // Group behavior descriptions by date
-    const behaviorDescriptionsByDate = charts.reduce((acc, chart) => {
+    charts.forEach(chart => {
         const date = new Date(chart.dateTaken).toLocaleDateString();
-        if (!acc[date]) acc[date] = [];
-        acc[date] = acc[date].concat(chart.behaviorsDescription);
-        return acc;
-    }, {});
+        let rowData = {
+            Behavior_Description: "",
+            Trigger: "",
+            Care_Giver_Intervention: "",
+            Reported_Provider_And_Careteam: "",
+            Outcome: ""
+        };
 
-    Object.entries(behaviorDescriptionsByDate).forEach(([date, descriptions]) => {
-        behaviorDescriptionHTML += `<tr>
-            <td style="padding: 8px; border: 1px solid #000;" rowspan="${descriptions.length}">${date}</td>`;
-        
-        descriptions.forEach((desc, index) => {
-            if (index > 0) behaviorDescriptionHTML += `<tr>`;
-            behaviorDescriptionHTML += `
-                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Behavior_Description" ? desc.response : ""}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Trigger" ? desc.response : ""}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Care_Giver_Intervention" ? desc.response : ""}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Reported_Provider_And_Careteam" ? desc.response : ""}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Outcome" ? desc.response : ""}</td>
-            </tr>`;
+        chart.behaviorsDescription.forEach(desc => {
+            if (desc.descriptionType !== "Date") {
+                rowData[desc.descriptionType] = desc.response;
+            }
         });
+
+        behaviorDescriptionHTML += `
+            <tr>
+                <td style="padding: 8px; border: 1px solid #000;">${date}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${rowData.Behavior_Description}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${rowData.Trigger}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${rowData.Care_Giver_Intervention}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${rowData.Reported_Provider_And_Careteam}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${rowData.Outcome}</td>
+            </tr>`;
     });
 
-    behaviorDescriptionHTML += `</tbody></table>
-    <div style="margin-top: 30px; font-size: 16px; text-align: center;">
-        <p>Caregiver 1: ................................................... Sign: ......................</p>
-        <p>Caregiver 2: ................................................... Sign: ......................</p>
-    </div>`;
+    behaviorDescriptionHTML += `</tbody></table>`;
 
     const secondPageImage = await captureAsImage(behaviorDescriptionHTML);
     pdf.addImage(secondPageImage, "PNG", 10, 10, 190, 0);
