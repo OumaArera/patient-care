@@ -123,7 +123,7 @@ const ChartData = () => {
         const vitalsArray = Object.entries(vitals).map(([key, value]) => ({
             vitalsType: key,
             status: value,
-                response: null
+            response: null
             })
         );
 
@@ -161,18 +161,18 @@ const ChartData = () => {
                 value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} 
                 className="border p-2 rounded w-full bg-gray-700 text-white" />
             
-            <label className="block mt-2 text-gray-300">Select Patient:</label>
+            <label className="block mt-2 text-gray-300">Select Resident:</label>
             {loadingPatients ? (
                 <div className="flex items-center space-x-2">
                     <Loader className="animate-spin text-gray-400" size={20} />
-                    <p className="text-gray-400">Loading patients...</p>
+                    <p className="text-gray-400">Loading residents...</p>
                 </div>
             ) : (
                 <select 
                 value={patient} 
                 onChange={(e) => setPatient(e.target.value)} 
                 className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded">
-                    <option className="" value="">Select a Patient</option>
+                    <option className="" value="">Select a Resident</option>
                     {patients.map((p) => (
                         <option className="" key={p.patientId} value={p.patientId}>
                             {p.firstName} {p.lastName}
