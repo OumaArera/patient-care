@@ -151,89 +151,93 @@ const ChartData = () => {
     };
 
     return (
-        <div className="bg-gray-900 text-white min-h-screen">
-            <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Chart Data</h2>
-            <label className="block text-gray-300">Time to be Taken:</label>
-            <input 
-                type="time" 
-                value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} 
-                className="border p-2 rounded w-full bg-gray-700 text-white" />
-            
-            <label className="block mt-2 text-gray-300">Select Resident:</label>
-            {loadingPatients ? (
-                <div className="flex items-center space-x-2">
-                    <Loader className="animate-spin text-gray-400" size={20} />
-                    <p className="text-gray-400">Loading residents...</p>
-                </div>
-            ) : (
-                <select 
-                value={patient} 
-                onChange={(e) => setPatient(e.target.value)} 
-                className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded">
-                    <option className="" value="">Select a Resident</option>
-                    {patients.map((p) => (
-                        <option className="" key={p.patientId} value={p.patientId}>
-                            {p.firstName} {p.lastName}
-                        </option>
-                    ))}
-                </select>
-            )}
-            
-            <table className="w-full border-collapse border border-gray-700 text-white">
-                <thead>
-                    <tr>
-                        <th className="p-3 border border-gray-600">Category</th>
-                        <th className="p-3 border border-gray-600">Behavior</th>
-                        <th className="p-3 border border-gray-600">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Object.entries(behaviors).map(([category, items]) => {
-                        const keys = Object.keys(items);
-                        return keys.map((key, index) => (
-                            <tr 
-                                key={key}
-                                className="bg-gray-900 text-gray-300"
-                            >
-                                {index === 0 && (
-                                    <td 
-                                        className="p-2 border border-gray-700" 
-                                        rowSpan={keys.length}>
-                                        {category}
-                                    </td>
-                                )}
-                                <td className="p-2 border border-gray-700">{key.replace(/_/g, " ")}</td>
-                                <td className="p-2 border border-gray-700">
-                                    <button 
-                                        onClick={() => handleToggle(category, key)} 
-                                        className={`p-2 rounded ${items[key] === "Yes" ? "bg-gray-700" : "bg-red-500"} text-white`}
-                                    >
-                                        {items[key]}
-                                    </button>
-                                </td>
+        <div className="flex justify-center items-center min-h-screen bg-gray-900">
+            <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg overflow-hidden">
+                <div className="max-h-[80vh] overflow-y-auto p-4">
+                    <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Chart Data</h2>
+                    <label className="block text-gray-300">Time to be Taken:</label>
+                    <input 
+                        type="time" 
+                        value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} 
+                        className="border p-2 rounded w-full bg-gray-700 text-white" />
+                    
+                    <label className="block mt-2 text-gray-300">Select Resident:</label>
+                    {loadingPatients ? (
+                        <div className="flex items-center space-x-2">
+                            <Loader className="animate-spin text-gray-400" size={20} />
+                            <p className="text-gray-400">Loading residents...</p>
+                        </div>
+                    ) : (
+                        <select 
+                        value={patient} 
+                        onChange={(e) => setPatient(e.target.value)} 
+                        className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded">
+                            <option className="" value="">Select a Resident</option>
+                            {patients.map((p) => (
+                                <option className="" key={p.patientId} value={p.patientId}>
+                                    {p.firstName} {p.lastName}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+                    
+                    <table className="w-full border-collapse border border-gray-700 text-white">
+                        <thead>
+                            <tr>
+                                <th className="p-3 border border-gray-600">Category</th>
+                                <th className="p-3 border border-gray-600">Behavior</th>
+                                <th className="p-3 border border-gray-600">Status</th>
                             </tr>
-                        ));
-                    })}
-                </tbody>
-            </table>
-            
-            <button 
-                onClick={handleSubmit} 
-                className={`mt-4 p-2 rounded ${submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
-                disabled={submitting}
-            >
-                {submitting ? "Submitting..." : "Submit"}
-            </button>
-            {/* {error && <p className="text-red-500">{error}</p>} */}
-            {message && <p className="text-green-600">{message}</p>}
-            {errors.length > 0 && (
-                <div className="mb-4 p-3 bg-red-800 rounded">
-                    {errors.map((error, index) => (
-                        <p key={index} className="text-sm text-white">{error}</p>
-                    ))}
-                </div>
-            )}
+                        </thead>
+                        <tbody>
+                            {Object.entries(behaviors).map(([category, items]) => {
+                                const keys = Object.keys(items);
+                                return keys.map((key, index) => (
+                                    <tr 
+                                        key={key}
+                                        className="bg-gray-900 text-gray-300"
+                                    >
+                                        {index === 0 && (
+                                            <td 
+                                                className="p-2 border border-gray-700" 
+                                                rowSpan={keys.length}>
+                                                {category}
+                                            </td>
+                                        )}
+                                        <td className="p-2 border border-gray-700">{key.replace(/_/g, " ")}</td>
+                                        <td className="p-2 border border-gray-700">
+                                            <button 
+                                                onClick={() => handleToggle(category, key)} 
+                                                className={`p-2 rounded ${items[key] === "Yes" ? "bg-gray-700" : "bg-red-500"} text-white`}
+                                            >
+                                                {items[key]}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ));
+                            })}
+                        </tbody>
+                    </table>
+                    
+                    <button 
+                        onClick={handleSubmit} 
+                        className={`mt-4 p-2 rounded ${submitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
+                        disabled={submitting}
+                    >
+                        {submitting ? "Submitting..." : "Submit"}
+                    </button>
+                    {/* {error && <p className="text-red-500">{error}</p>} */}
+                    {message && <p className="text-green-600">{message}</p>}
+                    {errors.length > 0 && (
+                        <div className="mb-4 p-3 bg-red-800 rounded">
+                            {errors.map((error, index) => (
+                                <p key={index} className="text-sm text-white">{error}</p>
+                            ))}
+                        </div>
+                    )}
+            </div>
         </div>
+    </div>
     );
 };
 export default ChartData;
