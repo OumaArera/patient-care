@@ -71,7 +71,7 @@ const ChartCard = ({ chart, onClose }) => {
 
               {/* Behaviors Table */}
               <h3 className="text-lg font-semibold mb-2 text-gray-800">Behaviors</h3>
-              <div className="overflow-x-auto max-h-[400px] mb-6">
+              <div className="overflow-x-auto mb-6">
                 <table className="w-full border-collapse border border-gray-300 text-gray-800">
                   <thead className="bg-gray-200">
                     <tr>
