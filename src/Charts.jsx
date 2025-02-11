@@ -226,8 +226,10 @@ const Charts = () => {
       )}
 
       {showChartCard && selectedChart && (
-        <div className="p-6 bg-gray-900 top-10 text-white min-h-screen">
-          <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-[90%] max-w-3xl">
+            <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+          </div>
         </div>
       )}
     </div>
