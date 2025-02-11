@@ -123,7 +123,11 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             </tr>`;
     });
 
-    behaviorDescriptionHTML += `</tbody></table>`;
+    behaviorDescriptionHTML += `</tbody></table>
+    <div style="margin-top: 30px; font-size: 16px; text-align: center;">
+        <p>Caregiver 1: ................................................... Sign: ......................</p>
+        <p>Caregiver 2: ................................................... Sign: ......................</p>
+    </div>`;
 
     const secondPageImage = await captureAsImage(behaviorDescriptionHTML);
     pdf.addImage(secondPageImage, "PNG", 10, 10, 190, 0);
