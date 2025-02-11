@@ -226,10 +226,13 @@ const Charts = () => {
       )}
 
       {showChartCard && selectedChart && (
-        <div className="p-6 bg-gray-900 z-50 text-white min-h-screen">
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 p-6 rounded-lg shadow-lg"
+        >
           <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
         </div>
       )}
+
     </div>
   );
 };
