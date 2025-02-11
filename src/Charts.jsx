@@ -94,7 +94,7 @@ const Charts = () => {
       {loadingPatients ? (
         <div className="flex items-center space-x-2">
           <Loader className="animate-spin text-gray-400" size={20} />
-          <p className="text-gray-400">Loading resident...</p>
+          <p className="text-gray-400">Loading residents...</p>
         </div>
       ) : (
         <>
@@ -226,10 +226,8 @@ const Charts = () => {
       )}
 
       {showChartCard && selectedChart && (
-        <div className="fixed inset-0 flex justify-center items-center z-50 bg-gray-900 bg-opacity-50 overflow-hidden">
-          <div className="p-4 max-w-4xl w-full max-h-full h-[80vh] bg-white shadow-lg rounded-lg overflow-auto">
-            <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
-          </div>
+        <div className="p-6 bg-gray-900 text-white min-h-screen">
+          <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
         </div>
       )}
     </div>
