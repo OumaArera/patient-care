@@ -41,30 +41,41 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             </thead>
             <tbody>`;
 
-    const rows = charts.reduce((acc, chart) => {
+    // Group behaviors by category
+    const categoryGroups = charts.reduce((acc, chart) => {
         chart.behaviors.forEach((behavior) => {
-            let existingRow = acc.find(row => row.behavior === behavior.behavior);
+            if (!acc[behavior.category]) {
+                acc[behavior.category] = [];
+            }
+            let existingRow = acc[behavior.category].find(row => row.behavior === behavior.behavior);
             if (!existingRow) {
                 existingRow = {
-                    category: behavior.category,
                     behavior: behavior.behavior,
                     days: Array(31).fill(""),
                 };
-                acc.push(existingRow);
+                acc[behavior.category].push(existingRow);
             }
-            existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
+            existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "";
         });
         return acc;
-    }, []);
+    }, {});
 
-    rows.forEach(row => {
-        behaviorLogHTML += `<tr>
-            <td style="padding: 8px; border: 1px solid #000; text-align: center;">${row.category}</td>
-            <td style="padding: 8px; border: 1px solid #000; text-align: left;">${row.behavior}</td>`;
-        row.days.forEach(status => {
-            behaviorLogHTML += `<td style="padding: 8px; border: 1px solid #000; text-align: center;">${status}</td>`;
+    // Generate table rows with merged category cells
+    Object.entries(categoryGroups).forEach(([category, behaviors]) => {
+        behaviors.forEach((row, index) => {
+            behaviorLogHTML += `<tr>`;
+            if (index === 0) {
+                behaviorLogHTML += `
+                    <td style="padding: 8px; border: 1px solid #000; text-align: center;" rowspan="${behaviors.length}">
+                        ${category}
+                    </td>`;
+            }
+            behaviorLogHTML += `<td style="padding: 8px; border: 1px solid #000; text-align: left;">${row.behavior}</td>`;
+            row.days.forEach(status => {
+                behaviorLogHTML += `<td style="padding: 8px; border: 1px solid #000; text-align: center;">${status}</td>`;
+            });
+            behaviorLogHTML += `</tr>`;
         });
-        behaviorLogHTML += `</tr>`;
     });
 
     behaviorLogHTML += `</tbody></table>`;
@@ -100,19 +111,21 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
                     <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Behavior_Description" ? desc.response : ""}</td>
                     <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Care_Giver_Intervention" ? desc.response : ""}</td>
                     <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Reported_Provider_And_Careteam" ? desc.response : ""}</td>
-                </tr>
-                <br />
-                <div style="margin-top: 30px; font-size: 16px;">
-                    <p>Caregiver 1: ................................................... Sign: ......................</p>
-                    <br />
-                    <p>Caregiver 2: ................................................... Sign: ......................</p>
-                </div>`;
-                
+                </tr>`;
         });
     });
 
-    behaviorDescriptionHTML += `</tbody></table>`;
+   // Add caregiver signatures at the bottom of the second page
+    behaviorDescriptionHTML += `
+    <div style="margin-top: 30px; font-size: 16px;">
+        <p>Caregiver 1: ................................................... Sign: ......................</p>
+        <p>Caregiver 2: ................................................... Sign: ......................</p>
+    </div>
+    `;
+
+    // Capture second table with signatures
     const secondPageImage = await captureAsImage(behaviorDescriptionHTML);
     pdf.addImage(secondPageImage, "PNG", 10, 10, 190, 0);
     pdf.save(`Behavior_${patientName}${branchName}_Log${facilityName}_${selectedYear}_${selectedMonth}.pdf`);
+
 };
