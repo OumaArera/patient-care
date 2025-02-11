@@ -119,7 +119,7 @@ const ChartData = () => {
         }));
 
         const vitalsArray = Object.entries(vitals).map(([key, value]) => ({
-            vitalsType: key,
+            vitalsType: key.replace(/_/g, " "),
             status: value,
             response: null
             })
