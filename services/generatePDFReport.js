@@ -124,8 +124,9 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     });
 
     behaviorDescriptionHTML += `</tbody></table>
-    <div style="margin-top: 30px; font-size: 16px; text-align: center;">
+    <div style="margin-top: 30px; font-size: 20px; text-align: left;">
         <p>Caregiver 1: ................................................... Sign: ......................</p>
+        <br />
         <p>Caregiver 2: ................................................... Sign: ......................</p>
     </div>`;
 
