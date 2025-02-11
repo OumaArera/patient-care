@@ -61,15 +61,13 @@ const ChartData = () => {
         Care_Giver_Intervention: true,
         Reported_Provider_And_Careteam: true,
     });
-    const [vitals, setVitals] = useState([
-        {
-            Blood_Pressure: true,
-            Pulse: true,
-            Temperature: true,
-            Oxygen_Saturation: true,
-            Pain: true
-        }
-    ])
+    const [vitals, setVitals] = useState({
+        Blood_Pressure: true,
+        Pulse: true,
+        Temperature: true,
+        Oxygen_Saturation: true,
+        Pain: true
+    })
     const [timeToBeTaken, setTimeToBeTaken] = useState("");
     const [patients, setPatients] = useState([]);
     const [patient, setPatient] = useState(null);
