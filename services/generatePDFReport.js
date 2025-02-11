@@ -5,10 +5,8 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     if (charts.length === 0) return;
 
     const { facilityName, branchName, patientName } = charts[0];
-
     const pdf = new jsPDF();
 
-    // Function to capture a container as an image
     const captureAsImage = async (htmlContent) => {
         const container = document.createElement("div");
         container.style.padding = "20px";
@@ -41,7 +39,6 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             </thead>
             <tbody>`;
 
-    // Group behaviors by category
     const categoryGroups = charts.reduce((acc, chart) => {
         chart.behaviors.forEach((behavior) => {
             if (!acc[behavior.category]) {
@@ -60,7 +57,6 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
         return acc;
     }, {});
 
-    // Generate table rows with merged category cells
     Object.entries(categoryGroups).forEach(([category, behaviors]) => {
         behaviors.forEach((row, index) => {
             behaviorLogHTML += `<tr>`;
@@ -80,7 +76,6 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
 
     behaviorLogHTML += `</tbody></table>`;
 
-    // Capture first table
     const firstPageImage = await captureAsImage(behaviorLogHTML);
     pdf.addImage(firstPageImage, "PNG", 10, 10, 190, 0);
     pdf.addPage();
@@ -92,40 +87,46 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             <thead>
                 <tr style="background: #f0f0f0; text-align: center; font-size: 14px; font-weight: bold;">
                     <th style="padding: 8px; border: 1px solid #000;">Date</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Outcome</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Trigger</th>
                     <th style="padding: 8px; border: 1px solid #000;">Behavior Description</th>
+                    <th style="padding: 8px; border: 1px solid #000;">Trigger</th>
                     <th style="padding: 8px; border: 1px solid #000;">Care Giver Intervention</th>
                     <th style="padding: 8px; border: 1px solid #000;">Reported Provider And Careteam</th>
+                    <th style="padding: 8px; border: 1px solid #000;">Outcome</th>
                 </tr>
             </thead>
             <tbody>`;
 
-    charts.forEach(chart => {
-        chart.behaviorsDescription.forEach(desc => {
+    // Group behavior descriptions by date
+    const behaviorDescriptionsByDate = charts.reduce((acc, chart) => {
+        const date = new Date(chart.dateTaken).toLocaleDateString();
+        if (!acc[date]) acc[date] = [];
+        acc[date] = acc[date].concat(chart.behaviorsDescription);
+        return acc;
+    }, {});
+
+    Object.entries(behaviorDescriptionsByDate).forEach(([date, descriptions]) => {
+        behaviorDescriptionHTML += `<tr>
+            <td style="padding: 8px; border: 1px solid #000;" rowspan="${descriptions.length}">${date}</td>`;
+        
+        descriptions.forEach((desc, index) => {
+            if (index > 0) behaviorDescriptionHTML += `<tr>`;
             behaviorDescriptionHTML += `
-                <tr>
-                    <td style="padding: 8px; border: 1px solid #000;">${new Date(chart.dateTaken).toLocaleDateString()}</td>
-                    <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Outcome" ? desc.response : ""}</td>
-                    <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Trigger" ? desc.response : ""}</td>
-                    <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Behavior_Description" ? desc.response : ""}</td>
-                    <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Care_Giver_Intervention" ? desc.response : ""}</td>
-                    <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Reported_Provider_And_Careteam" ? desc.response : ""}</td>
-                </tr>`;
+                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Behavior_Description" ? desc.response : ""}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Trigger" ? desc.response : ""}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Care_Giver_Intervention" ? desc.response : ""}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Reported_Provider_And_Careteam" ? desc.response : ""}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${desc.descriptionType === "Outcome" ? desc.response : ""}</td>
+            </tr>`;
         });
     });
 
-   // Add caregiver signatures at the bottom of the second page
-    behaviorDescriptionHTML += `
-    <div style="margin-top: 30px; font-size: 16px;">
+    behaviorDescriptionHTML += `</tbody></table>
+    <div style="margin-top: 30px; font-size: 16px; text-align: center;">
         <p>Caregiver 1: ................................................... Sign: ......................</p>
         <p>Caregiver 2: ................................................... Sign: ......................</p>
-    </div>
-    `;
+    </div>`;
 
-    // Capture second table with signatures
     const secondPageImage = await captureAsImage(behaviorDescriptionHTML);
     pdf.addImage(secondPageImage, "PNG", 10, 10, 190, 0);
     pdf.save(`Behavior_${patientName}${branchName}_Log${facilityName}_${selectedYear}_${selectedMonth}.pdf`);
-
 };
