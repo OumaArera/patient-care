@@ -12,12 +12,10 @@ export const createChartData = async (chartData) => {
         });
 
         const data = await response.json();
-
         if (!response.ok) {
             let errorString = data?.responseObject?.errors || "Failed to create chart data";
             return { error: errorString };
-        }
-
+        };
         return data;
     } catch (error) {
         console.error("Error creating chart data:", error);
