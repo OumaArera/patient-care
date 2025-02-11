@@ -89,7 +89,7 @@ const Charts = () => {
 
   return (
     <div className=" bg-gray-900 text-white min-h-screen">
-      <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Patient Charts</h2>
+      <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Resident Charts</h2>
 
       {loadingPatients ? (
         <div className="flex items-center space-x-2">
@@ -140,7 +140,7 @@ const Charts = () => {
                 <thead className="">
                   <tr className="bg-gray-700">
                     <th className="p-3 border border-gray-600">Date</th>
-                    <th className="p-3 border border-gray-600">Patient</th>
+                    <th className="p-3 border border-gray-600">Resident</th>
                     <th className="p-3 border border-gray-600">Status</th>
                     <th className="p-3 border border-gray-600">Reason Not Filed</th>
                     <th className="p-3 border border-gray-600">View</th>

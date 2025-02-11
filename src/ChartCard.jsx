@@ -62,7 +62,7 @@ const ChartCard = ({ chart, onClose }) => {
             <XCircle className="w-6 h-6" />
           </button>
           <div className="text-sm mb-4 font-bold  text-gray-900">
-            <p>Patient Name: {chart.patientName}</p>
+            <p>Resident Name: {chart.patientName}</p>
             <p>Date Taken: {formattedDate}</p>
             <p>Care Giver: {chart.careGiver}</p>
           </div>
@@ -133,6 +133,16 @@ const ChartCard = ({ chart, onClose }) => {
               </tbody>
             </table>
           </div>
+             {/* Vitals Section */}
+          <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">Vitals</h3>
+          <div className="grid grid-cols-2 gap-4">
+            {chart.vitals.map((vital, index) => (
+              <div key={index} className="bg-gray-100 p-3 rounded-md">
+                <p className="font-semibold text-gray-700">{vital.vitalsType}</p>
+                <p className="text-gray-900">{vital.response || "Not Provided"}</p>
+              </div>
+            ))}
+          </div>   
         </div>
       </div>
     </div>

@@ -79,10 +79,10 @@ const AllCharts = () => {
                 {loadingPatients && (
                 <div className="flex items-center space-x-2">
                     <Loader className="animate-spin text-gray-400" size={20} />
-                    <p className="text-gray-400">Loading patients...</p>
+                    <p className="text-gray-400">Loading residents...</p>
                 </div>)}
                 
-                <label className="font-semibold">Select Patient: </label>
+                <label className="font-semibold">Select Resident: </label>
                 <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={handlePatientChange} value={selectedPatient || ""}>
                     <option value="">-- Select --</option>
                     {patients.map((p) => (
