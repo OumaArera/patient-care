@@ -226,7 +226,7 @@ const Charts = () => {
       )}
 
       {showChartCard && selectedChart && (
-        <div className="p-6 bg-gray-900 top-10 z-50 text-white min-h-screen">
+        <div className="p-6 bg-gray-900 z-50 text-white min-h-screen">
           <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
         </div>
       )}
