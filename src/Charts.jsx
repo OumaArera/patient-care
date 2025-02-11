@@ -94,17 +94,17 @@ const Charts = () => {
       {loadingPatients ? (
         <div className="flex items-center space-x-2">
           <Loader className="animate-spin text-gray-400" size={20} />
-          <p className="text-gray-400">Loading patients...</p>
+          <p className="text-gray-400">Loading resident...</p>
         </div>
       ) : (
         <>
-          <label className="block mb-2 text-lg">Select Patient:</label>
+          <label className="block mb-2 text-lg">Select Resident:</label>
           <select
             onChange={handleSelectPatient}
             value={selectedPatient || ""}
             className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
           >
-            <option value="">Select Patient</option>
+            <option value="">Select Resident</option>
             {patients.map((patient) => (
               <option key={patient.patientId} value={patient.patientId}>
                 {patient.firstName} {patient.lastName}
@@ -226,8 +226,10 @@ const Charts = () => {
       )}
 
       {showChartCard && selectedChart && (
-        <div className="p-6 bg-gray-900 text-white min-h-screen">
-          <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+        <div className="fixed inset-0 flex justify-center items-center z-50 bg-gray-900 bg-opacity-50">
+          <div className="p-4 max-w-4xl w-full h-[80vh] overflow-y-auto bg-white shadow-lg rounded-lg">
+            <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+          </div>
         </div>
       )}
     </div>

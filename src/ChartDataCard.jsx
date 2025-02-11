@@ -140,7 +140,7 @@ const ChartDataCard = () => {
 
             {/* Display Chart Data for Selected Patient */}
             {filteredChartData.length === 0 ? (
-                <p>No chart data available for the selected patient.</p>
+                <p>No chart data available for the selected resident.</p>
             ) : (
                 filteredChartData.map((chart) => (
                     <div key={chart.chartDataId} className="mb-6">
