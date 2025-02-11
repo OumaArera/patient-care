@@ -50,7 +50,7 @@ const ChartCard = ({ chart, onClose }) => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
       <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg overflow-hidden">
-        <div className="fixed inset-0 flex justify-center items-center z-50 bg-gray-900 bg-opacity-50">
+      <div className="max-h-[80vh] overflow-y-auto p-4">
           <div
             ref={cardRef}
             className="p-4 max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden"
