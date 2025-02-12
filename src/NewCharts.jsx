@@ -42,9 +42,9 @@ const NewCharts = ({ charts, chartsData }) => {
     }
   }, [charts]);
 
-  const toggleBehaviorStatus = (index) => {
+  const toggleBehaviorStatus = (index, value) => {
     setBehaviors((prev) =>
-      prev.map((b, i) => (i === index ? { ...b, status: b.status === "Yes" ? "No" : "Yes" } : b))
+      prev.map((b, i) => (i === index ? { ...b, status: value } : b))
     );
   };
 
@@ -134,14 +134,16 @@ const NewCharts = ({ charts, chartsData }) => {
                   )}
                   <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                   <td className="p-3 border border-gray-700">
-                    <button
-                      onClick={() => toggleBehaviorStatus(index)}
-                      className={`px-4 py-2 rounded-md text-white ${
-                        behavior.status === "Yes" ? "bg-green-500" : "bg-red-500"
-                      }`}
+                    <select
+                      value={behavior.status}
+                      onChange={(e) => toggleBehaviorStatus(index, e.target.value)}
+                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                      required
                     >
-                      {behavior.status}
-                    </button>
+                      <option value="">Select</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
                   </td>
                 </tr>
               );
