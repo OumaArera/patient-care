@@ -80,7 +80,7 @@ const CreateAppointments = () => {
     };
 
     return (
-        <div className="bg-gray-900 text-white p-6 rounded-xl w-full max-w-3xl mx-auto">
+        <div className="bg-gray-900 text-white min-h-screen">
             <h2 className="text-xl font-bold mb-4 text-blue-400">Create Appointment</h2>
             {message && <p className="text-green-600">{message}</p>}
             {errors.length > 0 && (
@@ -154,7 +154,7 @@ const CreateAppointments = () => {
                     </button>
                 </div>
             ))}
-            
+
             <button
                 onClick={handleSubmit}
                 className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600"
