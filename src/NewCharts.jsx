@@ -15,7 +15,9 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
-  const [behaviorsDescription, setBehaviorsDescription] = useState(chart.behaviorsDescription);
+  const [behaviorsDescription, setBehaviorsDescription] = useState(
+    chart.behaviorsDescription.map(desc => ({ ...desc, response: desc.response ?? null }))
+  );
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
