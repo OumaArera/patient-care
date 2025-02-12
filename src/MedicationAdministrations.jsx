@@ -207,7 +207,21 @@ const MedicationAdministration = () => {
                                                     </td>
                                                 )}
                                                 <td className="p-3 border border-gray-700">{new Date(entry.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</td>
-                                                <td className="p-3 border border-gray-700">{entry.timeAdministered}</td>
+                                                <td className="p-3 border border-gray-700">
+                                                    {entry.timeAdministered.map((time, index) => {
+                                                        const [hours, minutes] = time.split(":");
+                                                        const formattedTime = new Date(0, 0, 0, hours, minutes).toLocaleTimeString("en-US", {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                            hour12: true,
+                                                        });
+                                                        return (
+                                                            <span key={index} className="block">
+                                                                {formattedTime}
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </td>
                                                 <td className="p-3 border border-gray-700">{entry.careGiverName}</td>
                                                 <td className="p-3 border border-gray-700">{entry.reasonNotFiled || ""}</td>
                                                 <td className="p-3 border border-gray-700">{entry.status}</td>
