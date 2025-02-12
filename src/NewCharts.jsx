@@ -70,34 +70,44 @@ const NewCharts = ({ charts, chartsData }) => {
     );
   };
 
+  
+  const isSubmitDisabled = behaviors.some((b) => !b.status);
+
   const handleSubmit = async () => {
-    setLoadingSubmit(true);
+  if (isSubmitDisabled) {
+    setErrors(["Please select Yes or No for all behaviors before submitting."]);
+    return;
+  }
 
-    const payload = {
-      patient: chart.patientId,
-      behaviors,
-      behaviorsDescription,
-      dateTaken: dateTaken.toISOString(),
-      reasonNotFiled
-    };
-    console.log("Payload", payload);
+  setLoadingSubmit(true);
+  setErrors([]); 
 
-    try {
-      const response = await postCharts(payload);
-      if (response?.error) {
-          setErrors(errorHandler(response.error));
-      }else{
-          setMessage(["Chart data posted successfully."]);
-          setTimeout(() => setMessage(""), 5000);
-      }
-    } catch (error) {
-      console.error("Error submitting charts:", error);
-      setErrors([`Errors: ${error}`]);
-      setTimeout(() => setErrors([]));
-    } finally {
-      setLoadingSubmit(false);
-    }
+  const payload = {
+    patient: chart.patientId,
+    behaviors,
+    behaviorsDescription,
+    dateTaken: dateTaken.toISOString(),
+    reasonNotFiled
   };
+  console.log("Payload", payload);
+
+  try {
+    const response = await postCharts(payload);
+    if (response?.error) {
+      setErrors(errorHandler(response.error));
+    } else {
+      setMessage(["Chart data posted successfully."]);
+      setTimeout(() => setMessage(""), 5000);
+    }
+  } catch (error) {
+    console.error("Error submitting charts:", error);
+    setErrors([`Errors: ${error}`]);
+    setTimeout(() => setErrors([]), 5000);
+  } finally {
+    setLoadingSubmit(false);
+  }
+  };
+
 
   return (
     <div className="p-6 bg-gray-900 text-white">
@@ -218,8 +228,12 @@ const NewCharts = ({ charts, chartsData }) => {
       <div className="mt-6 text-center">
         <button
           onClick={handleSubmit}
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 flex items-center justify-center"
-          disabled={loadingSubmit}
+          className={`px-6 py-3 rounded-lg flex items-center justify-center ${
+            isSubmitDisabled
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          }`}
+          disabled={isSubmitDisabled || loadingSubmit}
         >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
