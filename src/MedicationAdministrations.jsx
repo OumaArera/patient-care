@@ -124,10 +124,10 @@ const MedicationAdministration = () => {
                 {loadingPatients && (
                     <div className="flex items-center space-x-2">
                         <Loader className="animate-spin text-gray-500" size={20} />
-                        <p className="text-gray-500">Loading patients...</p>
+                        <p className="text-gray-500">Loading residents...</p>
                     </div>
                 )}
-                <label className="font-semibold">Select Patient: </label>
+                <label className="font-semibold">Select Resident: </label>
                 <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={(e) => fetchMedAdmin(e.target.value)} value={selectedPatient || ""}>
                     <option value="">-- Select --</option>
                     {patients.map((p) => (
@@ -182,7 +182,7 @@ const MedicationAdministration = () => {
                         <table className="w-full border-collapse border border-gray-700">
                             <thead>
                                 <tr className="bg-gray-800 text-white">
-                                    <th className="p-3 border-r border-gray-700">Patient</th>
+                                    <th className="p-3 border-r border-gray-700">Resident</th>
                                     <th className="p-3 border-r border-gray-700">Date Administered</th>
                                     <th className="p-3 border-r border-gray-700">Time Administered</th>
                                     <th className="p-3 border-r border-gray-700">Care Giver</th>

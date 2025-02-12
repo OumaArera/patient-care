@@ -130,7 +130,7 @@ const Medication = () => {
                                 {loadingPatients ? (
                                     <div className="flex items-center space-x-2">
                                         <Loader className="animate-spin text-gray-500" size={20} />
-                                        <p className="text-gray-500">Loading patients...</p>
+                                        <p className="text-gray-500">Loading residents...</p>
                                     </div>
                                 ) : (
                                     <select
@@ -140,7 +140,7 @@ const Medication = () => {
                                         className="border p-2 rounded w-full bg-gray-700 text-white"
                                         required
                                     >
-                                        <option value="">Select a Patient</option>
+                                        <option value="">Select a Resident</option>
                                         {patients.map((patient) => (
                                             <option key={patient.patientId} value={patient.patientId}>
                                                 {patient.firstName} {patient.lastName}
