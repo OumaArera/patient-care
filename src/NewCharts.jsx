@@ -27,6 +27,7 @@ const NewCharts = ({ charts, chartsData }) => {
   );
   
   const handleStatusChange = (index, value) => {
+    // Update the behavior status
     setBehaviorStatuses((prevStatuses) => {
       const updatedStatuses = [...prevStatuses];
       updatedStatuses[index] = value;
@@ -37,6 +38,9 @@ const NewCharts = ({ charts, chartsData }) => {
       prev.map((b, i) => (i === index ? { ...b, status: value } : b))
     );
   };
+  
+  const isSubmitDisabled = behaviorStatuses.some(status => !status); // Check if any status is empty
+  
   
 
   useEffect(() => {
@@ -71,7 +75,7 @@ const NewCharts = ({ charts, chartsData }) => {
   };
 
   
-  const isSubmitDisabled = behaviors.some((b) => !b.status);
+  // const isSubmitDisabled = behaviors.some((b) => !b.status);
 
   const handleSubmit = async () => {
   if (isSubmitDisabled) {
@@ -226,10 +230,10 @@ const NewCharts = ({ charts, chartsData }) => {
 
       {/* Submit Button */}
       <div className="mt-6 text-center">
-        <button
+      <button
           onClick={handleSubmit}
           className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-            isSubmitDisabled
+            isSubmitDisabled || loadingSubmit
               ? "bg-gray-500 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}
