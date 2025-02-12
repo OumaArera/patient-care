@@ -22,6 +22,7 @@ import AllCharts from "./AllCharts";
 import MedicationAdministration from "./MedicationAdministrations";
 import PatientManager from "./PatientManagers";
 import ChangePassword from "./ChangePassword";
+import CreateAppointments from "./CreateAppointments";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -122,6 +123,9 @@ const SuperUserDashboard = () => {
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("medicationsAdmin")}>
                 <FaPills /> Medications
               </button>
+              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("appointments")}>
+                <FaPills /> Appointments
+              </button>
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("assignPatient")}>
                 <FaPills /> Assign Patient
               </button>
@@ -161,7 +165,7 @@ const SuperUserDashboard = () => {
         {/* {activeTab === "charts" && <PendingCharts />} */}
         {activeTab === "assignPatient" && <PatientManager />}
         {activeTab === "updates" && <Updates />}
-        {/* {activeTab === "changePassword" && <ChangePassword />} */}
+        {activeTab === "appointments" && <CreateAppointments />}
         {activeTab === "createUser" && <CreateUser />}
         {activeTab === "manageUser" && <ManageUser />}
         {activeTab === "users" && <Users />}
