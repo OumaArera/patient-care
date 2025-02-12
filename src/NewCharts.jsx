@@ -85,10 +85,15 @@ const NewCharts = ({ charts, chartsData }) => {
   setLoadingSubmit(true);
   setErrors([]); 
 
+  const cleanedBehaviorsDescription = behaviorsDescription.map(desc => ({
+    ...desc,
+    response: desc.response?.trim() ? desc.response : null
+  }));
+  
   const payload = {
     patient: chart.patientId,
     behaviors,
-    behaviorsDescription,
+    behaviorsDescription: cleanedBehaviorsDescription,
     dateTaken: dateTaken.toISOString(),
     reasonNotFiled
   };
