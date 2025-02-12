@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
-import { postAppointments } from "../services/postAppointments";
 import { errorHandler } from "../services/errorHandler";
 import { postAppointments } from "../services/postAppointments";
 import { Loader, PlusCircle, Trash2 } from "lucide-react";
@@ -25,7 +24,7 @@ const CreateAppointments = () => {
                 setLoadingPatients(false);
             })
             .catch(() => {
-                setErrors(["Failed to fetch patients."]);
+                setErrors(["Failed to fetch residents."]);
                 setTimeout(() => setErrors([]), 5000);
                 setLoadingPatients(false);
             });
@@ -66,7 +65,7 @@ const CreateAppointments = () => {
                 setErrors(errorHandler(response?.error));
                 setTimeout(() => setErrors([]), 5000);
             }else{
-                setMessage(["Chart data posted successfully."]);
+                setMessage(["Appointments posted successfully."]);
                 setTimeout(() => setMessage(""), 5000);
             }
         } catch (error) {
