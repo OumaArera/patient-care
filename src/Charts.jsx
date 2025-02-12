@@ -88,7 +88,7 @@ const Charts = () => {
   });
 
   return (
-    <div className=" bg-gray-900 text-white min-h-screen">
+    <div className=" bg-gray-900 text-white min-h-screen rounded-2xl">
       <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Resident Charts</h2>
 
       {loadingPatients ? (
