@@ -23,7 +23,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState(null);
   const [behaviorStatuses, setBehaviorStatuses] = useState(
-    behaviors.map(() => "")
+    behaviors.map(() => null) 
   );
   
   const handleStatusChange = (index, value) => {
@@ -58,11 +58,11 @@ const NewCharts = ({ charts, chartsData }) => {
     }
   }, [charts]);
 
-  const toggleBehaviorStatus = (index, value) => {
-    setBehaviors((prev) =>
-      prev.map((b, i) => (i === index ? { ...b, status: value } : b))
-    );
-  };
+  // const toggleBehaviorStatus = (index, value) => {
+  //   setBehaviors((prev) =>
+  //     prev.map((b, i) => (i === index ? { ...b, status: value } : b))
+  //   );
+  // };
 
   const updateBehaviorDescription = (index, field, value) => {
     setBehaviorsDescription((prev) =>
