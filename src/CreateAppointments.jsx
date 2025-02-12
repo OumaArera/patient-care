@@ -6,6 +6,7 @@ import { Loader, PlusCircle, Trash2 } from "lucide-react";
 
 const CreateAppointments = () => {
     const [loadingPatients, setLoadingPatients] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [patients, setPatients] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState("");
     const [errors, setErrors] = useState([]);
@@ -55,10 +56,12 @@ const CreateAppointments = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         const payload = {
             patient: selectedPatient,
             ...appointments
         };
+        console.log("Appointments: ", payload)
         try {
             const response = await postAppointments(payload);
             if (response?.error) {
@@ -71,6 +74,8 @@ const CreateAppointments = () => {
         } catch (error) {
             setErrors(["Failed to create appointment."]);
             setTimeout(() => setErrors([]), 5000);
+        } finally{
+            setLoading(false);
         }
     };
 
@@ -149,12 +154,12 @@ const CreateAppointments = () => {
                     </button>
                 </div>
             ))}
-
+            
             <button
                 onClick={handleSubmit}
                 className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600"
             >
-                Submit Appointment
+                {loading? "Submitting...": "Submit"}
             </button>
         </div>
     );
