@@ -140,7 +140,7 @@ const SuperUserDashboard = () => {
           {/* <h2 className="text-xl font-semibold">Dashboard</h2> */}
 
           {/* User Dropdown */}
-          <div className="relative">
+          <div className="absolute">
             <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 bg-gray-800 px-3 py-2 rounded-lg hover:bg-gray-700">
               <FaUser className="text-blue-400" />
               <span>{fullName}</span>
