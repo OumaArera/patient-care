@@ -135,14 +135,12 @@ const NewCharts = ({ charts, chartsData }) => {
                   <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                   <td className="p-3 border border-gray-700">
                     <select
-                      value={behavior.status || ""}
+                      value={behaviors[index].status || ""}
                       onChange={(e) => toggleBehaviorStatus(index, e.target.value)}
                       className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                       required
                     >
-                      <option value="" disabled>
-                        Select
-                      </option>
+                      <option value="">Select Status</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
