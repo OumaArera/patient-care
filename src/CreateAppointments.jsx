@@ -82,14 +82,14 @@ const CreateAppointments = () => {
     return (
         <div className="bg-gray-900 text-white min-h-screen">
             <h2 className="text-xl font-bold mb-4 text-blue-400">Create Appointment</h2>
-            {message && <p className="text-green-600">{message}</p>}
-            {errors.length > 0 && (
+            
+            {/* {errors.length > 0 && (
                 <div className="mb-4 p-3 bg-red-800 rounded">
                     {errors.map((error, index) => (
                         <p key={index} className="text-sm text-white">{error}</p>
                     ))}
                 </div>
-            )}
+            )} */}
 
             <div className="mb-4">
                 {loadingPatients ? (
@@ -154,7 +154,8 @@ const CreateAppointments = () => {
                     </button>
                 </div>
             ))}
-
+            {errors && <div className="bg-red-500 text-white p-3 mb-3 rounded">{errors}</div>}
+            {message && <p className="text-green-600">{message}</p>}
             <button
                 onClick={handleSubmit}
                 className="bg-blue-500 text-white p-2 rounded w-full hover:bg-blue-600"
