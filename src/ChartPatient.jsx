@@ -15,11 +15,11 @@ const ChartPatient = () => {
   const [chartData, setChartData] = useState([]);
   const [charts, setCharts] = useState([]);
   const [showNewCharts, setShowNewCharts] = useState(false);
-  const [chartsLoaded, setChartsLoaded] = useState(false);
   const overlayRef = useRef(null);
 
   const fetchAllChartData = async (patientId) => {
     setLoadingCharts(true);
+    setSelectedPatientId(patientId);
     try {
       const [chartsResponse, chartsDataResponse] = await Promise.all([
         getCharts(patientId),
@@ -27,7 +27,6 @@ const ChartPatient = () => {
       ]);
       setCharts(chartsResponse?.responseObject || []);
       setChartData(chartsDataResponse?.responseObject || []);
-      setChartsLoaded(true);
     } catch (error) {
       console.error("Error fetching charts:", error);
     } finally {
@@ -63,10 +62,6 @@ const ChartPatient = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showNewCharts]);
 
-  const handleChartsClick = (patientId) => {
-    fetchAllChartData(patientId);
-  };
-
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
   const currentPatients = patientManagers.slice(indexOfFirstPatient, indexOfLastPatient);
@@ -95,9 +90,9 @@ const ChartPatient = () => {
                 <p className="text-sm font-bold text-gray-400">Branch: {patient.branchName}</p>
                 <p className="text-sm font-bold text-gray-400">Room: {patient.room} | Cart: {patient.cart}</p>
                 <div className="flex justify-between mt-4">
-                  {loadingCharts ? (
+                  {loadingCharts && selectedPatientId === patient.patientId ? (
                     <p className="text-sm text-gray-300">Loading charts...</p>
-                  ) : chartsLoaded ? (
+                  ) : charts.length > 0 && chartData.length > 0 && selectedPatientId === patient.patientId ? (
                     <button
                       className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                       onClick={() => setShowNewCharts(true)}
@@ -107,7 +102,7 @@ const ChartPatient = () => {
                   ) : (
                     <button
                       className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                      onClick={() => handleChartsClick(patient.patientId)}
+                      onClick={() => fetchAllChartData(patient.patientId)}
                     >
                       Charts
                     </button>
@@ -115,7 +110,7 @@ const ChartPatient = () => {
                 </div>
 
                 {/* Overlay for NewCharts */}
-                {showNewCharts && charts.length > 0 && chartData.length > 0 && (
+                {showNewCharts && selectedPatientId === patient.patientId && charts.length > 0 && chartData.length > 0 && (
                   <div 
                     className="absolute top-2 bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto z-50 border border-gray-700"
                     >
@@ -127,7 +122,6 @@ const ChartPatient = () => {
                     </button>
                     <NewCharts charts={charts} chartsData={chartData} />
                 </div>
-                
                 )}
               </div>
             ))}
