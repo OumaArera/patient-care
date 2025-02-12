@@ -154,7 +154,14 @@ const CreateAppointments = () => {
                     </button>
                 </div>
             ))}
-            {errors && <div className="bg-red-500 text-white p-3 mb-3 rounded">{errors}</div>}
+            {/* {errors && <p className="text-red-500">{errors}</p>} */}
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 bg-white rounded">
+                    {errors.map((error, index) => (
+                        <p key={index} className="text-sm text-red-600">{error}</p>
+                    ))}
+                </div>
+            )}
             {message && <p className="text-green-600">{message}</p>}
             <button
                 onClick={handleSubmit}
