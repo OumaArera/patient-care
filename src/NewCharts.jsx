@@ -64,17 +64,14 @@ const NewCharts = ({ charts, chartsData }) => {
     }
   }, [charts]);
 
-  // const toggleBehaviorStatus = (index, value) => {
-  //   setBehaviors((prev) =>
-  //     prev.map((b, i) => (i === index ? { ...b, status: value } : b))
-  //   );
-  // };
-
   const updateBehaviorDescription = (index, field, value) => {
     setBehaviorsDescription((prev) =>
-      prev.map((desc, i) => (i === index ? { ...desc, response: value } : desc))
+      prev.map((desc, i) => 
+        i === index ? { ...desc, response: value.trim() === "" ? null : value } : desc
+      )
     );
   };
+  
 
   
   // const isSubmitDisabled = behaviors.some((b) => !b.status);
