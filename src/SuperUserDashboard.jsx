@@ -137,7 +137,7 @@ const SuperUserDashboard = () => {
       {/* Main Content */}
       <div className="flex-1 p-6">
         <div className="flex justify-between items-center border-b border-gray-700 pb-4">
-          <h2 className="text-xl font-semibold">Dashboard</h2>
+          {/* <h2 className="text-xl font-semibold">Dashboard</h2> */}
 
           {/* User Dropdown */}
           <div className="relative">
