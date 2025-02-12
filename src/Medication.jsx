@@ -116,16 +116,7 @@ const Medication = () => {
                         <label className="text-sm mb-1 capitalize" htmlFor={key}>
                             {key.replace(/([A-Z])/g, " $1").trim()}
                         </label>
-                        {key === "instructions" || key === "diagnosis" ? (
-                            <textarea
-                                name={key}
-                                value={formData[key]}
-                                onChange={handleInputChange}
-                                rows="4"
-                                className="border p-2 rounded w-full bg-gray-700 text-white"
-                                required
-                            ></textarea>
-                        ) : key === "patient" ? (
+                        {key === "patient" ? (
                             <div>
                                 {loadingPatients ? (
                                     <div className="flex items-center space-x-2">
@@ -149,6 +140,15 @@ const Medication = () => {
                                     </select>
                                 )}
                             </div>
+                        ):key === "instructions" || key === "diagnosis" ? (
+                            <textarea
+                                name={key}
+                                value={formData[key]}
+                                onChange={handleInputChange}
+                                rows="4"
+                                className="border p-2 rounded w-full bg-gray-700 text-white"
+                                required
+                            ></textarea>
                         ) : (
                             <input
                                 type={key === "medicationTime" ? "time" : "text"}
