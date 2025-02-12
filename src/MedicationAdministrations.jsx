@@ -218,7 +218,7 @@ const MedicationAdministration = () => {
                                                         return (
                                                             <div
                                                                 key={index}
-                                                                className="bg-gray-700 text-white px-3 py-1 rounded-md text-xs shadow"
+                                                                className="bg-gray-700 top-2 text-white px-3 py-1 rounded-md text-xs shadow"
                                                             >
                                                                 {formattedTime}
                                                             </div>

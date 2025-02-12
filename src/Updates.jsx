@@ -69,7 +69,7 @@ const Updates = () => {
                         onChange={handlePatientChange}
                         value={selectedPatient || ""}
                     >
-                        <option value="">Select a Patient</option>
+                        <option value="">Select a Resident</option>
                         {patients.map((patient) => (
                             <option key={patient.patientId} value={patient.patientId}>
                                 {`${patient.firstName} ${patient.lastName}`}
