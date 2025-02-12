@@ -216,12 +216,9 @@ const MedicationAdministration = () => {
                                                             hour12: true,
                                                         });
                                                         return (
-                                                            <div
-                                                                key={index}
-                                                                className="bg-gray-700 top-2 text-white px-3 py-1 rounded-md text-xs shadow"
-                                                            >
+                                                            <span key={index} className="block">
                                                                 {formattedTime}
-                                                            </div>
+                                                            </span>
                                                         );
                                                     })}
                                                 </td>
