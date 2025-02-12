@@ -11,8 +11,22 @@
         <p className="text-sm">Quantity: {medication.quantity}</p>
         <p className="text-sm">Diagnosis: {medication.diagnosis}</p>
         <p className="text-sm">Time: {medication.medicationTime}</p>
+        <p className="text-sm">Time: {medication.medicationTime.map((time, index) => {
+              const [hours, minutes] = time.split(":");
+              const formattedTime = new Date(0, 0, 0, hours, minutes).toLocaleTimeString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+              });
+              return (
+                  <span key={index} className="block">
+                      {formattedTime}
+                  </span>
+              );
+          })}
+        </p>
         <p className="text-sm font-semibold text-green-400">
-          Patient: {medication.patientFirstName} {medication.patientLastName}
+          Resident: {medication.patientFirstName} {medication.patientLastName}
         </p>
       </div>
     );
