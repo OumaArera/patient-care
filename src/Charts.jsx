@@ -111,6 +111,7 @@ const Charts = () => {
               </option>
             ))}
           </select>
+          <br />
         </>
       )}
 

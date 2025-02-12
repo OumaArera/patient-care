@@ -98,7 +98,8 @@ const Patients = () => {
       const result = await response.json();
       if (!response.ok) setErrors(errorHandler(result?.responseObject?.errors));
       setPatients([...patients, result.responseObject]);
-      setSuccessMessage("Patient added successfully!");
+      setSuccessMessage("Resident added successfully!");
+      setTimeout(() => setSuccessMessage(""), 5000);
       setFormData({
         firstName: "",
         middleNames: "",
