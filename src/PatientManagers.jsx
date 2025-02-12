@@ -67,26 +67,26 @@ const PatientManager = () => {
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
-            <h1 className="text-2xl font-bold mb-4">Patient Manager</h1>
-            {/* {errors.length > 0 && (
+            <h1 className="text-2xl font-bold mb-4">Resident Manager</h1>
+            {errors.length > 0 && (
                 <div className="bg-red-100 p-3 rounded-md mb-4">
                     {errors.map((error, index) => (
                         <p key={index} className="text-red-700 text-sm">{error}</p>
                     ))}
                 </div>
-            )} */}
+            )}
             {errors && <p className="text-red-500">{errors}</p>}
             {message && <p className="text-green-500">{message}</p>}
 
             {/* Patient Selection */}
             <div className="mb-4">
-                <label className="block mb-2">Select a Patient:</label>
+                <label className="block mb-2">Select a Resident:</label>
                 {loadingPatients ? <Loader className="animate-spin" /> : (
                     <select 
                         className="p-2 bg-gray-700 rounded w-full" 
                         onChange={(e) => setSelectedPatient(patients.find(p => p.patientId === Number(e.target.value)))}
                     >
-                        <option value="">-- Choose a Patient --</option>
+                        <option value="">-- Choose a Resident --</option>
                         {patients.map(patient => (
                             <option key={patient.patientId} value={patient.patientId}>
                                 {patient.firstName} {patient.middleNames || ''} {patient.lastName}
