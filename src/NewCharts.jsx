@@ -22,6 +22,22 @@ const NewCharts = ({ charts, chartsData }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState(null);
+  const [behaviorStatuses, setBehaviorStatuses] = useState(
+    behaviors.map(() => "")
+  );
+  
+  const handleStatusChange = (index, value) => {
+    setBehaviorStatuses((prevStatuses) => {
+      const updatedStatuses = [...prevStatuses];
+      updatedStatuses[index] = value;
+      return updatedStatuses;
+    });
+  
+    setBehaviors((prev) =>
+      prev.map((b, i) => (i === index ? { ...b, status: value } : b))
+    );
+  };
+  
 
   useEffect(() => {
     const startOfMonth = new Date();
@@ -135,8 +151,8 @@ const NewCharts = ({ charts, chartsData }) => {
                   <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                   <td className="p-3 border border-gray-700">
                     <select
-                      value={behaviors[index].status || ""}
-                      onChange={(e) => toggleBehaviorStatus(index, e.target.value)}
+                      value={behaviorStatuses[index]} // Uses the new state
+                      onChange={(e) => handleStatusChange(index, e.target.value)}
                       className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                       required
                     >
