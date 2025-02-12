@@ -111,56 +111,68 @@ const Medication = () => {
             {submitting && <div className="bg-yellow-500 text-white p-3 mb-3 rounded">Submitting data...</div>}
     
             <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-md grid gap-4">
-                {Object.keys(formData).map((key) => (
-                    <div key={key} className="flex flex-col">
-                        <label className="text-sm mb-1 capitalize" htmlFor={key}>
-                            {key.replace(/([A-Z])/g, " $1").trim()}
-                        </label>
-                        {key === "patient" ? (
-                            <div>
-                                {loadingPatients ? (
-                                    <div className="flex items-center space-x-2">
-                                        <Loader className="animate-spin text-gray-500" size={20} />
-                                        <p className="text-gray-500">Loading residents...</p>
-                                    </div>
-                                ) : (
-                                    <select
-                                        name={key}
-                                        value={formData[key]}
-                                        onChange={handleInputChange}
-                                        className="border p-2 rounded w-full bg-gray-700 text-white"
-                                        required
-                                    >
-                                        <option value="">Select a Resident</option>
-                                        {patients.map((patient) => (
-                                            <option key={patient.patientId} value={patient.patientId}>
-                                                {patient.firstName} {patient.lastName}
-                                            </option>
-                                        ))}
-                                    </select>
-                                )}
+                {/* Resident selection first */}
+                <div className="flex flex-col">
+                    <label className="text-sm mb-1 capitalize" htmlFor="patient">
+                        Resident
+                    </label>
+                    <div>
+                        {loadingPatients ? (
+                            <div className="flex items-center space-x-2">
+                                <Loader className="animate-spin text-gray-500" size={20} />
+                                <p className="text-gray-500">Loading residents...</p>
                             </div>
-                        ):key === "instructions" || key === "diagnosis" ? (
-                            <textarea
-                                name={key}
-                                value={formData[key]}
-                                onChange={handleInputChange}
-                                rows="4"
-                                className="border p-2 rounded w-full bg-gray-700 text-white"
-                                required
-                            ></textarea>
                         ) : (
-                            <input
-                                type={key === "medicationTime" ? "time" : "text"}
-                                name={key}
-                                value={formData[key]}
+                            <select
+                                name="patient"
+                                value={formData.patient}
                                 onChange={handleInputChange}
                                 className="border p-2 rounded w-full bg-gray-700 text-white"
                                 required
-                            />
+                            >
+                                <option value="">Select a Resident</option>
+                                {patients.map((patient) => (
+                                    <option key={patient.patientId} value={patient.patientId}>
+                                        {patient.firstName} {patient.lastName}
+                                    </option>
+                                ))}
+                            </select>
                         )}
                     </div>
+                </div>
+                
+                {/* Other fields */}
+                {Object.keys(formData).map((key) => (
+                    key !== "patient" && (
+                        <div key={key} className="flex flex-col">
+                            <label className="text-sm mb-1 capitalize" htmlFor={key}>
+                                {key.replace(/([A-Z])/g, " $1").trim()}
+                            </label>
+                            {key === "instructions" || key === "diagnosis" ? (
+                                <textarea
+                                    name={key}
+                                    value={formData[key]}
+                                    onChange={handleInputChange}
+                                    rows="4"
+                                    className="border p-2 rounded w-full bg-gray-700 text-white"
+                                    required
+                                    placeholder={`Enter ${key.replace(/([A-Z])/g, " $1").trim().toLowerCase()}`}
+                                ></textarea>
+                            ) : (
+                                <input
+                                    type={key === "medicationTime" ? "time" : "text"}
+                                    name={key}
+                                    value={formData[key]}
+                                    onChange={handleInputChange}
+                                    className="border p-2 rounded w-full bg-gray-700 text-white"
+                                    required
+                                    placeholder={`Enter ${key.replace(/([A-Z])/g, " $1").trim().toLowerCase()}`}
+                                />
+                            )}
+                        </div>
+                    )
                 ))}
+                
                 <button
                     type="submit"
                     className="bg-blue-500 text-white p-3 rounded hover:bg-blue-600 w-full"
