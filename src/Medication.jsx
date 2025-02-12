@@ -148,7 +148,24 @@ const Medication = () => {
                             <label className="text-sm mb-1 capitalize" htmlFor={key}>
                                 {key.replace(/([A-Z])/g, " $1").trim()}
                             </label>
-                            {key === "instructions" || key === "diagnosis" ? (
+                            {key === "instructions" ? (
+                                <select
+                                name={key}
+                                value={formData[key]}
+                                onChange={handleInputChange}
+                                className="border p-2 rounded w-full bg-gray-700 text-white"
+                                required
+                            >
+                                <option value="">Select Instructions</option>
+                                <option value="t.i.d">t.i.d - Thrice daily</option>
+                                <option value="q.i.d">q.i.d - Four times daily</option>
+                                <option value="b.i.d">b.i.d - Twice daily</option>
+                                <option value="PRN">PRN - As needed</option>
+                                <option value="h.s">h.s - Hour of sleep</option>
+                                <option value="am">am - Morning</option>
+                                <option value="pm">pm - Evening</option>
+                            </select>
+                            ) : key === "diagnosis"?(
                                 <textarea
                                     name={key}
                                     value={formData[key]}
@@ -158,9 +175,80 @@ const Medication = () => {
                                     required
                                     placeholder={`Enter ${key.replace(/([A-Z])/g, " $1").trim().toLowerCase()}`}
                                 ></textarea>
-                            ) : (
+                            ): key === "medicationTime" ?(
+                                <div>
+                                    {formData.instructions ? (
+                                        formData.instructions === "t.i.d" ? (
+                                            <div className="grid grid-cols-3 gap-2">
+                                                {[...Array(3)].map((_, index) => (
+                                                    <input
+                                                        key={index}
+                                                        type="time"
+                                                        name={`medicationTime${index}`}
+                                                        value={formData.medicationTime[index] || ""}
+                                                        onChange={(e) => {
+                                                            const newTimes = [...(formData.medicationTime || [])];
+                                                            newTimes[index] = e.target.value;
+                                                            setFormData({ ...formData, medicationTime: newTimes });
+                                                        }}
+                                                        className="border p-2 rounded w-full bg-gray-700 text-white"
+                                                        required
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) : formData.instructions === "q.i.d" ? (
+                                            <div className="grid grid-cols-4 gap-2">
+                                                {[...Array(4)].map((_, index) => (
+                                                    <input
+                                                        key={index}
+                                                        type="time"
+                                                        name={`medicationTime${index}`}
+                                                        value={formData.medicationTime[index] || ""}
+                                                        onChange={(e) => {
+                                                            const newTimes = [...(formData.medicationTime || [])];
+                                                            newTimes[index] = e.target.value;
+                                                            setFormData({ ...formData, medicationTime: newTimes });
+                                                        }}
+                                                        className="border p-2 rounded w-full bg-gray-700 text-white"
+                                                        required
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) : formData.instructions === "b.i.d" ? (
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {[...Array(2)].map((_, index) => (
+                                                    <input
+                                                        key={index}
+                                                        type="time"
+                                                        name={`medicationTime${index}`}
+                                                        value={formData.medicationTime[index] || ""}
+                                                        onChange={(e) => {
+                                                            const newTimes = [...(formData.medicationTime || [])];
+                                                            newTimes[index] = e.target.value;
+                                                            setFormData({ ...formData, medicationTime: newTimes });
+                                                        }}
+                                                        className="border p-2 rounded w-full bg-gray-700 text-white"
+                                                        required
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <input
+                                                type="time"
+                                                name="medicationTime"
+                                                value={formData.medicationTime[0] || ""}
+                                                onChange={(e) => setFormData({ ...formData, medicationTime: [e.target.value] })}
+                                                className="border p-2 rounded w-full bg-gray-700 text-white"
+                                                required
+                                            />
+                                        )
+                                    ) : (
+                                        <p className="text-red-500">Select instructions first</p>
+                                    )}
+                                </div>
+                            ):(
                                 <input
-                                    type={key === "medicationTime" ? "time" : "text"}
+                                    type="text"
                                     name={key}
                                     value={formData[key]}
                                     onChange={handleInputChange}
