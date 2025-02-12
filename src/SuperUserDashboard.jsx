@@ -42,15 +42,20 @@ const SuperUserDashboard = () => {
         modalRef.current && !modalRef.current.contains(event.target)
       ) {
         setMenuOpen(false);
-        setShowChangePassword(false);
+        
+        // Only close the ChangePassword modal if it's open and the click is outside it
+        if (showChangePassword) {
+          setShowChangePassword(false);
+        }
       }
     };
-
+  
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [showChangePassword]); // Add showChangePassword as a dependency
+  
 
   // Retrieve logged-in user info
   const fullName = localStorage.getItem("fullName") || "Super User";

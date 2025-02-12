@@ -67,7 +67,7 @@ const ChangePassword = ({ onClose }) => {
     }, [onClose]);
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
             <div ref={modalRef} className="max-w-md bg-gray-900 text-white p-6 rounded-lg shadow-lg relative">
                 {/* Close Button */}
                 <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-red-500">
