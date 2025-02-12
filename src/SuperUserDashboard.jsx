@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   FaChartBar, FaPills, FaNewspaper, FaUser, FaSignOutAlt, FaUsers,
   FaUserPlus, FaUserTimes, FaUndo, FaChartPie, FaLock, FaHospital,
-  FaUserInjured, FaMapMarkerAlt, FaDatabase
+  FaUserInjured, FaMapMarkerAlt, FaDatabase, FaUserCheck, FaCalendarAlt
 } from "react-icons/fa";
 import Updates from "./Updates";
 // import Statistics from "./Statistics";
@@ -124,10 +124,10 @@ const SuperUserDashboard = () => {
                 <FaPills /> Medications
               </button>
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("appointments")}>
-                <FaPills /> Appointments
+                <FaCalendarAlt /> Appointments
               </button>
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("assignPatient")}>
-                <FaPills /> Assign Resident
+                <FaUserCheck /> Assign Resident
               </button>
             </div>
           )}
