@@ -56,12 +56,12 @@ const Updates = () => {
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
-            <h2 className="text-2xl font-bold mb-4 text-blue-400">Patient Updates</h2>
+            <h2 className="text-2xl font-bold mb-4 text-blue-400">Resident Updates</h2>
             <div className="mb-4 flex space-x-4">
                 {loadingPatients ? (
                     <div className="flex justify-center items-center">
                         <Loader className="animate-spin text-blue-400" size={24} />
-                        <p className="text-gray-400">Loading patients...</p>
+                        <p className="text-gray-400">Loading residents...</p>
                     </div>
                 ) : (
                     <select

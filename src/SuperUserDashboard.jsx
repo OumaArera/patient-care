@@ -109,7 +109,7 @@ const SuperUserDashboard = () => {
                 <FaHospital /> Facilities
               </button>
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("patients")}>
-                <FaUserInjured /> Patients
+                <FaUserInjured /> Residents
               </button>
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("branches")}>
                 <FaMapMarkerAlt /> Branches
@@ -127,7 +127,7 @@ const SuperUserDashboard = () => {
                 <FaPills /> Appointments
               </button>
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("assignPatient")}>
-                <FaPills /> Assign Patient
+                <FaPills /> Assign Resident
               </button>
             </div>
           )}

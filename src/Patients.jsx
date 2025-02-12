@@ -122,7 +122,7 @@ const Patients = () => {
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-white">
-      <h2 className="text-3xl font-bold mb-6 text-blue-400">Manage Patients</h2>
+      <h2 className="text-3xl font-bold mb-6 text-blue-400">Manage Residents</h2>
       {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
       {successMessage && <div className="bg-green-500 text-white p-3 mb-3 rounded">{successMessage}</div>}
       {loading && <div className="bg-yellow-500 text-white p-3 mb-3 rounded">Fetching data...</div>}
