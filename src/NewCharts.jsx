@@ -95,7 +95,7 @@ const NewCharts = ({ charts, chartsData }) => {
       behaviors,
       behaviorsDescription: behaviorDescription,
       dateTaken: dateTaken.toISOString(),
-      reasonNotFiled
+      ...(reasonNotFiled ? { reasonNotFiled } : {})
     };
     console.log("Payload", payload);
 
