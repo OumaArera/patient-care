@@ -4,6 +4,7 @@ import { Loader } from "lucide-react";
 import DatePicker from "react-datepicker";
 import { errorHandler } from "../services/errorHandler";
 import "react-datepicker/dist/react-datepicker.css";
+import VitalsComponent from "./VitalsComponent";
 
 const NewCharts = ({ charts, chartsData }) => {
   if (!chartsData.length) {
@@ -300,42 +301,8 @@ const NewCharts = ({ charts, chartsData }) => {
         </table>
       </div>
       {/* Vitals Input Table */}
-      <div className="bg-gray-900 p-4 rounded-lg mt-6">
-        <h3 className="text-lg font-bold text-blue-400 mb-3">Vitals</h3>
-        <table className="w-full border-collapse border border-gray-700">
-          <thead>
-            <tr className="bg-gray-800 text-white">
-              <th className="p-3 border border-gray-700">Vitals Type</th>
-              <th className="p-3 border border-gray-700">Response</th>
-            </tr>
-          </thead>
-          <tbody>
-            {vitals.map((vital, index) => (
-              <tr key={index} className="border border-gray-700">
-                <td className="p-3 border border-gray-700">{vital.vitalsType}</td>
-                <td className="p-3 border border-gray-700">
-                  {vital.vitalsType === "Pain" ? (
-                    <textarea
-                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                      placeholder="Describe pain level (optional)"
-                      value={vital.response}
-                      onChange={(e) => handleVitalsChange(index, e.target.value)}
-                    />
-                  ) : (
-                    <input
-                      type="number"
-                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                      placeholder={`Enter ${vital.vitalsType}`}
-                      value={vital.response}
-                      onChange={(e) => handleVitalsChange(index, e.target.value)}
-                      required={vital.vitalsType !== "Pain"}
-                    />
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div>
+        <VitalsComponent vitals={vitals} handleSubmit={handleSubmit} handleVitalsChange={handleVitalsChange} />
       </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
