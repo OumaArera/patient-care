@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const NewCharts = ({ charts, chartsData }) => {
   if (!chartsData.length) {
-    return <p className="text-red-500 text-center p-4">The patient has not been assigned charts data.</p>;
+    return <p className="text-red-500 text-center p-4">The residnt has not been assigned charts data.</p>;
   }
 
   // Pick the first chart entry
@@ -16,7 +16,7 @@ const NewCharts = ({ charts, chartsData }) => {
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
   const [behaviorsDescription, setBehaviorsDescription] = useState(
-    chartsData.behaviorsDescription.map(desc => ({ ...desc, response: desc.response ?? null }))
+    chartsData.behaviorsDescription
   );
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
