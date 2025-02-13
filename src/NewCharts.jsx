@@ -19,8 +19,8 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
-  const [behaviorsDescription, setBehaviorsDescription] = useState(
-    chart.behaviorsDescription
+  const [behaviorDescriptions, setBehaviorDescriptions] = useState(
+    chart_.map((desc) => ({ ...desc, response: null }))
   );
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
@@ -45,9 +45,6 @@ const NewCharts = ({ charts, chartsData }) => {
     );
   };
   
-  const isSubmitDisabled = behaviorStatuses.some(status => !status); // Check if any status is empty
-  
-  
 
   useEffect(() => {
     const startOfMonth = new Date();
@@ -68,56 +65,63 @@ const NewCharts = ({ charts, chartsData }) => {
     }
   }, [charts]);
 
-  const updateBehaviorDescription = (index, field, value) => {
-    setBehaviorsDescription((prev) =>
-      prev.map((desc, i) => 
-        i === index ? { ...desc, response: value.trim() === "" ? null : value } : desc
+  
+  
+  const updateBehaviorDescription = (rowIndex, field, value) => {
+    setBehaviorDescriptions((prev) =>
+      prev.map((desc, i) =>
+        i === rowIndex
+          ? { ...desc, [field]: value.trim() === "" ? null : value }
+          : desc
       )
     );
   };
   
-
-  
-  // const isSubmitDisabled = behaviors.some((b) => !b.status);
+  // Check if all fields in any row are filled before submission
+  const isSubmitDisabled = behaviorDescriptions.some((desc) =>
+    ["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].some(
+      (field) => !desc[field]
+    )
+  );
 
   const handleSubmit = async () => {
-  if (isSubmitDisabled) {
-    setErrors(["Please select Yes or No for all behaviors before submitting."]);
-    return;
-  }
-
-  setLoadingSubmit(true);
-  setErrors([]); 
-
-  const cleanedBehaviorsDescription = behaviorsDescription.map(desc => ({
-    ...desc,
-    response: desc.response?.trim() ? desc.response : null
-  }));
-  
-  const payload = {
-    patient: chart.patientId,
-    behaviors,
-    behaviorsDescription: cleanedBehaviorsDescription,
-    dateTaken: dateTaken.toISOString(),
-    reasonNotFiled
-  };
-  console.log("Payload", payload);
-
-  try {
-    const response = await postCharts(payload);
-    if (response?.error) {
-      setErrors(errorHandler(response.error));
-    } else {
-      setMessage(["Chart data posted successfully."]);
-      setTimeout(() => setMessage(""), 5000);
+    if (isSubmitDisabled) {
+      setErrors(["Please complete all required fields before submitting."]);
+      return;
     }
-  } catch (error) {
-    console.error("Error submitting charts:", error);
-    setErrors([`Errors: ${error}`]);
-    setTimeout(() => setErrors([]), 5000);
-  } finally {
-    setLoadingSubmit(false);
-  }
+
+    setLoadingSubmit(true);
+    setErrors([]);
+
+    const cleanedBehaviorsDescription = behaviorsDescription.map(desc => ({
+      ...desc,
+      response: desc.response?.trim() ? desc.response : null
+    }));
+    
+    const payload = {
+      patient: chart.patientId,
+      behaviors,
+      behaviorsDescription: cleanedBehaviorsDescription,
+      dateTaken: dateTaken.toISOString(),
+      reasonNotFiled
+    };
+    console.log("Payload", payload);
+
+    try {
+      const response = await postCharts(payload);
+      if (response?.error) {
+        setErrors(errorHandler(response.error));
+      } else {
+        setMessage(["Chart data posted successfully."]);
+        setTimeout(() => setMessage(""), 5000);
+      }
+    } catch (error) {
+      console.error("Error submitting charts:", error);
+      setErrors([`Errors: ${error}`]);
+      setTimeout(() => setErrors([]), 5000);
+    } finally {
+      setLoadingSubmit(false);
+    }
   };
 
 
@@ -208,31 +212,30 @@ const NewCharts = ({ charts, chartsData }) => {
             </tr>
           </thead>
           <tbody>
-            {Array(3)
-              .fill({})
-              .map((_, rowIndex) => (
-                <tr key={rowIndex} className="border border-gray-700">
-                  <td className="p-3 border border-gray-700">
-                    <DatePicker
-                      selected={dateTaken}
-                      onChange={(date) => setDateTaken(date)}
-                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                    />
-                  </td>
-                  {["Behavior_Description", "Trigger",  "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome",].map(
-                    (field, index) => (
-                      <td key={index} className="p-3 border border-gray-700">
-                        <input
-                          type="text"
-                          placeholder={`Enter ${field.replace(/_/g, " ")}`}
-                          className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                          onChange={(e) => updateBehaviorDescription(rowIndex, field, e.target.value)}
-                        />
-                      </td>
-                    )
-                  )}
-                </tr>
-              ))}
+            {behaviorDescriptions.map((desc, rowIndex) => (
+              <tr key={rowIndex} className="border border-gray-700">
+                <td className="p-3 border border-gray-700">
+                  <DatePicker
+                    selected={dateTaken}
+                    onChange={(date) => setDateTaken(date)}
+                    className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                  />
+                </td>
+                {["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].map(
+                  (field, index) => (
+                    <td key={index} className="p-3 border border-gray-700">
+                      <input
+                        type="text"
+                        placeholder={`Enter ${field.replace(/_/g, " ")}`}
+                        className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                        value={desc[field] || ""}
+                        onChange={(e) => updateBehaviorDescription(rowIndex, field, e.target.value)}
+                      />
+                    </td>
+                  )
+                )}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
