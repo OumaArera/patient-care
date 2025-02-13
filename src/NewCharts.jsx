@@ -12,7 +12,10 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Pick the first chart entry
   const chart = charts[0];
-  console.log("Chart Data: ", chartsData);
+  const chart_ = chartsData[0].behaviorsDescription
+  
+  console.log("Chart Data: ", chart_);
+
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
