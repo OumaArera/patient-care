@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import { errorHandler } from "../services/errorHandler";
 import "react-datepicker/dist/react-datepicker.css";
 import VitalsComponent from "./VitalsComponent";
+import BehaviorDescriptions from "./BehaviorDescription";
 
 const NewCharts = ({ charts, chartsData }) => {
   if (!chartsData.length) {
@@ -19,13 +20,38 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
-  const [behaviorDescription, setBehaviorDescription] = useState({
-    Behavior_Description: "",
-    Trigger: "",
-    Care_Giver_Intervention: "",
-    Reported_Provider_And_Careteam: "",
-    Outcome: "",
-  });
+  const [behaviorsDescription, setBehaviorsDescription] = useState([
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Date"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Outcome"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Trigger"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Behavior_Description"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Care_Giver_Intervention"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Reported_Provider_And_Careteam"
+    }
+])
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
@@ -76,18 +102,6 @@ const NewCharts = ({ charts, chartsData }) => {
       setDateTaken(missing[0]);
     }
   }, [charts]);
-
-  
-  
-  const updateBehaviorDescription = (field, value) => {
-    setBehaviorDescription((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-  
-  // Check if all fields in any row are filled before submission
-  const isSubmitDisabled = Object.values(behaviorDescription).some((value) => !value);
 
   const handleVitalsChange = (index, value) => {
     setVitals((prevVitals) => {
@@ -158,7 +172,7 @@ const NewCharts = ({ charts, chartsData }) => {
     const payload = {
       patient: chart.patientId,
       behaviors,
-      behaviorsDescription: behaviorDescription,
+      behaviorsDescription: behaviorsDescription,
       dateTaken: dateTaken.toISOString(),
       vitals,
       ...(reasonNotFiled ? { reasonNotFiled } : {})
@@ -255,44 +269,8 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
 
       {/* Behaviors Description Table */}
-      <div className="bg-gray-900 p-4 rounded-lg mt-6">
-        <h3 className="text-lg font-bold text-blue-400 mb-3">Behavior Descriptions</h3>
-        <table className="w-full border-collapse border border-gray-700">
-          <thead>
-            <tr className="bg-gray-800 text-white">
-              <th className="p-3 border border-gray-700">Date</th>
-              <th className="p-3 border border-gray-700">Behavior Description</th>
-              <th className="p-3 border border-gray-700">Triggers</th>
-              <th className="p-3 border border-gray-700">Caregiver Intervention</th>
-              <th className="p-3 border border-gray-700">Reported to Provider & Care Team</th>
-              <th className="p-3 border border-gray-700">Outcome</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border border-gray-700">
-              <td className="p-3 border border-gray-700">
-                <DatePicker
-                  selected={dateTaken}
-                  onChange={(date) => setDateTaken(date)}
-                  className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                />
-              </td>
-              {["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].map(
-                (field, index) => (
-                  <td key={index} className="p-3 border border-gray-700">
-                    <input
-                      type="text"
-                      placeholder={`Enter ${field.replace(/_/g, " ")}`}
-                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                      value={behaviorDescription[field]}
-                      onChange={(e) => updateBehaviorDescription(field, e.target.value)}
-                    />
-                  </td>
-                )
-              )}
-            </tr>
-          </tbody>
-        </table>
+      <div>
+        <BehaviorDescriptions />
       </div>
       {/* Vitals Input Table */}
       <div>
