@@ -12,9 +12,8 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Pick the first chart entry
   const chart = charts[0];
-  const chart_ = chartsData[0].behaviorsDescription
   
-  console.log("Chart Data: ", chart_);
+  console.log("Charts Vitals: ", chart.vitals);
 
 
   // Extract behaviors and behavior descriptions
@@ -80,21 +79,16 @@ const NewCharts = ({ charts, chartsData }) => {
   };
   
   // Check if all fields in any row are filled before submission
-  const isSubmitDisabled = Object.values(behaviorDescription).some((value) => !value);
+  // const isSubmitDisabled = Object.values(behaviorDescription).some((value) => !value);
 
   const handleSubmit = async () => {
-    if (isSubmitDisabled) {
-      setErrors(["Please complete all required fields before submitting."]);
-      return;
-    }
+    // if (isSubmitDisabled) {
+    //   setErrors(["Please complete all required fields before submitting."]);
+    //   return;
+    // }
 
     setLoadingSubmit(true);
     setErrors([]);
-
-    // const cleanedBehaviorsDescription = behaviorsDescription.map(desc => ({
-    //   ...desc,
-    //   response: desc.response?.trim() ? desc.response : null
-    // }));
     
     const payload = {
       patient: chart.patientId,
