@@ -31,8 +31,6 @@ const NewCharts = ({ charts, chartsData }) => {
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     behaviors.map(() => null) 
   );
-
-  // console.log("Behavior Description", behaviorsDescription);
   
   const handleStatusChange = (index, value) => {
     // Update the behavior status
@@ -73,9 +71,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const updateBehaviorDescription = (index, field, value) => {
     setBehaviorsDescription((prev) =>
       prev.map((desc, i) => 
-        i === index 
-          ? { ...desc, response: value.trim() ? value : null } 
-          : desc
+        i === index ? { ...desc, response: value.trim() === "" ? null : value } : desc
       )
     );
   };
@@ -230,7 +226,6 @@ const NewCharts = ({ charts, chartsData }) => {
                           type="text"
                           placeholder={`Enter ${field.replace(/_/g, " ")}`}
                           className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                          value={behaviorsDescription[rowIndex]?.response || ""}
                           onChange={(e) => updateBehaviorDescription(rowIndex, field, e.target.value)}
                         />
                       </td>
