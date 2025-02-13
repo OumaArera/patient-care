@@ -96,62 +96,12 @@ const NewCharts = ({ charts, chartsData }) => {
       return updatedVitals;
     });
   };
-  
-  
 
   const handleSubmit = async () => {
+
     setLoadingSubmit(true);
     setErrors([]);
     
-    const newErrors = [];
-  
-    const thresholds = {
-      "Blood Pressure": { systolic: { min: 71, max: 150 }, diastolic: { min: 51, max: 90 } },
-      "Pulse": { min: 60, max: 100 },
-      "Temperature": { min: 97, max: 99.5 },
-      "Oxygen Saturation": { min: 95, max: 100 }
-    };
-  
-    vitals.forEach((vital) => {
-      if (!vital.response) {
-        newErrors.push(`${vital.vitalsType} is required.`);
-        return;
-      }
-  
-      if (vital.vitalsType === "Blood Pressure") {
-        const bpParts = vital.response.split("/").map((v) => parseInt(v.trim(), 10));
-        
-        if (bpParts.length !== 2 || isNaN(bpParts[0]) || isNaN(bpParts[1])) {
-          newErrors.push("Invalid Blood Pressure format. Enter as Systolic/Diastolic (e.g., 120/80).");
-        } else {
-          const [systolic, diastolic] = bpParts;
-          const { systolic: sysRange, diastolic: diaRange } = thresholds["Blood Pressure"];
-          
-          if (systolic < sysRange.min || systolic > sysRange.max) {
-            newErrors.push(`Systolic pressure (${systolic}) is out of range! Acceptable: ${sysRange.min}-${sysRange.max}.`);
-          }
-          if (diastolic < diaRange.min || diastolic > diaRange.max) {
-            newErrors.push(`Diastolic pressure (${diastolic}) is out of range! Acceptable: ${diaRange.min}-${diaRange.max}.`);
-          }
-        }
-      } else if (vital.vitalsType in thresholds) {
-        const numericValue = parseFloat(vital.response);
-        const { min, max } = thresholds[vital.vitalsType];
-  
-        if (numericValue < min) {
-          newErrors.push(`${vital.vitalsType} is too low (${numericValue}). Consider further evaluation.`);
-        } else if (numericValue > max) {
-          newErrors.push(`${vital.vitalsType} is too high (${numericValue}). Consider further evaluation.`);
-        }
-      }
-    });
-  
-    if (newErrors.length > 0) {
-      setErrors(newErrors);
-      setLoadingSubmit(false);
-      return;
-    }
-  
     const payload = {
       patient: chart.patientId,
       behaviors,
@@ -160,7 +110,8 @@ const NewCharts = ({ charts, chartsData }) => {
       vitals,
       ...(reasonNotFiled ? { reasonNotFiled } : {})
     };
-  
+    console.log("Payload", payload);
+
     try {
       const response = await postCharts(payload);
       if (response?.error) {
@@ -170,13 +121,13 @@ const NewCharts = ({ charts, chartsData }) => {
         setTimeout(() => setMessage(""), 5000);
       }
     } catch (error) {
+      console.error("Error submitting charts:", error);
       setErrors([`Errors: ${error}`]);
       setTimeout(() => setErrors([]), 5000);
     } finally {
       setLoadingSubmit(false);
     }
   };
-  
 
 
   return (
