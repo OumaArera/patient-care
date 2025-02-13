@@ -79,7 +79,7 @@ const NewCharts = ({ charts, chartsData }) => {
   };
   
   // Check if all fields in any row are filled before submission
-  // const isSubmitDisabled = Object.values(behaviorDescription).some((value) => !value);
+  const isSubmitDisabled = Object.values(behaviorDescription).some((value) => !value);
 
   const handleSubmit = async () => {
     // if (isSubmitDisabled) {
