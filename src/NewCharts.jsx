@@ -32,7 +32,7 @@ const NewCharts = ({ charts, chartsData }) => {
     behaviors.map(() => null) 
   );
 
-  console.log("Behavior Description", behaviorsDescription);
+  // console.log("Behavior Description", behaviorsDescription);
   
   const handleStatusChange = (index, value) => {
     // Update the behavior status
@@ -139,6 +139,7 @@ const NewCharts = ({ charts, chartsData }) => {
             showTimeSelect
             dateFormat="Pp" // Ensures date + time format
             className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+            required
           />
           <label className="block mt-3">Reason Not Filed:</label>
           <input
