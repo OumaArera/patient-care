@@ -19,9 +19,14 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
-  const [behaviorDescriptions, setBehaviorDescriptions] = useState(
-    chart_.map((desc) => ({ ...desc, response: null }))
-  );
+  const [behaviorDescription, setBehaviorDescription] = useState({
+    Behavior_Description: "",
+    Trigger: "",
+    Care_Giver_Intervention: "",
+    Reported_Provider_And_Careteam: "",
+    Outcome: "",
+  });
+  
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
@@ -67,22 +72,19 @@ const NewCharts = ({ charts, chartsData }) => {
 
   
   
-  const updateBehaviorDescription = (rowIndex, field, value) => {
-    setBehaviorDescriptions((prev) =>
-      prev.map((desc, i) =>
-        i === rowIndex
-          ? { ...desc, [field]: value.trim() === "" ? null : value }
-          : desc
-      )
-    );
+  const updateBehaviorDescription = (field, value) => {
+    setBehaviorDescription((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
   
   // Check if all fields in any row are filled before submission
-  const isSubmitDisabled = behaviorDescriptions.some((desc) =>
-    ["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].some(
-      (field) => !desc[field]
-    )
-  );
+  // const isSubmitDisabled = behaviorDescriptions.some((desc) =>
+  //   ["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].some(
+  //     (field) => !desc[field]
+  //   )
+  // );
 
   const handleSubmit = async () => {
     if (isSubmitDisabled) {
@@ -93,15 +95,15 @@ const NewCharts = ({ charts, chartsData }) => {
     setLoadingSubmit(true);
     setErrors([]);
 
-    const cleanedBehaviorsDescription = behaviorsDescription.map(desc => ({
-      ...desc,
-      response: desc.response?.trim() ? desc.response : null
-    }));
+    // const cleanedBehaviorsDescription = behaviorsDescription.map(desc => ({
+    //   ...desc,
+    //   response: desc.response?.trim() ? desc.response : null
+    // }));
     
     const payload = {
       patient: chart.patientId,
       behaviors,
-      behaviorsDescription: cleanedBehaviorsDescription,
+      behaviorsDescription: behaviorDescription,
       dateTaken: dateTaken.toISOString(),
       reasonNotFiled
     };
@@ -212,30 +214,28 @@ const NewCharts = ({ charts, chartsData }) => {
             </tr>
           </thead>
           <tbody>
-            {behaviorDescriptions.map((desc, rowIndex) => (
-              <tr key={rowIndex} className="border border-gray-700">
-                <td className="p-3 border border-gray-700">
-                  <DatePicker
-                    selected={dateTaken}
-                    onChange={(date) => setDateTaken(date)}
-                    className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                  />
-                </td>
-                {["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].map(
-                  (field, index) => (
-                    <td key={index} className="p-3 border border-gray-700">
-                      <input
-                        type="text"
-                        placeholder={`Enter ${field.replace(/_/g, " ")}`}
-                        className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                        value={desc[field] || ""}
-                        onChange={(e) => updateBehaviorDescription(rowIndex, field, e.target.value)}
-                      />
-                    </td>
-                  )
-                )}
-              </tr>
-            ))}
+            <tr className="border border-gray-700">
+              <td className="p-3 border border-gray-700">
+                <DatePicker
+                  selected={dateTaken}
+                  onChange={(date) => setDateTaken(date)}
+                  className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                />
+              </td>
+              {["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].map(
+                (field, index) => (
+                  <td key={index} className="p-3 border border-gray-700">
+                    <input
+                      type="text"
+                      placeholder={`Enter ${field.replace(/_/g, " ")}`}
+                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                      value={behaviorDescription[field]}
+                      onChange={(e) => updateBehaviorDescription(field, e.target.value)}
+                    />
+                  </td>
+                )
+              )}
+            </tr>
           </tbody>
         </table>
       </div>
