@@ -80,11 +80,11 @@ const NewCharts = ({ charts, chartsData }) => {
   };
   
   // Check if all fields in any row are filled before submission
-  // const isSubmitDisabled = behaviorDescriptions.some((desc) =>
-  //   ["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].some(
-  //     (field) => !desc[field]
-  //   )
-  // );
+  const isSubmitDisabled = behaviorDescription.some((desc) =>
+    ["Behavior_Description", "Trigger", "Care_Giver_Intervention", "Reported_Provider_And_Careteam", "Outcome"].some(
+      (field) => !desc[field]
+    )
+  );
 
   const handleSubmit = async () => {
     if (isSubmitDisabled) {
