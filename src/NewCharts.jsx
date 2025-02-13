@@ -111,6 +111,8 @@ const NewCharts = ({ charts, chartsData }) => {
     });
   };
 
+  const isSubmitDisabled = Object.values(behaviorsDescription).some((value) => !value);
+
   const handleSubmit = async () => {
     setLoadingSubmit(true);
     setErrors([]);
@@ -270,7 +272,10 @@ const NewCharts = ({ charts, chartsData }) => {
 
       {/* Behaviors Description Table */}
       <div>
-        <BehaviorDescriptions />
+        <BehaviorDescriptions
+          behaviorsDescription={behaviorsDescription}
+          onUpdate={setBehaviorsDescription}
+        />
       </div>
       {/* Vitals Input Table */}
       <div>
