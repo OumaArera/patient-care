@@ -12,9 +12,9 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Pick the first chart entry
   const chart = charts[0];
-  const chart_ = chartsData[0].behaviorsDescription
+  // const chart_ = chartsData[0].behaviorsDescription
   
-  console.log("Chart Data: ", chart_);
+  // console.log("Chart Data: ", chart_);
 
 
   // Extract behaviors and behavior descriptions
@@ -31,6 +31,8 @@ const NewCharts = ({ charts, chartsData }) => {
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     behaviors.map(() => null) 
   );
+
+  console.log("Behavior Description", behaviorsDescription);
   
   const handleStatusChange = (index, value) => {
     // Update the behavior status
