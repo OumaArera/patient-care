@@ -25,7 +25,6 @@ const NewCharts = ({ charts, chartsData }) => {
     Reported_Provider_And_Careteam: "",
     Outcome: "",
   });
-  
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
@@ -35,7 +34,15 @@ const NewCharts = ({ charts, chartsData }) => {
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     behaviors.map(() => null) 
   );
+  const [vitals, setVitals] = useState([
+    {status: true, response: '', vitalsType: 'Blood Pressure'},
+    {status: true, response: '', vitalsType: 'Pulse'},
+    {status: true, response: '', vitalsType: 'Temperature'},
+    {status: true, response: '', vitalsType: 'Oxygen Saturation'},
+    {status: true, response: '', vitalsType: 'Pain'},
+  ])
   
+
   const handleStatusChange = (index, value) => {
     // Update the behavior status
     setBehaviorStatuses((prevStatuses) => {
@@ -81,11 +88,73 @@ const NewCharts = ({ charts, chartsData }) => {
   // Check if all fields in any row are filled before submission
   const isSubmitDisabled = Object.values(behaviorDescription).some((value) => !value);
 
+  const handleVitalsChange = (index, value) => {
+    setVitals((prevVitals) => {
+      const updatedVitals = [...prevVitals];
+      updatedVitals[index].response = value;
+  
+      const { vitalsType } = updatedVitals[index];
+  
+      let alertMessage = null;
+  
+      // Define thresholds
+      const thresholds = {
+        "Blood Pressure": { systolic: { min: 71, max: 150 }, diastolic: { min: 51, max: 90 } },
+        "Pulse": { min: 60, max: 100 },
+        "Temperature": { min: 97, max: 99.5 }, // Fahrenheit
+        "Oxygen Saturation": { min: 95, max: 100 }
+      };
+  
+      if (vitalsType === "Blood Pressure") {
+        // Validate BP format (must be in "Systolic/Diastolic" format)
+        const bpParts = value.split("/").map((v) => parseInt(v.trim(), 10));
+  
+        if (bpParts.length !== 2 || isNaN(bpParts[0]) || isNaN(bpParts[1])) {
+          alertMessage = "Invalid Blood Pressure format. Enter as Systolic/Diastolic (e.g., 120/80).";
+        } else {
+          const [systolic, diastolic] = bpParts;
+          const { systolic: sysRange, diastolic: diaRange } = thresholds["Blood Pressure"];
+  
+          if (systolic < sysRange.min || systolic > sysRange.max) {
+            alertMessage = `Systolic pressure (${systolic}) is out of range! Acceptable: ${sysRange.min}-${sysRange.max}.`;
+          } else if (diastolic < diaRange.min || diastolic > diaRange.max) {
+            alertMessage = `Diastolic pressure (${diastolic}) is out of range! Acceptable: ${diaRange.min}-${diaRange.max}.`;
+          }
+        }
+      } else if (vitalsType in thresholds) {
+        // Handle other vitals
+        const numericValue = parseFloat(value);
+        const { min, max } = thresholds[vitalsType];
+  
+        if (numericValue < min) {
+          alertMessage = `${vitalsType} is too low (${numericValue}). Consider further evaluation.`;
+        } else if (numericValue > max) {
+          alertMessage = `${vitalsType} is too high (${numericValue}). Consider further evaluation.`;
+        }
+      }
+  
+      if (alertMessage) {
+        alert(alertMessage);
+      }
+  
+      return updatedVitals;
+    });
+  };
+  
+  
+  // Validation before submission
+  const validateVitals = () => {
+    for (const vital of vitals) {
+      if (vital.vitalsType !== "Pain" && (!vital.response || vital.response.trim() === "")) {
+        alert(`Please enter a value for ${vital.vitalsType}`);
+        return false;
+      }
+    }
+    return true;
+  };
+  
+
   const handleSubmit = async () => {
-    // if (isSubmitDisabled) {
-    //   setErrors(["Please complete all required fields before submitting."]);
-    //   return;
-    // }
 
     setLoadingSubmit(true);
     setErrors([]);
@@ -95,6 +164,7 @@ const NewCharts = ({ charts, chartsData }) => {
       behaviors,
       behaviorsDescription: behaviorDescription,
       dateTaken: dateTaken.toISOString(),
+      vitals,
       ...(reasonNotFiled ? { reasonNotFiled } : {})
     };
     console.log("Payload", payload);
@@ -229,7 +299,44 @@ const NewCharts = ({ charts, chartsData }) => {
           </tbody>
         </table>
       </div>
-
+      {/* Vitals Input Table */}
+      <div className="bg-gray-900 p-4 rounded-lg mt-6">
+        <h3 className="text-lg font-bold text-blue-400 mb-3">Vitals</h3>
+        <table className="w-full border-collapse border border-gray-700">
+          <thead>
+            <tr className="bg-gray-800 text-white">
+              <th className="p-3 border border-gray-700">Vitals Type</th>
+              <th className="p-3 border border-gray-700">Response</th>
+            </tr>
+          </thead>
+          <tbody>
+            {vitals.map((vital, index) => (
+              <tr key={index} className="border border-gray-700">
+                <td className="p-3 border border-gray-700">{vital.vitalsType}</td>
+                <td className="p-3 border border-gray-700">
+                  {vital.vitalsType === "Pain" ? (
+                    <textarea
+                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                      placeholder="Describe pain level (optional)"
+                      value={vital.response}
+                      onChange={(e) => handleVitalsChange(index, e.target.value)}
+                    />
+                  ) : (
+                    <input
+                      type="number"
+                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                      placeholder={`Enter ${vital.vitalsType}`}
+                      value={vital.response}
+                      onChange={(e) => handleVitalsChange(index, e.target.value)}
+                      required={vital.vitalsType !== "Pain"}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
       <button
