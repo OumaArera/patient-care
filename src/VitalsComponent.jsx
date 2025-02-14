@@ -1,19 +1,24 @@
 import { useState } from "react";
 
-const VitalsComponent = ({ onUpdatevitals }) => {
+const VitalsComponent = ({ onVitalsUpdate }) => {
   const [errors, setErrors] = useState({});
   const [vitals, setVitals] = useState([
-    {status: true, response: '', vitalsType: 'Blood Pressure'},
-    {status: true, response: '', vitalsType: 'Pulse'},
-    {status: true, response: '', vitalsType: 'Temperature'},
-    {status: true, response: '', vitalsType: 'Oxygen Saturation'},
-    {status: true, response: '', vitalsType: 'Pain'},
+    { status: true, response: "", vitalsType: "Blood Pressure" },
+    { status: true, response: "", vitalsType: "Pulse" },
+    { status: true, response: "", vitalsType: "Temperature" },
+    { status: true, response: "", vitalsType: "Oxygen Saturation" },
+    { status: true, response: "", vitalsType: "Pain" },
   ]);
+
   const handleVitalsChange = (index, value) => {
     const updatedVitals = [...vitals];
     updatedVitals[index].response = value;
     setVitals(updatedVitals);
-    onUpdatevitals(updatedVitals);
+
+    // Pass updated vitals to NewCharts (or any other component)
+    if (typeof onVitalsUpdate === "function") {
+      onVitalsUpdate(updatedVitals);
+    }
   };
 
   const validateVitals = () => {

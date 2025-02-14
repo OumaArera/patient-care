@@ -185,7 +185,7 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
       {/* Vitals Input Table */}
       <div>
-        <VitalsComponent onUpdatevitals={vitals}/>
+        <VitalsComponent onUpdatevitals={setVitals}/>
       </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
