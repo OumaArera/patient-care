@@ -253,11 +253,11 @@ const NewCharts = ({ charts, chartsData }) => {
       <button
           onClick={handleSubmit}
           className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-            loadingSubmit
+            loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("")
               ? "bg-gray-500 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}
-          disabled={loadingSubmit}
+          disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("")}
         >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
