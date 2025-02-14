@@ -1,7 +1,39 @@
 import { useState } from "react";
 
-const BehaviorDescriptions = ({ behaviorsDescription, onUpdate }) => {
+const BehaviorDescriptions = ({ onUpdate }) => {
   const [editedData, setEditedData] = useState({});
+  const [behaviorsDescription, setBehaviorsDescription] = useState([
+        {
+            "status": true,
+            "response": "",
+            "descriptionType": "Date"
+        },
+        {
+            "status": true,
+            "response": "",
+            "descriptionType": "Outcome"
+        },
+        {
+            "status": true,
+            "response": "",
+            "descriptionType": "Trigger"
+        },
+        {
+            "status": true,
+            "response": "",
+            "descriptionType": "Behavior_Description"
+        },
+        {
+            "status": true,
+            "response": "",
+            "descriptionType": "Care_Giver_Intervention"
+        },
+        {
+            "status": true,
+            "response": "",
+            "descriptionType": "Reported_Provider_And_Careteam"
+        }
+    ]);
 
   const handleInputChange = (id, field, value) => {
     setEditedData((prev) => {

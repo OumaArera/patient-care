@@ -20,38 +20,13 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
-  const [behaviorsDescription, setBehaviorsDescription] = useState([
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Date"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Outcome"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Trigger"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Behavior_Description"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Care_Giver_Intervention"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Reported_Provider_And_Careteam"
-    }
-])
+  const [behaviorDescription, setBehaviorDescription] = useState({
+    Behavior_Description: "",
+    Trigger: "",
+    Care_Giver_Intervention: "",
+    Reported_Provider_And_Careteam: "",
+    Outcome: "",
+  });
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
@@ -103,6 +78,14 @@ const NewCharts = ({ charts, chartsData }) => {
     }
   }, [charts]);
 
+  const updateBehaviorDescription = (field, value) => {
+    setBehaviorDescription((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+  
+
   const handleVitalsChange = (index, value) => {
     setVitals((prevVitals) => {
       const updatedVitals = [...prevVitals];
@@ -111,7 +94,8 @@ const NewCharts = ({ charts, chartsData }) => {
     });
   };
 
-  const isSubmitDisabled = Object.values(behaviorsDescription).some((value) => !value);
+  // const isSubmitDisabled = Object.values(behaviorsDescription).some((value) => !value);
+  const isSubmitDisabled = Object.values(behaviorDescription).some((value) => !value);
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
@@ -174,7 +158,7 @@ const NewCharts = ({ charts, chartsData }) => {
     const payload = {
       patient: chart.patientId,
       behaviors,
-      behaviorsDescription: behaviorsDescription,
+      behaviorsDescription: behaviorDescription,
       dateTaken: dateTaken.toISOString(),
       vitals,
       ...(reasonNotFiled ? { reasonNotFiled } : {})
@@ -273,8 +257,7 @@ const NewCharts = ({ charts, chartsData }) => {
       {/* Behaviors Description Table */}
       <div>
         <BehaviorDescriptions
-          behaviorsDescription={behaviorsDescription}
-          onUpdate={setBehaviorsDescription}
+          onUpdate={setBehaviorDescription}
         />
       </div>
       {/* Vitals Input Table */}
