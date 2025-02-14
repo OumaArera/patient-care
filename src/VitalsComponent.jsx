@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const VitalsComponent = ({ vitals, handleVitalsChange }) => {
+const VitalsComponent = ({ vitalsData, handleVitalsChange }) => {
   const [errors, setErrors] = useState({});
   const [vitals, setVitals] = useState(vitals);
 

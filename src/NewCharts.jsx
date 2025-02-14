@@ -193,7 +193,7 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
       {/* Vitals Input Table */}
       <div>
-      <VitalsComponent vitals={vitals} handleVitalsChange={handleVitalsChange} />
+      <VitalsComponent vitalsData={vitals} handleVitalsChange={handleVitalsChange} />
 
       </div>
       {/* Submit Button */}
