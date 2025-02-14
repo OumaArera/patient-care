@@ -67,15 +67,6 @@ const NewCharts = ({ charts, chartsData }) => {
       setDateTaken(missing[0]);
     }
   }, [charts]);
-  
-
-  const handleVitalsChange = (index, value) => {
-    setVitals((prevVitals) => {
-      const updatedVitals = [...prevVitals];
-      updatedVitals[index].response = value;
-      return updatedVitals;
-    });
-  };
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
@@ -194,7 +185,7 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
       {/* Vitals Input Table */}
       <div>
-        <VitalsComponent vitals={vitals} handleSubmit={handleSubmit} handleVitalsChange={handleVitalsChange} />
+        <VitalsComponent onUpdatevitals={vitals}/>
       </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">

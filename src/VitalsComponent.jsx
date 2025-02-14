@@ -1,53 +1,57 @@
 import { useState } from "react";
 
-const VitalsComponent = ({ vitals, handleVitalsChange, handleSubmit }) => {
+const VitalsComponent = ({ onUpdatevitals }) => {
   const [errors, setErrors] = useState({});
+  const [vitals, setVitals] = useState([
+    {status: true, response: '', vitalsType: 'Blood Pressure'},
+    {status: true, response: '', vitalsType: 'Pulse'},
+    {status: true, response: '', vitalsType: 'Temperature'},
+    {status: true, response: '', vitalsType: 'Oxygen Saturation'},
+    {status: true, response: '', vitalsType: 'Pain'},
+  ]);
+  const handleVitalsChange = (index, value) => {
+    const updatedVitals = [...vitals];
+    updatedVitals[index].response = value;
+    setVitals(updatedVitals);
+    onUpdatevitals(updatedVitals);
+  };
 
   const validateVitals = () => {
     const newErrors = {};
 
     vitals.forEach((vital, index) => {
       const value = vital.response.trim();
+      if (!value && vital.vitalsType !== "Pain") {
+        newErrors[index] = "This field is required";
+        return;
+      }
 
       if (vital.vitalsType === "Blood Pressure") {
-        if (!/^\d{2,3}\/\d{2,3}$/.test(value)) {
+        if (!/^(\d{2,3})\/(\d{2,3})$/.test(value)) {
           newErrors[index] = "Enter blood pressure in systolic/diastolic format (e.g., 120/80)";
         } else {
           const [systolic, diastolic] = value.split("/").map(Number);
-          if (systolic > 180) newErrors[index] = "Systolic pressure is too high!";
-          else if (systolic < 90) newErrors[index] = "Systolic pressure is too low!";
-          if (diastolic > 120) newErrors[index] = "Diastolic pressure is too high!";
-          else if (diastolic < 60) newErrors[index] = "Diastolic pressure is too low!";
+          if (systolic < 71 || systolic > 150) newErrors[index] = "Systolic pressure must be between 71 and 150";
+          if (diastolic < 51 || diastolic > 90) newErrors[index] = "Diastolic pressure must be between 51 and 90";
         }
       } else if (vital.vitalsType === "Pulse") {
         const num = Number(value);
-        if (num > 120) newErrors[index] = "Pulse rate is too high!";
-        else if (num < 50) newErrors[index] = "Pulse rate is too low!";
+        if (num < 60 || num > 100) newErrors[index] = "Pulse must be between 60 and 100";
       } else if (vital.vitalsType === "Temperature") {
         const num = Number(value);
-        if (num > 39) newErrors[index] = "Temperature is too high!";
-        else if (num < 35) newErrors[index] = "Temperature is too low!";
+        if (num > 99) newErrors[index] = "Temperature cannot be greater than 99";
       } else if (vital.vitalsType === "Oxygen Saturation") {
         const num = Number(value);
-        if (num > 100) newErrors[index] = "Oxygen saturation cannot exceed 100%!";
-        else if (num < 90) newErrors[index] = "Oxygen saturation is too low!";
+        if (num < 95 || num > 100) newErrors[index] = "Oxygen saturation must be between 95 and 100";
       }
     });
-
     return newErrors;
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validateVitals();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    if (window.confirm("Are you sure you want to submit the vitals?")) {
-      handleSubmit();
-    }
+    setErrors(validationErrors);
   };
 
   return (
@@ -82,20 +86,12 @@ const VitalsComponent = ({ vitals, handleVitalsChange, handleSubmit }) => {
                       onChange={(e) => handleVitalsChange(index, e.target.value)}
                     />
                   )}
-                  {errors[index] && (
-                    <p className="text-red-500 text-sm mt-1">{errors[index]}</p>
-                  )}
+                  {errors[index] && <p className="text-red-500 text-sm mt-1">{errors[index]}</p>}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {/* <button
-          type="submit"
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-        >
-          Submit Vitals
-        </button> */}
       </form>
     </div>
   );
