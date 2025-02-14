@@ -20,13 +20,7 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
-  const [behaviorDescription, setBehaviorDescription] = useState({
-    Behavior_Description: "",
-    Trigger: "",
-    Care_Giver_Intervention: "",
-    Reported_Provider_And_Careteam: "",
-    Outcome: "",
-  });
+  const [behaviorDescription, setBehaviorDescription] = useState();
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
@@ -77,13 +71,6 @@ const NewCharts = ({ charts, chartsData }) => {
       setDateTaken(missing[0]);
     }
   }, [charts]);
-
-  const updateBehaviorDescription = (field, value) => {
-    setBehaviorDescription((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
   
 
   const handleVitalsChange = (index, value) => {
@@ -93,9 +80,6 @@ const NewCharts = ({ charts, chartsData }) => {
       return updatedVitals;
     });
   };
-
-  // const isSubmitDisabled = Object.values(behaviorsDescription).some((value) => !value);
-  const isSubmitDisabled = Object.values(behaviorDescription).some((value) => !value);
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
@@ -269,11 +253,11 @@ const NewCharts = ({ charts, chartsData }) => {
       <button
           onClick={handleSubmit}
           className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-            isSubmitDisabled || loadingSubmit
+            loadingSubmit
               ? "bg-gray-500 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}
-          disabled={isSubmitDisabled || loadingSubmit}
+          disabled={loadingSubmit}
         >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
