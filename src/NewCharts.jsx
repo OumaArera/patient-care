@@ -11,12 +11,8 @@ const NewCharts = ({ charts, chartsData }) => {
   if (!chartsData.length) {
     return <p className="text-red-500 text-center p-4">The resident has not been assigned charts data.</p>;
   }
-
   // Pick the first chart entry
   const chart = charts[0];
-  
-  console.log("Charts Vitals: ", chart.vitals);
-
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
@@ -85,58 +81,10 @@ const NewCharts = ({ charts, chartsData }) => {
     setLoadingSubmit(true);
     setErrors([]);
   
-    const newWarnings = [];
-  
-    const thresholds = {
-      "Blood Pressure": { systolic: { min: 71, max: 150 }, diastolic: { min: 51, max: 90 } },
-      "Pulse": { min: 60, max: 100 },
-      "Temperature": { min: 97, max: 99.5 },
-      "Oxygen Saturation": { min: 95, max: 100 }
-    };
-  
-    vitals.forEach((vital) => {
-      if (!vital.response) {
-        newWarnings.push(`${vital.vitalsType} is required.`);
-        return;
-      }
-  
-      if (vital.vitalsType === "Blood Pressure") {
-        const bpParts = vital.response.split("/").map((v) => parseInt(v.trim(), 10));
-  
-        if (bpParts.length !== 2 || isNaN(bpParts[0]) || isNaN(bpParts[1])) {
-          newWarnings.push("Invalid Blood Pressure format. Enter as Systolic/Diastolic (e.g., 120/80).");
-        } else {
-          const [systolic, diastolic] = bpParts;
-          const { systolic: sysRange, diastolic: diaRange } = thresholds["Blood Pressure"];
-  
-          if (systolic < sysRange.min || systolic > sysRange.max) {
-            newWarnings.push(`Systolic pressure (${systolic}) is out of range! Acceptable: ${sysRange.min}-${sysRange.max}.`);
-          }
-          if (diastolic < diaRange.min || diastolic > diaRange.max) {
-            newWarnings.push(`Diastolic pressure (${diastolic}) is out of range! Acceptable: ${diaRange.min}-${diaRange.max}.`);
-          }
-        }
-      } else if (vital.vitalsType in thresholds) {
-        const numericValue = parseFloat(vital.response);
-        const { min, max } = thresholds[vital.vitalsType];
-  
-        if (numericValue < min) {
-          newWarnings.push(`${vital.vitalsType} is too low (${numericValue}). Consider further evaluation.`);
-        } else if (numericValue > max) {
-          newWarnings.push(`${vital.vitalsType} is too high (${numericValue}). Consider further evaluation.`);
-        }
-      }
-    });
-  
-    if (newWarnings.length > 0) {
-      const userConfirmed = window.confirm(
-        `Warning:\n\n${newWarnings.join("\n")}\n\nDo you still want to submit?`
-      );
-  
-      if (!userConfirmed) {
-        setLoadingSubmit(false);
-        return;
-      }
+    if (vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response)) {
+      setErrors(["All vitals except Pain must be provided."]);
+      setLoadingSubmit(false);
+      return;
     }
   
     const payload = {
@@ -147,7 +95,7 @@ const NewCharts = ({ charts, chartsData }) => {
       vitals,
       ...(reasonNotFiled ? { reasonNotFiled } : {})
     };
-  
+    console.log("Payload: ", payload);
     try {
       const response = await postCharts(payload);
       if (response?.error) {
@@ -250,14 +198,16 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
-      <button
+        <button
           onClick={handleSubmit}
           className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-            loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("")
+            loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
+            vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) 
               ? "bg-gray-500 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}
-          disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("")}
+          disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
+            vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response)}
         >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
