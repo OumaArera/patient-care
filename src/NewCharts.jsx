@@ -150,7 +150,6 @@ const NewCharts = ({ charts, chartsData }) => {
       setLoadingSubmit(false);
     }
   };
-  
 
 
   return (
@@ -228,7 +227,7 @@ const NewCharts = ({ charts, chartsData }) => {
       {/* Behaviors Description Table */}
       <div>
         <BehaviorDescriptions
-          behaviorDescription={behaviorsDescription}
+          behaviorsDescription={behaviorsDescription}
           handleChangeBehaviorDescription={handleChangeBehaviorDescription}
         />
       </div>
