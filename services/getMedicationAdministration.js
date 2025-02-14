@@ -14,7 +14,8 @@ export const getMedicationAdmininstration = async (patient) => {
         if (!response.ok) {
             throw new Error("Failed to fetch medication administrations");
         }
-        return await response.json();
+        const data = await response.json();
+        return data.responseObject || [];
     } catch (error) {
         console.error('Error fetching charts:', error);
         return null;
