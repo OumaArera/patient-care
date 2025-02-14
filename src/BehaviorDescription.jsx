@@ -1,39 +1,8 @@
 import { useState } from "react";
 
-const BehaviorDescriptions = ({ onUpdate }) => {
+const BehaviorDescriptions = ({ behaviorDescription, handleChangeBehaviorDescription }) => {
   const [editedData, setEditedData] = useState({});
-  const [behaviorsDescription, setBehaviorsDescription] = useState([
-        {
-            "status": true,
-            "response": "",
-            "descriptionType": "Date"
-        },
-        {
-            "status": true,
-            "response": "",
-            "descriptionType": "Outcome"
-        },
-        {
-            "status": true,
-            "response": "",
-            "descriptionType": "Trigger"
-        },
-        {
-            "status": true,
-            "response": "",
-            "descriptionType": "Behavior_Description"
-        },
-        {
-            "status": true,
-            "response": "",
-            "descriptionType": "Care_Giver_Intervention"
-        },
-        {
-            "status": true,
-            "response": "",
-            "descriptionType": "Reported_Provider_And_Careteam"
-        }
-    ]);
+  const [behaviorsDescription, setBehaviorsDescription] = useState(behaviorDescription);
 
   const handleInputChange = (id, field, value) => {
     setEditedData((prev) => {
@@ -72,7 +41,7 @@ const BehaviorDescriptions = ({ onUpdate }) => {
                   type="datetime-local"
                   className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                   value={editedData[behavior.id]?.date || behavior.date}
-                  onChange={(e) => handleInputChange(behavior.id, "date", e.target.value)}
+                  onChange={(e) => handleChangeBehaviorDescription(index, e.target.value)}
                 />
               </td>
               {["behavior", "trigger", "caregiverIntervention", "reportedToProvider", "outcome"].map((field) => (
@@ -82,7 +51,7 @@ const BehaviorDescriptions = ({ onUpdate }) => {
                     placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
                     className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                     value={editedData[behavior.id]?.[field] || behavior[field]}
-                    onChange={(e) => handleInputChange(behavior.id, field, e.target.value)}
+                    onChange={(e) => handleChangeBehaviorDescription(index, e.target.value)}
                   />
                 </td>
               ))}

@@ -16,7 +16,6 @@ const NewCharts = ({ charts, chartsData }) => {
 
   // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
-  const [behaviorDescription, setBehaviorDescription] = useState();
   const [dateTaken, setDateTaken] = useState(new Date());
   const [reasonNotFiled, setReasonNotFiled] = useState(null);
   const [missingDays, setMissingDays] = useState([]);
@@ -33,6 +32,38 @@ const NewCharts = ({ charts, chartsData }) => {
     {status: true, response: '', vitalsType: 'Oxygen Saturation'},
     {status: true, response: '', vitalsType: 'Pain'},
   ])
+  const [behaviorsDescription, setBehaviorsDescription] = useState([
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Date"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Outcome"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Trigger"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Behavior_Description"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Care_Giver_Intervention"
+    },
+    {
+        "status": true,
+        "response": "",
+        "descriptionType": "Reported_Provider_And_Careteam"
+    }
+]);
 
   const handleVitalsChange = (index, value) => {
     setVitals((prevVitals) => {
@@ -41,6 +72,15 @@ const NewCharts = ({ charts, chartsData }) => {
       return updatedVitals;
     });
   };
+
+  const handleChangeBehaviorDescription = (index, value) => {
+    setBehaviorsDescription((prevDescriptions) => {
+      const updatedDescriptions = [...prevDescriptions];
+      updatedDescriptions[index].response = value;
+      return updatedDescriptions;
+    });
+  };
+  
   
 
   const handleStatusChange = (index, value) => {
@@ -89,7 +129,7 @@ const NewCharts = ({ charts, chartsData }) => {
     const payload = {
       patient: chart.patientId,
       behaviors,
-      behaviorsDescription: behaviorDescription,
+      behaviorsDescription: behaviorsDescription,
       dateTaken: dateTaken.toISOString(),
       vitals,
       ...(reasonNotFiled ? { reasonNotFiled } : {})
@@ -188,7 +228,8 @@ const NewCharts = ({ charts, chartsData }) => {
       {/* Behaviors Description Table */}
       <div>
         <BehaviorDescriptions
-          onUpdate={setBehaviorDescription}
+          behaviorDescription={behaviorsDescription}
+          handleChangeBehaviorDescription={handleChangeBehaviorDescription}
         />
       </div>
       {/* Vitals Input Table */}

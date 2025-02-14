@@ -33,6 +33,7 @@ const ChartPatient = () => {
       setLoadingCharts(false);
     }
   };
+  
 
   const patientsPerPage = 3;
 
