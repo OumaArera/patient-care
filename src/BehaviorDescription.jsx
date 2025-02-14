@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const BehaviorDescriptions = ({ behaviorsDescription, handleChangeBehaviorDescription }) => {
+const BehaviorDescriptions = ({ behaviorDescription, handleChangeBehaviorDescription }) => {
+  const [editedData, setEditedData] = useState({});
+  const [behaviorsDescription, setBehaviorsDescription] = useState(behaviorDescription);
+
   return (
     <div className="bg-gray-900 p-4 rounded-lg mt-6">
       <h3 className="text-lg font-bold text-blue-400 mb-3">Behavior Descriptions</h3>

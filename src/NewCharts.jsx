@@ -227,7 +227,7 @@ const NewCharts = ({ charts, chartsData }) => {
       {/* Behaviors Description Table */}
       <div>
         <BehaviorDescriptions
-          behaviorsDescription={behaviorsDescription}
+          behaviorDescription={behaviorsDescription}
           handleChangeBehaviorDescription={handleChangeBehaviorDescription}
         />
       </div>
