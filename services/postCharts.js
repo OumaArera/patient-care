@@ -2,7 +2,7 @@ export const postCharts = async (payload) => {
     const token = localStorage.getItem("token");
 
     try {
-        const response = await fetch("https://patient-care-server.onrender.com/api/v1/chas", {
+        const response = await fetch("https://patient-care-server.onrender.com/api/v1/charts", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
