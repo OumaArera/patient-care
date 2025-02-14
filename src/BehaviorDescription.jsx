@@ -2,7 +2,6 @@ import { useState } from "react";
 
 const BehaviorDescriptions = ({ behaviorDescription, handleChangeBehaviorDescription }) => {
   const [editedData, setEditedData] = useState({});
-  const [behaviorsDescription, setBehaviorsDescription] = useState(behaviorDescription);
 
   return (
     <div className="bg-gray-900 p-4 rounded-lg mt-6">
@@ -19,35 +18,27 @@ const BehaviorDescriptions = ({ behaviorDescription, handleChangeBehaviorDescrip
           </tr>
         </thead>
         <tbody>
-          {behaviorsDescription.map((behavior, index) => (
-            <tr key={behavior.id} className="border border-gray-700">
-              <td className="p-3 border border-gray-700">
+          <tr className="border border-gray-700">
+            <td className="p-3 border border-gray-700">
+              <input
+                type="datetime-local"
+                className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                value={editedData.date || behaviorDescription[0]?.date || ""}
+                onChange={(e) => handleChangeBehaviorDescription(0, "date", e.target.value)}
+              />
+            </td>
+            {["behavior", "trigger", "caregiverIntervention", "reportedToProvider", "outcome"].map((field) => (
+              <td key={field} className="p-3 border border-gray-700">
                 <input
-                  type="datetime-local"
+                  type="text"
+                  placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
                   className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                  value={editedData[behavior.id]?.date || behavior.date}
-                  onChange={(e) => handleChangeBehaviorDescription(index, "date", e.target.value)}
+                  value={editedData[field] || behaviorDescription[0]?.[field] || ""}
+                  onChange={(e) => handleChangeBehaviorDescription(0, field, e.target.value)}
                 />
               </td>
-              {[
-                "behavior", 
-                "trigger", 
-                "caregiverIntervention", 
-                "reportedToProvider", 
-                "outcome"
-              ].map((field) => (
-                <td key={field} className="p-3 border border-gray-700">
-                  <input
-                    type="text"
-                    placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
-                    className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                    value={editedData[behavior.id]?.[field] || behavior[field]}
-                    onChange={(e) => handleChangeBehaviorDescription(index, field, e.target.value)}
-                  />
-                </td>
-              ))}
-            </tr>
-          ))}
+            ))}
+          </tr>
         </tbody>
       </table>
     </div>
