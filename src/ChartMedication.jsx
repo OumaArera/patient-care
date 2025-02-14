@@ -21,6 +21,8 @@ const ChartMedication = () => {
         getMedications(patientId),
         getMedicationAdmininstration(patientId),
       ]);
+      console.log("Medications: ", medicationResponse);
+      console.log("Medication Admin: ", medicationAdminResponse);
       setMedications(medicationResponse?.responseObject || []);
       setMedAdmin(medicationAdminResponse?.responseObject || []);
     } catch (error) {
