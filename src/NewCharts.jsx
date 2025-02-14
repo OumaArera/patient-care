@@ -33,6 +33,14 @@ const NewCharts = ({ charts, chartsData }) => {
     {status: true, response: '', vitalsType: 'Oxygen Saturation'},
     {status: true, response: '', vitalsType: 'Pain'},
   ])
+
+  const handleVitalsChange = (index, value) => {
+    setVitals((prevVitals) => {
+      const updatedVitals = [...prevVitals];
+      updatedVitals[index].response = value;
+      return updatedVitals;
+    });
+  };
   
 
   const handleStatusChange = (index, value) => {
@@ -185,7 +193,8 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
       {/* Vitals Input Table */}
       <div>
-        <VitalsComponent onUpdatevitals={setVitals}/>
+      <VitalsComponent vitals={vitals} handleVitalsChange={handleVitalsChange} />
+
       </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
