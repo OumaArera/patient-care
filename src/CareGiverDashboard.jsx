@@ -6,9 +6,9 @@ import {
 import Updates from "./Updates";
 import handleLogout from "./Logout";
 import ChangePassword from "./ChangePassword";
-import Medication from "./Medication";
 import ChartPatient from "./ChartPatient";
 import Charts from "./Charts";
+import ChartMedication from "./ChartMedication";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -97,7 +97,7 @@ const CareGiverDashboard = () => {
         {/* Dynamic Content Rendering */}
         {activeTab === "updates" && <Updates />}
         {activeTab === "charts" && <Charts />}  
-        {activeTab === "medications" && <Medication />}  
+        {activeTab === "medications" && <ChartMedication />}  
         {activeTab === "dashboard" && <ChartPatient />}  
 
         {/* Change Password Overlay (only inside user menu) */}

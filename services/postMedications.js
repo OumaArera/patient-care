@@ -1,4 +1,4 @@
-export const postPatientManager = async (payload) => {
+export const postMedications = async (payload) => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
@@ -19,7 +19,7 @@ export const postPatientManager = async (payload) => {
         };
         return data;
     } catch (error) {
-        console.error("Error assigning resident:", error);
+        console.error("Error posting medication charts:", error);
         return { error: "An unexpected error occurred. Please try again later." };
     }
 };

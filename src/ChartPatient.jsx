@@ -6,6 +6,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
 import NewCharts from "./NewCharts";
 
+
 const ChartPatient = () => {
   const [patientManagers, setPatientManagers] = useState([]);
   const [loading, setLoading] = useState(false);
