@@ -76,7 +76,7 @@ const ChartMedication = () => {
                   </button>
                 )}
               </div>
-              {medications.length > 0 && medAdmin.length > 0 && selectedPatientId === patient.patientId && (
+              {medications.length > 0 || medAdmin.length > 0 && selectedPatientId === patient.patientId && (
                 <button
                   className="mt-2 px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100 w-full"
                   onClick={() => console.log("Medications:", medications, "Med Admin:", medAdmin)}
