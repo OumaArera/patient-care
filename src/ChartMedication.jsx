@@ -65,19 +65,19 @@ const ChartMedication = () => {
               <div className="flex justify-between mt-4">
                 {loadingMedications && selectedPatientId === patient.patientId ? (
                   <p className="text-sm text-gray-300">Loading medications...</p>
-                ) : !medications.length || selectedPatientId !== patient.patientId ? (
-                  <button
-                    className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
-                    onClick={() => fetchAllMedicationData(patient.patientId)}
-                  >
-                    Medications
-                  </button>
-                ) : (
+                ) : selectedPatientId === patient.patientId && medications.length > 0 ? (
                   <button
                     className="mt-2 px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100 w-full"
                     onClick={() => setViewMedAdmin((prev) => !prev)}
                   >
                     {viewMedAdmin ? "Hide" : "View"}
+                  </button>
+                ) : (
+                  <button
+                    className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
+                    onClick={() => fetchAllMedicationData(patient.patientId)}
+                  >
+                    Medications
                   </button>
                 )}
               </div>
