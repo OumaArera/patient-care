@@ -14,7 +14,6 @@ const ChartMedication = () => {
   const [viewMedAdmin, setViewMedAdmin] = useState(false);
 
   const fetchAllMedicationData = async (patientId) => {
-    console.log("Selected Patient ID before setting state:", patientId);
     
     setLoadingMedications(true);
     setSelectedPatientId(patientId);
@@ -23,8 +22,6 @@ const ChartMedication = () => {
   
     try {
       const meds = await getMedications(patientId);
-      console.log("Meds: ", meds);
-      console.log("Patient ID after setting state:", patientId);
       setMedications(meds);
     } catch (error) {
       console.error("Error fetching medications:", error);
@@ -111,7 +108,7 @@ const ChartMedication = () => {
             >
               ✖
             </button>
-            <MedAdmin meds={medications} />
+            <MedAdmin meds={medications} selectedPatient={selectedPatientId} />
           </div>
         </div>
       )}

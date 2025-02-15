@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
 
-const MedAdmin = ({ meds }) => {
+const MedAdmin = ({ meds, selectedPatient }) => {
     const today = dayjs().format("YYYY-MM-DD");
     const [adminData, setAdminData] = useState({});
     const [selectedDate, setSelectedDate] = useState(today);
-    const [lateReasons, setLateReasons] = useState({});
+    const [lateReasons, setLateReasons] = useState({
+        lateReasons: ""
+    });
     const [selectedTimes, setSelectedTimes] = useState([]);
     const [selectedMedications, setSelectedMedications] = useState([]);
     const [selectedPatientIds, setSelectedPatientIds] = useState([]);
@@ -23,10 +25,10 @@ const MedAdmin = ({ meds }) => {
         }
     };
 
-    const handleLateReasonChange = (medicationId, reason) => {
+    const handleLateReasonChange = (reason) => {
         setLateReasons((prev) => ({
             ...prev,
-            [medicationId]: reason, // Fix: Ensure medicationId is used correctly
+            [lateReasons]: reason, 
         }));
     };
 
@@ -52,7 +54,7 @@ const MedAdmin = ({ meds }) => {
         console.log("Submitting Data:");
         console.log("✅ Medication ID:", selectedMedications);
         console.log("✅ Selected Times:", selectedTimes);
-        console.log("✅ Patient ID:", selectedPatientIds);
+        console.log("✅ Patient ID:", selectedPatient);
         console.log("✅ Late Reasons:", lateReasons);
         console.log("✅ Medication Status Data:", submission);
     };
@@ -75,7 +77,7 @@ const MedAdmin = ({ meds }) => {
                     <input
                         type="text"
                         value={lateReasons[selectedMedications[0]] || ""}
-                        onChange={(e) => handleLateReasonChange(selectedMedications[0], e.target.value)}
+                        onChange={(e) => handleLateReasonChange(e.target.value)}
                         placeholder="Enter reason for late filing"
                         className="mt-1 border border-gray-600 p-2 rounded bg-gray-800 text-white w-full"
                     />
