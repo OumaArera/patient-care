@@ -5,9 +5,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
     const today = dayjs().format("YYYY-MM-DD");
     const [adminData, setAdminData] = useState({});
     const [selectedDate, setSelectedDate] = useState(today);
-    const [lateReasons, setLateReasons] = useState({
-        lateReasons: ""
-    });
+    const [lateReasons, setLateReasons] = useState({});
     const [selectedTimes, setSelectedTimes] = useState([]);
     const [selectedMedications, setSelectedMedications] = useState([]);
     const [selectedPatientIds, setSelectedPatientIds] = useState([]);
@@ -25,10 +23,10 @@ const MedAdmin = ({ meds, selectedPatient }) => {
         }
     };
 
-    const handleLateReasonChange = (reason) => {
+    const handleLateReasonChange = (medicationId, reason) => {
         setLateReasons((prev) => ({
             ...prev,
-            [lateReasons]: reason, 
+            [medicationId]: reason, 
         }));
     };
 
@@ -77,7 +75,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                     <input
                         type="text"
                         value={lateReasons[selectedMedications[0]] || ""}
-                        onChange={(e) => handleLateReasonChange(e.target.value)}
+                        onChange={(e) => handleLateReasonChange(selectedMedications[0], e.target.value)}
                         placeholder="Enter reason for late filing"
                         className="mt-1 border border-gray-600 p-2 rounded bg-gray-800 text-white w-full"
                     />
