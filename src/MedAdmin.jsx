@@ -6,6 +6,8 @@ const MedAdmin = ({ meds }) => {
     const [adminData, setAdminData] = useState({});
     const [selectedDate, setSelectedDate] = useState(today);
     const [lateReason, setLateReason] = useState("");
+    console.log("Med Data: ", adminData);
+    console.log("Late Reason: ", lateReason);
 
     const handleStatusChange = (medicationId, medicationTime, status) => {
         setAdminData((prev) => ({
@@ -52,7 +54,7 @@ const MedAdmin = ({ meds }) => {
                 <div key={med.medicationId} className="border border-gray-700 rounded-lg p-4 shadow-md bg-gray-800">
                     <div className="mb-2">
                         <h2 className="text-lg font-semibold">{med.medicationName} ({med.medicationCode})</h2>
-                        <p className="text-sm text-gray-400">Patient: {med.patientFirstName} {med.patientLastName}</p>
+                        <p className="text-sm text-gray-400">Resident: {med.patientFirstName} {med.patientLastName}</p>
                     </div>
                     <div>
                         <p><strong>Instructions:</strong> {med.instructions}</p>
