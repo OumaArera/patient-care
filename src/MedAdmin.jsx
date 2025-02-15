@@ -60,20 +60,24 @@ const MedAdmin = ({ meds }) => {
                         <p><strong>Diagnosis:</strong> {med.diagnosis}</p>
                     </div>
                     <div className="mt-2 space-y-2">
-                        {med.medicationTime.map((time) => (
-                            <div key={time} className="flex items-center gap-4">
-                                <p className="w-20">{time}</p>
-                                <select
-                                    className="border border-gray-600 p-2 rounded bg-gray-700 text-white w-40"
-                                    onChange={(e) => handleStatusChange(med.medicationId, time, e.target.value)}
-                                    disabled={isFutureTime(time)}
-                                >
-                                    <option value="">Select status</option>
-                                    <option value="administered">Administered</option>
-                                    <option value="not-administered">Not Administered</option>
-                                </select>
-                            </div>
-                        ))}
+                        {med.medicationTime.map((time) => {
+                            const key = `${med.medicationId}-${time}`;
+                            return (
+                                <div key={time} className="flex items-center gap-4">
+                                    <p className="w-20">{time}</p>
+                                    <select
+                                        className="border border-gray-600 p-2 rounded bg-gray-700 text-white w-40"
+                                        value={adminData[key]?.status || ""}
+                                        onChange={(e) => handleStatusChange(med.medicationId, time, e.target.value)}
+                                        disabled={isFutureTime(time)}
+                                    >
+                                        <option value="">Select status</option>
+                                        <option value="administered">Administered</option>
+                                        <option value="not-administered">Not Administered</option>
+                                    </select>
+                                </div>
+                            );
+                        })}
                     </div>
                     <button
                         className="mt-4 bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 disabled:bg-gray-500"
