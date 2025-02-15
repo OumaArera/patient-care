@@ -91,7 +91,7 @@ const ChartMedication = () => {
                   >
                     ✖
                   </button>
-                  <MedAdmin medications={medications} />
+                  <MedAdmin meds={medications} />
                 </div>
               )}
             </div>
