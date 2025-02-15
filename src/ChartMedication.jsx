@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getpatientManagers } from "../services/getPatientManagers";
 import { getMedications } from "../services/getMedications";
-import { getMedicationAdmininstration } from "../services/getMedicationAdministration";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
+import MedAdmin from "./MedAdmin";
 
 const ChartMedication = () => {
   const [patientManagers, setPatientManagers] = useState([]);
@@ -11,20 +11,17 @@ const ChartMedication = () => {
   const [loadingMedications, setLoadingMedications] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [medications, setMedications] = useState([]);
-  const [medAdmin, setMedAdmin] = useState([]);
+  const [viewMedAdmin, setViewMedAdmin] = useState(false);
 
   const fetchAllMedicationData = async (patientId) => {
     setLoadingMedications(true);
     setSelectedPatientId(patientId);
+    setViewMedAdmin(false); // Hide MedAdmin while fetching new data
+
     try {
-      const [medicationResponse, medicationAdminResponse] = await Promise.all([
-        getMedications(patientId),
-        getMedicationAdmininstration(patientId),
-      ]);
-      console.log("Medications: ", medicationResponse);
-      console.log("Medication Admin: ", medicationAdminResponse);
-      setMedications(medicationResponse?.responseObject || []);
-      setMedAdmin(medicationAdminResponse?.responseObject || []);
+      const meds = await getMedications(patientId);
+      console.log("Medications: ", meds);
+      setMedications(meds?.responseObject || []);
     } catch (error) {
       console.error("Error fetching medications:", error);
     } finally {
@@ -76,13 +73,16 @@ const ChartMedication = () => {
                   </button>
                 )}
               </div>
-              {medications.length > 0 && (
+              {medications.length > 0 && selectedPatientId === patient.patientId && (
                 <button
                   className="mt-2 px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100 w-full"
-                  onClick={() => console.log("Medications:", medications, "Med Admin:", medAdmin)}
+                  onClick={() => setViewMedAdmin((prev) => !prev)}
                 >
-                  View
+                  {viewMedAdmin ? "Hide" : "View"}
                 </button>
+              )}
+              {viewMedAdmin && selectedPatientId === patient.patientId && (
+                <MedAdmin meds={medications} />
               )}
             </div>
           ))}
