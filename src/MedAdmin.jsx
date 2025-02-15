@@ -42,12 +42,12 @@ const MedAdmin = ({ meds, selectedPatient }) => {
     };
 
     const handleSubmit = async () => {
-        
-        
+        setLoading(true);
         const payload = {
             medication: selectedMedications[0],
             patient: selectedPatient,
-            timeAdministered: selectedTimes
+            timeAdministered: selectedTimes,
+            reasonNotFiled: lateReasons
         }
         console.log("Payload: ", payload);
         try {
