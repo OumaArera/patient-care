@@ -14,15 +14,17 @@ const ChartMedication = () => {
   const [viewMedAdmin, setViewMedAdmin] = useState(false);
 
   const fetchAllMedicationData = async (patientId) => {
+    console.log("Selected Patient ID before setting state:", patientId);
+    
     setLoadingMedications(true);
     setSelectedPatientId(patientId);
     setViewMedAdmin(false);
     setMedications([]);
-
+  
     try {
       const meds = await getMedications(patientId);
       console.log("Meds: ", meds);
-      console.log("Patient: ", patientId)
+      console.log("Patient ID after setting state:", patientId);
       setMedications(meds?.responseObject || []);
     } catch (error) {
       console.error("Error fetching medications:", error);
@@ -30,6 +32,7 @@ const ChartMedication = () => {
       setLoadingMedications(false);
     }
   };
+  
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -66,7 +69,9 @@ const ChartMedication = () => {
               <div className="flex justify-between mt-4">
                 {loadingMedications && selectedPatientId === patient.patientId ? (
                   <p className="text-sm text-gray-300">Loading medications...</p>
+                  
                 ) : medications.length > 0 && selectedPatientId === patient.patientId ? (
+                  
                   <button
                     className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                     onClick={() => setViewMedAdmin(true)}
