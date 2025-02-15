@@ -5,14 +5,30 @@ const MedAdmin = ({ meds }) => {
     const today = dayjs().format("YYYY-MM-DD");
     const [adminData, setAdminData] = useState({});
     const [selectedDate, setSelectedDate] = useState(today);
-    const [lateReason, setLateReason] = useState("");
-    console.log("Med Data: ", adminData);
-    console.log("Late Reason: ", lateReason);
+    const [lateReasons, setLateReasons] = useState({});
+    const [selectedTimes, setSelectedTimes] = useState([]);
+    const [selectedMedications, setSelectedMedications] = useState([]);
+    const [selectedPatientIds, setSelectedPatientIds] = useState([]);
 
     const handleStatusChange = (medicationId, medicationTime, status) => {
         setAdminData((prev) => ({
             ...prev,
             [`${medicationId}-${medicationTime}`]: { medicationId, medicationTime, status },
+        }));
+
+        // Capture the times being selected
+        setSelectedTimes((prev) => [...new Set([...prev, medicationTime])]);
+
+        // Capture the medicationId once
+        if (!selectedMedications.includes(medicationId)) {
+            setSelectedMedications((prev) => [...prev, medicationId]);
+        }
+    };
+
+    const handleLateReasonChange = (medicationId, reason) => {
+        setLateReasons((prev) => ({
+            ...prev,
+            [medicationId]: reason,
         }));
     };
 
@@ -20,11 +36,28 @@ const MedAdmin = ({ meds }) => {
         return dayjs(`${selectedDate} ${time}`).isAfter(dayjs());
     };
 
-    const handleSubmit = (medicationId) => {
+    const isAllPastTimesSelected = (medicationTimes, medicationId) => {
+        return medicationTimes
+            .filter((time) => !isFutureTime(time))
+            .every((time) => adminData[`${medicationId}-${time}`]?.status);
+    };
+
+    const handleSubmit = (medicationId, patientId) => {
         const submission = Object.values(adminData).filter(
             (entry) => entry.medicationId === medicationId
         );
-        console.log("Submitting data:", submission);
+
+        // Capture patientId once
+        if (!selectedPatientIds.includes(patientId)) {
+            setSelectedPatientIds((prev) => [...prev, patientId]);
+        }
+
+        console.log("Submitting Data:");
+        console.log("✅ Medication ID:", selectedMedications);
+        console.log("✅ Selected Times:", selectedTimes);
+        console.log("✅ Patient ID:", selectedPatientIds);
+        console.log("✅ Late Reasons:", lateReasons);
+        console.log("✅ Medication Status Data:", submission);
     };
 
     return (
@@ -38,18 +71,20 @@ const MedAdmin = ({ meds }) => {
                     className="mt-1 border border-gray-600 p-2 rounded bg-gray-800 text-white w-full"
                 />
             </div>
+
             {dayjs(selectedDate).isBefore(today) && (
                 <div>
                     <label className="block font-semibold">Reason for Late Filing:</label>
                     <input
                         type="text"
-                        value={lateReason}
-                        onChange={(e) => setLateReason(e.target.value)}
+                        value={lateReasons[selectedMedications[0]] || ""}
+                        onChange={(e) => handleLateReasonChange(selectedMedications[0], e.target.value)}
                         placeholder="Enter reason for late filing"
                         className="mt-1 border border-gray-600 p-2 rounded bg-gray-800 text-white w-full"
                     />
                 </div>
             )}
+
             {meds.map((med) => (
                 <div key={med.medicationId} className="border border-gray-700 rounded-lg p-4 shadow-md bg-gray-800">
                     <div className="mb-2">
@@ -61,6 +96,7 @@ const MedAdmin = ({ meds }) => {
                         <p><strong>Quantity:</strong> {med.quantity}</p>
                         <p><strong>Diagnosis:</strong> {med.diagnosis}</p>
                     </div>
+
                     <div className="mt-2 space-y-2">
                         {med.medicationTime.map((time) => {
                             const key = `${med.medicationId}-${time}`;
@@ -81,10 +117,14 @@ const MedAdmin = ({ meds }) => {
                             );
                         })}
                     </div>
+
                     <button
                         className="mt-4 bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 disabled:bg-gray-500"
-                        onClick={() => handleSubmit(med.medicationId)}
-                        disabled={med.medicationTime.some((time) => isFutureTime(time))}
+                        onClick={() => handleSubmit(med.medicationId, med.patientId)}
+                        disabled={
+                            med.medicationTime.some((time) => isFutureTime(time)) ||
+                            !isAllPastTimesSelected(med.medicationTime, med.medicationId)
+                        }
                     >
                         Submit
                     </button>
