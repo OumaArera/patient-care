@@ -16,10 +16,8 @@ const MedAdmin = ({ meds }) => {
             [`${medicationId}-${medicationTime}`]: { medicationId, medicationTime, status },
         }));
 
-        // Capture the times being selected
         setSelectedTimes((prev) => [...new Set([...prev, medicationTime])]);
 
-        // Capture the medicationId once
         if (!selectedMedications.includes(medicationId)) {
             setSelectedMedications((prev) => [...prev, medicationId]);
         }
@@ -28,7 +26,7 @@ const MedAdmin = ({ meds }) => {
     const handleLateReasonChange = (medicationId, reason) => {
         setLateReasons((prev) => ({
             ...prev,
-            [medicationId]: reason,
+            [medicationId]: reason, // Fix: Ensure medicationId is used correctly
         }));
     };
 
@@ -47,7 +45,6 @@ const MedAdmin = ({ meds }) => {
             (entry) => entry.medicationId === medicationId
         );
 
-        // Capture patientId once
         if (!selectedPatientIds.includes(patientId)) {
             setSelectedPatientIds((prev) => [...prev, patientId]);
         }
