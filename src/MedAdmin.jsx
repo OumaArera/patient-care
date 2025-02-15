@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import { postMedications } from "../services/postMedications";
+import { errorHandler } from "../services/errorHandler";
 
 const MedAdmin = ({ meds, selectedPatient }) => {
     const today = dayjs().format("YYYY-MM-DD");
     const [adminData, setAdminData] = useState({});
     const [selectedDate, setSelectedDate] = useState(today);
-    const [lateReasons, setLateReasons] = useState(""); // Now a string
+    const [lateReasons, setLateReasons] = useState(""); 
     const [selectedTimes, setSelectedTimes] = useState([]);
     const [selectedMedications, setSelectedMedications] = useState([]);
-    const [selectedPatientIds, setSelectedPatientIds] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState([]);
+    const [message, setMessage] = useState("");
 
     const handleStatusChange = (medicationId, medicationTime, status) => {
         setAdminData((prev) => ({
@@ -37,21 +41,31 @@ const MedAdmin = ({ meds, selectedPatient }) => {
             .every((time) => adminData[`${medicationId}-${time}`]?.status);
     };
 
-    const handleSubmit = (medicationId, patientId) => {
-        const submission = Object.values(adminData).filter(
-            (entry) => entry.medicationId === medicationId
-        );
-
-        if (!selectedPatientIds.includes(patientId)) {
-            setSelectedPatientIds((prev) => [...prev, patientId]);
+    const handleSubmit = async () => {
+        
+        
+        const payload = {
+            medication: selectedMedications[0],
+            patient: selectedPatient,
+            timeAdministered: selectedTimes
+        }
+        console.log("Payload: ", payload);
+        try {
+            const response = await postMedications(payload);
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            }else{
+                setMessage("Appointments posted successfully.");
+                setTimeout(() => setMessage(""), 5000);
+            }
+        } catch (error) {
+            setErrors(["Failed to create appointment."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally{
+            setLoading(false);
         }
 
-        console.log("Submitting Data:");
-        console.log("✅ Medication ID:", selectedMedications);
-        console.log("✅ Selected Times:", selectedTimes);
-        console.log("✅ Patient ID:", selectedPatient);
-        console.log("✅ Late Reason:", lateReasons); // Now a simple string
-        console.log("✅ Medication Status Data:", submission);
     };
 
     return (
@@ -111,16 +125,23 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                             );
                         })}
                     </div>
-
+                    {errors.length > 0 && (
+                        <div className="mb-4 p-3 bg-white rounded">
+                            {errors.map((error, index) => (
+                                <p key={index} className="text-sm text-red-600">{error}</p>
+                            ))}
+                        </div>
+                    )}
+                    {message && <p className="text-green-600">{message}</p>}
                     <button
                         className="mt-4 bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700 disabled:bg-gray-500"
-                        onClick={() => handleSubmit(med.medicationId, med.patientId)}
+                        onClick={() => handleSubmit()}
                         disabled={
                             med.medicationTime.some((time) => isFutureTime(time)) ||
                             !isAllPastTimesSelected(med.medicationTime, med.medicationId)
                         }
                     >
-                        Submit
+                        {loading? "Submitting..." : "Submit"}
                     </button>
                 </div>
             ))}

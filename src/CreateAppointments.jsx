@@ -61,7 +61,6 @@ const CreateAppointments = () => {
             patient: selectedPatient,
             ...appointments
         };
-        console.log("Appointments: ", payload)
         try {
             const response = await postAppointments(payload);
             if (response?.error) {
