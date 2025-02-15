@@ -5,7 +5,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
     const today = dayjs().format("YYYY-MM-DD");
     const [adminData, setAdminData] = useState({});
     const [selectedDate, setSelectedDate] = useState(today);
-    const [lateReasons, setLateReasons] = useState({});
+    const [lateReasons, setLateReasons] = useState(""); // Now a string
     const [selectedTimes, setSelectedTimes] = useState([]);
     const [selectedMedications, setSelectedMedications] = useState([]);
     const [selectedPatientIds, setSelectedPatientIds] = useState([]);
@@ -23,11 +23,8 @@ const MedAdmin = ({ meds, selectedPatient }) => {
         }
     };
 
-    const handleLateReasonChange = (medicationId, reason) => {
-        setLateReasons((prev) => ({
-            ...prev,
-            [medicationId]: reason, 
-        }));
+    const handleLateReasonChange = (reason) => {
+        setLateReasons(reason); // Now directly updating as a string
     };
 
     const isFutureTime = (time) => {
@@ -53,7 +50,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
         console.log("✅ Medication ID:", selectedMedications);
         console.log("✅ Selected Times:", selectedTimes);
         console.log("✅ Patient ID:", selectedPatient);
-        console.log("✅ Late Reasons:", lateReasons);
+        console.log("✅ Late Reason:", lateReasons); // Now a simple string
         console.log("✅ Medication Status Data:", submission);
     };
 
@@ -74,8 +71,8 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                     <label className="block font-semibold">Reason for Late Filing:</label>
                     <input
                         type="text"
-                        value={lateReasons[selectedMedications[0]] || ""}
-                        onChange={(e) => handleLateReasonChange(selectedMedications[0], e.target.value)}
+                        value={lateReasons || ""}
+                        onChange={(e) => handleLateReasonChange(e.target.value)}
                         placeholder="Enter reason for late filing"
                         className="mt-1 border border-gray-600 p-2 rounded bg-gray-800 text-white w-full"
                     />
