@@ -48,7 +48,7 @@ const MedAdmin = ({ meds }) => {
                     />
                 </div>
             )}
-            {meds.responseObject.map((med) => (
+            {meds.map((med) => (
                 <div key={med.medicationId} className="border rounded-lg p-4 shadow-md bg-white">
                     <div className="mb-2">
                         <h2 className="text-lg font-semibold">{med.medicationName} ({med.medicationCode})</h2>
