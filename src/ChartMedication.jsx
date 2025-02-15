@@ -16,12 +16,11 @@ const ChartMedication = () => {
   const fetchAllMedicationData = async (patientId) => {
     setLoadingMedications(true);
     setSelectedPatientId(patientId);
-    setViewMedAdmin(false); // Hide MedAdmin while fetching new data
+    setViewMedAdmin(false);
     setMedications([]);
 
     try {
       const meds = await getMedications(patientId);
-      console.log("Medications: ", meds);
       setMedications(meds?.responseObject || []);
     } catch (error) {
       console.error("Error fetching medications:", error);
@@ -52,7 +51,7 @@ const ChartMedication = () => {
       ) : (
         <div className="grid md:grid-cols-3 gap-4">
           {patientManagers.map(({ patient }) => (
-            <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left">
+            <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left relative">
               <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
               <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
               <p className="text-sm font-bold text-gray-400">DOB: {patient.dateOfBirth}</p>
@@ -65,24 +64,33 @@ const ChartMedication = () => {
               <div className="flex justify-between mt-4">
                 {loadingMedications && selectedPatientId === patient.patientId ? (
                   <p className="text-sm text-gray-300">Loading medications...</p>
-                ) : selectedPatientId === patient.patientId && medications.length > 0 ? (
+                ) : medications.length > 0 && selectedPatientId === patient.patientId ? (
                   <button
-                    className="mt-2 px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100 w-full"
-                    onClick={() => setViewMedAdmin((prev) => !prev)}
+                    className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                    onClick={() => setViewMedAdmin(true)}
                   >
-                    {viewMedAdmin ? "Hide" : "View"}
+                    View Medications
                   </button>
                 ) : (
                   <button
-                    className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
+                    className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                     onClick={() => fetchAllMedicationData(patient.patientId)}
                   >
                     Medications
                   </button>
                 )}
               </div>
-              {viewMedAdmin && selectedPatientId === patient.patientId && (
-                <MedAdmin meds={medications} />
+
+              {viewMedAdmin && selectedPatientId === patient.patientId && medications.length > 0 && (
+                <div className="absolute top-2 bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto z-50 border border-gray-700">
+                  <button
+                    className="absolute top-2 right-2 text-white hover:text-gray-400"
+                    onClick={() => setViewMedAdmin(false)}
+                  >
+                    ✖
+                  </button>
+                  <MedAdmin medications={medications} />
+                </div>
               )}
             </div>
           ))}
