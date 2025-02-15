@@ -21,6 +21,8 @@ const ChartMedication = () => {
 
     try {
       const meds = await getMedications(patientId);
+      console.log("Meds: ", meds);
+      console.log("Patient: ", patientId)
       setMedications(meds?.responseObject || []);
     } catch (error) {
       console.error("Error fetching medications:", error);
