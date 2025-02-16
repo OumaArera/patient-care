@@ -103,7 +103,14 @@ const CareGiverDashboard = () => {
         >
           <FaPills /> Medications
         </button>
+        <button 
+          className={`p-3 flex items-center gap-2 ${activeTab === "medications" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
+          onClick={() => setActiveTab("appointments")}
+        >
+          <FaPills /> Appointments
+        </button>
       </div>
+      
 
       {/* Main Content */}
       <div className="flex-1 p-6">
