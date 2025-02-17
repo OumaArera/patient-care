@@ -12,16 +12,12 @@ import image9 from "./assets/image9.jpg";
 import image10 from "./assets/image10.jpg";
 
 const caregivingMessages = [
-  "Caring for our elders is more than duty—it’s an honor.",
   "Mission: We are dedicated to providing exceptional care with compassion, respect, and dignity by providing appropriate training and skills for our staff that fit our client's needs",
-  "Dignity, respect, and kindness—because they deserve the best.",
   "Vision: To become the most trusted name in home healthcare by providing care with passion while ensuring independence of every client",
   "Respect: We respect our residents aspirations, and commitments and seek to understand and promote their priorities, needs, abilities, and limits.",
   "Integrity: Doing the right thing, in the right way, at all times. Being the model for compliance, discipline, and quality.",
   "Compassion: is at the heart of everything we do for our residents, combining humanity, kindness, and care.",
-  "Together, we create a safe and loving environment.",
   "Excellence: Creating an environment of teamwork and participation through continuous performance improvement and open communication.",
-  "Because every elder deserves to be heard, valued, and cherished.",
 ];
 
 const images = [image1, image2, image3, image4, image5, image6, image7, image8, image9, image10];
