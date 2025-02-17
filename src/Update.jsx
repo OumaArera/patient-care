@@ -58,12 +58,12 @@ const Update = ({ patientId }) => {
   const handleSubmit = () => {
     if (error) return;
     const data = {
-      patientId,
-      updateType,
-      date,
-      notes,
-      weight: updateType === "monthly" ? weight : undefined,
-      lateReason: showLateReason ? lateReason : undefined,
+        patientId,
+        updateType,
+        date,
+        notes,
+        ...(updateType === "monthly" && weight ? { weight } : {}),
+        ...(showLateReason && lateReason ? { lateReason } : {}),
     };
     console.log("Submitted Data:", data);
     setLateReason("");
