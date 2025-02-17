@@ -93,7 +93,6 @@ const Update = ({ patientId }) => {
     } finally{
         setLoading(false);
     }
-    console.log("Submitted Data:", data);
     
   };
 
