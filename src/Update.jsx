@@ -89,7 +89,7 @@ const Update = ({ patientId }) => {
         required
       />
       {error && <p className="text-red-500 mb-2">{error}</p>}
-      {lateReason !== "" && (
+      {lateReason && (
         <div>
           <label className="block mb-2">Reason why this was not filled on time:</label>
           <input
@@ -116,6 +116,7 @@ const Update = ({ patientId }) => {
           <input
             type="number"
             value={weight}
+            placeholder="Weight in pounds"
             onChange={handleWeightChange}
             className="mb-4 p-2 border border-gray-700 rounded"
           />
