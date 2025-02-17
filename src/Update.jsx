@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { postUpdates } from "../services/postUpdates";
+import { errorHandler } from "../services/errorHandler";
 
 const Update = ({ patientId }) => {
   const [updateType, setUpdateType] = useState("weekly");
