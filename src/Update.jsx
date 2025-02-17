@@ -23,7 +23,7 @@ const Update = ({ patientId }) => {
       }
       const diffDays = (today - selectedDate) / (1000 * 60 * 60 * 24);
       if (diffDays > 3) {
-        setLateReason("Reason for late input");
+        setLateReason("");
       }
     }
 
@@ -38,7 +38,7 @@ const Update = ({ patientId }) => {
       }
       const diffDays = (today - selectedDate) / (1000 * 60 * 60 * 24);
       if (diffDays > 0) {
-        setLateReason("Reason why this was not filled on Friday");
+        setLateReason("");
       }
     }
   };
@@ -64,6 +64,7 @@ const Update = ({ patientId }) => {
       lateReason: lateReason || undefined,
     };
     console.log("Submitted Data:", data);
+    setLateReason("");
   };
 
   return (
@@ -88,7 +89,7 @@ const Update = ({ patientId }) => {
         required
       />
       {error && <p className="text-red-500 mb-2">{error}</p>}
-      {lateReason && (
+      {lateReason !== "" && (
         <div>
           <label className="block mb-2">Reason why this was not filled on time:</label>
           <input
