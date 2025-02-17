@@ -34,7 +34,7 @@ const ChartAppointments = () => {
 
     try {
       const data = await getAppointments(patientId);
-      setAppointments(data?.responseObject || []);
+      setAppointments(data);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     } finally {
