@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { postUpdates } from "../services/postUpdates";
 
 const Update = ({ patientId }) => {
   const [updateType, setUpdateType] = useState("weekly");
@@ -7,7 +8,11 @@ const Update = ({ patientId }) => {
   const [notes, setNotes] = useState("");
   const [weight, setWeight] = useState("");
   const [error, setError] = useState("");
-  const [showLateReason, setShowLateReason] = useState(false); // Control late reason visibility
+  const [showLateReason, setShowLateReason] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState([]);
+  const [message, setMessage] = useState([]);
+
 
   const handleDateChange = (e) => {
     const selectedDate = new Date(e.target.value);
@@ -55,18 +60,40 @@ const Update = ({ patientId }) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (error) return;
+    setLoading(true);
     const data = {
-        patientId,
-        updateType,
-        date,
+        patient: patientId,
+        type: updateType,
+        dateTaken: date,
         notes,
         ...(updateType === "monthly" && weight ? { weight } : {}),
-        ...(showLateReason && lateReason ? { lateReason } : {}),
+        ...(showLateReason && lateReason ? { reasonNotFilled: lateReason } : {}),
     };
+    try {
+        const response = await postUpdates(data);
+        if (response?.error){
+            setErrors(errorHandler(response.error));
+            setTimeout(() => setErrors([]), 5000);
+        }else{
+            setUpdateType("weekly");
+            setUpdateType("");
+            setNotes("");
+            setDate("");
+            setLateReason("");
+            setWeight("");
+            setMessage(["Appointment marked successfully."]);
+            setTimeout(() => setMessage(""), 5000);
+        }
+    } catch (error) {
+        setErrors([`Errors: ${error}`]);
+        setTimeout(() => setErrors([]), 5000);
+    } finally{
+        setLoading(false);
+    }
     console.log("Submitted Data:", data);
-    setLateReason("");
+    
   };
 
   return (
@@ -128,12 +155,20 @@ const Update = ({ patientId }) => {
           />
         </div>
       )}
+        {message && <p className="text-green-600">{message}</p>}
+        {errors.length > 0 && (
+            <div className="mb-4 p-3 bg-red-800 rounded">
+            {errors.map((error, index) => (
+                <p key={index} className="text-sm text-white">{error}</p>
+            ))}
+            </div>
+        )}
 
       <button
         className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         onClick={handleSubmit}
       >
-        Submit
+        {loading? "Submitting...": "Submit"}
       </button>
     </div>
   );
