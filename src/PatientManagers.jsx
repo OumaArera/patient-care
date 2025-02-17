@@ -55,7 +55,7 @@ const PatientManager = () => {
                 setTimeout(() => setErrors(null), 5000);
             } else {
                 setPatientManager(response.responseObject);
-                setMessage("Chart data posted successfully.");
+                setMessage("Resident assigned successfully.");
             }
         } catch (err) {
             setErrors("Something went wrong. Please try again.");
