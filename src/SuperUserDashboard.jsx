@@ -23,6 +23,7 @@ import MedicationAdministration from "./MedicationAdministrations";
 import PatientManager from "./PatientManagers";
 import ChangePassword from "./ChangePassword";
 import CreateAppointments from "./CreateAppointments";
+import LandingPage from "./LandingPage";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("charts");
@@ -67,6 +68,9 @@ const SuperUserDashboard = () => {
         <h1 className="text-xl font-bold text-blue-500 mb-6">Workflow</h1>
 
         {/* Sidebar Buttons */}
+        <button className={`p-3 flex items-center gap-2 ${activeTab === "dashboard" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("charts")}>
+          <FaUser /> Dashboard
+        </button>
         <button className={`p-3 flex items-center gap-2 ${activeTab === "charts" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("charts")}>
           <FaChartBar /> Charts
         </button>
@@ -79,9 +83,6 @@ const SuperUserDashboard = () => {
         <button className={`p-3 flex items-center gap-2 ${activeTab === "updates" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("updates")}>
           <FaNewspaper /> Updates
         </button>
-        {/* <button className={`p-3 flex items-center gap-2 ${activeTab === "statistics" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("statistics")}>
-          <FaChartPie /> Statistics
-        </button> */}
 
         {/* User Management Dropdown */}
         <div>
@@ -183,6 +184,7 @@ const SuperUserDashboard = () => {
         {activeTab === "charts" && <Charts />}  
         {activeTab === "allCharts" && <AllCharts />}  
         {activeTab === "medications" && <MedicationAdministration />}  
+        {activeTab === "dashboard" && <LandingPage />}
 
         {showChangePassword && (
           <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">

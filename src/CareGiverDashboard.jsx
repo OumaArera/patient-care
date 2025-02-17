@@ -10,7 +10,6 @@ import ChartPatient from "./ChartPatient";
 import ChartMedication from "./ChartMedication";
 import LandingPage from "./LandingPage";
 import ChartAppointments from "./ChartAppointments";
-import Update from "./Update";
 import ChartUpdate from "./ChartUpdates";
 
 const CareGiverDashboard = () => {
