@@ -32,6 +32,9 @@ const LandingPage = () => {
     message: caregivingMessages[Math.floor(Math.random() * caregivingMessages.length)],
   });
 
+  // Controls whether the background should be "cover" or "contain"
+  const [fitToScreen, setFitToScreen] = useState(false);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setContent({
@@ -44,10 +47,18 @@ const LandingPage = () => {
 
   return (
     <div
-      className="relative w-full h-screen flex items-center justify-center bg-cover bg-center transition-all duration-1000"
-      style={{ backgroundImage: `url(${content.image})` }}
+      className="relative w-full h-screen flex flex-col items-center justify-center transition-all duration-1000"
+      style={{
+        backgroundImage: `url(${content.image})`,
+        backgroundSize: fitToScreen ? "contain" : "cover", // Toggle between "contain" and "cover"
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
     >
-      <div className="absolute inset-0 bg-opacity-50"></div>
+      {/* Overlay for readability */}
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+      {/* Animated text */}
       <AnimatePresence mode="wait">
         <motion.div
           key={content.message}
@@ -60,6 +71,14 @@ const LandingPage = () => {
           <p className="text-2xl font-semibold text-white">{content.message}</p>
         </motion.div>
       </AnimatePresence>
+
+      {/* Toggle Button for fit mode */}
+      <button
+        onClick={() => setFitToScreen(!fitToScreen)}
+        className="absolute bottom-5 right-5 z-20 bg-gray-800 text-white py-2 px-4 rounded-lg text-sm hover:bg-gray-700 transition"
+      >
+        Toggle Fit Mode ({fitToScreen ? "Cover" : "Contain"})
+      </button>
     </div>
   );
 };
