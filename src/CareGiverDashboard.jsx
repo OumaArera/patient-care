@@ -1,22 +1,21 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaChartBar, FaPills, FaNewspaper, FaUser, FaSignOutAlt, FaLock, FaChevronDown, FaChevronUp,
+  FaChartBar, FaPills, FaUser, FaSignOutAlt, FaLock,
   FaCalendarAlt
 } from "react-icons/fa";
-import Updates from "./Updates";
 import handleLogout from "./Logout";
 import ChangePassword from "./ChangePassword";
 import ChartPatient from "./ChartPatient";
 import ChartMedication from "./ChartMedication";
 import LandingPage from "./LandingPage";
 import ChartAppointments from "./ChartAppointments";
+import Update from "./Update";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [updatesOpen, setUpdatesOpen] = useState(false); // State for opening submenu
   const navigate = useNavigate();
 
   // Ref for user menu and modal
@@ -64,40 +63,13 @@ const CareGiverDashboard = () => {
           <FaChartBar /> Charts
         </button>
 
-        {/* Updates Button with Toggle */}
-        <button
-          className={`p-3 flex items-center justify-between gap-2 ${updatesOpen || activeTab.includes("updates") ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`}
-          onClick={() => setUpdatesOpen(!updatesOpen)}
-        >
-          <span className="flex items-center gap-2">
-            <FaNewspaper /> Updates
-          </span>
-          {updatesOpen ? <FaChevronUp /> : <FaChevronDown />}
-        </button>
 
-        {/* Submenu for Updates */}
-        {updatesOpen && (
-          <div className="ml-6 flex flex-col">
-            <button
-              className={`p-2 pl-6 text-left ${activeTab === "weeklyUpdates" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`}
-              onClick={() => {
-                setActiveTab("weeklyUpdates");
-                setUpdatesOpen(false);
-              }}
-            >
-              Weekly Updates
-            </button>
-            <button
-              className={`p-2 pl-6 text-left ${activeTab === "monthlyUpdates" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`}
-              onClick={() => {
-                setActiveTab("monthlyUpdates");
-                setUpdatesOpen(false);
-              }}
-            >
-              Monthly Updates
-            </button>
-          </div>
-        )}
+        <button 
+          className={`p-3 flex items-center gap-2 ${activeTab === "updates" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
+          onClick={() => setActiveTab("updates")}
+        >
+          <FaPills /> Updates
+        </button>
 
         <button 
           className={`p-3 flex items-center gap-2 ${activeTab === "medications" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
@@ -106,7 +78,7 @@ const CareGiverDashboard = () => {
           <FaPills /> Medications
         </button>
         <button 
-          className={`p-3 flex items-center gap-2 ${activeTab === "medications" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
+          className={`p-3 flex items-center gap-2 ${activeTab === "appointments" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
           onClick={() => setActiveTab("appointments")}
         >
           <FaCalendarAlt /> Appointments
@@ -147,8 +119,7 @@ const CareGiverDashboard = () => {
         </div>
 
         {/* Dynamic Content Rendering */}
-        {activeTab === "weeklyUpdates" && <Updates type="weekly" />}
-        {activeTab === "monthlyUpdates" && <Updates type="monthly" />}
+        {activeTab === "updates" && <Update/>}
         {activeTab === "charts" && <ChartPatient />}  
         {activeTab === "medications" && <ChartMedication />}  
         {activeTab === "dashboard" && <LandingPage />}
