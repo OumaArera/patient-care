@@ -29,6 +29,7 @@ const Updates = () => {
         getUpdates(patientId)
             .then((data) => {
                 setUpdates(data?.responseObject || []);
+                console.log("Updates: ", data?.responseObject);
                 setLoadingUpdates(false);
             })
             .catch(() => setLoadingUpdates(false));
@@ -47,7 +48,7 @@ const Updates = () => {
             (!selectedMonth || (updateDate.getMonth() + 1).toString() === selectedMonth)
         );
     });
-    console.log("Updates: ", filteredUpdates);
+    
 
     // Count occurrences of each patientName
     const patientNameCounts = {};
@@ -112,7 +113,7 @@ const Updates = () => {
                 <table className="w-full border-collapse border border-gray-700 text-white">
                     <thead>
                         <tr className="bg-gray-800 text-blue-400">
-                            <th className="border border-gray-700 p-2">Patient Name</th>
+                            <th className="border border-gray-700 p-2">Resident Name</th>
                             <th className="border border-gray-700 p-2">Date Taken</th>
                             <th className="border border-gray-700 p-2">Notes</th>
                             <th className="border border-gray-700 p-2">Care Giver</th>
