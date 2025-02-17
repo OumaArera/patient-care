@@ -69,7 +69,7 @@ const Update = ({ patientId }) => {
         type: updateType,
         dateTaken: date,
         notes,
-        ...(updateType === "monthly" && weight ? { weight } : {}),
+        ...(updateType === "monthly" && weight ? { weight: weight } : {}),
         ...(showLateReason && lateReason ? { reasonNotFilled: lateReason } : {}),
     };
     try {
