@@ -152,7 +152,7 @@ const SuperUserDashboard = () => {
             </button>
 
             {menuOpen && (
-              <div className="fixed top-12 right-4 w-48 bg-gray-800 rounded-lg shadow-lg z-50">
+              <div className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg">
                 <p className="p-3 border-b border-gray-700">{fullName}</p>
                 <button 
                   className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700" 
@@ -168,15 +168,6 @@ const SuperUserDashboard = () => {
                 </button>
               </div>
             )}
-
-            {/* Change Password Modal (Ensuring it overlays everything) */}
-            {showChangePassword && (
-              <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-                <ChangePassword onClose={() => setShowChangePassword(false)} />
-              </div>
-            )}
-
-
           </div>
         </div>
 
