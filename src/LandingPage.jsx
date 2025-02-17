@@ -56,7 +56,7 @@ const LandingPage = () => {
       }}
     >
       {/* Overlay for readability */}
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div className="absolute inset-0 bg-opacity-50"></div>
 
       {/* Animated text */}
       <AnimatePresence mode="wait">
