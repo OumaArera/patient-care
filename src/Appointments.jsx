@@ -19,6 +19,7 @@ const Appointments = ({ appointments }) => {
     weeklyAppointments,
     fortnightAppointments,
     monthlyAppointments,
+    attendedTo: originalAttendedTo,
   } = latestAppointment;
 
   // Helper function to check if an appointment can be updated
@@ -56,12 +57,12 @@ const Appointments = ({ appointments }) => {
 
   // Log the data when button is clicked
   const handleSubmit = () => {
-    const payload ={
-        weeklyAppointments: formData.monthlyAppointments,
-        fortnightAppointments: formData.fortnightAppointments,
-        monthlyAppointments: formData.monthlyAppointments,
-        attendedTo: attendedTo
-    }
+    const payload = {
+      weeklyAppointments: formData.weeklyAppointments,
+      fortnightAppointments: formData.fortnightAppointments,
+      monthlyAppointments: formData.monthlyAppointments,
+      attendedTo: [...originalAttendedTo, ...attendedTo],
+    };
     console.log("Payload: ", payload);
     console.log("Appointment ID:", appointmentId);
   };
