@@ -119,6 +119,11 @@ const Updates = () => {
                             <th className="border border-gray-700 p-2">Care Giver</th>
                             <th className="border border-gray-700 p-2">Facility Name</th>
                             <th className="border border-gray-700 p-2">Branch Name</th>
+
+                            <th className="border border-gray-700 p-2">Reason filled Late</th>
+                            <th className="border border-gray-700 p-2">Type of Update</th>
+                            <th className="border border-gray-700 p-2">Weight</th>
+                            <th className="border border-gray-700 p-2">Weight Deviation</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -141,6 +146,11 @@ const Updates = () => {
                                     <td className="border border-gray-700 p-2">{update.careGiverName}</td>
                                     <td className="border border-gray-700 p-2">{update.facilityName}</td>
                                     <td className="border border-gray-700 p-2">{update.branchName}</td>
+
+                                    <td className="border border-gray-700 p-2">{update.reasonFilled? update.reasonFilled : ""}</td>
+                                    <td className="border border-gray-700 p-2">{update.type}</td>
+                                    <td className="border border-gray-700 p-2">{update.weight? update.weight : ""}</td>
+                                    <td className="border border-gray-700 p-2">{update.weightDeviation? update.weightDeviation : ""}</td>
                                 </tr>
                             );
                         })}
