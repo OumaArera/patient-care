@@ -73,7 +73,7 @@ const Update = ({ patientId }) => {
       <select
         value={updateType}
         onChange={(e) => setUpdateType(e.target.value)}
-        className="mb-4 p-2 border border-gray-700 rounded"
+        className="mb-4 p-2 bg-gray-950 text-white border border-gray-700 rounded"
       >
         <option value="weekly">Weekly</option>
         <option value="monthly">Monthly</option>
@@ -85,15 +85,17 @@ const Update = ({ patientId }) => {
         value={date}
         onChange={handleDateChange}
         className="mb-4 p-2 border border-gray-700 rounded"
+        required
       />
       {error && <p className="text-red-500 mb-2">{error}</p>}
       {lateReason && (
         <div>
-          <label className="block mb-2">{lateReason}:</label>
+          <label className="block mb-2">Reason why this was not filled on time:</label>
           <input
             type="text"
             value={lateReason}
             onChange={(e) => setLateReason(e.target.value)}
+            placeholder="Enter reason for late input"
             className="mb-4 p-2 border border-gray-700 rounded"
           />
         </div>
@@ -104,6 +106,7 @@ const Update = ({ patientId }) => {
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         className="mb-4 p-2 border border-gray-700 rounded w-full"
+        required
       />
 
       {updateType === "monthly" && (
