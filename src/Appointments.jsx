@@ -1,3 +1,4 @@
+import { fromJSON } from "postcss";
 import React, { useState } from "react";
 
 const Appointments = ({ appointments }) => {
@@ -55,8 +56,13 @@ const Appointments = ({ appointments }) => {
 
   // Log the data when button is clicked
   const handleSubmit = () => {
-    console.log("Form Data:", formData);
-    console.log("Attended To:", attendedTo);
+    const payload ={
+        weeklyAppointments: formData.monthlyAppointments,
+        fortnightAppointments: formData.fortnightAppointments,
+        monthlyAppointments: formData.monthlyAppointments,
+        attendedTo: attendedTo
+    }
+    console.log("Payload: ", payload);
     console.log("Appointment ID:", appointmentId);
   };
 
