@@ -3,7 +3,7 @@ export const postUpdates = async (payload) => {
     if (!token) return;
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/api/v1/updates", {
+        const response = await fetch("https://patient-care-server.onrender.com/api/v1/updates", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
