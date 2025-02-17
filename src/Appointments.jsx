@@ -53,20 +53,11 @@ const Appointments = ({ appointments }) => {
     ]);
   };
 
-  // Handle weight change for monthly appointments
-  const handleWeightChange = (index, newWeight) => {
-    setFormData((prevData) => {
-      const updatedAppointments = [...prevData.monthlyAppointments];
-      updatedAppointments[index] = { ...updatedAppointments[index], weight: newWeight };
-
-      return { ...prevData, monthlyAppointments: updatedAppointments };
-    });
-  };
-
   // Log the data when button is clicked
   const handleSubmit = () => {
     console.log("Form Data:", formData);
     console.log("Attended To:", attendedTo);
+    console.log("Appointment ID:", appointmentId);
   };
 
   return (
@@ -107,7 +98,7 @@ const Appointments = ({ appointments }) => {
         ))}
       </div>
 
-      {/* Monthly Appointments (Date + Weight Input) */}
+      {/* Monthly Appointments */}
       <div className="mb-4 p-4 bg-gray-800 rounded-lg shadow-lg">
         <h3 className="text-lg font-bold">Monthly Appointments</h3>
         {monthlyAppointments.map((appt, index) => (
@@ -120,17 +111,6 @@ const Appointments = ({ appointments }) => {
               className="bg-gray-700 text-white rounded p-2 w-full"
             />
             <p className="text-sm text-gray-400">Physician: {appt.physician}</p>
-
-            {/* Weight Input for Monthly Appointments */}
-            {canUpdate(appt.date) && (
-              <input
-                type="number"
-                placeholder="Enter weight"
-                value={formData.monthlyAppointments[index].weight || ""}
-                onChange={(e) => handleWeightChange(index, e.target.value)}
-                className="bg-gray-700 text-white rounded p-2 w-full mt-2"
-              />
-            )}
           </div>
         ))}
       </div>
