@@ -6,7 +6,6 @@ import {
   FaUserInjured, FaMapMarkerAlt, FaDatabase, FaUserCheck, FaCalendarAlt
 } from "react-icons/fa";
 import Updates from "./Updates";
-// import Statistics from "./Statistics";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
 import ManageUser from "./ManageUser";
@@ -153,17 +152,24 @@ const SuperUserDashboard = () => {
             </button>
 
             {menuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg">
+              <div className="fixed top-12 right-4 w-48 bg-gray-800 rounded-lg shadow-lg z-50">
                 <p className="p-3 border-b border-gray-700">{fullName}</p>
-                <button className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700" onClick={() => setShowChangePassword(true)}>
+                <button 
+                  className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700" 
+                  onClick={() => setShowChangePassword(true)}
+                >
                   <FaLock className="mr-2" /> Change Password
                 </button>
                 {showChangePassword && <ChangePassword onClose={() => setShowChangePassword(false)} />}
-                <button onClick={() => handleLogout(navigate)} className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700">
+                <button 
+                  onClick={() => handleLogout(navigate)} 
+                  className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700"
+                >
                   <FaSignOutAlt className="mr-2" /> Logout
                 </button>
               </div>
             )}
+
           </div>
         </div>
 
