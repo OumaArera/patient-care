@@ -98,7 +98,7 @@ const Update = ({ patientId }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Update Patient Data</h2>
+      <h2 className="text-2xl font-bold mb-4">Update Resident Data</h2>
 
       <label className="block mb-2">Select Update Type:</label>
       <select
