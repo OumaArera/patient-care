@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { errorHandler } from '../services/errorHandler';
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -103,7 +104,7 @@ const Login = () => {
                   className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-200"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? '🙈' : '👁'}
+                  {showPassword ? <EyeOff size={20}/> :<Eye size={20}/>}
                 </button>
               </div>
             </div>

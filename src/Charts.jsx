@@ -69,7 +69,7 @@ const Charts = () => {
         setErrors(errorHandler(response.error));
         setTimeout(() => setErrors(null), 5000);
       } else {
-        setMessage("Chart data updated successfully.");
+        setMessage("Chart updated successfully.");
         setTimeout(() => setMessage(null), 5000);
         fetchCharts(selectedPatient);
       }
