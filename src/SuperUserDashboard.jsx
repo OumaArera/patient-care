@@ -151,7 +151,7 @@ const SuperUserDashboard = () => {
               <span>{fullName}</span>
             </button>
 
-            {menuOpen && (
+            {menuOpen && !showChangePassword && (
               <div className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg">
                 <p className="p-3 border-b border-gray-700">{fullName}</p>
                 <button 
@@ -168,6 +168,22 @@ const SuperUserDashboard = () => {
                 </button>
               </div>
             )}
+
+            {showChangePassword && (
+              <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+                <div className="relative bg-gray-900 p-6 rounded-lg shadow-lg w-80 border border-gray-700">
+                  <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
+                  <ChangePassword onClose={() => setShowChangePassword(false)} />
+                  <button 
+                    onClick={() => setShowChangePassword(false)} 
+                    className="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
 
@@ -190,7 +206,7 @@ const SuperUserDashboard = () => {
         {activeTab === "medications" && <MedicationAdministration />}  
         {activeTab === "dashboard" && <LandingPage />}
 
-        {showChangePassword && (
+        {/* {showChangePassword && (
           <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">
             <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
             <ChangePassword onClose={() => setShowChangePassword(false)} />
@@ -201,7 +217,7 @@ const SuperUserDashboard = () => {
               Close
             </button>
           </div>
-        )}
+        )} */}
         
       </div>
     </div>
