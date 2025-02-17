@@ -53,7 +53,6 @@ const ChangePassword = ({ onClose }) => {
         }
     };
 
-    // Close modal when clicking outside
     const modalRef = useRef(null);
 
     useEffect(() => {

@@ -99,7 +99,7 @@ const CareGiverDashboard = () => {
             </button>
 
             {menuOpen && (
-              <div className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg">
+              <div className="fixed top-12 right-4 w-48 bg-gray-800 rounded-lg shadow-lg z-50">
                 <p className="p-3 border-b border-gray-700">{fullName}</p>
                 <button 
                   className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700" 
@@ -107,6 +107,7 @@ const CareGiverDashboard = () => {
                 >
                   <FaLock className="mr-2" /> Change Password
                 </button>
+                {showChangePassword && <ChangePassword onClose={() => setShowChangePassword(false)} />}
                 <button 
                   onClick={() => handleLogout(navigate)} 
                   className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700"

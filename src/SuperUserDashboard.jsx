@@ -160,7 +160,6 @@ const SuperUserDashboard = () => {
                 >
                   <FaLock className="mr-2" /> Change Password
                 </button>
-                {showChangePassword && <ChangePassword onClose={() => setShowChangePassword(false)} />}
                 <button 
                   onClick={() => handleLogout(navigate)} 
                   className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700"
@@ -169,6 +168,14 @@ const SuperUserDashboard = () => {
                 </button>
               </div>
             )}
+
+            {/* Change Password Modal (Ensuring it overlays everything) */}
+            {showChangePassword && (
+              <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
+                <ChangePassword onClose={() => setShowChangePassword(false)} />
+              </div>
+            )}
+
 
           </div>
         </div>
