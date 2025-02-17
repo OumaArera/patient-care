@@ -13,14 +13,14 @@ import image10 from "./assets/image10.jpg";
 
 const caregivingMessages = [
   "Caring for our elders is more than duty—it’s an honor.",
-  "Every moment spent in care is a moment filled with love.",
+  "Mission: We are dedicated to providing exceptional care with compassion, respect, and dignity by providing appropriate training and skills for our staff that fit our client's needs",
   "Dignity, respect, and kindness—because they deserve the best.",
-  "Small acts of care create the greatest comfort.",
-  "Aging gracefully is beautiful, and we are here to support it.",
-  "Love, patience, and understanding—true pillars of caregiving.",
-  "Every hand held, every smile shared—it all matters.",
+  "Vision: To become the most trusted name in home healthcare by providing care with passion while ensuring independence of every client",
+  "Respect: We respect our residents aspirations, and commitments and seek to understand and promote their priorities, needs, abilities, and limits.",
+  "Integrity: Doing the right thing, in the right way, at all times. Being the model for compliance, discipline, and quality.",
+  "Compassion: is at the heart of everything we do for our residents, combining humanity, kindness, and care.",
   "Together, we create a safe and loving environment.",
-  "Aging is a journey, and we walk it with you.",
+  "Excellence: Creating an environment of teamwork and participation through continuous performance improvement and open communication.",
   "Because every elder deserves to be heard, valued, and cherished.",
 ];
 
