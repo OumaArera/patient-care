@@ -9,6 +9,7 @@ import ChangePassword from "./ChangePassword";
 import ChartPatient from "./ChartPatient";
 import ChartMedication from "./ChartMedication";
 import LandingPage from "./LandingPage";
+import ChartAppointments from "./ChartAppointments";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -149,7 +150,9 @@ const CareGiverDashboard = () => {
         {activeTab === "monthlyUpdates" && <Updates type="monthly" />}
         {activeTab === "charts" && <ChartPatient />}  
         {activeTab === "medications" && <ChartMedication />}  
-        {activeTab === "dashboard" && <LandingPage />}  
+        {activeTab === "dashboard" && <LandingPage />}
+        {activeTab === "appointments" && <ChartAppointments />}
+        
 
         {/* Change Password Overlay (only inside user menu) */}
         {showChangePassword && (
