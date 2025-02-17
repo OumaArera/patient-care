@@ -11,6 +11,7 @@ import ChartMedication from "./ChartMedication";
 import LandingPage from "./LandingPage";
 import ChartAppointments from "./ChartAppointments";
 import Update from "./Update";
+import ChartUpdate from "./ChartUpdates";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -119,7 +120,7 @@ const CareGiverDashboard = () => {
         </div>
 
         {/* Dynamic Content Rendering */}
-        {activeTab === "updates" && <Update/>}
+        {activeTab === "updates" && <ChartUpdate/>}
         {activeTab === "charts" && <ChartPatient />}  
         {activeTab === "medications" && <ChartMedication />}  
         {activeTab === "dashboard" && <LandingPage />}
