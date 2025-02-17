@@ -19,7 +19,7 @@ export const updateAppointment = async (payload, id) => {
         };
         return data;
     } catch (error) {
-        console.error("Error posting medication charts:", error);
+        console.error("Error updating appointments:", error);
         return { error: "An unexpected error occurred. Please try again later." };
     }
 };

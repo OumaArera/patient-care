@@ -1,42 +1,46 @@
-import { fromJSON } from "postcss";
 import React, { useState } from "react";
+import { updateAppointment } from "../services/updateAppointment";
+import { errorHandler } from "../services/errorHandler";
 
 const Appointments = ({ appointments }) => {
-  if (!appointments || appointments.length === 0)
-    return <p className="text-gray-400">No appointments available.</p>;
+    if (!appointments || appointments.length === 0)
+        return <p className="text-gray-400">No appointments available.</p>;
 
-  // Get the latest appointment based on `createdAt`
-  const latestAppointment = appointments.reduce(
-    (latest, current) =>
-      new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest,
-    appointments[0]
-  );
+    // Get the latest appointment based on `createdAt`
+    const latestAppointment = appointments.reduce(
+        (latest, current) =>
+        new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest,
+        appointments[0]
+    );
 
-  const {
-    appointmentId,
-    patientId,
-    patientName,
-    weeklyAppointments,
-    fortnightAppointments,
-    monthlyAppointments,
-    attendedTo: originalAttendedTo,
-  } = latestAppointment;
+    const {
+        appointmentId,
+        patientId,
+        patientName,
+        weeklyAppointments,
+        fortnightAppointments,
+        monthlyAppointments,
+        attendedTo: originalAttendedTo,
+    } = latestAppointment;
 
-  // Helper function to check if an appointment can be updated
-  const canUpdate = (date) => {
+    // Helper function to check if an appointment can be updated
+    const canUpdate = (date) => {
     const today = new Date();
     const appointmentDate = new Date(date);
     const diffInDays = (today - appointmentDate) / (1000 * 60 * 60 * 24);
     return diffInDays >= -2 && diffInDays <= 0; // Allow updates if today or past 2 days
-  };
+    };
 
   // Initialize form state with original values
-  const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({
     weeklyAppointments: [...weeklyAppointments],
     fortnightAppointments: [...fortnightAppointments],
     monthlyAppointments: [...monthlyAppointments],
     patient: patientId,
-  });
+    });
+   const [loading, setLoading] = useState(false);
+   const [errors, setErrors] = useState([]);
+   const [message, setMessage] = useState([]);
 
   const [attendedTo, setAttendedTo] = useState([]);
 
@@ -56,15 +60,30 @@ const Appointments = ({ appointments }) => {
   };
 
   // Log the data when button is clicked
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setLoading(true);
     const payload = {
       weeklyAppointments: formData.weeklyAppointments,
       fortnightAppointments: formData.fortnightAppointments,
       monthlyAppointments: formData.monthlyAppointments,
       attendedTo: [...originalAttendedTo, ...attendedTo],
     };
-    console.log("Payload: ", payload);
-    console.log("Appointment ID:", appointmentId);
+    try {
+        const response = await updateAppointment(payload, appointmentId);
+        if (response?.error){
+            setErrors(errorHandler(response.error));
+            setTimeout(() => setErrors([]), 5000);
+        }else{
+            setMessage(["Appointment marked successfully."]);
+            setTimeout(() => setMessage(""), 5000);
+        }
+    } catch (error) {
+        setErrors([`Errors: ${error}`]);
+        setTimeout(() => setErrors([]), 5000);
+    } finally{
+        setLoading(false);
+    }
+    
   };
 
   return (
@@ -121,13 +140,21 @@ const Appointments = ({ appointments }) => {
           </div>
         ))}
       </div>
+      {message && <p className="text-green-600">{message}</p>}
+        {errors.length > 0 && (
+          <div className="mb-4 p-3 bg-red-800 rounded">
+            {errors.map((error, index) => (
+              <p key={index} className="text-sm text-white">{error}</p>
+            ))}
+          </div>
+        )}
 
       {/* Submit Button */}
       <button
         onClick={handleSubmit}
         className="px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700"
       >
-        Log Data
+        {loading? "Submitting...": "Submit"}
       </button>
     </div>
   );
