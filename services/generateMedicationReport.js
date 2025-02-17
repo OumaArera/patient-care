@@ -3,6 +3,7 @@ import html2canvas from "html2canvas";
 
 export const generateMedicationPDFReport = async (medications, selectedYear, selectedMonth) => {
     if (medications.length === 0) return;
+    console.log("Medications: ", medications);
 
     // Extract details from the first entry
     const { facilityName, branchName, patientName } = medications[0];
