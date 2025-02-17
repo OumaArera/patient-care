@@ -6,10 +6,10 @@ import image3 from "./assets/image3.jpg";
 import image4 from "./assets/image4.jpg";
 import image5 from "./assets/image5.jpg";
 import image6 from "./assets/image6.jpg";
-import image7 from "./assets/image7.jpg";
-import image8 from "./assets/image8.jpg";
-import image9 from "./assets/image9.jpg";
-import image10 from "./assets/image10.jpg";
+// import image7 from "./assets/image7.jpg";
+// import image8 from "./assets/image8.jpg";
+// import image9 from "./assets/image9.jpg";
+// import image10 from "./assets/image10.jpg";
 
 const caregivingMessages = [
   "Mission: We are dedicated to providing exceptional care with compassion, respect, and dignity by providing appropriate training and skills for our staff that fit our client's needs",
@@ -20,7 +20,7 @@ const caregivingMessages = [
   "Excellence: Creating an environment of teamwork and participation through continuous performance improvement and open communication.",
 ];
 
-const images = [image1, image2, image3, image4, image5, image6, image7, image8, image9, image10];
+const images = [image1, image2, image3, image4, image5, image6];
 
 const LandingPage = () => {
   const [content, setContent] = useState({
