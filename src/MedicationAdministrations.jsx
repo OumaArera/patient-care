@@ -56,7 +56,7 @@ const MedicationAdministration = () => {
         setSelectedPatient(patientId);
         getMedicationAdmininstration(patientId)
             .then((data) => {
-                setMedAdmin(data?.responseObject || []);
+                setMedAdmin(data);
                 setLoadingMedAdmin(false);
             })
             .catch(() => {

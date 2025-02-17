@@ -1,4 +1,4 @@
-export const getMedicationAdmininstration = async (patient) => {
+export const getMedicationAdmininstration = async (patient) => {  
     const url = new URL(`https://patient-care-server.onrender.com/api/v1/medication-administrations?pageNumber=1&pageSize=366&patient=${patient}`);
 
     const token = localStorage.getItem("token");
