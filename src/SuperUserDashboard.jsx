@@ -26,7 +26,7 @@ import CreateAppointments from "./CreateAppointments";
 import LandingPage from "./LandingPage";
 
 const SuperUserDashboard = () => {
-  const [activeTab, setActiveTab] = useState("charts");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
