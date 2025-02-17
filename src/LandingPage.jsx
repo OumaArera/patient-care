@@ -66,7 +66,7 @@ const LandingPage = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 1 }}
-          className="relative z-10 bg-gray-800 bg-opacity-75 p-6 rounded-lg shadow-lg max-w-lg text-center"
+          className="relative z-10 text-black bg-opacity-75 p-6 rounded-lg shadow-lg max-w-lg text-center"
         >
           <p className="text-2xl font-semibold text-white">{content.message}</p>
         </motion.div>
