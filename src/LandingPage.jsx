@@ -47,7 +47,7 @@ const LandingPage = () => {
       className="relative w-full h-screen flex items-center justify-center bg-cover bg-center transition-all duration-1000"
       style={{ backgroundImage: `url(${content.image})` }}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      <div className="absolute inset-0 bg-opacity-50"></div>
       <AnimatePresence mode="wait">
         <motion.div
           key={content.message}
