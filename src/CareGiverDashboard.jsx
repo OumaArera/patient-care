@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaChartBar, FaPills, FaNewspaper, FaUser, FaSignOutAlt, FaLock, FaChevronDown, FaChevronUp
+  FaChartBar, FaPills, FaNewspaper, FaUser, FaSignOutAlt, FaLock, FaChevronDown, FaChevronUp,
+  FaCalendarAlt
 } from "react-icons/fa";
 import Updates from "./Updates";
 import handleLogout from "./Logout";
@@ -108,7 +109,7 @@ const CareGiverDashboard = () => {
           className={`p-3 flex items-center gap-2 ${activeTab === "medications" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
           onClick={() => setActiveTab("appointments")}
         >
-          <FaPills /> Appointments
+          <FaCalendarAlt /> Appointments
         </button>
       </div>
       

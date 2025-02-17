@@ -55,7 +55,7 @@ const Appointments = ({ appointments }) => {
 
     setAttendedTo((prevAttended) => [
       ...prevAttended,
-      { type, dateTaken: newDate, appointmentId, patientId },
+      { type, dateTaken: newDate},
     ]);
   };
 
