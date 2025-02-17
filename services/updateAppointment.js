@@ -1,7 +1,8 @@
 export const updateAppointment = async (payload, id) => {
     const token = localStorage.getItem("token");
     if (!token) return;
-
+    console.log("ID: ", id);
+    console.log("Payload: ", payload);
     try {
         const response = await fetch(`https://patient-care-server.onrender.com/api/v1/appointments/${id}`, {
             method: "PUT",
@@ -15,8 +16,10 @@ export const updateAppointment = async (payload, id) => {
         const data = await response.json();
 
         if (!response.ok) {
+            console.log(data?.responseObject?.errors);
             return {error: data?.responseObject?.errors} ;
         };
+        console.log("Data: ", data);
         return data;
     } catch (error) {
         console.error("Error updating appointments:", error);
