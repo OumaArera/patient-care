@@ -101,7 +101,7 @@ const Login = () => {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 bg-gray-950 right-3 flex items-center text-white"
+                  className="absolute inset-y-0 right-3 flex items-center text-white"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff size={20}/> :<Eye size={20}/>}
