@@ -47,6 +47,7 @@ const Updates = () => {
             (!selectedMonth || (updateDate.getMonth() + 1).toString() === selectedMonth)
         );
     });
+    console.log("Updates: ", filteredUpdates);
 
     // Count occurrences of each patientName
     const patientNameCounts = {};
