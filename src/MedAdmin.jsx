@@ -16,10 +16,12 @@ const MedAdmin = ({ meds, selectedPatient }) => {
 
     const handleSubmit = async (medicationId, medicationTime) => {
         setLoading(medicationTime);
+        const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
+        console.log("Time: ", time);
         const payload = {
             medication: medicationId,
             patient: selectedPatient,
-            timeAdministered: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+            timeAdministered: time,
         };
         try {
             const response = await postMedications(payload);
@@ -40,8 +42,17 @@ const MedAdmin = ({ meds, selectedPatient }) => {
 
     return (
         <div className="grid gap-4 p-4 bg-gray-900 text-white">
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 bg-white rounded">
+                    {errors.map((error, index) => (
+                        <p key={index} className="text-sm text-red-600">{error}</p>
+                    ))}
+                </div>
+            )}
+            {message && <p className="text-green-600">{message}</p>}
             {meds.map((med) => (
                 <div key={med.medicationId} className="border border-gray-700 rounded-lg p-4 shadow-md bg-gray-800">
+                    
                     <div className="mb-2">
                         <h2 className="text-lg font-semibold">{med.medicationName} ({med.medicationCode})</h2>
                         <p className="text-sm text-gray-400">Resident: {med.patientFirstName} {med.patientLastName}</p>
@@ -65,14 +76,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                             </div>
                         ))}
                     </div>
-                    {errors.length > 0 && (
-                        <div className="mb-4 p-3 bg-white rounded">
-                            {errors.map((error, index) => (
-                                <p key={index} className="text-sm text-red-600">{error}</p>
-                            ))}
-                        </div>
-                    )}
-                    {message && <p className="text-green-600">{message}</p>}
+                    
                 </div>
             ))}
         </div>
