@@ -75,7 +75,7 @@ const MedAdministration = () => {
                 </select>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="bg-gray-800 rounded-lg shadow-lg p-4 overflow-x-auto">
                 <table className="table-auto border-collapse border border-gray-700 w-full text-sm">
                     <thead>
                         <tr className="bg-gray-800">
