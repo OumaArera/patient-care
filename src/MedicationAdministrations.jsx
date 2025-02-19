@@ -31,7 +31,7 @@ const MedicationAdministration = () => {
                 setLoadingPatients(false);
             })
             .catch(() => {
-                setError("Failed to fetch patients.");
+                setError("Failed to fetch residents.");
                 setTimeout(() => setError(""), 10000);
                 setLoadingPatients(false);
             });

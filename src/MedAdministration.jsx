@@ -1,0 +1,117 @@
+import React, { useEffect, useState } from "react";
+import { fetchPatients } from "../services/fetchPatients";
+import { getMedicationAdmininstration } from "../services/getMedicationAdministration";
+import { Loader } from "lucide-react";
+import moment from "moment-timezone";
+
+const MedAdministration = () => {
+    const [patients, setPatients] = useState([]);
+    const [medAdmins, setMedAdmins] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [selectedPatient, setSelectedPatient] = useState(null);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        setLoading(true);
+        fetchPatients()
+            .then((data) => {
+                setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
+                setLoading(false);
+            })
+            .catch(() => {
+                setError("Failed to fetch residents.");
+                setTimeout(() => setError(""), 10000);
+                setLoading(false);
+            });
+    }, []);
+
+    const fetchMedAdmin = (patientId) => {
+        setLoading(true);
+        setSelectedPatient(patientId);
+        getMedicationAdmininstration(patientId)
+            .then((data) => {
+                setMedAdmins(Array.isArray(data));
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    };
+
+    const groupedMedications = medAdmins.reduce((acc, admin) => {
+        const { medication, timeAdministered } = admin;
+        const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").format("D");
+        if (!acc[medication.medicationId]) {
+            acc[medication.medicationId] = {
+                name: medication.medicationName,
+                times: medication.medicationTimes,
+                records: {}
+            };
+        }
+        acc[medication.medicationId].records[dateAdministered] = moment.utc(timeAdministered).tz("Africa/Nairobi").format("HH:mm");
+        return acc;
+    }, {});
+
+    return (
+        <div className="p-6 bg-gray-900 text-white">
+            <h2 className="text-3xl font-bold mb-6 text-blue-400">Medication Administration</h2>
+            {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
+            <div className="mb-4">
+                {loading && (
+                    <div className="flex items-center space-x-2">
+                        <Loader className="animate-spin text-gray-500" size={20} />
+                        <p className="text-gray-500">Loading...</p>
+                    </div>
+                )}
+                <label className="font-semibold">Select Resident: </label>
+                <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={(e) => fetchMedAdmin(e.target.value)} value={selectedPatient || ""}>
+                    <option value="">-- Select --</option>
+                    {patients.map((p) => (
+                        <option key={p.patientId} value={p.patientId}>
+                            {p.firstName} {p.lastName}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
+            <div className="overflow-x-auto">
+                <table className="table-auto border-collapse border border-gray-700 w-full text-sm">
+                    <thead>
+                        <tr className="bg-gray-800">
+                            <th className="border border-gray-700 px-4 py-2">Medication Name</th>
+                            <th className="border border-gray-700 px-4 py-2">Times</th>
+                            {[...Array(31)].map((_, i) => (
+                                <th key={i} className="border border-gray-700 px-2 py-1 text-center">{i + 1}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.values(groupedMedications).map((med, index) => (
+                            <React.Fragment key={index}>
+                                {med.times.map((time, i) => (
+                                    <tr key={`${med.name}-${i}`} className="text-center">
+                                        {i === 0 && (
+                                            <td rowSpan={med.times.length} className="border border-gray-700 px-4 py-2 font-bold bg-gray-800">{med.name}</td>
+                                        )}
+                                        <td className="border border-gray-700 px-4 py-2 bg-gray-700">{time}</td>
+                                        {[...Array(31)].map((_, day) => (
+                                            <td key={day} className="border border-gray-700 px-2 py-1">
+                                                {med.records[day + 1] ? (
+                                                    <span className="text-green-400">Administered at {med.records[day + 1]}</span>
+                                                ) : (
+                                                    <span className="text-red-400">Pending</span>
+                                                )}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </React.Fragment>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+};
+
+export default MedAdministration;
