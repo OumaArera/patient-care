@@ -42,7 +42,7 @@ const MedAdministration = () => {
         const { medication, timeAdministered } = admin;
         const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").format("D");
         const timeGiven = moment.utc(timeAdministered).tz("Africa/Nairobi");
-        
+
         if (!acc[medication.medicationId]) {
             acc[medication.medicationId] = {
                 name: medication.medicationName,
@@ -50,11 +50,17 @@ const MedAdministration = () => {
                 records: {}
             };
         }
-        
+
         medication.medicationTimes.forEach((medTime) => {
             const scheduledTime = moment.tz(medTime, "HH:mm", "Africa/Nairobi");
-            if (timeGiven.isBetween(scheduledTime.clone().subtract(1, 'hour'), scheduledTime.clone().add(1, 'hour'))) {
-                acc[medication.medicationId].records[dateAdministered] = timeGiven.format("HH:mm");
+            const startTime = scheduledTime.clone().subtract(1, "hour");
+            const endTime = scheduledTime.clone().add(1, "hour");
+
+            if (timeGiven.isBetween(startTime, endTime)) {
+                if (!acc[medication.medicationId].records[dateAdministered]) {
+                    acc[medication.medicationId].records[dateAdministered] = {};
+                }
+                acc[medication.medicationId].records[dateAdministered][medTime] = timeGiven.format("HH:mm");
             }
         });
 
@@ -64,9 +70,9 @@ const MedAdministration = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen flex flex-col items-center">
             <h2 className="text-3xl font-bold mb-6 text-blue-400">Medication Administration</h2>
-            
+
             {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
-            
+
             <div className="mb-4 w-full max-w-[90vw]">
                 {loading && (
                     <div className="flex items-center space-x-2">
@@ -113,7 +119,7 @@ const MedAdministration = () => {
                                             )}
                                             <td className="border border-gray-700 px-4 py-2 bg-gray-700">{time}</td>
                                             {[...Array(31)].map((_, day) => {
-                                                const administeredTime = med.records[day + 1];
+                                                const administeredTime = med.records[day + 1]?.[time];
                                                 return (
                                                     <td key={day} className="border border-gray-700 px-2 py-1">
                                                         {administeredTime ? (
