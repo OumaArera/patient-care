@@ -16,6 +16,8 @@ const ResubmitMedAdmin = ({ patient, medication, fetchMedAdmin}) => {
             medication,
             timeAdministered: administeredTime,
         };
+
+        // dayjs().format("YYYY-MM-DD HH:mm:ss")
         console.log("Resubmission Data:", resubmissionData);
         try {
             const response = await postMedications(resubmissionData);
@@ -48,8 +50,9 @@ const ResubmitMedAdmin = ({ patient, medication, fetchMedAdmin}) => {
                         type="datetime-local"
                         className="w-full p-2 bg-gray-700 text-white rounded"
                         value={administeredTime}
-                        onChange={(e) => setAdministeredTime(e.target.value)}
+                        onChange={(e) => setAdministeredTime(dayjs(e.target.value).format("YYYY-MM-DD HH:mm:ss"))}
                     />
+
                 </div>
 
                 <button
