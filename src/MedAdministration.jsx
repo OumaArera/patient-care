@@ -60,6 +60,7 @@ const MedAdministration = () => {
         if (!acc[medication.medicationId]) {
             acc[medication.medicationId] = {
                 name: medication.medicationName,
+                medicationId: medication.medicationId,
                 times: medication.medicationTimes,
                 records: {},
             };
@@ -143,7 +144,7 @@ const MedAdministration = () => {
                                                                 className="bg-red-800 text-white px-2 py-1 rounded"
                                                                 onClick={() => {
                                                                     setShowResubmit(true);
-                                                                    setSelectedData({ patientId: selectedPatient, medicationId: med });
+                                                                    setSelectedData({ patientId: selectedPatient, medicationId: med.medicationId });
                                                                 }}
                                                             >
                                                                 Pending
