@@ -27,14 +27,14 @@ const MedAdmin = ({ meds, selectedPatient }) => {
             const response = await postMedications(payload);
             if (response?.error) {
                 setErrors(errorHandler(response?.error));
-                setTimeout(() => setErrors([]), 5000);
+                setTimeout(() => setErrors([]), 10000);
             } else {
                 setMessage("Medication administered successfully.");
                 setTimeout(() => setMessage(""), 5000);
             }
         } catch (error) {
             setErrors(["Failed to submit medication."]);
-            setTimeout(() => setErrors([]), 5000);
+            setTimeout(() => setErrors([]), 10000);
         } finally {
             setLoading(null);
         }
