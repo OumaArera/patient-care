@@ -31,7 +31,7 @@ const MedAdministration = () => {
         getMedicationAdmininstration(patientId)
             .then((data) => {
                 console.log("Data: ", data);
-                setMedAdmins(Array.isArray(data));
+                setMedAdmins(data);
                 setLoading(false);
             })
             .catch(() => {
