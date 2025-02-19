@@ -50,10 +50,10 @@ const MedAdministration = () => {
 
     const groupedMedications = medAdmins.reduce((acc, admin) => {
         const { medication, timeAdministered } = admin;
-
+        
         const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").date();
         const timeGiven = moment.utc(timeAdministered).tz("Africa/Nairobi");
-    
+
         if (!acc[medication.medicationId]) {
             acc[medication.medicationId] = {
                 name: medication.medicationName,
@@ -62,21 +62,21 @@ const MedAdministration = () => {
                 records: {},
             };
         }
-    
+
         medication.medicationTimes.forEach((medTime) => {
-            const scheduledTime = moment(medTime, "HH:mm");
+            const scheduledTime = moment.tz(medTime, "HH:mm", "Africa/Nairobi");
             const startTime = scheduledTime.clone().subtract(1, "hour");
             const endTime = scheduledTime.clone().add(1, "hour");
-    
+            
             if (!acc[medication.medicationId].records[dateAdministered]) {
                 acc[medication.medicationId].records[dateAdministered] = {};
             }
-    
+            
             if (timeGiven.isBetween(startTime, endTime, null, "[)")) {
                 acc[medication.medicationId].records[dateAdministered][medTime] = timeGiven.format("HH:mm");
             }
         });
-    
+
         return acc;
     }, {});
     
