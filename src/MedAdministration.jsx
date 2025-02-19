@@ -50,9 +50,8 @@ const MedAdministration = () => {
     const groupedMedications = medAdmins.reduce((acc, admin) => {
         const { medication, timeAdministered } = admin;
         // const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").format("D");
+        const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").date();
         const timeGiven = moment.utc(timeAdministered).tz("Africa/Nairobi");
-
-        const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").date(); // Get day as a number
 
         if (!acc[medication.medicationId]) {
             acc[medication.medicationId] = {
