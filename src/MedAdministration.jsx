@@ -50,8 +50,9 @@ const MedAdministration = () => {
 
     const groupedMedications = medAdmins.reduce((acc, admin) => {
         const { medication, timeAdministered } = admin;
-
-        const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").date();
+    
+        // Parse date correctly to include full year-month-day (not just date number)
+        const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").format("YYYY-MM-DD");
         const timeGiven = moment.utc(timeAdministered).tz("Africa/Nairobi");
     
         if (!acc[medication.medicationId]) {
@@ -72,6 +73,7 @@ const MedAdministration = () => {
                 acc[medication.medicationId].records[dateAdministered] = {};
             }
     
+            // Ensure the correct medication time is mapped
             if (timeGiven.isBetween(startTime, endTime, null, "[)")) {
                 acc[medication.medicationId].records[dateAdministered][medTime] = timeGiven.format("HH:mm");
             }
@@ -79,6 +81,7 @@ const MedAdministration = () => {
     
         return acc;
     }, {});
+    
     
 
     return (
