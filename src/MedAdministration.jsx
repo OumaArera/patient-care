@@ -50,6 +50,7 @@ const MedAdministration = () => {
         setShowResubmit(false);
         setSelectedData(null);
     };
+    
 
     const groupedMedications = medAdmins.reduce((acc, admin) => {
         const { medication, timeAdministered } = admin;
@@ -138,9 +139,18 @@ const MedAdministration = () => {
                                                         {administeredTime ? (
                                                             <span className="text-green-400">Administered at {administeredTime}</span>
                                                         ) : (
+                                                            // <button
+                                                            //     className="bg-red-400 text-white px-2 py-1 rounded"
+                                                            //     onClick={() => openResubmitModal(selectedPatient, med.medicationId)}
+                                                            // >
+                                                            //     Pending
+                                                            // </button>
                                                             <button
-                                                                className="bg-red-400 text-white px-2 py-1 rounded"
-                                                                onClick={() => openResubmitModal(selectedPatient, med.medicationId)}
+                                                                className="bg-red-800 text-white px-2 py-1 rounded"
+                                                                onClick={() => {
+                                                                    setShowResubmit(true);
+                                                                    setSelectedData({ patientId: selectedPatient, medicationId: med.medicationId });
+                                                                }}
                                                             >
                                                                 Pending
                                                             </button>
@@ -156,11 +166,16 @@ const MedAdministration = () => {
                     </table>
                 </div>
             </div>
-
             {/* Resubmit Overlay */}
             {showResubmit && selectedData && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-96">
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                    onClick={closeResubmitModal}
+                >
+                    <div
+                        className="bg-gray-800 p-6 rounded-lg shadow-lg w-96 max-h-[40vh]"
+                        onClick={(e) => e.stopPropagation()} 
+                    >
                         <h3 className="text-xl font-bold text-white mb-4">Resubmit Medication</h3>
                         <ResubmitMedAdmin patient={selectedData.patientId} medication={selectedData.medicationId} />
                         <button
@@ -172,6 +187,7 @@ const MedAdministration = () => {
                     </div>
                 </div>
             )}
+
         </div>
     );
 };
