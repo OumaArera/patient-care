@@ -33,7 +33,6 @@ const MedAdministration = () => {
         setSelectedPatient(patientId);
         getMedicationAdmininstration(patientId)
             .then((data) => {
-                console.log("Data: ", data);
                 setMedAdmins(data);
                 setLoading(false);
             })
@@ -46,45 +45,26 @@ const MedAdministration = () => {
         setShowResubmit(false);
         setSelectedData(null);
     };
-    
 
-    const groupedMedications = medAdmins.reduce((acc, admin) => {
+    const dailyTimeline = medAdmins.reduce((acc, admin) => {
         const { medication, timeAdministered } = admin;
-    
-        // Convert timeAdministered to Africa/Nairobi time
         const administeredMoment = moment.utc(timeAdministered).tz("Africa/Nairobi");
-        const administeredDay = administeredMoment.date(); // Get day of the month
-    
-        if (!acc[medication.medicationId]) {
-            acc[medication.medicationId] = {
-                name: medication.medicationName,
-                medicationId: medication.medicationId,
-                times: medication.medicationTimes, // Scheduled times
-                records: {}, // Stores administration per day
-            };
+        const administeredDay = administeredMoment.format("YYYY-MM-DD");
+        const time = administeredMoment.format("HH:mm");
+
+        if (!acc[administeredDay]) {
+            acc[administeredDay] = [];
         }
-    
-        // Ensure the record for this day exists
-        if (!acc[medication.medicationId].records[administeredDay]) {
-            acc[medication.medicationId].records[administeredDay] = {};
-        }
-    
-        // Check against scheduled times
-        medication.medicationTimes.forEach((medTime) => {
-            const scheduledTime = moment.tz(medTime, "HH:mm", "Africa/Nairobi");
-            const startTime = scheduledTime.clone().subtract(1, "hour");
-            const endTime = scheduledTime.clone().add(1, "hour");
-    
-            // If administered time falls within ±1 hour of the scheduled time
-            if (administeredMoment.isBetween(startTime, endTime, null, "[)")) {
-                acc[medication.medicationId].records[administeredDay][medTime] = administeredMoment.format("HH:mm");
-            }
+
+        acc[administeredDay].push({
+            name: medication.medicationName,
+            timeScheduled: medication.medicationTimes,
+            timeAdministered: time,
+            medicationId: medication.medicationId,
         });
-    
+
         return acc;
     }, {});
-    
-    
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen flex flex-col items-center">
@@ -116,56 +96,45 @@ const MedAdministration = () => {
 
             <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[78vw] w-full">
                 <div className="overflow-auto max-h-[500px] w-full">
-                    <table className="table-auto border-collapse border border-gray-700 w-full text-sm">
-                        <thead className="sticky top-0 bg-gray-800">
-                            <tr>
-                                <th className="border border-gray-700 px-4 py-2">Medication Name</th>
-                                <th className="border border-gray-700 px-4 py-2">Times</th>
-                                {[...Array(31)].map((_, i) => (
-                                    <th key={i} className="border border-gray-700 px-2 py-1 text-center">{i + 1}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.values(groupedMedications).map((med, index) => (
-                                <React.Fragment key={index}>
-                                    {med.times.map((time, i) => (
-                                        <tr key={`${med.name}-${i}`} className="text-center">
-                                            {i === 0 && (
-                                                <td rowSpan={med.times.length} className="border border-gray-700 px-4 py-2 font-bold bg-gray-800">
-                                                    {med.name}
-                                                </td>
+                    {Object.entries(dailyTimeline).map(([day, medications]) => (
+                        <div key={day} className="mb-6 border-b border-gray-700 pb-4">
+                            <h3 className="text-xl font-bold text-blue-300 mb-3">📅 {moment(day).format("MMMM D, YYYY")}</h3>
+                            <div className="space-y-2">
+                                {medications.map((med, index) => (
+                                    med.timeScheduled.map((time, idx) => (
+                                        <div
+                                            key={`${index}-${idx}`}
+                                            className="flex justify-between items-center p-3 bg-gray-700 rounded-lg shadow"
+                                        >
+                                            <div className="flex-1">
+                                                <p className="font-bold text-white">{med.name}</p>
+                                                <p className="text-gray-400">Scheduled: {time}</p>
+                                            </div>
+                                            {med.timeAdministered === time ? (
+                                                <span className="text-green-400">✅ Administered at {med.timeAdministered}</span>
+                                            ) : (
+                                                <button
+                                                    className="bg-red-800 text-white px-3 py-1 rounded"
+                                                    onClick={() => {
+                                                        setShowResubmit(true);
+                                                        setSelectedData({
+                                                            patientId: selectedPatient,
+                                                            medicationId: med.medicationId,
+                                                        });
+                                                    }}
+                                                >
+                                                    ❌ Missed (Resubmit)
+                                                </button>
                                             )}
-                                            <td className="border border-gray-700 px-4 py-2 bg-gray-700">{time}</td>
-                                            {[...Array(31)].map((_, day) => {
-                                                const administeredTime = med.records[day + 1]?.[time];
-                                                return (
-                                                    <td key={day} className="border border-gray-700 px-2 py-1">
-                                                        {administeredTime ? (
-                                                            <span className="text-green-400">Administered at {administeredTime}</span>
-                                                        ) : (
-                                                            <button
-                                                                className="bg-red-800 text-white px-2 py-1 rounded"
-                                                                onClick={() => {
-                                                                    setShowResubmit(true);
-                                                                    setSelectedData({ patientId: selectedPatient, medicationId: med.medicationId });
-                                                                }}
-                                                            >
-                                                                Pending
-                                                            </button>
-                                                        )}
-                                                    </td>
-                                                );
-                                            })}
-                                        </tr>
-                                    ))}
-                                </React.Fragment>
-                            ))}
-                        </tbody>
-                    </table>
+                                        </div>
+                                    ))
+                                ))}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
-            {/* Resubmit Overlay */}
+
             {showResubmit && selectedData && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
@@ -173,12 +142,12 @@ const MedAdministration = () => {
                 >
                     <div
                         className="bg-gray-800 p-6 rounded-lg shadow-lg"
-                        onClick={(e) => e.stopPropagation()} 
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-xl font-bold text-white mb-4">Resubmit Medication</h3>
-                        <ResubmitMedAdmin 
-                            patient={selectedData.patientId} 
-                            medication={selectedData.medicationId} 
+                        <ResubmitMedAdmin
+                            patient={selectedData.patientId}
+                            medication={selectedData.medicationId}
                             fetchMedAdmin={fetchMedAdmin}
                         />
                         <button
@@ -190,7 +159,6 @@ const MedAdministration = () => {
                     </div>
                 </div>
             )}
-
         </div>
     );
 };
