@@ -3,6 +3,7 @@ import { fetchPatients } from "../services/fetchPatients";
 import { getMedicationAdmininstration } from "../services/getMedicationAdministration";
 import { Loader } from "lucide-react";
 import moment from "moment-timezone";
+import ResubmitMedAdmin from "./ResubmitMedAdmin";
 
 const MedAdministration = () => {
     const [patients, setPatients] = useState([]);
@@ -10,6 +11,8 @@ const MedAdministration = () => {
     const [loading, setLoading] = useState(false);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [error, setError] = useState("");
+    const [showResubmit, setShowResubmit] = useState(false);
+    const [selectedData, setSelectedData] = useState(null);
 
     useEffect(() => {
         setLoading(true);
@@ -38,6 +41,16 @@ const MedAdministration = () => {
             });
     };
 
+    const openResubmitModal = (patientId, medicationId) => {
+        setSelectedData({ patientId, medicationId });
+        setShowResubmit(true);
+    };
+
+    const closeResubmitModal = () => {
+        setShowResubmit(false);
+        setSelectedData(null);
+    };
+
     const groupedMedications = medAdmins.reduce((acc, admin) => {
         const { medication, timeAdministered } = admin;
         const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").format("D");
@@ -47,7 +60,7 @@ const MedAdministration = () => {
             acc[medication.medicationId] = {
                 name: medication.medicationName,
                 times: medication.medicationTimes,
-                records: {}
+                records: {},
             };
         }
 
@@ -125,7 +138,12 @@ const MedAdministration = () => {
                                                         {administeredTime ? (
                                                             <span className="text-green-400">Administered at {administeredTime}</span>
                                                         ) : (
-                                                            <button className="bg-red-400 text-white px-2 py-1 rounded">Pending</button>
+                                                            <button
+                                                                className="bg-red-400 text-white px-2 py-1 rounded"
+                                                                onClick={() => openResubmitModal(selectedPatient, med.medicationId)}
+                                                            >
+                                                                Pending
+                                                            </button>
                                                         )}
                                                     </td>
                                                 );
@@ -138,6 +156,22 @@ const MedAdministration = () => {
                     </table>
                 </div>
             </div>
+
+            {/* Resubmit Overlay */}
+            {showResubmit && selectedData && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-96">
+                        <h3 className="text-xl font-bold text-white mb-4">Resubmit Medication</h3>
+                        <ResubmitMedAdmin patient={selectedData.patientId} medication={selectedData.medicationId} />
+                        <button
+                            className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+                            onClick={closeResubmitModal}
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
