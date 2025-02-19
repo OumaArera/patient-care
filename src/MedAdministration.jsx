@@ -41,11 +41,6 @@ const MedAdministration = () => {
             });
     };
 
-    const openResubmitModal = (patientId, medicationId) => {
-        setSelectedData({ patientId, medicationId });
-        setShowResubmit(true);
-    };
-
     const closeResubmitModal = () => {
         setShowResubmit(false);
         setSelectedData(null);
@@ -134,7 +129,8 @@ const MedAdministration = () => {
                                             )}
                                             <td className="border border-gray-700 px-4 py-2 bg-gray-700">{time}</td>
                                             {[...Array(31)].map((_, day) => {
-                                                const administeredTime = med.records[day + 1]?.[time];
+                                                const formattedDate = (day + 1).toString(); // Ensure we are matching the correct date format
+                                                const administeredTime = med.records[formattedDate]?.[time];
                                                 return (
                                                     <td key={day} className="border border-gray-700 px-2 py-1">
                                                         {administeredTime ? (
