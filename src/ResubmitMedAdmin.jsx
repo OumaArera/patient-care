@@ -9,7 +9,7 @@ const ResubmitMedAdmin = ({ patient, medication, fetchMedAdmin}) => {
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async () => {
-        if (!patient || !medication || administeredTime) return;
+        if (!patient || !medication || !administeredTime) return;
         setLoading(true);
         const resubmissionData = {
             patient,
