@@ -1,16 +1,39 @@
 import React, { useState } from "react";
+import { postMedications } from "../services/postMedications";
+import { errorHandler } from "../services/errorHandler";
 
-const ResubmitMedAdmin = ({ patient, medication }) => {
+const ResubmitMedAdmin = ({ patient, medication, fetchMedAdmin}) => {
     const [administeredTime, setAdministeredTime] = useState("");
+    const [errors, setErrors] = useState([]);
+    const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        if (!patient || !medication || administeredTime) return;
+        setLoading(true);
         const resubmissionData = {
             patient,
             medication,
             administeredTime,
         };
-
         console.log("Resubmission Data:", resubmissionData);
+        try {
+            const response = await postMedications(resubmissionData);
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 10000);
+            } else {
+                setMessage("Medication administered successfully.");
+                setTimeout(() => fetchMedAdmin(patient), 5000);
+                setTimeout(() => setMessage(""), 5000);
+            }
+        } catch (error) {
+            setErrors(["Failed to submit medication."]);
+            setTimeout(() => setErrors([]), 10000);
+        } finally {
+            setLoading(false);
+        }
+        
     };
 
     return (
@@ -33,8 +56,16 @@ const ResubmitMedAdmin = ({ patient, medication }) => {
                     className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600"
                     onClick={handleSubmit}
                 >
-                    Submit
+                    {loading? "Submitting...": "Submit"}
                 </button>
+                {errors.length > 0 && (
+                    <div className="mb-4 p-3 bg-white rounded">
+                        {errors.map((error, index) => (
+                            <p key={index} className="text-sm text-red-600">{error}</p>
+                        ))}
+                    </div>
+                )}
+                {message && <p className="text-green-600">{message}</p>}
             </div>
         </div>
     );

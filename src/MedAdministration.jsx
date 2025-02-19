@@ -172,7 +172,11 @@ const MedAdministration = () => {
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <h3 className="text-xl font-bold text-white mb-4">Resubmit Medication</h3>
-                        <ResubmitMedAdmin patient={selectedData.patientId} medication={selectedData.medicationId} />
+                        <ResubmitMedAdmin 
+                            patient={selectedData.patientId} 
+                            medication={selectedData.medicationId} 
+                            fetchMedAdmin={fetchMedAdmin}
+                        />
                         <button
                             className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
                             onClick={closeResubmitModal}
