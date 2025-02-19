@@ -89,8 +89,7 @@ const MedAdministration = () => {
                 </select>
             </div>
 
-            {/* Scrollable Card for Table */}
-            <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[80vw] w-full">
+            <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[78vw] w-full">
                 <div className="overflow-auto max-h-[500px] w-full">
                     <table className="table-auto border-collapse border border-gray-700 w-full text-sm">
                         <thead className="sticky top-0 bg-gray-800">
@@ -113,15 +112,18 @@ const MedAdministration = () => {
                                                 </td>
                                             )}
                                             <td className="border border-gray-700 px-4 py-2 bg-gray-700">{time}</td>
-                                            {[...Array(31)].map((_, day) => (
-                                                <td key={day} className="border border-gray-700 px-2 py-1">
-                                                    {med.records[day + 1] ? (
-                                                        <span className="text-green-400">Administered at {med.records[day + 1]}</span>
-                                                    ) : (
-                                                        <button className="bg-red-500 text-white px-2 py-1 rounded">Pending</button>
-                                                    )}
-                                                </td>
-                                            ))}
+                                            {[...Array(31)].map((_, day) => {
+                                                const administeredTime = med.records[day + 1];
+                                                return (
+                                                    <td key={day} className="border border-gray-700 px-2 py-1">
+                                                        {administeredTime ? (
+                                                            <span className="text-green-400">Administered at {administeredTime}</span>
+                                                        ) : (
+                                                            <button className="bg-red-500 text-white px-2 py-1 rounded">Pending</button>
+                                                        )}
+                                                    </td>
+                                                );
+                                            })}
                                         </tr>
                                     ))}
                                 </React.Fragment>
