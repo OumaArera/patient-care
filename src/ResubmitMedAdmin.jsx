@@ -14,7 +14,7 @@ const ResubmitMedAdmin = ({ patient, medication, fetchMedAdmin}) => {
         const resubmissionData = {
             patient,
             medication,
-            administeredTime,
+            timeAdministered: administeredTime,
         };
         console.log("Resubmission Data:", resubmissionData);
         try {
@@ -59,7 +59,7 @@ const ResubmitMedAdmin = ({ patient, medication, fetchMedAdmin}) => {
                     {loading? "Submitting...": "Submit"}
                 </button>
                 {errors.length > 0 && (
-                    <div className="mb-4 p-3 bg-white rounded">
+                    <div className="mb-4 p-3 rounded">
                         {errors.map((error, index) => (
                             <p key={index} className="text-sm text-red-600">{error}</p>
                         ))}
