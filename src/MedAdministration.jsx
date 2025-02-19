@@ -62,10 +62,12 @@ const MedAdministration = () => {
     }, {});
 
     return (
-        <div className="p-6 bg-gray-900 text-white">
+        <div className="p-6 bg-gray-900 text-white min-h-screen flex flex-col items-center">
             <h2 className="text-3xl font-bold mb-6 text-blue-400">Medication Administration</h2>
+            
             {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
-            <div className="mb-4">
+            
+            <div className="mb-4 w-full max-w-[90vw]">
                 {loading && (
                     <div className="flex items-center space-x-2">
                         <Loader className="animate-spin text-gray-500" size={20} />
@@ -73,7 +75,11 @@ const MedAdministration = () => {
                     </div>
                 )}
                 <label className="font-semibold">Select Resident: </label>
-                <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={(e) => fetchMedAdmin(e.target.value)} value={selectedPatient || ""}>
+                <select
+                    className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+                    onChange={(e) => fetchMedAdmin(e.target.value)}
+                    value={selectedPatient || ""}
+                >
                     <option value="">-- Select --</option>
                     {patients.map((p) => (
                         <option key={p.patientId} value={p.patientId}>
@@ -83,12 +89,12 @@ const MedAdministration = () => {
                 </select>
             </div>
 
-            {/* Card Wrapper for Scrollable Table */}
-            <div className="bg-gray-800 rounded-lg shadow-lg p-4">
-                <div className="overflow-x-auto max-w-full">
+            {/* Scrollable Card for Table */}
+            <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[90vw] w-full">
+                <div className="overflow-auto max-h-[500px] w-full">
                     <table className="table-auto border-collapse border border-gray-700 w-full text-sm">
-                        <thead>
-                            <tr className="bg-gray-800">
+                        <thead className="sticky top-0 bg-gray-800">
+                            <tr>
                                 <th className="border border-gray-700 px-4 py-2">Medication Name</th>
                                 <th className="border border-gray-700 px-4 py-2">Times</th>
                                 {[...Array(31)].map((_, i) => (
@@ -102,7 +108,9 @@ const MedAdministration = () => {
                                     {med.times.map((time, i) => (
                                         <tr key={`${med.name}-${i}`} className="text-center">
                                             {i === 0 && (
-                                                <td rowSpan={med.times.length} className="border border-gray-700 px-4 py-2 font-bold bg-gray-800">{med.name}</td>
+                                                <td rowSpan={med.times.length} className="border border-gray-700 px-4 py-2 font-bold bg-gray-800">
+                                                    {med.name}
+                                                </td>
                                             )}
                                             <td className="border border-gray-700 px-4 py-2 bg-gray-700">{time}</td>
                                             {[...Array(31)].map((_, day) => (
