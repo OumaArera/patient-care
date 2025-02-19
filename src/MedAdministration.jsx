@@ -30,6 +30,7 @@ const MedAdministration = () => {
         setSelectedPatient(patientId);
         getMedicationAdmininstration(patientId)
             .then((data) => {
+                console.log("Data: ", data);
                 setMedAdmins(Array.isArray(data));
                 setLoading(false);
             })
