@@ -119,7 +119,7 @@ const MedAdministration = () => {
                                                         {administeredTime ? (
                                                             <span className="text-green-400">Administered at {administeredTime}</span>
                                                         ) : (
-                                                            <button className="bg-red-500 text-white px-2 py-1 rounded">Pending</button>
+                                                            <button className="bg-red-400 text-white px-2 py-1 rounded">Pending</button>
                                                         )}
                                                     </td>
                                                 );
