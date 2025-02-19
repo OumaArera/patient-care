@@ -139,17 +139,11 @@ const MedAdministration = () => {
                                                         {administeredTime ? (
                                                             <span className="text-green-400">Administered at {administeredTime}</span>
                                                         ) : (
-                                                            // <button
-                                                            //     className="bg-red-400 text-white px-2 py-1 rounded"
-                                                            //     onClick={() => openResubmitModal(selectedPatient, med.medicationId)}
-                                                            // >
-                                                            //     Pending
-                                                            // </button>
                                                             <button
                                                                 className="bg-red-800 text-white px-2 py-1 rounded"
                                                                 onClick={() => {
                                                                     setShowResubmit(true);
-                                                                    setSelectedData({ patientId: selectedPatient, medicationId: med.medicationId });
+                                                                    setSelectedData({ patientId: selectedPatient, medicationId: med });
                                                                 }}
                                                             >
                                                                 Pending
@@ -173,7 +167,7 @@ const MedAdministration = () => {
                     onClick={closeResubmitModal}
                 >
                     <div
-                        className="bg-gray-800 p-6 rounded-lg shadow-lg w-96 max-h-[40vh]"
+                        className="bg-gray-800 p-6 rounded-lg shadow-lg"
                         onClick={(e) => e.stopPropagation()} 
                     >
                         <h3 className="text-xl font-bold text-white mb-4">Resubmit Medication</h3>
