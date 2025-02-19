@@ -54,7 +54,7 @@ const MedAdministration = () => {
     }, {});
 
     return (
-        <div className="p-6 bg-gray-900 text-white">
+        <div className="p-6 bg-gray-900 text-white overflow-x-auto">
             <h2 className="text-3xl font-bold mb-6 text-blue-400">Medication Administration</h2>
             {error && <div className="bg-red-500 text-white p-3 mb-3 rounded">{error}</div>}
             <div className="mb-4">
