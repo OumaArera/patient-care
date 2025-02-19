@@ -90,7 +90,7 @@ const MedAdministration = () => {
             </div>
 
             {/* Scrollable Card for Table */}
-            <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[90vw] w-full">
+            <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[80vw] w-full">
                 <div className="overflow-auto max-h-[500px] w-full">
                     <table className="table-auto border-collapse border border-gray-700 w-full text-sm">
                         <thead className="sticky top-0 bg-gray-800">
