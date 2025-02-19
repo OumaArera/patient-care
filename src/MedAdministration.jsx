@@ -50,10 +50,9 @@ const MedAdministration = () => {
 
     const groupedMedications = medAdmins.reduce((acc, admin) => {
         const { medication, timeAdministered } = admin;
-        // const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").format("D");
-        const dateAdministered = moment.utc(timeAdministered).tz("Africa/Nairobi").date();
-        const timeGiven = moment.utc(timeAdministered).tz("Africa/Nairobi");
-
+        const dateAdministered = moment(timeAdministered).date(); // No need to convert timezone
+        const timeGiven = moment(timeAdministered, "HH:mm"); // Keep it in the original timezone
+    
         if (!acc[medication.medicationId]) {
             acc[medication.medicationId] = {
                 name: medication.medicationName,
@@ -62,24 +61,24 @@ const MedAdministration = () => {
                 records: {},
             };
         }
-
+    
         medication.medicationTimes.forEach((medTime) => {
-            const scheduledTime = moment.tz(medTime, "HH:mm", "Africa/Nairobi");
+            const scheduledTime = moment(medTime, "HH:mm"); // Keep time as-is
             const startTime = scheduledTime.clone().subtract(1, "hour");
             const endTime = scheduledTime.clone().add(1, "hour");
-
+    
             if (!acc[medication.medicationId].records[dateAdministered]) {
                 acc[medication.medicationId].records[dateAdministered] = {};
             }
-
-            if (timeGiven.isBetween(startTime, endTime)) {
+    
+            if (timeGiven.isBetween(startTime, endTime, null, "[)")) {
                 acc[medication.medicationId].records[dateAdministered][medTime] = timeGiven.format("HH:mm");
             }
         });
-
-
+    
         return acc;
     }, {});
+    
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen flex flex-col items-center">
