@@ -142,8 +142,6 @@ const Charts = () => {
                   <tr className="bg-gray-700">
                     <th className="p-3 border border-gray-600">Date</th>
                     <th className="p-3 border border-gray-600">Resident</th>
-                    <th className="p-3 border border-gray-600">Status</th>
-                    <th className="p-3 border border-gray-600">Reason Not Filed</th>
                     <th className="p-3 border border-gray-600">View</th>
                     <th className="p-3 border border-gray-600">Action</th>
                   </tr>
@@ -156,12 +154,6 @@ const Charts = () => {
                         <td className="p-2 border border-gray-700">{date}</td>
                         <td className="p-2 border border-gray-700">
                           {chart ? chart.patientName : "Missing"}
-                        </td>
-                        <td className="p-2 border border-gray-700">
-                          {chart ? chart.status : "Missing"}
-                        </td>
-                        <td className="p-2 border border-gray-700">
-                          {chart?.reasonNotFiled || "—"}
                         </td>
                         <td className="p-2 border border-gray-700">
                           {chart && (
