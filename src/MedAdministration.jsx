@@ -121,9 +121,10 @@ const MedAdministration = () => {
                                             <p className="text-gray-400">Instructions: {med.details.instructions}</p>
                                             <p className="text-gray-400">Quantity: {med.details.quantity}</p>
                                             <p className="text-gray-400">Diagnosis: {med.details.diagnosis}</p>
+                                            {/* <p className="text-gray-400">Medication Times: {med.details.medicationTimes.join(", ")}</p> */}
                                             <div className="bg-gray-600 p-2 rounded-lg mt-2">
                                                 <h4 className="font-bold text-white mb-1">Medication Times:</h4>
-                                                {med.timeScheduled.map((time, i) => (
+                                                {med.details.medicationTimes.map((time, i) => (
                                                     <p key={i} className="text-gray-300">{time}</p>
                                                 ))}
                                             </div>
