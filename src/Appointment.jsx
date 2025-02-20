@@ -34,7 +34,7 @@ const Appointment = ({ patientId }) => {
     setLoading(true);
 
     const payload = {
-      patients: patientId,
+      patient: patientId,
       dateTaken,
       nextAppointmentDate,
       type,
