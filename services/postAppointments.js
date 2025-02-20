@@ -14,6 +14,7 @@ export const postAppointments = async (payload) => {
         const data = await response.json();
         if (!response.ok) {
             let errorString = data?.responseObject?.errors || "Failed to create appointments";
+            console.log("Error: ", errorString);
             return { error: errorString };
         }
 

@@ -31,6 +31,7 @@ const Appointment = ({ patientId }) => {
         setErrors(["Next appointment date must be later than the selected date."]);
       return;
     }
+    setLoading(true);
 
     const payload = {
       patientId,
