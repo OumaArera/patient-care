@@ -56,7 +56,7 @@ const LandingPage = () => {
       }}
     >
       {/* Dark overlay for better text visibility */}
-      <div className="absolute inset-0 bg-black bg-opacity-50 transition-opacity duration-1000"></div>
+      <div className="absolute inset-0 bg-opacity-50 transition-opacity duration-1000"></div>
 
       {/* Animated text */}
       <AnimatePresence mode="wait">
@@ -66,7 +66,7 @@ const LandingPage = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 1 }}
-          className="relative z-10 bg-white bg-opacity-90 p-8 rounded-2xl shadow-xl max-w-3xl text-center"
+          className="relative z-10 bg-opacity-90 p-8 rounded-2xl shadow-xl max-w-3xl text-center"
         >
           <p className="text-2xl md:text-3xl font-bold text-gray-900 leading-relaxed">
             {content.message}
