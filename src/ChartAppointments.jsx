@@ -56,11 +56,11 @@ const ChartAppointments = () => {
 
       {selectedPatientId && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+          className="fixed inset-0 bg-black w-[80vw] h-[80vh] bg-opacity-50 flex justify-center items-center z-50"
           onClick={() => setSelectedPatientId(null)}
         >
           <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg w-96"
+            className="relative bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto border border-gray-700"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-xl font-bold text-white mb-4">Submit Appointment</h3>
