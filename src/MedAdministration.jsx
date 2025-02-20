@@ -13,6 +13,7 @@ const MedAdministration = () => {
     const [error, setError] = useState("");
     const [showResubmit, setShowResubmit] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
+    const [currentPage, setCurrentPage] = useState(0);
 
     useEffect(() => {
         setLoading(true);
@@ -34,6 +35,7 @@ const MedAdministration = () => {
         getMedicationAdmininstration(patientId)
             .then((data) => {
                 setMedAdmins(data);
+                setCurrentPage(0);
                 setLoading(false);
             })
             .catch(() => {
@@ -57,26 +59,20 @@ const MedAdministration = () => {
 
         if (!acc[administeredDay][medication.medicationId]) {
             acc[administeredDay][medication.medicationId] = {
-                details: {
-                    name: medication.medicationName,
-                    code: medication.medicationCode,
-                    equivalentTo: medication.equivalentTo,
-                    instructions: medication.instructions,
-                    quantity: medication.quantity,
-                    diagnosis: medication.diagnosis,
-                    medicationTimes: medication.medicationTimes,
-                    medicationId: medication.medicationId,
-                },
+                details: { ...medication },
                 timesAdministered: [],
             };
         }
 
-        acc[administeredDay][medication.medicationId].timesAdministered.push(
-            administeredMoment.format("HH:mm")
-        );
+        acc[administeredDay][medication.medicationId].timesAdministered.push(administeredMoment.format("HH:mm"));
 
         return acc;
     }, {});
+
+    const days = Object.entries(dailyTimeline);
+    const itemsPerPage = 2;
+    const pageCount = Math.ceil(days.length / itemsPerPage);
+    const displayedDays = days.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage);
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen flex flex-col items-center">
@@ -108,20 +104,19 @@ const MedAdministration = () => {
 
             <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[78vw] w-full">
                 <div className="overflow-auto max-h-[500px] w-full">
-                    {Object.entries(dailyTimeline).map(([day, medications]) => (
+                    {displayedDays.map(([day, medications]) => (
                         <div key={day} className="mb-6 border-b border-gray-700 pb-4">
                             <h3 className="text-xl font-bold text-blue-300 mb-3">📅 {moment(day).format("MMMM D, YYYY")}</h3>
                             <div className="space-y-4">
                                 {Object.values(medications).map((med, index) => (
                                     <div key={index} className="grid grid-cols-2 gap-4 items-start p-3 bg-gray-700 rounded-lg shadow">
                                         <div>
-                                            <p className="font-bold text-white">{med.details.name}</p>
-                                            <p className="text-gray-400">Code: {med.details.code}</p>
+                                            <p className="font-bold text-white">{med.details.medicationName}</p>
+                                            <p className="text-gray-400">Code: {med.details.medicationCode}</p>
                                             <p className="text-gray-400">Equivalent to: {med.details.equivalentTo}</p>
                                             <p className="text-gray-400">Instructions: {med.details.instructions}</p>
                                             <p className="text-gray-400">Quantity: {med.details.quantity}</p>
                                             <p className="text-gray-400">Diagnosis: {med.details.diagnosis}</p>
-                                            {/* <p className="text-gray-400">Medication Times: {med.details.medicationTimes.join(", ")}</p> */}
                                             <div className="bg-gray-600 p-2 rounded-lg mt-2">
                                                 <h4 className="font-bold text-white mb-1">Medication Times:</h4>
                                                 {med.details.medicationTimes.map((time, i) => (
@@ -154,6 +149,23 @@ const MedAdministration = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+
+                <div className="flex justify-between mt-4">
+                    <button
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+                        disabled={currentPage === 0}
+                        className={`px-4 py-2 rounded ${currentPage === 0 ? "bg-gray-500" : "bg-blue-500 hover:bg-blue-600"}`}
+                    >
+                        Previous
+                    </button>
+                    <button
+                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pageCount - 1))}
+                        disabled={currentPage === pageCount - 1}
+                        className={`px-4 py-2 rounded ${currentPage === pageCount - 1 ? "bg-gray-500" : "bg-blue-500 hover:bg-blue-600"}`}
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
 
