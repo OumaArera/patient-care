@@ -65,46 +65,26 @@ const ChartUpdate = () => {
         </div>
       )}
 
-      {showUpdates && (
+    {showUpdates && (
+      <div
+        className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+        onClick={closeUpdateModal}
+      >
         <div
-          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
-          onClick={closeUpdateModal}
+          className="bg-gray-800 p-6 rounded-lg shadow-lg"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()}
+          <Update patientId={selectedPatientId} />
+          <button
+            className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+            onClick={closeUpdateModal}
           >
-            <Update patientId={selectedPatientId} />
-            <button
-              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
-              onClick={closeUpdateModal}
-            >
-              ✖
-            </button>
-          </div>
+            ✖
+          </button>
         </div>
-      )}
+      </div>
+    )}
       
-      {/* Overlay Modal for Update */}
-      {/* {showUpdates && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-          onClick={handleCloseModal} // Close when clicking outside
-        >
-          <div
-            className="relative bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto border border-gray-700"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
-          >
-            <button
-              className="absolute top-2 right-2 text-white hover:text-gray-400 text-xl"
-              onClick={handleCloseModal}
-            >
-              ✖
-            </button>
-            <Update patientId={selectedPatientId} />
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

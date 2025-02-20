@@ -11,13 +11,13 @@ const ChartMedication = () => {
   const [loadingMedications, setLoadingMedications] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [medications, setMedications] = useState([]);
-  const [viewMedAdmin, setViewMedAdmin] = useState(false);
+  const [show, setShow] = useState(false);
 
   const fetchAllMedicationData = async (patientId) => {
     
     setLoadingMedications(true);
     setSelectedPatientId(patientId);
-    setViewMedAdmin(false);
+    setShow(false);
     setMedications([]);
   
     try {
@@ -42,9 +42,10 @@ const ChartMedication = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // Function to close the modal when clicking outside
-  const handleCloseModal = () => {
-    setViewMedAdmin(false);
+
+  const closeMedicationModal = () => {
+    setShow(false);
+    setSelectedPatientId(null);
   };
 
   return (
@@ -74,7 +75,8 @@ const ChartMedication = () => {
                 ) : medications.length > 0 && selectedPatientId === patient.patientId ? (
                   <button
                     className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                    onClick={() => setViewMedAdmin(true)}
+                    onClick={() => setShow(true)
+                    }
                   >
                     View Medications
                   </button>
@@ -92,23 +94,22 @@ const ChartMedication = () => {
         </div>
       )}
 
-      {/* Overlay Modal */}
-      {viewMedAdmin && (
+      {show && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-          onClick={handleCloseModal} // Close when clicking outside
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closeMedicationModal}
         >
           <div
-            className="relative bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto border border-gray-700"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+            className="bg-gray-800 p-6 rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
           >
+            <MedAdmin meds={medications} selectedPatient={selectedPatientId} />
             <button
-              className="absolute top-2 right-2 text-white hover:text-gray-400 text-xl"
-              onClick={() => setViewMedAdmin(false)}
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={closeMedicationModal}
             >
               ✖
             </button>
-            <MedAdmin meds={medications} selectedPatient={selectedPatientId} />
           </div>
         </div>
       )}
