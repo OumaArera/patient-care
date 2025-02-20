@@ -50,7 +50,10 @@ const ChartAppointments = () => {
               <div className="flex justify-between mt-4">
                 <button
                   className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                  onClick={() => setSelectedPatientId(patient.patientId)}
+                  onClick={() => {
+                    setSelectedPatientId(patient.patientId);
+                    setShowAppointment(true);
+                  }}
                 >
                   Appointments
                 </button>
