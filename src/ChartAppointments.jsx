@@ -3,7 +3,8 @@ import { getAppointments } from "../services/getAppointments";
 import { getpatientManagers } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
-import Appointments from "./Appointments";
+// import Appointments from "./Appointments";
+import Appointment from "./Appointment";
 
 const ChartAppointments = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -103,7 +104,8 @@ const ChartAppointments = () => {
             >
               ✖
             </button>
-            <Appointments appointments={appointments} />
+            {/* <Appointments appointments={appointments} /> */}
+            <Appointment patientId={selectedPatientId}/>
           </div>
         </div>
       )}
