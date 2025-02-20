@@ -45,7 +45,9 @@ const ChartAppointments = () => {
 
   const handleCloseModal = () => {
     setViewAppointments(false);
+    setSelectedPatientId(null);
   };
+
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -88,24 +90,23 @@ const ChartAppointments = () => {
         </div>
       )}
 
-      {/* Overlay Modal */}
       {viewAppointments && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-          onClick={handleCloseModal} 
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={handleCloseModal}
         >
           <div
-            className="relative bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto border border-gray-700"
+            className="bg-gray-800 p-6 rounded-lg shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              className="absolute top-2 right-2 text-white hover:text-gray-400 text-xl"
-              onClick={() => setViewAppointments(false)}
-            >
-              ✖
-            </button>
-            {/* <Appointments appointments={appointments} /> */}
+            <h3 className="text-xl font-bold text-white mb-4">Submit Appointment</h3>
             <Appointment patientId={selectedPatientId}/>
+            <button
+                className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+                onClick={handleCloseModal}
+            >
+                Close
+            </button>
           </div>
         </div>
       )}
