@@ -58,6 +58,11 @@ const MedAdministration = () => {
 
         acc[administeredDay].push({
             name: medication.medicationName,
+            code: medication.medicationCode,
+            equivalentTo: medication.equivalentTo,
+            instructions: medication.instructions,
+            quantity: medication.quantity,
+            diagnosis: medication.diagnosis,
             timeScheduled: medication.medicationTimes,
             timeAdministered: time,
             medicationId: medication.medicationId,
@@ -101,33 +106,32 @@ const MedAdministration = () => {
                             <h3 className="text-xl font-bold text-blue-300 mb-3">📅 {moment(day).format("MMMM D, YYYY")}</h3>
                             <div className="space-y-2">
                                 {medications.map((med, index) => (
-                                    med.timeScheduled.map((time, idx) => (
-                                        <div
-                                            key={`${index}-${idx}`}
-                                            className="flex justify-between items-center p-3 bg-gray-700 rounded-lg shadow"
-                                        >
-                                            <div className="flex-1">
-                                                <p className="font-bold text-white">{med.name}</p>
-                                                <p className="text-gray-400">Scheduled: {time}</p>
-                                            </div>
-                                            {med.timeAdministered === time ? (
-                                                <span className="text-green-400">✅ Administered at {med.timeAdministered}</span>
-                                            ) : (
-                                                <button
-                                                    className="bg-red-800 text-white px-3 py-1 rounded"
-                                                    onClick={() => {
-                                                        setShowResubmit(true);
-                                                        setSelectedData({
-                                                            patientId: selectedPatient,
-                                                            medicationId: med.medicationId,
-                                                        });
-                                                    }}
-                                                >
-                                                    ❌ Missed (Resubmit)
-                                                </button>
-                                            )}
+                                    <div
+                                        key={index}
+                                        className="flex justify-between items-center p-3 bg-gray-700 rounded-lg shadow"
+                                    >
+                                        <div className="flex-1">
+                                            <p className="font-bold text-white">{med.name}</p>
+                                            <p className="text-gray-400">Code: {med.code}</p>
+                                            <p className="text-gray-400">Equivalent to: {med.equivalentTo}</p>
+                                            <p className="text-gray-400">Instructions: {med.instructions}</p>
+                                            <p className="text-gray-400">Quantity: {med.quantity}</p>
+                                            <p className="text-gray-400">Diagnosis: {med.diagnosis}</p>
+                                            <p className="text-gray-400">Time Administered: {med.timeAdministered}</p>
                                         </div>
-                                    ))
+                                        <button
+                                            className="bg-green-600 text-white px-3 py-1 rounded"
+                                            onClick={() => {
+                                                setShowResubmit(true);
+                                                setSelectedData({
+                                                    patientId: selectedPatient,
+                                                    medicationId: med.medicationId,
+                                                });
+                                            }}
+                                        >
+                                            ➕ Add
+                                        </button>
+                                    </div>
                                 ))}
                             </div>
                         </div>
