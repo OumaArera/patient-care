@@ -69,7 +69,7 @@ const MedAdministration = () => {
         return acc;
     }, {});
 
-    const days = Object.entries(dailyTimeline);
+    const days = Object.entries(dailyTimeline).sort((a, b) => moment(b[0]).diff(moment(a[0])));
     const itemsPerPage = 2;
     const pageCount = Math.ceil(days.length / itemsPerPage);
     const displayedDays = days.slice(currentPage * itemsPerPage, currentPage * itemsPerPage + itemsPerPage);
