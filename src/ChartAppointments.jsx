@@ -25,7 +25,7 @@ const ChartAppointments = () => {
   const closeAppointmentModal = () => {
     setShowAppointment(false);
     setSelectedPatientId(null);
-};
+  };
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">

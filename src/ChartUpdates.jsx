@@ -8,7 +8,7 @@ const ChartUpdate = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [patientManagers, setPatientManagers] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
-  const [viewUpdate, setViewUpdate] = useState(false);
+  const [showUpdates, setShowUpdates] = useState(false);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -24,12 +24,13 @@ const ChartUpdate = () => {
 
   const handleUpdateClick = (patientId) => {
     setSelectedPatientId(patientId);
-    setViewUpdate(true);
   };
 
-  const handleCloseModal = () => {
-    setViewUpdate(false);
+  const closeUpdateModal = () => {
+    setShowUpdates(false);
+    setSelectedPatientId(null);
   };
+
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -51,7 +52,10 @@ const ChartUpdate = () => {
               <div className="flex justify-center mt-4">
                 <button
                   className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
-                  onClick={() => handleUpdateClick(patient.patientId)}
+                  onClick={() => {
+                    handleUpdateClick(patient.patientId)
+                    setShowUpdates(true);
+                  }}
                 >
                   Updates
                 </button>
@@ -60,9 +64,29 @@ const ChartUpdate = () => {
           ))}
         </div>
       )}
+
+      {showUpdates && (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closeUpdateModal}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Update patientId={selectedPatientId} />
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={closeUpdateModal}
+            >
+              ✖
+            </button>
+          </div>
+        </div>
+      )}
       
       {/* Overlay Modal for Update */}
-      {viewUpdate && (
+      {/* {showUpdates && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
           onClick={handleCloseModal} // Close when clicking outside
@@ -80,7 +104,7 @@ const ChartUpdate = () => {
             <Update patientId={selectedPatientId} />
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
