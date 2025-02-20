@@ -56,7 +56,7 @@ const ChartAppointments = () => {
 
       {selectedPatientId && (
         <div
-          className="fixed inset-0 bg-black w-[80vw] h-[80vh] bg-opacity-50 flex justify-center items-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
           onClick={() => setSelectedPatientId(null)}
         >
           <div
