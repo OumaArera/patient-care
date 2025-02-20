@@ -50,23 +50,30 @@ const MedAdministration = () => {
         const { medication, timeAdministered } = admin;
         const administeredMoment = moment.utc(timeAdministered).tz("Africa/Nairobi");
         const administeredDay = administeredMoment.format("YYYY-MM-DD");
-        const time = administeredMoment.format("HH:mm");
 
         if (!acc[administeredDay]) {
-            acc[administeredDay] = [];
+            acc[administeredDay] = {};
         }
 
-        acc[administeredDay].push({
-            name: medication.medicationName,
-            code: medication.medicationCode,
-            equivalentTo: medication.equivalentTo,
-            instructions: medication.instructions,
-            quantity: medication.quantity,
-            diagnosis: medication.diagnosis,
-            timeScheduled: medication.medicationTimes,
-            timeAdministered: time,
-            medicationId: medication.medicationId,
-        });
+        if (!acc[administeredDay][medication.medicationId]) {
+            acc[administeredDay][medication.medicationId] = {
+                details: {
+                    name: medication.medicationName,
+                    code: medication.medicationCode,
+                    equivalentTo: medication.equivalentTo,
+                    instructions: medication.instructions,
+                    quantity: medication.quantity,
+                    diagnosis: medication.diagnosis,
+                    medicationTimes: medication.medicationTimes,
+                    medicationId: medication.medicationId,
+                },
+                timesAdministered: [],
+            };
+        }
+
+        acc[administeredDay][medication.medicationId].timesAdministered.push(
+            administeredMoment.format("HH:mm")
+        );
 
         return acc;
     }, {});
@@ -104,33 +111,38 @@ const MedAdministration = () => {
                     {Object.entries(dailyTimeline).map(([day, medications]) => (
                         <div key={day} className="mb-6 border-b border-gray-700 pb-4">
                             <h3 className="text-xl font-bold text-blue-300 mb-3">📅 {moment(day).format("MMMM D, YYYY")}</h3>
-                            <div className="space-y-2">
-                                {medications.map((med, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex justify-between items-center p-3 bg-gray-700 rounded-lg shadow"
-                                    >
-                                        <div className="flex-1">
-                                            <p className="font-bold text-white">{med.name}</p>
-                                            <p className="text-gray-400">Code: {med.code}</p>
-                                            <p className="text-gray-400">Equivalent to: {med.equivalentTo}</p>
-                                            <p className="text-gray-400">Instructions: {med.instructions}</p>
-                                            <p className="text-gray-400">Quantity: {med.quantity}</p>
-                                            <p className="text-gray-400">Diagnosis: {med.diagnosis}</p>
-                                            <p className="text-gray-400">Time Administered: {med.timeAdministered}</p>
+                            <div className="space-y-4">
+                                {Object.values(medications).map((med, index) => (
+                                    <div key={index} className="grid grid-cols-2 gap-4 items-start p-3 bg-gray-700 rounded-lg shadow">
+                                        <div>
+                                            <p className="font-bold text-white">{med.details.name}</p>
+                                            <p className="text-gray-400">Code: {med.details.code}</p>
+                                            <p className="text-gray-400">Equivalent to: {med.details.equivalentTo}</p>
+                                            <p className="text-gray-400">Instructions: {med.details.instructions}</p>
+                                            <p className="text-gray-400">Quantity: {med.details.quantity}</p>
+                                            <p className="text-gray-400">Diagnosis: {med.details.diagnosis}</p>
+                                            <p className="text-gray-400">Medication Times: {med.details.medicationTimes.join(", ")}</p>
+                                            <button
+                                                className="mt-2 bg-green-600 text-white px-3 py-1 rounded"
+                                                onClick={() => {
+                                                    setShowResubmit(true);
+                                                    setSelectedData({
+                                                        patientId: selectedPatient,
+                                                        medicationId: med.details.medicationId,
+                                                    });
+                                                }}
+                                            >
+                                                ➕ Add
+                                            </button>
                                         </div>
-                                        <button
-                                            className="bg-green-600 text-white px-3 py-1 rounded"
-                                            onClick={() => {
-                                                setShowResubmit(true);
-                                                setSelectedData({
-                                                    patientId: selectedPatient,
-                                                    medicationId: med.medicationId,
-                                                });
-                                            }}
-                                        >
-                                            ➕ Add
-                                        </button>
+                                        <div>
+                                            <h4 className="text-lg font-semibold text-white mb-2">Time Administered</h4>
+                                            <div className="space-y-1">
+                                                {med.timesAdministered.map((time, idx) => (
+                                                    <div key={idx} className="text-gray-300">✅ {time}</div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
