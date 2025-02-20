@@ -66,10 +66,10 @@ const ChartAppointments = () => {
             <h3 className="text-xl font-bold text-white mb-4">Submit Appointment</h3>
             <Appointment patientId={selectedPatientId} />
             <button
-              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              className="absolute top-2 right-2 text-white hover:text-gray-400 text-xl"
               onClick={() => setSelectedPatientId(null)}
             >
-              Close
+              ✖
             </button>
           </div>
         </div>
