@@ -8,6 +8,7 @@ const ChartAppointments = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [patientManagers, setPatientManagers] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
+  const [showAppointment, setShowAppointment] = useState(false);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -20,6 +21,11 @@ const ChartAppointments = () => {
       .catch(() => {})
       .finally(() => setLoadingPatients(false));
   }, []);
+
+  const closeAppointmentModal = () => {
+    setShowAppointment(false);
+    setSelectedPatientId(null);
+};
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -54,19 +60,19 @@ const ChartAppointments = () => {
         </div>
       )}
 
-      {selectedPatientId && (
+      {showAppointment && (
         <div
-          className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
-          onClick={() => setSelectedPatientId(null)}
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closeAppointmentModal}
         >
           <div
-            className="relative bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto border border-gray-700"
+            className="bg-gray-800 p-6 rounded-lg shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <Appointment patientId={selectedPatientId} />
             <button
-              className="absolute top-2 right-2 text-white hover:text-gray-400 text-xl"
-              onClick={() => setSelectedPatientId(null)}
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={closeAppointmentModal}
             >
               ✖
             </button>
