@@ -16,7 +16,6 @@ const ChartPatient = () => {
   const [chartData, setChartData] = useState([]);
   const [charts, setCharts] = useState([]);
   const [showNewCharts, setShowNewCharts] = useState(false);
-  const [show, setShow] = useState(false);
   const overlayRef = useRef(null);
 
   const fetchAllChartData = async (patientId) => {
@@ -51,28 +50,23 @@ const ChartPatient = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (overlayRef.current && !overlayRef.current.contains(event.target)) {
-  //       setShowNewCharts(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (overlayRef.current && !overlayRef.current.contains(event.target)) {
+        setShowNewCharts(false);
+      }
+    };
 
-  //   if (showNewCharts) {
-  //     document.addEventListener("mousedown", handleClickOutside);
-  //   }
+    if (showNewCharts) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
 
-  //   return () => document.removeEventListener("mousedown", handleClickOutside);
-  // }, [showNewCharts]);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showNewCharts]);
 
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
   const currentPatients = patientManagers.slice(indexOfFirstPatient, indexOfLastPatient);
-
-  const closeChartsModal = () => {
-    setShow(false);
-    setChartData([]);
-  };
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -103,7 +97,7 @@ const ChartPatient = () => {
                   ) : charts.length > 0 && chartData.length > 0 && selectedPatientId === patient.patientId ? (
                     <button
                       className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                      onClick={() => setShow(true)}
+                      onClick={() => setShowNewCharts(true)}
                     >
                       View Charts
                     </button>
@@ -117,28 +111,8 @@ const ChartPatient = () => {
                   )}
                 </div>
 
-                {show && selectedPatientId === patient.patientId && charts.length > 0 && chartData.length > 0 && (
-                  <div
-                    className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
-                    onClick={closeChartsModal}
-                  >
-                    <div
-                      className="bg-gray-800 p-6 rounded-lg shadow-lg"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <NewCharts charts={charts} chartsData={chartData} />
-                      <button
-                        className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
-                        onClick={closeChartsModal}
-                      >
-                        ✖
-                      </button>
-                    </div>
-                  </div>
-                )}
-
                 {/* Overlay for NewCharts */}
-                {/* {showNewCharts && selectedPatientId === patient.patientId && charts.length > 0 && chartData.length > 0 && (
+                {showNewCharts && selectedPatientId === patient.patientId && charts.length > 0 && chartData.length > 0 && (
                   <div 
                     className="absolute top-2 bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto z-50 border border-gray-700"
                     >
@@ -150,7 +124,7 @@ const ChartPatient = () => {
                     </button>
                     <NewCharts charts={charts} chartsData={chartData} />
                 </div>
-                )} */}
+                )}
               </div>
             ))}
           </div>
