@@ -34,11 +34,11 @@ const Appointment = ({ patientId }) => {
     setLoading(true);
 
     const payload = {
-      patientId,
+      patient: patientId,
       dateTaken,
       nextAppointmentDate,
-      details,
       type,
+      ...(details && { details }),
     };
     try {
         const response = await postAppointments(payload);
