@@ -170,10 +170,10 @@ const Updates = () => {
                 </table>
             )}
             {showResubmitUpdate && (
-                // <div
-                //     className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-                //     onClick={closeResubmitModal}
-                // >
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                    onClick={closeResubmitModal}
+                >
                     <div
                         className="bg-gray-800 p-6 rounded-lg shadow-lg"
                         onClick={(e) => e.stopPropagation()}
@@ -187,7 +187,7 @@ const Updates = () => {
                             Close
                         </button>
                     </div>
-                // </div>
+                </div>
             )}
         </div>
     );

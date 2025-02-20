@@ -24,8 +24,9 @@ const ResubmitUpdate = ({ patientId }) => {
   };
 
   const handleSubmit = async () => {
-    if (error || !date) return;
+    if (error) return;
     setLoading(true);
+
     const data = {
       patient: patientId,
       type: updateType,
@@ -33,6 +34,7 @@ const ResubmitUpdate = ({ patientId }) => {
       notes,
       ...(updateType === "monthly" && weight ? { weight: weight } : {}),
     };
+
     try {
       const response = await postUpdates(data);
       if (response?.error) {
@@ -111,9 +113,9 @@ const ResubmitUpdate = ({ patientId }) => {
       )}
 
       <button
-        className={`px-4 py-2 rounded-md ${date ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"}`}
+        className={`px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700`}
         onClick={handleSubmit}
-        disabled={!date || loading}
+        disabled={loading}
       >
         {loading ? "Submitting..." : "Submit"}
       </button>
