@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import { errorHandler } from "../services/errorHandler";
+import { postAppointments } from "../services/postAppointments";
 
 const Appointment = ({ patientId }) => {
   const [dateTaken, setDateTaken] = useState("");
   const [nextAppointmentDate, setNextAppointmentDate] = useState("");
   const [details, setDetails] = useState("");
   const [type, setType] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const appointmentTypes = [
     "Primary Care Provider (PCP)",
@@ -18,17 +22,15 @@ const Appointment = ({ patientId }) => {
     "Other",
   ];
 
-  const validateAndSubmit = () => {
+  const validateAndSubmit = async () => {
     if (!dateTaken || !nextAppointmentDate || !type) {
-      setError("Please fill in all required fields.");
+        setErrors(["Please fill in all required fields."]);
       return;
     }
     if (new Date(nextAppointmentDate) <= new Date(dateTaken)) {
-      setError("Next appointment date must be later than the selected date.");
+        setErrors(["Next appointment date must be later than the selected date."]);
       return;
     }
-
-    setError(""); // Clear errors if valid
 
     const payload = {
       patientId,
@@ -37,8 +39,21 @@ const Appointment = ({ patientId }) => {
       details,
       type,
     };
-
-    console.log("Payload:", payload);
+    try {
+        const response = await postAppointments(payload);
+        if (response?.error){
+            setErrors(errorHandler(response.error));
+            setTimeout(() => setErrors([]), 5000);
+        }else{
+            setMessage(["Appointment marked successfully."]);
+            setTimeout(() => setMessage(""), 5000);
+        }
+    } catch (error) {
+        setErrors([`Errors: ${error}`]);
+        setTimeout(() => setErrors([]), 5000);
+    } finally{
+        setLoading(false);
+    }
   };
 
   return (
@@ -87,16 +102,21 @@ const Appointment = ({ patientId }) => {
         className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
       />
 
-      {/* Error Message */}
-      {error && <p className="text-red-500 mb-2">{error}</p>}
-
+        {message && <p className="text-green-600">{message}</p>}
+        {errors.length > 0 && (
+          <div className="mb-4 p-3 bg-red-800 rounded">
+            {errors.map((error, index) => (
+              <p key={index} className="text-sm text-white">{error}</p>
+            ))}
+          </div>
+        )}
       {/* Submit Button */}
       <button
         onClick={validateAndSubmit}
         className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition disabled:bg-gray-500"
         disabled={!dateTaken || !nextAppointmentDate || !type}
       >
-        Submit
+        {loading ? "Submitting...": "Submit"}
       </button>
     </div>
   );
