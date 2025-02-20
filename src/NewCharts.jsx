@@ -18,6 +18,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState(null);
+  const [timer, setTimer] = useState(false);
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     behaviors.map(() => null) 
   );
@@ -69,6 +70,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const isWithinAllowedTime = () => {
     const now = new Date();
     const hours = now.getHours();
+    setTimer(true);
     return hours >= 19 && hours < 21; // 7 PM to 8:59 PM
   };
 
@@ -169,6 +171,7 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
+      {timer && (<p className="text-red-600">Charts must be submitted within 7PM - 9PM</p>)}
       <button
         onClick={handleSubmit}
         className={`px-6 py-3 rounded-lg flex items-center justify-center ${
