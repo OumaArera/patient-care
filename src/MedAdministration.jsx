@@ -178,7 +178,7 @@ const MedAdministration = () => {
                         className="bg-gray-800 p-6 rounded-lg shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h3 className="text-xl font-bold text-white mb-4">Resubmit Medication</h3>
+                        <h3 className="text-xl font-bold text-white mb-4">Submit Medication</h3>
                         <ResubmitMedAdmin
                             patient={selectedData.patientId}
                             medication={selectedData.medicationId}

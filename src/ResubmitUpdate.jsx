@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { postUpdates } from "../services/postUpdates";
 import { errorHandler } from "../services/errorHandler";
 
-const Update = ({ patientId }) => {
+const ResubmitUpdate = ({ patientId }) => {
   const [updateType, setUpdateType] = useState("weekly");
   const [date, setDate] = useState("");
   const [notes, setNotes] = useState("");
@@ -10,28 +10,7 @@ const Update = ({ patientId }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
-  const [message, setMessage] = useState([]);
-
-  useEffect(() => {
-    const today = new Date();
-    const day = today.getDay();
-    const dateOfMonth = today.getDate();
-    const hour = today.getHours();
-
-    if (updateType === "weekly") {
-      if (day === 5 && hour >= 0 && hour <= 23) {
-        setDate(today.toISOString().split("T")[0]);
-      } else {
-        setDate("");
-      }
-    } else if (updateType === "monthly") {
-      if ([1, 2, 3].includes(dateOfMonth)) {
-        setDate(today.toISOString().split("T")[0]);
-      } else {
-        setDate("");
-      }
-    }
-  }, [updateType]);
+  const [message, setMessage] = useState("");
 
   const handleWeightChange = (e) => {
     setWeight(e.target.value);
@@ -64,7 +43,7 @@ const Update = ({ patientId }) => {
         setNotes("");
         setDate("");
         setWeight("");
-        setMessage(["Update successfully registered."]);
+        setMessage("Update successfully registered.");
         setTimeout(() => setMessage(""), 5000);
       }
     } catch (error) {
@@ -77,7 +56,7 @@ const Update = ({ patientId }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Update Resident Data</h2>
+      <h2 className="text-2xl font-bold mb-4">Resubmit Resident Data</h2>
 
       <label className="block mb-2">Select Update Type:</label>
       <select
@@ -89,13 +68,14 @@ const Update = ({ patientId }) => {
         <option value="monthly">Monthly</option>
       </select>
 
-      <label className="block mb-2">Date:</label>
+      <label className="block mb-2">Select Date:</label>
       <input
-        type="text"
-        value={date || "Not available"}
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
         className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
-        disabled
       />
+
       {error && <p className="text-red-500 mb-2">{error}</p>}
 
       <label className="block mb-2">Notes:</label>
@@ -141,4 +121,4 @@ const Update = ({ patientId }) => {
   );
 };
 
-export default Update;
+export default ResubmitUpdate;

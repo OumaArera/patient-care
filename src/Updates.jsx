@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getUpdates } from "../services/getUpdates";
 import { Loader } from "lucide-react";
+import ResubmitUpdate from "./ResubmitUpdate";
 
 const Updates = () => {
     const [loadingPatients, setLoadingPatients] = useState(false);
@@ -11,6 +12,7 @@ const Updates = () => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedMonth, setSelectedMonth] = useState("");
+    const [showResubmitUpdate, setShowResubmitUpdate] = useState(false);
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -48,6 +50,11 @@ const Updates = () => {
             (!selectedMonth || (updateDate.getMonth() + 1).toString() === selectedMonth)
         );
     });
+
+    const closeResubmitModal = () => {
+        setShowResubmitUpdate(false);
+        setSelectedPatient(null);
+    };
     
 
     // Count occurrences of each patientName
@@ -78,6 +85,15 @@ const Updates = () => {
                             </option>
                         ))}
                     </select>
+                )}
+
+                {selectedPatient && (
+                    <button
+                        className="p-2 bg-blue-600 text-white rounded"
+                        onClick={() => setShowResubmitUpdate(true)}
+                    >
+                        New Update
+                    </button>
                 )}
 
                 {patients.length > 0 && (
@@ -152,6 +168,26 @@ const Updates = () => {
                         })}
                     </tbody>
                 </table>
+            )}
+            {showResubmitUpdate && (
+                // <div
+                //     className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+                //     onClick={closeResubmitModal}
+                // >
+                    <div
+                        className="bg-gray-800 p-6 rounded-lg shadow-lg"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h3 className="text-xl font-bold text-white mb-4">Submit Update</h3>
+                        <ResubmitUpdate patientId={selectedPatient}/>
+                        <button
+                            className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+                            onClick={closeResubmitModal}
+                        >
+                            Close
+                        </button>
+                    </div>
+                // </div>
             )}
         </div>
     );
