@@ -1,163 +1,106 @@
-import React, { useState } from "react";
-import { updateAppointment } from "../services/updateAppointment";
-import { errorHandler } from "../services/errorHandler";
+import React, {useEffect, useState} from "react";
+import { getAppointments } from "../services/getAppointments";
+import { fetchPatients } from "../services/fetchPatients";
+import { Loader } from "lucide-react";
 
-const Appointments = ({ appointments }) => {
-    if (!appointments || appointments.length === 0)
-        return <p className="text-gray-400">No appointments available.</p>;
+const Appointments = () =>{
+  const [residents, setResidents] = useState([]);
+  const [loadingResidents, setLoadingResidents] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [appointments, setAppointments] = useState([]);
+  const [selectedResident, setSelectedResident] = useState(null);
 
-    // Get the latest appointment based on `createdAt`
-    const latestAppointment = appointments.reduce(
-        (latest, current) =>
-        new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest,
-        appointments[0]
-    );
+  useEffect(() => {
+    setLoadingResidents(true);
+    fetchPatients()
+        .then((data) => {
+          setResidents(Array.isArray(data.responseObject) ? data.responseObject : []);
+          setLoadingResidents(false);
+        })
+        .catch(() => {
+          setLoadingResidents(false);
+        });
+  }, []);
 
-    const {
-        appointmentId,
-        patientId,
-        patientName,
-        weeklyAppointments,
-        fortnightAppointments,
-        monthlyAppointments,
-        attendedTo: originalAttendedTo,
-    } = latestAppointment;
+  
 
-    // Helper function to check if an appointment can be updated
-    const canUpdate = (date) => {
-    const today = new Date();
-    const appointmentDate = new Date(date);
-    const diffInDays = (today - appointmentDate) / (1000 * 60 * 60 * 24);
-    return diffInDays >= -2 && diffInDays <= 0; // Allow updates if today or past 2 days
-    };
-
-  // Initialize form state with original values
-    const [formData, setFormData] = useState({
-    weeklyAppointments: [...weeklyAppointments],
-    fortnightAppointments: [...fortnightAppointments],
-    monthlyAppointments: [...monthlyAppointments],
-    patient: patientId,
-    });
-   const [loading, setLoading] = useState(false);
-   const [errors, setErrors] = useState([]);
-   const [message, setMessage] = useState([]);
-
-  const [attendedTo, setAttendedTo] = useState([]);
-
-  // Handle date changes
-  const handleDateChange = (type, index, newDate) => {
-    setFormData((prevData) => {
-      const updatedAppointments = [...prevData[type]];
-      updatedAppointments[index] = { ...updatedAppointments[index], date: newDate };
-
-      return { ...prevData, [type]: updatedAppointments };
-    });
-
-    setAttendedTo((prevAttended) => [
-      ...prevAttended,
-      { type, dateTaken: newDate},
-    ]);
-  };
-
-  // Log the data when button is clicked
-  const handleSubmit = async () => {
+  const fetchAppointments = (patientId) =>{
+    if (!patientId) return;
     setLoading(true);
-    const payload = {
-      weeklyAppointments: formData.weeklyAppointments,
-      fortnightAppointments: formData.fortnightAppointments,
-      monthlyAppointments: formData.monthlyAppointments,
-      attendedTo: [...originalAttendedTo, ...attendedTo],
-    };
-    try {
-        const response = await updateAppointment(payload, appointmentId);
-        if (response?.error){
-            setErrors(errorHandler(response.error));
-            setTimeout(() => setErrors([]), 5000);
-        }else{
-            setMessage(["Appointment marked successfully."]);
-            setTimeout(() => setMessage(""), 5000);
-        }
-    } catch (error) {
-        setErrors([`Errors: ${error}`]);
-        setTimeout(() => setErrors([]), 5000);
-    } finally{
+    getAppointments(patientId)
+      .then((data)=>{
+        setAppointments(data);
         setLoading(false);
-    }
-    
+      })
+      .catch(() => setLoading(false))
+  }
+
+  const handleResidentChange = (event) => {
+    const patientId = event.target.value;
+    setSelectedResident(patientId);
+    fetchAppointments(patientId);
   };
 
   return (
-    <div className="text-white">
-      <h2 className="text-xl font-bold mb-4">Appointments for {patientName}</h2>
-
-      {/* Weekly Appointments */}
-      <div className="mb-4 p-4 bg-gray-800 rounded-lg shadow-lg">
-        <h3 className="text-lg font-bold">Weekly Appointments</h3>
-        {weeklyAppointments.map((appt, index) => (
-          <div key={index} className="mb-2">
-            <input
-              type="date"
-              value={formData.weeklyAppointments[index].date}
-              disabled={!canUpdate(appt.date)}
-              onChange={(e) => handleDateChange("weeklyAppointments", index, e.target.value)}
-              className="bg-gray-700 text-white rounded p-2 w-full"
-            />
-            <p className="text-sm text-gray-400">Physician: {appt.physician}</p>
+    <div className="p-6 bg-gray-900 text-white min-h-screen">
+      <h2 className="text-2xl font-bold mb-4 text-blue-400">Resident Appointments</h2>
+      <div className="mb-4 flex space-x-4">
+        {loadingResidents ? (
+          <div className="flex justify-center items-center">
+            <Loader className="animate-spin text-blue-400" size={24} />
+            <p className="text-gray-400">Loading residents...</p>
           </div>
-        ))}
-      </div>
-
-      {/* Fortnight Appointments */}
-      <div className="mb-4 p-4 bg-gray-800 rounded-lg shadow-lg">
-        <h3 className="text-lg font-bold">Fortnight Appointments</h3>
-        {fortnightAppointments.map((appt, index) => (
-          <div key={index} className="mb-2">
-            <input
-              type="date"
-              value={formData.fortnightAppointments[index].date}
-              disabled={!canUpdate(appt.date)}
-              onChange={(e) => handleDateChange("fortnightAppointments", index, e.target.value)}
-              className="bg-gray-700 text-white rounded p-2 w-full"
-            />
-            <p className="text-sm text-gray-400">Physician: {appt.physician}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Monthly Appointments */}
-      <div className="mb-4 p-4 bg-gray-800 rounded-lg shadow-lg">
-        <h3 className="text-lg font-bold">Monthly Appointments</h3>
-        {monthlyAppointments.map((appt, index) => (
-          <div key={index} className="mb-2">
-            <input
-              type="date"
-              value={formData.monthlyAppointments[index].date}
-              disabled={!canUpdate(appt.date)}
-              onChange={(e) => handleDateChange("monthlyAppointments", index, e.target.value)}
-              className="bg-gray-700 text-white rounded p-2 w-full"
-            />
-            <p className="text-sm text-gray-400">Physician: {appt.physician}</p>
-          </div>
-        ))}
-      </div>
-      {message && <p className="text-green-600">{message}</p>}
-        {errors.length > 0 && (
-          <div className="mb-4 p-3 bg-red-800 rounded">
-            {errors.map((error, index) => (
-              <p key={index} className="text-sm text-white">{error}</p>
+        ) : (
+          <select
+            className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            onChange={handleResidentChange}
+            value={selectedResident || ""}
+          >
+            <option value="">Select a Resident</option>
+            {residents.map((resident) => (
+              <option key={resident.patientId} value={resident.patientId}>
+                {`${resident.firstName} ${resident.lastName}`}
+              </option>
             ))}
-          </div>
+          </select>
         )}
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <Loader className="animate-spin text-blue-400" size={24} />
+            <p className="text-gray-400">Loading approintments...</p>
+          </div>
+        ) : (
+          <table className="w-full border-collapse border border-gray-700 text-white">
+            <thead>
+                <tr className="bg-gray-800 text-blue-400">
+                    <th className="border border-gray-700 p-2">Resident Name</th>
+                    <th className="border border-gray-700 p-2">Date Taken</th>
+                    <th className="border border-gray-700 p-2">Type</th>
+                    <th className="border border-gray-700 p-2">Other Datails</th>
+                    <th className="border border-gray-700 p-2">Next Appointment Date</th>
+                </tr>
+            </thead>
+            <tbody>
+              {appointments.map((appointment, index) =>{
+                <tr key={index} className="odd:bg-gray-800 even:bg-gray-700">
+                  <td className="border border-gray-700 p-2 text-center">{appointment.patientName}</td>
+                  <td className="border border-gray-700 p-2">{appointment.dateTaken}</td>
+                  <td className="border border-gray-700 p-2">{appointment.type}</td>
+                  <td className="border border-gray-700 p-2">{appointment.details? appointment.details : ""}</td>
+                  <td className="border border-gray-700 p-2">{appointment.nextAppointmentDate}</td>
 
-      {/* Submit Button */}
-      <button
-        onClick={handleSubmit}
-        className="px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-700"
-      >
-        {loading? "Submitting...": "Submit"}
-      </button>
+                </tr>
+              })
+
+              }
+            </tbody>
+        </table>
+      )}
+
+      </div>
     </div>
-  );
-};
+  )
+
+}
 
 export default Appointments;

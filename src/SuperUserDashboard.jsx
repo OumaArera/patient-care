@@ -18,12 +18,11 @@ import ChartData from "./ChartData";
 import ChartDataCard from "./ChartDataCard";
 import Charts from "./Charts";
 import AllCharts from "./AllCharts";
-import MedicationAdministration from "./MedicationAdministrations";
 import PatientManager from "./PatientManagers";
 import ChangePassword from "./ChangePassword";
-import CreateAppointments from "./CreateAppointments";
 import LandingPage from "./LandingPage";
 import MedAdministration from "./MedAdministration";
+import Appointments from "./Appointments";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -176,7 +175,7 @@ const SuperUserDashboard = () => {
         {/* {activeTab === "charts" && <PendingCharts />} */}
         {activeTab === "assignPatient" && <PatientManager />}
         {activeTab === "updates" && <Updates />}
-        {activeTab === "appointments" && <CreateAppointments />}
+        {activeTab === "appointments" && <Appointments />}
         {activeTab === "createUser" && <CreateUser />}
         {activeTab === "manageUser" && <ManageUser />}
         {activeTab === "users" && <Users />}

@@ -31,7 +31,6 @@ const Updates = () => {
         getUpdates(patientId)
             .then((data) => {
                 setUpdates(data?.responseObject || []);
-                console.log("Updates: ", data?.responseObject);
                 setLoadingUpdates(false);
             })
             .catch(() => setLoadingUpdates(false));
