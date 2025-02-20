@@ -1,54 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { postUpdates } from "../services/postUpdates";
 import { errorHandler } from "../services/errorHandler";
 
 const Update = ({ patientId }) => {
   const [updateType, setUpdateType] = useState("weekly");
   const [date, setDate] = useState("");
-  const [lateReason, setLateReason] = useState("");
   const [notes, setNotes] = useState("");
   const [weight, setWeight] = useState("");
   const [error, setError] = useState("");
-  const [showLateReason, setShowLateReason] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState([]);
 
-
-  const handleDateChange = (e) => {
-    const selectedDate = new Date(e.target.value);
+  useEffect(() => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    setDate(e.target.value);
-    setLateReason("");
-    setError("");
-
-    if (updateType === "monthly") {
-      if (selectedDate > today) {
-        setError("You cannot fill data for upcoming dates.");
-        setShowLateReason(false);
-        return;
-      }
-      const diffDays = (today - selectedDate) / (1000 * 60 * 60 * 24);
-      setShowLateReason(diffDays > 3);
-    }
+    const day = today.getDay();
+    const dateOfMonth = today.getDate();
+    const hour = today.getHours();
 
     if (updateType === "weekly") {
-      if (selectedDate > today) {
-        setError("Weekly updates cannot be in the future.");
-        setShowLateReason(false);
-        return;
+      if (day === 5 && hour >= 0 && hour <= 23) {
+        setDate(today.toISOString().split("T")[0]);
+      } else {
+        setDate("");
       }
-      if (selectedDate.getDay() !== 5) {
-        setError("Weekly updates must only be filled on Friday by 11:59 AM.");
-        setShowLateReason(false);
-        return;
+    } else if (updateType === "monthly") {
+      if ([1, 2, 3].includes(dateOfMonth)) {
+        setDate(today.toISOString().split("T")[0]);
+      } else {
+        setDate("");
       }
-      const diffDays = (today - selectedDate) / (1000 * 60 * 60 * 24);
-      setShowLateReason(diffDays > 0);
     }
-  };
+  }, [updateType]);
 
   const handleWeightChange = (e) => {
     setWeight(e.target.value);
@@ -62,38 +45,34 @@ const Update = ({ patientId }) => {
   };
 
   const handleSubmit = async () => {
-    if (error) return;
+    if (error || !date) return;
     setLoading(true);
     const data = {
-        patient: patientId,
-        type: updateType,
-        dateTaken: date,
-        notes,
-        ...(updateType === "monthly" && weight ? { weight: weight } : {}),
-        ...(showLateReason && lateReason ? { reasonNotFilled: lateReason } : {}),
+      patient: patientId,
+      type: updateType,
+      dateTaken: date,
+      notes,
+      ...(updateType === "monthly" && weight ? { weight: weight } : {}),
     };
     try {
-        const response = await postUpdates(data);
-        if (response?.error){
-            setErrors(errorHandler(response.error));
-            setTimeout(() => setErrors([]), 5000);
-        }else{
-            setUpdateType("weekly");
-            setUpdateType("");
-            setNotes("");
-            setDate("");
-            setLateReason("");
-            setWeight("");
-            setMessage(["Appointment marked successfully."]);
-            setTimeout(() => setMessage(""), 5000);
-        }
-    } catch (error) {
-        setErrors([`Errors: ${error}`]);
+      const response = await postUpdates(data);
+      if (response?.error) {
+        setErrors(errorHandler(response.error));
         setTimeout(() => setErrors([]), 5000);
-    } finally{
-        setLoading(false);
+      } else {
+        setUpdateType("weekly");
+        setNotes("");
+        setDate("");
+        setWeight("");
+        setMessage(["Appointment marked successfully."]);
+        setTimeout(() => setMessage(""), 5000);
+      }
+    } catch (error) {
+      setErrors([`Errors: ${error}`]);
+      setTimeout(() => setErrors([]), 5000);
+    } finally {
+      setLoading(false);
     }
-    
   };
 
   return (
@@ -110,28 +89,14 @@ const Update = ({ patientId }) => {
         <option value="monthly">Monthly</option>
       </select>
 
-      <label className="block mb-2">Select Date:</label>
+      <label className="block mb-2">Date:</label>
       <input
-        type="date"
-        value={date}
-        onChange={handleDateChange}
-        className="mb-4 p-2 border border-gray-700 rounded"
-        required
+        type="text"
+        value={date || "Not available"}
+        className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
+        disabled
       />
       {error && <p className="text-red-500 mb-2">{error}</p>}
-
-      {showLateReason && (
-        <div>
-          <label className="block mb-2">Reason why this was not filled on time:</label>
-          <input
-            type="text"
-            value={lateReason}
-            onChange={(e) => setLateReason(e.target.value)}
-            placeholder="Enter reason for late input"
-            className="mb-4 p-2 border border-gray-700 rounded w-full"
-          />
-        </div>
-      )}
 
       <label className="block mb-2">Notes:</label>
       <textarea
@@ -150,25 +115,27 @@ const Update = ({ patientId }) => {
             value={weight}
             placeholder="Enter weight in pounds"
             onChange={handleWeightChange}
-            onBlur={validateWeight} // Validate onBlur instead of while typing
+            onBlur={validateWeight}
             className="mb-4 p-2 border border-gray-700 rounded w-full"
           />
         </div>
       )}
-        {message && <p className="text-green-600">{message}</p>}
-        {errors.length > 0 && (
-            <div className="mb-4 p-3 bg-red-800 rounded">
-            {errors.map((error, index) => (
-                <p key={index} className="text-sm text-white">{error}</p>
-            ))}
-            </div>
-        )}
+
+      {message && <p className="text-green-600">{message}</p>}
+      {errors.length > 0 && (
+        <div className="mb-4 p-3 bg-red-800 rounded">
+          {errors.map((error, index) => (
+            <p key={index} className="text-sm text-white">{error}</p>
+          ))}
+        </div>
+      )}
 
       <button
-        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        className={`px-4 py-2 rounded-md ${date ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"}`}
         onClick={handleSubmit}
+        disabled={!date || loading}
       >
-        {loading? "Submitting...": "Submit"}
+        {loading ? "Submitting..." : "Submit"}
       </button>
     </div>
   );
