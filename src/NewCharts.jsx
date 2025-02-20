@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { postCharts } from "../services/postCharts";
 import { Loader } from "lucide-react";
-import DatePicker from "react-datepicker";
+import dayjs from "dayjs";
 import { errorHandler } from "../services/errorHandler";
 import "react-datepicker/dist/react-datepicker.css";
 import VitalsComponent from "./VitalsComponent";
@@ -14,11 +14,7 @@ const NewCharts = ({ charts, chartsData }) => {
   // Pick the first chart entry
   const chart = charts[0];
 
-  // Extract behaviors and behavior descriptions
   const [behaviors, setBehaviors] = useState(chart.behaviors);
-  const [dateTaken, setDateTaken] = useState(new Date());
-  const [reasonNotFiled, setReasonNotFiled] = useState(null);
-  const [missingDays, setMissingDays] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState(null);
@@ -33,37 +29,13 @@ const NewCharts = ({ charts, chartsData }) => {
     {status: true, response: '', vitalsType: 'Pain'},
   ])
   const [behaviorsDescription, setBehaviorsDescription] = useState([
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Date"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Outcome"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Trigger"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Behavior_Description"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Care_Giver_Intervention"
-    },
-    {
-        "status": true,
-        "response": "",
-        "descriptionType": "Reported_Provider_And_Careteam"
-    }
-]);
+    {"status": true, "response": "", "descriptionType": "Date"},
+    {"status": true, "response": "", "descriptionType": "Outcome"},
+    {"status": true, "response": "", "descriptionType": "Trigger"},
+    {"status": true, "response": "", "descriptionType": "Behavior_Description"},
+    {"status": true, "response": "", "descriptionType": "Care_Giver_Intervention"},
+    {"status": true, "response": "", "descriptionType": "Reported_Provider_And_Careteam"}
+  ]);
 
   const handleVitalsChange = (index, value) => {
     setVitals((prevVitals) => {
@@ -81,10 +53,7 @@ const NewCharts = ({ charts, chartsData }) => {
     });
   };
   
-  
-
   const handleStatusChange = (index, value) => {
-    // Update the behavior status
     setBehaviorStatuses((prevStatuses) => {
       const updatedStatuses = [...prevStatuses];
       updatedStatuses[index] = value;
@@ -97,24 +66,11 @@ const NewCharts = ({ charts, chartsData }) => {
   };
   
 
-  useEffect(() => {
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-    
-    const recordedDates = new Set(charts.map(entry => new Date(entry.dateTaken).toDateString()));
-    const missing = [];
-
-    for (let d = startOfMonth; d < new Date(); d.setDate(d.getDate() + 1)) {
-      if (!recordedDates.has(d.toDateString())) {
-        missing.push(new Date(d));
-      }
-    }
-
-    setMissingDays(missing);
-    if (missing.length > 0) {
-      setDateTaken(missing[0]);
-    }
-  }, [charts]);
+  const isWithinAllowedTime = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    return hours >= 19 && hours < 21; // 7 PM to 8:59 PM
+  };
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
@@ -125,22 +81,20 @@ const NewCharts = ({ charts, chartsData }) => {
       setLoadingSubmit(false);
       return;
     }
-  
+    const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
     const payload = {
       patient: chart.patientId,
       behaviors,
       behaviorsDescription: behaviorsDescription,
-      dateTaken: dateTaken.toISOString(),
-      vitals,
-      ...(reasonNotFiled ? { reasonNotFiled } : {})
+      dateTaken: time,
+      vitals
     };
-    console.log("Payload: ", payload);
     try {
       const response = await postCharts(payload);
       if (response?.error) {
         setErrors(errorHandler(response.error));
       } else {
-        setMessage(["Chart data posted successfully."]);
+        setMessage(["Chart posted successfully."]);
         setTimeout(() => setMessage(""), 5000);
       }
     } catch (error) {
@@ -155,29 +109,6 @@ const NewCharts = ({ charts, chartsData }) => {
   return (
     <div className="p-6 bg-gray-900 text-white">
       <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {chart.patientName}</h2>
-
-      {/* Missing Date Selection */}
-      {missingDays.length > 0 && (
-        <div className="mb-4">
-          <label className="block mb-2">Select Date & Time:</label>
-          <DatePicker
-            selected={dateTaken}
-            onChange={(date) => setDateTaken(date)}
-            showTimeSelect
-            dateFormat="Pp" // Ensures date + time format
-            className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-            required
-          />
-          <label className="block mt-3">Reason Not Filed:</label>
-          <input
-            type="text"
-            placeholder="Enter reason"
-            className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-            required
-            onChange={(e) => setReasonNotFiled(e.target.value)}
-          />
-        </div>
-      )}
 
       {/* Behaviors Table */}
       <div className="bg-gray-900 p-4 rounded-lg">
@@ -238,17 +169,17 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
-        <button
-          onClick={handleSubmit}
-          className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-            loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
-            vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) 
-              ? "bg-gray-500 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600 text-white"
-          }`}
-          disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
-            vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response)}
-        >
+      <button
+        onClick={handleSubmit}
+        className={`px-6 py-3 rounded-lg flex items-center justify-center ${
+          loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
+          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) || !isWithinAllowedTime()
+            ? "bg-gray-500 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600 text-white"
+        }`}
+        disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
+          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) || !isWithinAllowedTime()}
+      >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
         {message && <p className="text-green-600">{message}</p>}
