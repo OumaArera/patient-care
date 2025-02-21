@@ -69,7 +69,7 @@ const ChartAppointments = () => {
           onClick={closeAppointmentModal}
         >
           <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[65vw] max-h-[80vh] overflow-y-auto"
+            className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <Appointment patientId={selectedPatientId} />

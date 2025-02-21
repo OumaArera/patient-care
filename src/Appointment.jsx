@@ -82,7 +82,7 @@ const Appointment = ({ patientId }) => {
   };
 
   return (
-    <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg max-w-3xl mx-auto">
+    <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Schedule Appointment</h2>
   
       {/* Form Section */}
