@@ -129,7 +129,7 @@ const Appointments = () => {
                   }, [])
                 ) : (
                   <tr>
-                    <td colSpan="5" className="text-center p-4">No appointments available.</td>
+                    <td colSpan="5" className="text-center p-4">No appointments available for this resident.</td>
                   </tr>
                 )}
             </tbody>
@@ -156,11 +156,6 @@ const Appointments = () => {
               </div>
             )}
         </div>
-      )}
-
-      No appointments message
-      {!loading && selectedResident && appointments.length === 0 && (
-        <p className="text-gray-400 text-center mt-4">No appointments found for this resident.</p>
       )}
     </div>
   );
