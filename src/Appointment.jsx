@@ -27,16 +27,19 @@ const Appointment = ({ patientId }) => {
     "Other",
   ];
 
-  useEffect(() => {
+  
+  const fetchAppointments = () =>{
     setLoadingAppointments(true);
     getAppointments(patientId)
-        .then((data) => {
-          console.log("Data: ", data);
-          setAppointments(data);
-        })
-        .catch(() => {})
-        .finally(() => setLoadingAppointments(false));
-    }, []);
+      .then((data) => {
+        setAppointments(data);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingAppointments(false));
+  }
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
 
   const validateAndSubmit = async () => {
@@ -64,6 +67,7 @@ const Appointment = ({ patientId }) => {
             setTimeout(() => setErrors([]), 5000);
         }else{
             setMessage(["Appointment marked successfully."]);
+            fetchAppointments();
             setDateTaken("");
             setDetails("");
             setNextAppointmentDate("");
