@@ -17,9 +17,9 @@ const Update = ({ patientId }) => {
     const day = today.getDay();
     const dateOfMonth = today.getDate();
     const hour = today.getHours();
-
+  
     if (updateType === "weekly") {
-      if (day === 5 && hour >= 0 && hour <= 23) {
+      if (day === 5 && hour < 12) {
         setDate(today.toISOString().split("T")[0]);
       } else {
         setDate("");
@@ -32,6 +32,7 @@ const Update = ({ patientId }) => {
       }
     }
   }, [updateType]);
+  
 
   const handleWeightChange = (e) => {
     setWeight(e.target.value);
@@ -128,6 +129,11 @@ const Update = ({ patientId }) => {
             <p key={index} className="text-sm text-white">{error}</p>
           ))}
         </div>
+      )}
+      {updateType === "weekly" && !date && (
+        <p className="text-red-500 mb-2">
+          Weekly updates must be submitted on Friday before noon.
+        </p>
       )}
 
       <button
