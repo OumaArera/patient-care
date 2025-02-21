@@ -17,9 +17,6 @@ const ResubmitMedAdmin = ({ patient, medication, fetchMedAdmin}) => {
             medication,
             timeAdministered: administeredTime,
         };
-
-        // dayjs().format("YYYY-MM-DD HH:mm:ss")
-        console.log("Resubmission Data:", resubmissionData);
         try {
             const response = await postMedications(resubmissionData);
             if (response?.error) {

@@ -45,6 +45,7 @@ const NewCharts = ({ charts, chartsData }) => {
       return updatedVitals;
     });
   };
+  
 
   const handleChangeBehaviorDescription = (index, value) => {
     setBehaviorsDescription((prevDescriptions) => {

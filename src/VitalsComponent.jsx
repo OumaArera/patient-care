@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const VitalsComponent = ({ vitalsData, handleVitalsChange }) => {
   const [errors, setErrors] = useState({});
-  const [vitals, setVitals] = useState(vitalsData);
+  const vitals = vitalsData;
 
   const validateVitals = () => {
     const newErrors = {};
