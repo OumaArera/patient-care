@@ -93,7 +93,7 @@ const Update = ({ patientId }) => {
       <label className="block mb-2">Date:</label>
       <input
         type="text"
-        value={date || "The monthly updates must be done from date 1, to date 3 of the month"}
+        value={date || "Not Available"}
         className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
         disabled
       />
@@ -121,6 +121,7 @@ const Update = ({ patientId }) => {
           />
         </div>
       )}
+      
 
       {message && <p className="text-green-600">{message}</p>}
       {errors.length > 0 && (
@@ -133,6 +134,12 @@ const Update = ({ patientId }) => {
       {updateType === "weekly" && !date && (
         <p className="text-red-500 mb-2">
           Weekly updates must be submitted on Friday before noon.
+        </p>
+      )}
+
+      {updateType === "monthly" && !date && (
+        <p className="text-red-500 mb-2">
+          The monthly updates must be done from date 1, to date 3 of the month.
         </p>
       )}
 
