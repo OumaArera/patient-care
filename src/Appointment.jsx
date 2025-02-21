@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { errorHandler } from "../services/errorHandler";
 import { postAppointments } from "../services/postAppointments";
 import { getAppointments } from "../services/getAppointments";
+import { Loader } from "lucide-react";
 
 const Appointment = ({ patientId }) => {
   const [dateTaken, setDateTaken] = useState("");
