@@ -14,6 +14,15 @@ const Appointment = ({ patientId }) => {
   const [loading, setLoading] = useState(false);
   const [loadingAppointments, setLoadingAppointments] = useState(false);
   const [appointments, setAppointments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const appointmentsPerPage = 10;
+
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
+
+  const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
+
   
 
   const appointmentTypes = [
@@ -165,8 +174,8 @@ const Appointment = ({ patientId }) => {
                 </tr>
               </thead>
               <tbody>
-                {appointments.length > 0 ? (
-                  appointments.reduce((acc, curr, index, array) => {
+                {currentAppointments.length > 0 ? (
+                  currentAppointments.reduce((acc, curr, index, array) => {
                     const prev = array[index - 1];
                     const showName = !prev || prev.patientName !== curr.patientName;
                     acc.push(
@@ -174,10 +183,7 @@ const Appointment = ({ patientId }) => {
                         {showName ? (
                           <td
                             className="border border-gray-700 p-2 font-semibold align-middle"
-                            rowSpan={
-                              array.filter((appt) => appt.patientName === curr.patientName)
-                                .length
-                            }
+                            rowSpan={array.filter((appt) => appt.patientName === curr.patientName).length}
                           >
                             {curr.patientName}
                           </td>
@@ -192,13 +198,32 @@ const Appointment = ({ patientId }) => {
                   }, [])
                 ) : (
                   <tr>
-                    <td colSpan="5" className="text-center p-4">
-                      No appointments available.
-                    </td>
+                    <td colSpan="5" className="text-center p-4">No appointments available.</td>
                   </tr>
                 )}
               </tbody>
             </table>
+            {totalPages > 1 && (
+                <div className="flex justify-center mt-4 space-x-2">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                    className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+                  <span className="px-4 py-2 bg-gray-800 text-white rounded">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
           </div>
         )}
       </div>
