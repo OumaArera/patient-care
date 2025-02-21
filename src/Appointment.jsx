@@ -188,10 +188,23 @@ const Appointment = ({ patientId }) => {
                             {curr.patientName}
                           </td>
                         ) : null}
-                        <td className="border border-gray-700 p-2">{curr.dateTaken}</td>
+                        {/* <td className="border border-gray-700 p-2">{curr.dateTaken}</td> */}
+                        <td className="border border-gray-700 p-2">
+                          {new Date(curr.dateTaken).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}</td>
                         <td className="border border-gray-700 p-2">{curr.type}</td>
                         <td className="border border-gray-700 p-2">{curr.details}</td>
-                        <td className="border border-gray-700 p-2">{curr.nextAppointmentDate}</td>
+                        {/* <td className="border border-gray-700 p-2">{curr.nextAppointmentDate}</td> */}
+                        <td className="border border-gray-700 p-2">
+                          {new Date(curr.nextAppointmentDate).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </td>
                       </tr>
                     );
                     return acc;
