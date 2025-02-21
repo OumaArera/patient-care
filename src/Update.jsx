@@ -93,7 +93,7 @@ const Update = ({ patientId }) => {
       <label className="block mb-2">Date:</label>
       <input
         type="text"
-        value={date || "Not available"}
+        value={date || "The monthly updates must be done from date 1, to date 3 of the month"}
         className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
         disabled
       />
