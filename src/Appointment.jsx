@@ -188,7 +188,6 @@ const Appointment = ({ patientId }) => {
                             {curr.patientName}
                           </td>
                         ) : null}
-                        {/* <td className="border border-gray-700 p-2">{curr.dateTaken}</td> */}
                         <td className="border border-gray-700 p-2">
                           {new Date(curr.dateTaken).toLocaleDateString("en-US", {
                             year: "numeric",
@@ -196,8 +195,7 @@ const Appointment = ({ patientId }) => {
                             day: "numeric",
                           })}</td>
                         <td className="border border-gray-700 p-2">{curr.type}</td>
-                        <td className="border border-gray-700 p-2">{curr.details}</td>
-                        {/* <td className="border border-gray-700 p-2">{curr.nextAppointmentDate}</td> */}
+                        <td className="border border-gray-700 p-2">{curr.details || ""}</td>
                         <td className="border border-gray-700 p-2">
                           {new Date(curr.nextAppointmentDate).toLocaleDateString("en-US", {
                             year: "numeric",
@@ -217,26 +215,26 @@ const Appointment = ({ patientId }) => {
               </tbody>
             </table>
             {totalPages > 1 && (
-                <div className="flex justify-center mt-4 space-x-2">
-                  <button
-                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
-                  >
-                    Previous
-                  </button>
-                  <span className="px-4 py-2 bg-gray-800 text-white rounded">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <button
-                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
+              <div className="flex justify-center mt-4 space-x-2">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <span className="px-4 py-2 bg-gray-800 text-white rounded">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -9,6 +9,14 @@ const Appointments = () => {
   const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
   const [selectedResident, setSelectedResident] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const appointmentsPerPage = 10;
+
+  const indexOfLastAppointment = currentPage * appointmentsPerPage;
+  const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
+  const currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
+
+  const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
 
   useEffect(() => {
     setLoadingResidents(true);
@@ -86,21 +94,71 @@ const Appointments = () => {
               </tr>
             </thead>
             <tbody>
-              {appointments.map((appointment, index) => (
-                <tr key={index} className="odd:bg-gray-800 even:bg-gray-700">
-                  <td className="border border-gray-700 p-2 text-center">{appointment.patientName}</td>
-                  <td className="border border-gray-700 p-2 text-center">{appointment.dateTaken}</td>
-                  <td className="border border-gray-700 p-2 text-center">{appointment.type}</td>
-                  <td className="border border-gray-700 p-2 text-center">{appointment.details || "-"}</td>
-                  <td className="border border-gray-700 p-2 text-center">{appointment.nextAppointmentDate}</td>
-                </tr>
-              ))}
+            {currentAppointments.length > 0 ? (
+                  currentAppointments.reduce((acc, curr, index, array) => {
+                    const prev = array[index - 1];
+                    const showName = !prev || prev.patientName !== curr.patientName;
+                    acc.push(
+                      <tr key={curr.appointmentId} className="border border-gray-700">
+                        {showName ? (
+                          <td
+                            className="border border-gray-700 p-2 font-semibold align-middle"
+                            rowSpan={array.filter((appt) => appt.patientName === curr.patientName).length}
+                          >
+                            {curr.patientName}
+                          </td>
+                        ) : null}
+                        <td className="border border-gray-700 p-2">
+                          {new Date(curr.dateTaken).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}</td>
+                        <td className="border border-gray-700 p-2">{curr.type}</td>
+                        <td className="border border-gray-700 p-2">{curr.details || ""}</td>
+                        <td className="border border-gray-700 p-2">
+                          {new Date(curr.nextAppointmentDate).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </td>
+                      </tr>
+                    );
+                    return acc;
+                  }, [])
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center p-4">No appointments available.</td>
+                  </tr>
+                )}
             </tbody>
           </table>
+          {totalPages > 1 && (
+              <div className="flex justify-center mt-4 space-x-2">
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <span className="px-4 py-2 bg-gray-800 text-white rounded">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-gray-700 text-white rounded disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
         </div>
       )}
 
-      {/* No appointments message */}
+      No appointments message
       {!loading && selectedResident && appointments.length === 0 && (
         <p className="text-gray-400 text-center mt-4">No appointments found for this resident.</p>
       )}
