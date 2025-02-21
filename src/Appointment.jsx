@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { errorHandler } from "../services/errorHandler";
 import { postAppointments } from "../services/postAppointments";
+import { getAppointments } from "../services/getAppointments";
 
 const Appointment = ({ patientId }) => {
   const [dateTaken, setDateTaken] = useState("");
@@ -10,6 +11,9 @@ const Appointment = ({ patientId }) => {
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingAppointments, setLoadingAppointments] = useState(false);
+  const [appointments, setAppointments] = useState([]);
+  
 
   const appointmentTypes = [
     "Primary Care Provider (PCP)",
@@ -21,6 +25,18 @@ const Appointment = ({ patientId }) => {
     "Specialist",
     "Other",
   ];
+
+  useEffect(() => {
+    setLoadingAppointments(true);
+    getAppointments(patientId)
+        .then((data) => {
+          console.log("Data: ", data);
+          setAppointments(data);
+        })
+        .catch(() => {})
+        .finally(() => setLoadingAppointments(false));
+    }, []);
+
 
   const validateAndSubmit = async () => {
     if (!dateTaken || !nextAppointmentDate || !type) {
@@ -61,51 +77,49 @@ const Appointment = ({ patientId }) => {
   };
 
   return (
-    <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg max-w-lg mx-auto">
+    <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Schedule Appointment</h2>
-
-      {/* Date Taken */}
-      <label className="block mb-2">Date of Appointment:</label>
-      <input
-        type="date"
-        value={dateTaken}
-        onChange={(e) => setDateTaken(e.target.value)}
-        className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
-      />
-
-      {/* Next Appointment Date */}
-      <label className="block mb-2">Next Appointment Date:</label>
-      <input
-        type="date"
-        value={nextAppointmentDate}
-        onChange={(e) => setNextAppointmentDate(e.target.value)}
-        className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
-      />
-
-      {/* Type Selection */}
-      <label className="block mb-2">Appointment Type:</label>
-      <select
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-        className="mb-4 p-2 bg-gray-950 text-white border border-gray-700 rounded w-full"
-      >
-        <option value="">Select Type</option>
-        {appointmentTypes.map((option, index) => (
-          <option key={index} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-
-      {/* Optional Details */}
-      <label className="block mb-2">Additional Details (Optional):</label>
-      <textarea
-        value={details}
-        onChange={(e) => setDetails(e.target.value)}
-        placeholder="Enter any additional details..."
-        className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
-      />
-
+  
+      {/* Form Section */}
+      <div className="mb-6">
+        <label className="block mb-2">Date of Appointment:</label>
+        <input
+          type="date"
+          value={dateTaken}
+          onChange={(e) => setDateTaken(e.target.value)}
+          className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
+        />
+  
+        <label className="block mb-2">Next Appointment Date:</label>
+        <input
+          type="date"
+          value={nextAppointmentDate}
+          onChange={(e) => setNextAppointmentDate(e.target.value)}
+          className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
+        />
+  
+        <label className="block mb-2">Appointment Type:</label>
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="mb-4 p-2 bg-gray-950 text-white border border-gray-700 rounded w-full"
+        >
+          <option value="">Select Type</option>
+          {appointmentTypes.map((option, index) => (
+            <option key={index} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+  
+        <label className="block mb-2">Additional Details (Optional):</label>
+        <textarea
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
+          placeholder="Enter any additional details..."
+          className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
+        />
+        
         {message && <p className="text-green-600">{message}</p>}
         {errors.length > 0 && (
           <div className="mb-4 p-3 bg-red-800 rounded">
@@ -114,16 +128,78 @@ const Appointment = ({ patientId }) => {
             ))}
           </div>
         )}
-      {/* Submit Button */}
-      <button
-        onClick={validateAndSubmit}
-        className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition disabled:bg-gray-500"
-        disabled={!dateTaken || !nextAppointmentDate || !type}
-      >
-        {loading ? "Submitting...": "Submit"}
-      </button>
+  
+        <button
+          onClick={validateAndSubmit}
+          className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition disabled:bg-gray-500"
+          disabled={!dateTaken || !nextAppointmentDate || !type}
+        >
+          {loading ? "Submitting..." : "Submit"}
+        </button>
+      </div>
+  
+      {/* Table Section */}
+      <div className="mt-8">
+        <h2 className="text-xl font-bold mb-4">Appointment History</h2>
+  
+        {loadingAppointments ? (
+          <div className="flex justify-center items-center space-x-2">
+            <Loader className="animate-spin text-blue-400" size={24} />
+            <p className="text-gray-400">Loading appointments...</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-700">
+              <thead>
+                <tr className="bg-gray-800">
+                  <th className="border border-gray-700 p-2 text-left">Resident Name</th>
+                  <th className="border border-gray-700 p-2 text-left">Date Taken</th>
+                  <th className="border border-gray-700 p-2 text-left">Type</th>
+                  <th className="border border-gray-700 p-2 text-left">Other Details</th>
+                  <th className="border border-gray-700 p-2 text-left">Next Appointment Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.length > 0 ? (
+                  appointments.reduce((acc, curr, index, array) => {
+                    const prev = array[index - 1];
+                    const showName = !prev || prev.patientName !== curr.patientName;
+                    acc.push(
+                      <tr key={curr.appointmentId} className="border border-gray-700">
+                        {showName ? (
+                          <td
+                            className="border border-gray-700 p-2 font-semibold align-middle"
+                            rowSpan={
+                              array.filter((appt) => appt.patientName === curr.patientName)
+                                .length
+                            }
+                          >
+                            {curr.patientName}
+                          </td>
+                        ) : null}
+                        <td className="border border-gray-700 p-2">{curr.dateTaken}</td>
+                        <td className="border border-gray-700 p-2">{curr.type}</td>
+                        <td className="border border-gray-700 p-2">{curr.details}</td>
+                        <td className="border border-gray-700 p-2">{curr.nextAppointmentDate}</td>
+                      </tr>
+                    );
+                    return acc;
+                  }, [])
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center p-4">
+                      No appointments available.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
+  
 };
 
 export default Appointment;

@@ -25,7 +25,6 @@ const Appointments = () => {
     setLoading(true);
     getAppointments(patientId)
       .then((data) => {
-        console.log("Data: ", data);
         setAppointments(data);
       })
       .catch(() => {})
