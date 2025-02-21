@@ -71,7 +71,7 @@ const NewCharts = ({ charts, chartsData }) => {
     const now = new Date();
     const hours = now.getHours();
     setTimer(true);
-    return hours >= 19 && hours < 21; // 7 PM to 8:59 PM
+    return hours >= 19 && hours < 21; 
   };
 
   const handleSubmit = async () => {

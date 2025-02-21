@@ -47,7 +47,10 @@ const Appointment = ({ patientId }) => {
             setTimeout(() => setErrors([]), 5000);
         }else{
             setMessage(["Appointment marked successfully."]);
-            setTimeout(() => setMessage(""), 5000);
+            setDateTaken("");
+            setDetails("");
+            setNextAppointmentDate("");
+            setTimeout(() => setMessage(""), 30000);
         }
     } catch (error) {
         setErrors([`Errors: ${error}`]);
