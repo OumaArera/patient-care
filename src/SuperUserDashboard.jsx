@@ -204,7 +204,7 @@ const SuperUserDashboard = () => {
           onClick={closeChangePasswordModal}
         >
           <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-y-auto"
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[40vw] max-h-[50vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <ChangePassword onClose={() => setShowChangePassword(false)} />
@@ -217,19 +217,6 @@ const SuperUserDashboard = () => {
           </div>
         </div>
       )}
-
-        {/* {showChangePassword && (
-          <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">
-            <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
-            <ChangePassword onClose={() => setShowChangePassword(false)} />
-            <button 
-              onClick={() => setShowChangePassword(false)} 
-              className="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600"
-            >
-              Close
-            </button>
-          </div>
-        )} */}
         
       </div>
     </div>
