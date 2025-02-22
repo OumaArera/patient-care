@@ -150,14 +150,6 @@ const Charts = () => {
           )}
         </>
       )}
-
-      {/* {showChartCard && selectedChart && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 p-6 rounded-lg shadow-lg"
-        >
-          <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
-        </div>
-      )} */}
       {showChartCard && selectedChart && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
