@@ -1,10 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
-import { updateChartStatus } from "../services/updateCharts";
-import { errorHandler } from "../services/errorHandler";
 import ChartCard from "./ChartCard";
 import { Loader } from "lucide-react";
+import ResubmitChart from "./ResubmitChart";
 
 const Charts = () => {
   const [patients, setPatients] = useState([]);
@@ -14,24 +13,9 @@ const Charts = () => {
   const [loadingCharts, setLoadingCharts] = useState(false);
   const [showChartCard, setShowChartCard] = useState(false);
   const [selectedChart, setSelectedChart] = useState(null);
-  const [statusMenu, setStatusMenu] = useState(null);
-  const [errors, setErrors] = useState([]);
-  const [message, setMessage] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState({});
-  const statusMenuRef = useRef(null);
+  const [show, setShow] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (statusMenuRef.current && !statusMenuRef.current.contains(event.target)) {
-        setStatusMenu(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   useEffect(() => {
     setLoadingPatients(true);
@@ -60,25 +44,10 @@ const Charts = () => {
       .catch(() => setLoadingCharts(false));
   };
 
-  const handleChartUpdate = async (chartId) => {
-    if (!selectedStatus[chartId]) return;
-    setSubmitting(true);
-    try {
-      const response = await updateChartStatus(chartId, selectedStatus[chartId]);
-      if (response?.error) {
-        setErrors(errorHandler(response.error));
-        setTimeout(() => setErrors(null), 5000);
-      } else {
-        setMessage("Chart updated successfully.");
-        setTimeout(() => setMessage(null), 5000);
-        fetchCharts(selectedPatient);
-      }
-    } catch (err) {
-      setErrors(["Something went wrong. Please try again."]);
-      setTimeout(() => setErrors([]), 5000);
-    } finally {
-      setSubmitting(false);
-    }
+
+  const closeChartModal = () => {
+    setShow(false);
+    setSelectedPatientId(null);
   };
 
   const last20Days = [...Array(31)].map((_, i) => {
@@ -113,19 +82,6 @@ const Charts = () => {
           </select>
           <br />
         </>
-      )}
-
-      {message && (
-        <p className="text-green-600">
-          {message}
-        </p>
-      )}
-      {errors.length > 0 && (
-        <div className="p-3 rounded-md mb-4">
-          {errors.map((error, index) => (
-            <p key={index} className="text-red-700 text-sm">{error}</p>
-          ))}
-        </div>
       )}
 
       {selectedPatient && (
@@ -169,44 +125,15 @@ const Charts = () => {
                           )}
                         </td>
                         <td className="p-2 border border-gray-700">
-                        {chart && (
-                          <>
-                            <button
-                              className="text-gray-100 hover:text-gray-200"
-                              onClick={() => setStatusMenu(chart.chartId)}
-                            >
-                              ⋮
-                            </button>
-                            {statusMenu === chart.chartId && (
-                              <div
-                                ref={statusMenuRef} // Attach ref here
-                                className="absolute bg-white shadow-md rounded-md p-2"
-                              >
-                                <select
-                                  value={selectedStatus[chart.chartId] || ""}
-                                  onChange={(e) =>
-                                    setSelectedStatus({
-                                      ...selectedStatus,
-                                      [chart.chartId]: e.target.value,
-                                    })
-                                  }
-                                  className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
-                                >
-                                  <option value="">Select</option>
-                                  {chart.status !== "approved" && <option value="approved">Approve</option>}
-                                  <option value="declined">Decline</option>
-                                </select>
-                                <button
-                                  className="ml-2 bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-                                  onClick={() => handleChartUpdate(chart.chartId)}
-                                  disabled={submitting || !selectedStatus[chart.chartId]}
-                                >
-                                  {submitting ? "Submitting..." : "Submit"}
-                                </button>
-                              </div>
-                            )}
-                          </>
-                        )}
+                          <button 
+                            className="text-white bg-blue-500 hover:bg-blue-600"
+                            onClick={() =>{
+                              setSelectedPatientId(chart.patientId)
+                              setShow(true)
+                            }}
+                          >
+                          Chart
+                          </button>
                         </td>
                       </tr>
                     );
@@ -225,7 +152,25 @@ const Charts = () => {
           <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
         </div>
       )}
-
+      {show && (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closeChartModal}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ResubmitChart patientId={selectedPatientId} />
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={closeChartModal}
+            >
+              ✖
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
