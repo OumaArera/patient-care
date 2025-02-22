@@ -73,7 +73,8 @@ const Charts = () => {
           >
             <option value="">Select Resident</option>
             {patients.map((patient) => (
-              <option key={patient.patientId} value={patient.patientId}>
+              // setPatient(patient)
+              <option key={patient.patientId} value={patient}>
                 {patient.firstName} {patient.lastName}
               </option>
             ))}
@@ -161,7 +162,7 @@ const Charts = () => {
             className="bg-gray-800 p-6 rounded-lg shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <ResubmitChart patientId={selectedPatient} />
+            <ResubmitChart patient={selectedPatient} />
             <button
               className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
               onClick={closeChartModal}

@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import VitalsComponent from "./VitalsComponent";
 import BehaviorDescriptions from "./BehaviorDescription";
 
-const ResubmitChart = ({ patientId }) => {
+const ResubmitChart = ({ patient }) => {
 
   const [behaviors, setBehaviors] = useState(
     [
@@ -117,7 +117,7 @@ const ResubmitChart = ({ patientId }) => {
     }
     const time = dayjs(selectedDate).format("YYYY-MM-DD HH:mm:ss");
     const payload = {
-      patient: patientId,
+      patient: patient.patientId,
       behaviors,
       behaviorsDescription: behaviorsDescription,
       dateTaken: time,
@@ -142,7 +142,7 @@ const ResubmitChart = ({ patientId }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white">
-      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {chart.patientName}</h2>
+      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {patient.patientName}</h2>
       <div className="mb-4 text-center">
         <label className="block text-lg text-blue-400">Select Date & Time:</label>
         <DatePicker
