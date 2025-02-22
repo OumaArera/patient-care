@@ -27,10 +27,10 @@ const Charts = () => {
   }, []);
 
   const handleSelectPatient = (e) => {
-    const patientId = e.target.value;
-    if (!patientId) return;
-    setSelectedPatient(patientId);
-    fetchCharts(patientId);
+    const patient = e.target.value;
+    if (!patient.patientId) return;
+    setSelectedPatient(patient);
+    fetchCharts(patient.patientId);
   };
 
   const fetchCharts = (patientId) => {
