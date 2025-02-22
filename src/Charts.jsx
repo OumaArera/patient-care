@@ -28,7 +28,7 @@ const Charts = () => {
   }, []);
 
   const handleSelectPatient = (e) => {
-    const patientId = e.target.value;
+    const patientId = Number(e.target.value);
     console.log("Patients: ", patients);
     console.log("Patient ID: ", patientId);
     const patient = patients.find((p) => p.patientId === patientId);
