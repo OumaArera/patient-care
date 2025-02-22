@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Check, X, XCircle } from "lucide-react";
 import moment from "moment";
 
-const ChartCard = ({ chart, onClose }) => {
+const ChartCard = ({ chart }) => {
   const [isOpen, setIsOpen] = useState(true);
   const cardRef = useRef(null);
 
@@ -28,7 +28,6 @@ const ChartCard = ({ chart, onClose }) => {
     const handleClickOutside = (event) => {
       if (cardRef.current && !cardRef.current.contains(event.target)) {
         setIsOpen(false);
-        if (onClose) onClose(); // Call the onClose callback if provided
       }
     };
 
@@ -42,7 +41,6 @@ const ChartCard = ({ chart, onClose }) => {
   // Handle manual close
   const handleClose = () => {
     setIsOpen(false);
-    if (onClose) onClose();
   };
 
   if (!isOpen) return null;
