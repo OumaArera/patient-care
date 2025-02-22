@@ -60,10 +60,6 @@ const SuperUserDashboard = () => {
   // Retrieve logged-in user info
   const fullName = localStorage.getItem("fullName") || "Super User";
 
-  const closeChangePasswordModal = () => {
-    setShowChangePassword(false);
-  };
-
   return (
     <div className="flex min-h-screen bg-black text-white">
       {/* Sidebar */}
@@ -178,8 +174,6 @@ const SuperUserDashboard = () => {
           </div>
         </div>
 
-        {/* Dynamic Content Rendering */}
-        {/* {activeTab === "charts" && <PendingCharts />} */}
         {activeTab === "assignPatient" && <PatientManager />}
         {activeTab === "updates" && <Updates />}
         {activeTab === "appointments" && <Appointments />}
@@ -196,27 +190,6 @@ const SuperUserDashboard = () => {
         {activeTab === "allCharts" && <AllCharts />}  
         {activeTab === "medications" && <MedAdministration />}  
         {activeTab === "dashboard" && <LandingPage />}
-
-
-        {/* {showChangePassword && (
-        <div
-          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
-          onClick={closeChangePasswordModal}
-        >
-          <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <ChangePassword onClose={() => setShowChangePassword(false)} />
-            <button
-              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
-              onClick={closeChangePasswordModal}
-            >
-              ✖
-            </button>
-          </div>
-        </div>
-      )} */}
 
         {showChangePassword && (
           <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">
