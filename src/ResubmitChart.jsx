@@ -142,7 +142,7 @@ const ResubmitChart = ({ patient }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white">
-      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {patient.patientName}</h2>
+      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {patient.firstName} {patient.lastName}</h2>
       <div className="mb-4 text-center">
         <label className="block text-lg text-blue-400">Select Date & Time:</label>
         <DatePicker
