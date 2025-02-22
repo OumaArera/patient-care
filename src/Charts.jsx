@@ -29,10 +29,7 @@ const Charts = () => {
 
   const handleSelectPatient = (e) => {
     const patientId = Number(e.target.value);
-    console.log("Patients: ", patients);
-    console.log("Patient ID: ", patientId);
     const patient = patients.find((p) => p.patientId === patientId);
-    console.log("Selected Patient Data:", patient);
     if (!patient) return;
     setSelectedPatient(patient);
     fetchCharts(patientId);
@@ -48,6 +45,10 @@ const Charts = () => {
       .catch(() => setLoadingCharts(false));
   };
 
+  const closePastChartsModal = () =>{
+     setShowChartCard(false);
+
+  }
 
   const closeChartModal = () => {
     setShow(false);
@@ -150,11 +151,30 @@ const Charts = () => {
         </>
       )}
 
-      {showChartCard && selectedChart && (
+      {/* {showChartCard && selectedChart && (
         <div
           className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 p-6 rounded-lg shadow-lg"
         >
           <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+        </div>
+      )} */}
+      {showChartCard && selectedChart && (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closePastChartsModal}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[60vw] max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ChartCard chart={selectedChart} onClose={() => setShowChartCard(false)} />
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={closePastChartsModal}
+            >
+              ✖
+            </button>
+          </div>
         </div>
       )}
       {show && (
