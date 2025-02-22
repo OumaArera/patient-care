@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
 import { generatePDFReport } from "../services/generatePDFReport";
@@ -13,7 +13,6 @@ const AllCharts = () => {
     const [loadingCharts, setLoadingCharts] = useState(false);
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedMonth, setSelectedMonth] = useState("");
-    const reportRef = useRef();
 
     useEffect(() => {
         setLoadingPatients(true);

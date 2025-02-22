@@ -82,6 +82,9 @@ const SuperUserDashboard = () => {
         <button className={`p-3 flex items-center gap-2 ${activeTab === "updates" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("updates")}>
           <FaNewspaper /> Updates
         </button>
+        <button className={`p-3 flex items-center gap-2 ${activeTab === "appointments" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("appointments")}>
+          <FaCalendarAlt /> Appointments
+        </button>
 
         {/* User Management Dropdown */}
         <div>
@@ -122,15 +125,15 @@ const SuperUserDashboard = () => {
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("chartData")}>
                 <FaChartPie /> Chart Data
               </button>
-              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("chartDataUpdate")}>
+              {/* <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("chartDataUpdate")}>
                 <FaUserTimes /> Chart Data Update
-              </button>
+              </button> */}
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("medicationsAdmin")}>
                 <FaPills /> Create Medication
               </button>
-              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("appointments")}>
+              {/* <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("appointments")}>
                 <FaCalendarAlt /> Appointments
-              </button>
+              </button> */}
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("assignPatient")}>
                 <FaUserCheck /> Assign Resident
               </button>
