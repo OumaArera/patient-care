@@ -14,7 +14,6 @@ const Charts = () => {
   const [showChartCard, setShowChartCard] = useState(false);
   const [selectedChart, setSelectedChart] = useState(null);
   const [show, setShow] = useState(false);
-  const [selectedPatientId, setSelectedPatientId] = useState(null);
 
 
   useEffect(() => {
@@ -47,7 +46,6 @@ const Charts = () => {
 
   const closeChartModal = () => {
     setShow(false);
-    setSelectedPatientId(null);
   };
 
   const last20Days = [...Array(31)].map((_, i) => {
@@ -125,15 +123,17 @@ const Charts = () => {
                           )}
                         </td>
                         <td className="p-2 border border-gray-700">
-                          <button 
-                            className="text-white bg-blue-500 hover:bg-blue-600"
-                            onClick={() =>{
-                              setSelectedPatientId(chart.patientId)
-                              setShow(true)
-                            }}
-                          >
-                          Chart
-                          </button>
+                          {!chart &&(
+                            <button 
+                              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                              onClick={() =>{
+                                setShow(true)
+                              }}
+                            >
+                            Chart
+                            </button>
+                          )}
+                          
                         </td>
                       </tr>
                     );
@@ -161,7 +161,7 @@ const Charts = () => {
             className="bg-gray-800 p-6 rounded-lg shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <ResubmitChart patientId={selectedPatientId} />
+            <ResubmitChart patientId={selectedPatient} />
             <button
               className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
               onClick={closeChartModal}
