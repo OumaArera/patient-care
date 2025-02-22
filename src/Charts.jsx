@@ -20,6 +20,7 @@ const Charts = () => {
     setLoadingPatients(true);
     fetchPatients()
       .then((data) => {
+        console.log("Patients D: ", data?.responseObject);
         setPatients(data?.responseObject || []);
         setLoadingPatients(false);
       })
@@ -28,6 +29,8 @@ const Charts = () => {
 
   const handleSelectPatient = (e) => {
     const patientId = e.target.value;
+    console.log("Patients: ", patients);
+    console.log("Patient ID: ", patientId);
     const patient = patients.find((p) => p.patientId === patientId);
     console.log("Selected Patient Data:", patient);
     if (!patient) return;
