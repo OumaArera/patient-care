@@ -54,13 +54,6 @@ const ChartCard = ({ chart }) => {
             className="p-4 max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden"
           >
             <div className="p-6 relative">
-              {/* Close Button */}
-              <button
-                onClick={handleClose}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-              >
-                <XCircle className="w-6 h-6" />
-              </button>
               <div className="text-sm mb-4 font-bold  text-gray-900">
                 <p>Resident Name: {chart.patientName}</p>
                 <p>Date Taken: {formattedDate}</p>
