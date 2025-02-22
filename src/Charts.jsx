@@ -27,11 +27,12 @@ const Charts = () => {
   }, []);
 
   const handleSelectPatient = (e) => {
-    const patient = e.target.value;
-    console.log("Patient Data: ", patient);
-    if (!patient.patientId) return;
+    const patientId = e.target.value;
+    const patient = patients.find((p) => p.patientId === patientId);
+    console.log("Selected Patient Data:", patient);
+    if (!patient) return;
     setSelectedPatient(patient);
-    fetchCharts(patient.patientId);
+    fetchCharts(patientId);
   };
 
   const fetchCharts = (patientId) => {
@@ -74,8 +75,7 @@ const Charts = () => {
           >
             <option value="">Select Resident</option>
             {patients.map((patient) => (
-              // setPatient(patient)
-              <option key={patient.patientId} value={patient}>
+              <option key={patient.patientId} value={patient.patientId}>
                 {patient.firstName} {patient.lastName}
               </option>
             ))}
