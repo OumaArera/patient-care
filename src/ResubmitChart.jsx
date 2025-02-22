@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import VitalsComponent from "./VitalsComponent";
 import BehaviorDescriptions from "./BehaviorDescription";
 
-const ResubmitChart = ({ patient }) => {
+const ResubmitChart = ({ patient, handleGetCharts }) => {
 
   const [behaviors, setBehaviors] = useState(
     [
@@ -129,6 +129,7 @@ const ResubmitChart = ({ patient }) => {
         setErrors(errorHandler(response.error));
       } else {
         setMessage(["Chart posted successfully."]);
+        setTimeout(() => handleGetCharts(patient.patientId), 5000);
         setTimeout(() => setMessage(""), 5000);
       }
     } catch (error) {

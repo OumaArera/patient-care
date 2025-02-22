@@ -166,7 +166,7 @@ const Charts = () => {
             className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[60vw] max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <ResubmitChart patient={selectedPatient} />
+            <ResubmitChart patient={selectedPatient} handleGetCharts={fetchCharts} />
             <button
               className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
               onClick={closeChartModal}
