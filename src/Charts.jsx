@@ -28,6 +28,7 @@ const Charts = () => {
 
   const handleSelectPatient = (e) => {
     const patient = e.target.value;
+    console.log("Patient Data: ", patient);
     if (!patient.patientId) return;
     setSelectedPatient(patient);
     fetchCharts(patient.patientId);
