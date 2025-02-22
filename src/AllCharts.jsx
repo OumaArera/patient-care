@@ -74,60 +74,58 @@ const AllCharts = () => {
     
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
-            <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">1st EDMONDS</h2>
+        <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">1st EDMONDS</h2>
+        <div className="mb-4">
+            {loadingPatients && (
+            <div className="flex items-center space-x-2">
+                <Loader className="animate-spin text-gray-400" size={20} />
+                <p className="text-gray-400">Loading residents...</p>
+            </div>)}
+            
+            <label className="font-semibold">Select Resident: </label>
+            <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={handlePatientChange} value={selectedPatient || ""}>
+                <option value="">-- Select --</option>
+                {patients.map((p) => (
+                    <option key={p.patientId} value={p.patientId}>
+                        {p.firstName} {p.lastName}
+                    </option>
+                ))}
+            </select>
+        </div>
+        {loadingCharts && (
+            <div className="flex items-center space-x-2">
+                <Loader className="animate-spin text-gray-400" size={20} />
+                <p className="text-gray-400">Loading charts...</p>
+            </div>)}
+        {charts.length > 0 && (
             <div className="mb-4">
-                {loadingPatients && (
-                <div className="flex items-center space-x-2">
-                    <Loader className="animate-spin text-gray-400" size={20} />
-                    <p className="text-gray-400">Loading residents...</p>
-                </div>)}
-                
-                <label className="font-semibold">Select Resident: </label>
-                <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={handlePatientChange} value={selectedPatient || ""}>
-                    <option value="">-- Select --</option>
-                    {patients.map((p) => (
-                        <option key={p.patientId} value={p.patientId}>
-                            {p.firstName} {p.lastName}
-                        </option>
+                <label className="font-semibold">Select Year: </label>
+                <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+                    <option value="">-- Select Year --</option>
+                    {getAvailableYears().map(year => (
+                        <option key={year} value={year}>{year}</option>
                     ))}
                 </select>
+
+                <label className="font-semibold ml-4">Select Month: </label>
+                <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} disabled={!selectedYear}>
+                    <option value="">-- Select Month --</option>
+                    {getAvailableMonths().map(month => (
+                        <option key={month} value={month}>{month}</option>
+                    ))}
+                </select>
+
+                <button className="ml-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={filterCharts}>Filter</button>
             </div>
-            {loadingCharts && (
-                <div className="flex items-center space-x-2">
-                    <Loader className="animate-spin text-gray-400" size={20} />
-                    <p className="text-gray-400">Loading charts...</p>
-                </div>)}
-            {charts.length > 0 && (
-                <div className="mb-4">
-                    <label className="font-semibold">Select Year: </label>
-                    <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
-                        <option value="">-- Select Year --</option>
-                        {getAvailableYears().map(year => (
-                            <option key={year} value={year}>{year}</option>
-                        ))}
-                    </select>
-
-                    <label className="font-semibold ml-4">Select Month: </label>
-                    <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} disabled={!selectedYear}>
-                        <option value="">-- Select Month --</option>
-                        {getAvailableMonths().map(month => (
-                            <option key={month} value={month}>{month}</option>
-                        ))}
-                    </select>
-
-                    <button className="ml-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={filterCharts}>Filter</button>
-                </div>
-            )}
-            {filteredCharts.length > 0 && (
-                <>
-                
-                    <>
-                        <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}>Download Report</button>
-                    </>
-                    <div className="bg-gray-800 p-4 rounded-lg overflow-auto" ref={reportRef}>
-                        <h3 className="font-semibold text-lg text-blue-300">Behavior Log</h3>
-                        <div className="overflow-x-auto max-w-full">
-                            <table id="behaviorTable" className="w-full border-collapse border border-gray-700 text-white">
+        )}
+        {filteredCharts.length > 0 && (
+            <>
+                <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}>Download Report</button>
+                <div className="bg-gray-800 p-4 rounded-lg overflow-auto max-w-[80vw]">
+                    <h3 className="font-semibold text-lg text-blue-300">Behavior Log</h3>
+                    <div className="overflow-x-auto max-w-full">
+                        <div className="w-full overflow-x-auto">
+                            <table id="behaviorTable" className="w-max border-collapse border border-gray-700 text-white">
                                 <thead>
                                     <tr className="bg-gray-700">
                                         <th className="p-3 border border-gray-600">Category</th>
@@ -165,9 +163,11 @@ const AllCharts = () => {
                             </table>
                         </div>
                     </div>
-                </>
-            )}
-        </div>
+                </div>
+            </>
+        )}
+    </div>
+
     );
 };
 

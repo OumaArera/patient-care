@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Check, X, XCircle } from "lucide-react";
+import React from "react";
+import { Check, X } from "lucide-react";
 import moment from "moment";
 
 const ChartCard = ({ chart }) => {
-  // const [isOpen, setIsOpen] = useState(true);
-  // const cardRef = useRef(null);
 
   if (!chart) return null;
 
@@ -23,34 +21,11 @@ const ChartCard = ({ chart }) => {
     return acc;
   }, {});
 
-  // Close the card when clicking outside
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (cardRef.current && !cardRef.current.contains(event.target)) {
-  //       setIsOpen(false);
-  //     }
-  //   };
-
-  //   document.addEventListener("mousedown", handleClickOutside);
-
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
-
-  // Handle manual close
-  // const handleClose = () => {
-  //   setIsOpen(false);
-  // };
-
-  // if (!isOpen) return null;
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
       <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-lg overflow-hidden">
       <div className="max-h-[80vh] overflow-y-auto p-4">
           <div
-            // ref={cardRef}
             className="p-4 max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden"
           >
             <div className="p-6 relative">
