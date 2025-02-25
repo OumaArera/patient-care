@@ -19,6 +19,8 @@ const PatientManager = () => {
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
     const [residents, setResidents] = useState(null);
     const [loadingResident, setLoadingResidents] = useState(false);
+    
+    console.log("State data: ", residents);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,7 +39,7 @@ const PatientManager = () => {
                 setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
                 setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
                 setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
-                console.log("State data: ", residents);
+                
             } catch (error) {
                 setErrors("Failed to fetch data.");
             } finally {
