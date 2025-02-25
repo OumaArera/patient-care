@@ -38,7 +38,6 @@ export const generateMedicationPDFReport = async (medications) => {
                     <th rowspan="2" style="padding: 6px; border: 1px solid #000;">Medication Name</th>
                     <th rowspan="2" style="padding: 6px; border: 1px solid #000;">Scheduled Time</th>
                     ${Array.from({ length: 31 }, (_, i) => `<th style="padding: 6px; border: 1px solid #000;">${i + 1}</th>`).join("")}
-                    <th rowspan="2" style="padding: 6px; border: 1px solid #000;">Caregiver Initials</th>
                 </tr>
             </thead>
             <tbody>`;
@@ -51,8 +50,7 @@ export const generateMedicationPDFReport = async (medications) => {
         if (!medicationMap[medicationName]) {
             medicationMap[medicationName] = {
                 medicationDetails: entry.medication,
-                days: medicationTimes.map(() => Array(31).fill("")),
-                caregivers: []
+                days: medicationTimes.map(() => Array(31).fill(""))
             };
         }
 
@@ -70,7 +68,6 @@ export const generateMedicationPDFReport = async (medications) => {
 
             if (Math.abs(adminTimeInMinutes - scheduledTimeInMinutes) <= 60) {
                 medicationMap[medicationName].days[timeIndex][dayIndex] = "✔";
-                medicationMap[medicationName].caregivers[dayIndex] = entry.careGiverName;
             }
         });
     });
@@ -89,9 +86,6 @@ export const generateMedicationPDFReport = async (medications) => {
             medicationHTML += `
                 <td style="padding: 6px; border: 1px solid #000; text-align: center;">${time}</td>
                 ${data.days[index].map(status => `<td style="padding: 6px; border: 1px solid #000; text-align: center;">${status}</td>`).join("")}
-                <td style="padding: 6px; border: 1px solid #000; text-align: center;">
-                    ${data.caregivers.filter((c, i) => c && data.days[index][i] === "✔").join(", ")}
-                </td>
             </tr>`;
         });
     });
