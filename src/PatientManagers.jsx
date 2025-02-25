@@ -3,6 +3,7 @@ import { fetchPatients } from "../services/fetchPatients";
 import { getCareGivers } from "../services/getCareGivers";
 import { postPatientManager } from "../services/postPatientManagers";
 import { getpatientManagers } from "../services/getPatientManagers";
+import ManagePatient from "./ManagePatients";
 import { Loader } from "lucide-react";
 
 
@@ -14,41 +15,39 @@ const PatientManager = () => {
     const [errors, setErrors] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [message, setMessage] = useState(null);
-    const [patientManager, setPatientManager] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
     const [residents, setResidents] = useState(null);
     const [loadingResident, setLoadingResidents] = useState(false);
+
     
-    console.log("State data: ", residents);
+    const fetchData = async () => {
+        setLoadingResidents(true);
+        setLoadingPatients(true);
+        setLoadingCareGivers(true);
+        setErrors(null);
+
+        try {
+            const [patientManagersData, patientsData, careGiversData] = await Promise.all([
+                getpatientManagers(),
+                fetchPatients(),
+                getCareGivers()
+            ]);
+            console.log("Residents raw: ", patientManagersData);
+            setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
+            setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
+            setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
+            
+        } catch (error) {
+            setErrors("Failed to fetch data.");
+        } finally {
+            setLoadingResidents(false);
+            setLoadingPatients(false);
+            setLoadingCareGivers(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoadingResidents(true);
-            setLoadingPatients(true);
-            setLoadingCareGivers(true);
-            setErrors(null);
-    
-            try {
-                const [patientManagersData, patientsData, careGiversData] = await Promise.all([
-                    getpatientManagers(),
-                    fetchPatients(),
-                    getCareGivers()
-                ]);
-                console.log("Residents raw: ", patientManagersData);
-                setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
-                setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
-                setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
-                
-            } catch (error) {
-                setErrors("Failed to fetch data.");
-            } finally {
-                setLoadingResidents(false);
-                setLoadingPatients(false);
-                setLoadingCareGivers(false);
-            }
-        };
-    
         fetchData();
     }, []);
     
@@ -65,7 +64,7 @@ const PatientManager = () => {
                 setErrors(response?.error);
                 setTimeout(() => setErrors(null), 5000);
             } else {
-                setPatientManager(response.responseObject);
+                // setPatientManager(response.responseObject);
                 setMessage("Resident assigned successfully.");
             }
         } catch (err) {
@@ -145,17 +144,8 @@ const PatientManager = () => {
                 </div>
             )}
 
-            {/* Assigned Patient Managers */}
-            {patientManager.length > 0 && (
-                <div className="mt-6">
-                    <h2 className="text-xl font-bold">Assigned Patient Managers</h2>
-                    {patientManager.map(pm => (
-                        <div key={pm.patientManagerId} className="bg-gray-700 p-4 rounded-lg mt-2">
-                            <p>Patient: {pm.patient.firstName} {pm.patient.lastName}</p>
-                            <p>Caregiver: {pm.careGiver.firstName} {pm.careGiver.lastName}</p>
-                        </div>
-                    ))}
-                </div>
+            {!loadingResident &&(
+                <ManagePatient patientManagers={residents} fetchData={fetchData} />
             )}
         </div>
     );
