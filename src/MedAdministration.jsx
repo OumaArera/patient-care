@@ -4,6 +4,7 @@ import { getMedicationAdmininstration } from "../services/getMedicationAdministr
 import { Loader } from "lucide-react";
 import moment from "moment-timezone";
 import ResubmitMedAdmin from "./ResubmitMedAdmin";
+import { generateMedicationPDFReport } from "../services/generateMedReport";
 
 const MedAdministration = () => {
     const [patients, setPatients] = useState([]);
@@ -14,7 +15,7 @@ const MedAdministration = () => {
     const [showResubmit, setShowResubmit] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
-    console.log("Medications: ", medAdmins);
+    // console.log("Medications: ", medAdmins);
     useEffect(() => {
         setLoading(true);
         fetchPatients()
@@ -101,6 +102,16 @@ const MedAdministration = () => {
                     ))}
                 </select>
             </div>
+            {medAdmins &&(
+                <button 
+                className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={() => generateMedicationPDFReport(medAdmins)}
+            >
+                Download Medications
+            </button>
+            )}
+
+            
 
             <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[78vw] w-full">
                 <div className="overflow-auto max-h-[500px] w-full">
