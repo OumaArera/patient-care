@@ -6,7 +6,7 @@ const ManagePatient = ({ patientManagers, fetchData }) => {
     const [submitting, setSubmitting] = useState(false);
     const [message, setMessage] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4;
+    const itemsPerPage = 8;
 
     // Calculate total pages
     const totalPages = Math.ceil(patientManagers.length / itemsPerPage);

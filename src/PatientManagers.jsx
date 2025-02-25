@@ -18,10 +18,8 @@ const PatientManager = () => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
     const [residents, setResidents] = useState(null);
-    const [loadingResident, setLoadingResidents] = useState(false);
 
     const fetchData = async () => {
-        setLoadingResidents(true);
         setLoadingPatients(true);
         setLoadingCareGivers(true);
         setErrors(null);
@@ -41,7 +39,6 @@ const PatientManager = () => {
         } catch (error) {
             setErrors("Failed to fetch data.");
         } finally {
-            setLoadingResidents(false);
             setLoadingPatients(false);
             setLoadingCareGivers(false);
         }
@@ -64,7 +61,7 @@ const PatientManager = () => {
                 setErrors(response?.error);
                 setTimeout(() => setErrors(null), 5000);
             } else {
-                // setPatientManager(response.responseObject);
+                fetchData();
                 setMessage("Resident assigned successfully.");
             }
         } catch (err) {
@@ -149,9 +146,6 @@ const PatientManager = () => {
                     <ManagePatient patientManagers={residents} fetchData={fetchData} />
                 </div>
             )}
-
-            
-            
         </div>
     );
 };
