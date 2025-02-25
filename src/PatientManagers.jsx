@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCareGivers } from "../services/getCareGivers";
 import { postPatientManager } from "../services/postPatientManagers";
-// import { getPatientManagers } from "../services/getPatientManagers";
+import { getpatientManagers } from "../services/getPatientManagers";
 import { Loader } from "lucide-react";
 
 

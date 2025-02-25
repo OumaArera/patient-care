@@ -1,4 +1,4 @@
-export const getPatientManagers = async (careGiver) => {
+export const getpatientManagers = async (careGiver) => {
   const token = localStorage.getItem("token");
 
   // Construct the base URL
