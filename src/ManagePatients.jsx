@@ -45,7 +45,7 @@ const ManagePatient = ({ patientManagers }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {patientManagers.responseObject.map((manager) => (
+                    {patientManagers.map((manager) => (
                         <tr key={manager.patientManagerId} className="text-center">
                             <td className="border border-gray-300 px-4 py-2">
                                 {manager.patient.firstName} {manager.patient.lastName}
