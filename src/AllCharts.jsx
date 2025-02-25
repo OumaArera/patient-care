@@ -13,6 +13,7 @@ const AllCharts = () => {
     const [loadingCharts, setLoadingCharts] = useState(false);
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedMonth, setSelectedMonth] = useState("");
+    const [vitals, setVitals] = useState([]);
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -62,16 +63,18 @@ const AllCharts = () => {
 
     const filterCharts = () => {
         if (selectedYear && selectedMonth) {
-            console.log("Charts: ", charts);
             const filtered = charts.filter(chart => {
-                
                 const date = new Date(chart.dateTaken);
                 return date.getFullYear() === parseInt(selectedYear) && date.getMonth() + 1 === parseInt(selectedMonth);
             });
-            console.log("Filtered Charts: ", filtered);
+    
+            const extractedVitals = filtered.map(chart => chart.vitals).flat();
+            console.log("Vitals: ", vitals);
             setFilteredCharts(filtered);
+            setVitals(extractedVitals);
         }
     };
+    
 
 
     return (
