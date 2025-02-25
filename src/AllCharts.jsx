@@ -68,7 +68,10 @@ const AllCharts = () => {
                 return date.getFullYear() === parseInt(selectedYear) && date.getMonth() + 1 === parseInt(selectedMonth);
             });
             console.log("Charts: ", filtered);
-            const extractedVitals = filtered.map(chart => chart.vitals).flat();
+            const extractedVitals = filtered.map(chart => ({
+                chartId: chart.chartId,
+                vitals: chart.vitals
+            }));
             console.log("Vitals: ", extractedVitals);
             setFilteredCharts(filtered);
             setVitals(extractedVitals);
