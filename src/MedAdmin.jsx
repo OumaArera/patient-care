@@ -7,6 +7,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
     const [loading, setLoading] = useState(null);
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
+    console.log("MEds: ", meds);
 
     const isTimeWithinRange = (time) => {
         const now = dayjs();
