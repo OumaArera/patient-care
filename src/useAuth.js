@@ -50,8 +50,6 @@ const useAuth = () => {
       clearInterval(checkInactivity);
     };
   }, [navigate]);
-
-
 };
 
 export default useAuth;

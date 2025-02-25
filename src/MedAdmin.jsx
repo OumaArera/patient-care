@@ -16,8 +16,8 @@ const MedAdmin = ({ meds, selectedPatient }) => {
 
     const handleSubmit = async (medicationId, medicationTime) => {
         setLoading(medicationTime);
-        const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
-        console.log("Time: ", time);
+        const time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+        
         const payload = {
             medication: medicationId,
             patient: selectedPatient,
@@ -50,33 +50,33 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                 </div>
             )}
             {message && <p className="text-green-600">{message}</p>}
-            {meds.map((med) => (
-                <div key={med.medicationId} className="border border-gray-700 rounded-lg p-4 shadow-md bg-gray-800">
-                    
+            {meds.filter(med => med.status !== "removed").map((med) => (
+                <div key={med.medicationAdministrationId} className="border border-gray-700 rounded-lg p-4 shadow-md bg-gray-800">
                     <div className="mb-2">
-                        <h2 className="text-lg font-semibold">{med.medicationName} ({med.medicationCode})</h2>
-                        <p className="text-sm text-gray-400">Resident: {med.patientFirstName} {med.patientLastName}</p>
+                        <h2 className="text-lg font-semibold">{med.medication.medicationName} ({med.medication.medicationCode})</h2>
+                        <p className="text-sm text-gray-400">Resident: {med.patientName}</p>
                     </div>
                     <div>
-                        <p><strong>Instructions:</strong> {med.instructions}</p>
-                        <p><strong>Quantity:</strong> {med.quantity}</p>
-                        <p><strong>Diagnosis:</strong> {med.diagnosis}</p>
+                        <p><strong>Instructions:</strong> {med.medication.instructions}</p>
+                        <p><strong>Quantity:</strong> {med.medication.quantity}</p>
+                        <p><strong>Diagnosis:</strong> {med.medication.diagnosis}</p>
                     </div>
-                    <div className="mt-2 space-y-2">
-                        {med.medicationTime.map((time) => (
-                            <div key={time} className="flex items-center gap-4">
-                                <p className="w-20">{time}</p>
-                                <button
-                                    className={`px-4 py-2 rounded w-40 ${isTimeWithinRange(time) ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"}`}
-                                    onClick={() => handleSubmit(med.medicationId, time)}
-                                    disabled={!isTimeWithinRange(time) || loading === time}
-                                >
-                                    {loading === time ? "Submitting..." : "Administer"}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                    
+                    {med.status === "active" && (
+                        <div className="mt-2 space-y-2">
+                            {med.medication.medicationTimes.map((time) => (
+                                <div key={time} className="flex items-center gap-4">
+                                    <p className="w-20">{time}</p>
+                                    <button
+                                        className={`px-4 py-2 rounded w-40 ${isTimeWithinRange(time) ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"}`}
+                                        onClick={() => handleSubmit(med.medication.medicationId, time)}
+                                        disabled={!isTimeWithinRange(time) || loading === time}
+                                    >
+                                        {loading === time ? "Submitting..." : "Administer"}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             ))}
         </div>
