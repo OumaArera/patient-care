@@ -29,8 +29,9 @@ const Medication = () => {
     });
 
     useEffect(() => {
+        if (!formData) return;
         setLoadingMedications(true);
-        fetchMedications(pageNumber, pageSize)
+        fetchMedications(pageNumber, pageSize, formData.patient)
             .then((data) => {
                 setMedications(data);
                 setLoadingMedications(false);
@@ -39,7 +40,7 @@ const Medication = () => {
                 setError("Failed to fetch medications.");
                 setLoadingMedications(false);
             });
-    }, [pageNumber, pageSize]);
+    }, [pageNumber, pageSize, formData.patient]);
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -67,8 +68,6 @@ const Medication = () => {
         setSuccessMessage("");
 
         const token = localStorage.getItem("token");
-
-        console.log(JSON.stringify(formData, null, 2));
 
         try {
             const response = await fetch("https://patient-care-server.onrender.com/api/v1/medications", {

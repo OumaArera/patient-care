@@ -1,9 +1,9 @@
 // fetchMedications.js
-export const fetchMedications = async (pageNumber, pageSize) => {
+export const fetchMedications = async (pageNumber, pageSize, patient) => {
     try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-        `https://patient-care-server.onrender.com/api/v1/medications?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+        `https://patient-care-server.onrender.com/api/v1/medications?pageNumber=${pageNumber}&pageSize=${pageSize}&patient=${patient}`,
         {
             headers: { Authorization: `Bearer ${token}` },
         }
