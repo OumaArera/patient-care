@@ -30,8 +30,6 @@ const PatientManager = () => {
                 fetchPatients(),
                 getCareGivers()
             ]);
-
-            console.log("Residents raw: ", patientManagersData);
             setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
             setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
             setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
@@ -120,26 +118,6 @@ const PatientManager = () => {
             >
                 {submitting ? "Submitting..." : "Submit"}
             </button>
-
-            {/* Selected Patient Card */}
-            {selectedPatient && (
-                <div className="bg-gray-800 p-6 rounded-xl shadow-lg mt-4">
-                    <h3 className="text-blue-400 font-bold text-xl">{selectedPatient.firstName} {selectedPatient.middleNames || ''} {selectedPatient.lastName}</h3>
-                    <p>DOB: {selectedPatient.dateOfBirth}</p>
-                    <p>Diagnosis: {selectedPatient.diagnosis}</p>
-                    <p>Physician: {selectedPatient.physicianName}</p>
-                </div>
-            )}
-
-            {/* Selected Caregiver Card */}
-            {selectedCareGiver && (
-                <div className="bg-gray-800 p-6 rounded-xl shadow-lg mt-4">
-                    <h3 className="text-blue-400 font-bold text-xl">{selectedCareGiver.fullName}</h3>
-                    <p>Email: {selectedCareGiver.email}</p>
-                    <p>Phone: {selectedCareGiver.phoneNumber}</p>
-                    <p>Role: {selectedCareGiver.role}</p>
-                </div>
-            )}
 
             {residents && (
                 <div className="mt-6"> {/* Add margin-top for spacing */}
