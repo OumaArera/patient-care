@@ -143,9 +143,9 @@ const PatientManager = () => {
                 </div>
             )}
 
-            {!loadingResident &&(
-                <ManagePatient patientManagers={residents} />
-            )}
+           
+            <ManagePatient patientManagers={residents} />
+            
         </div>
     );
 };
