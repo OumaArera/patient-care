@@ -22,7 +22,7 @@ const MedicationCard = ({ medication, handleMedication }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(status)
+        body: JSON.stringify({status})
       })
 
       const data = await response.json();
