@@ -27,7 +27,7 @@ const Medication = () => {
         medicationTime: "",
         patient: "",
     });
-
+    console.log("Medications: ", medications);
     
     const handleMedications =()=>{
         if (!formData.patient) {
