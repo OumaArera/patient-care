@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
 import { generatePDFReport } from "../services/generatePDFReport";
+import { generateVitalsPDFReport } from "../services/generateVitals";
 import { Loader } from "lucide-react";
 
 const AllCharts = () => {
@@ -13,7 +14,6 @@ const AllCharts = () => {
     const [loadingCharts, setLoadingCharts] = useState(false);
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedMonth, setSelectedMonth] = useState("");
-    const [vitals, setVitals] = useState([]);
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -67,18 +67,9 @@ const AllCharts = () => {
                 const date = new Date(chart.dateTaken);
                 return date.getFullYear() === parseInt(selectedYear) && date.getMonth() + 1 === parseInt(selectedMonth);
             });
-            console.log("Charts: ", filtered);
-            const extractedVitals = filtered.map(chart => ({
-                chartId: chart.chartId,
-                vitals: chart.vitals
-            }));
-            console.log("Vitals: ", extractedVitals);
             setFilteredCharts(filtered);
-            setVitals(extractedVitals);
         }
     };
-    
-    console.log("Vitals State: ", vitals);
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -128,7 +119,16 @@ const AllCharts = () => {
         )}
         {filteredCharts.length > 0 && (
             <>
-                <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}>Download Charts</button>
+                <button 
+                className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" 
+                onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}
+                >Download Charts
+                </button>
+                <button 
+                className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" 
+                onClick={() => generateVitalsPDFReport(filteredCharts, selectedYear, selectedMonth)}
+                >Download Vitals
+                </button>
                 <div className="bg-gray-800 p-4 rounded-lg overflow-auto max-w-[80vw]">
                     <h3 className="font-semibold text-lg text-blue-300">Behavior Log</h3>
                     <div className="overflow-x-auto max-w-full">
