@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { deletePatientManagers } from "../services/deletePatient";
 
 
-const ManagePatient = ({ patientManagers }) => {
+const ManagePatient = ({ patientManagers, fetchData }) => {
     const [errors, setErrors] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [message, setMessage] = useState(null);
@@ -20,7 +20,7 @@ const ManagePatient = ({ patientManagers }) => {
             } else {
                 setMessage("Patient manager deleted successfully");
                 setTimeout(() => setMessage(""), 5000)
-                // fetchData()
+                fetchData()
             }
             
         } catch (error) {
@@ -33,12 +33,12 @@ const ManagePatient = ({ patientManagers }) => {
     };
 
     return (
-        <div className="overflow-x-auto">
+        <div className=" top-2 overflow-x-auto">
             {errors && <p className="text-red-500">{errors}</p>}
             {message && <p className="text-green-500">{message}</p>}
             <table className="table-auto w-full border-collapse border border-gray-300">
                 <thead>
-                    <tr className="bg-gray-200">
+                    <tr className="bg-gray-700">
                         <th className="border border-gray-300 px-4 py-2">Patient Name</th>
                         <th className="border border-gray-300 px-4 py-2">Care Giver</th>
                         <th className="border border-gray-300 px-4 py-2">Action</th>
