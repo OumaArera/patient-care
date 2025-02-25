@@ -143,8 +143,10 @@ const PatientManager = () => {
                 </div>
             )}
 
-           
+           {residents &&(
             <ManagePatient patientManagers={residents} />
+           )}
+            
             
         </div>
     );
