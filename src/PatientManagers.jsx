@@ -20,42 +20,35 @@ const PatientManager = () => {
     const [residents, setResidents] = useState(null);
     const [loadingResident, setLoadingResidents] = useState(false);
 
-    const fetchData = async () => {
-        setLoadingResidents(true);
-        setLoadingPatients(true);
-        setLoadingCareGivers(true);
-        setErrors(null);
-    
-        try {
-            const [patientManagersData, patientsData, careGiversData] = await Promise.all([
-                getpatientManagers(),
-                fetchPatients(),
-                getCareGivers()
-            ]);
-    
-            console.log("Patient Managers Data:", patientManagersData);
-            console.log("Patients Data:", patientsData);
-            console.log("Caregivers Data:", careGiversData);
-    
-            setResidents(patientManagersData?.responseObject ?? []);
-            setPatients(patientsData?.responseObject ?? []);
-            setCareGivers(careGiversData?.responseObject ?? []);
-            
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setErrors("Failed to fetch data.");
-        } finally {
-            setLoadingResidents(false);
-            setLoadingPatients(false);
-            setLoadingCareGivers(false);
-        }
-    };
-    
-
     useEffect(() => {
-        fetchData(); 
+        const fetchData = async () => {
+            setLoadingResidents(true);
+            setLoadingPatients(true);
+            setLoadingCareGivers(true);
+            setErrors(null);
+    
+            try {
+                const [patientManagersData, patientsData, careGiversData] = await Promise.all([
+                    getpatientManagers(),
+                    fetchPatients(),
+                    getCareGivers()
+                ]);
+                console.log("Residents raw: ", patientManagersData);
+                setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
+                setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
+                setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
+                
+            } catch (error) {
+                setErrors("Failed to fetch data.");
+            } finally {
+                setLoadingResidents(false);
+                setLoadingPatients(false);
+                setLoadingCareGivers(false);
+            }
+        };
+    
+        fetchData();
     }, []);
-
     
 
 
@@ -151,7 +144,7 @@ const PatientManager = () => {
             )}
 
             {!loadingResident &&(
-                <ManagePatient patientManagers={residents} fetchData={fetchData} />
+                <ManagePatient patientManagers={residents} />
             )}
         </div>
     );

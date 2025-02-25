@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { deletePatientManagers } from "../services/deletePatient";
 
 
-const ManagePatient = ({ patientManagers, fetchData }) => {
+const ManagePatient = ({ patientManagers }) => {
     const [errors, setErrors] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [message, setMessage] = useState(null);
@@ -20,7 +20,7 @@ const ManagePatient = ({ patientManagers, fetchData }) => {
             } else {
                 setMessage("Patient manager deleted successfully");
                 setTimeout(() => setMessage(""), 5000)
-                fetchData()
+                // fetchData()
             }
             
         } catch (error) {
