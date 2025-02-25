@@ -63,6 +63,17 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                         <p><strong>Instructions:</strong> {med.instructions}</p>
                         <p><strong>Quantity:</strong> {med.quantity}</p>
                         <p><strong>Diagnosis:</strong> {med.diagnosis}</p>
+                        <p className="text-sm font-semibold mt-2">
+                            Status:{" "}
+                            <span
+                                className={`px-2 py-1 rounded text-xs font-bold 
+                                    ${med.status === "active" ? "bg-green-500 text-white" : ""} 
+                                    ${med.status === "paused" ? "bg-yellow-500 text-gray-900" : ""} 
+                                    ${med.status === "removed" ? "bg-red-500 text-white" : ""}`}
+                                >
+                                {med.status.charAt(0).toUpperCase() + med.status.slice(1)}
+                            </span>
+                        </p>
                     </div>
                     <div className="mt-2 space-y-2">
                         {med.medicationTime.map((time) => (
