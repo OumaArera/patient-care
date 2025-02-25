@@ -29,7 +29,7 @@ const PatientManager = () => {
     
             try {
                 const [patientManagersData, patientsData, careGiversData] = await Promise.all([
-                    getPatientManagers(),
+                    getpatientManagers(),
                     fetchPatients(),
                     getCareGivers()
                 ]);
