@@ -82,13 +82,7 @@ const CreateAppointments = () => {
         <div className="bg-gray-900 text-white min-h-screen">
             <h2 className="text-xl font-bold mb-4 text-blue-400">Create Appointment</h2>
             
-            {/* {errors.length > 0 && (
-                <div className="mb-4 p-3 bg-red-800 rounded">
-                    {errors.map((error, index) => (
-                        <p key={index} className="text-sm text-white">{error}</p>
-                    ))}
-                </div>
-            )} */}
+            
 
             <div className="mb-4">
                 {loadingPatients ? (

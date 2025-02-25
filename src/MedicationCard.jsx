@@ -1,10 +1,47 @@
 import React, { useState } from "react";
+import { errorHandler } from "../services/errorHandler";
+const URL ="https://patient-care-server.onrender.com/api/v1/medications";
 
-const MedicationCard = ({ medication }) => {
+
+const MedicationCard = ({ medication, handleMedication }) => {
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState([]);
 
-  const handleSubmit = () => {
-    console.log(`Medication ID: ${medication.medicationId}, New Status: ${status}`);
+  const token = localStorage.getItem("token");
+
+  const handleSubmit = async () => {
+    if (!token || !status) return;
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${URL}/${medication.medicationId}`, {
+        method: "PUT",
+        headers:{
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(status)
+      })
+
+      const data = await response.json();
+
+      if (!response.ok){
+        setErrors(errorHandler(data?.responseObject?.errors));
+        setTimeout(() => setErrors([]), 10000);
+      }else{
+        setMessage("Status changed successfully");
+        setTimeout(() => setMessage(""), 2000);
+        handleMedication()
+      }
+      
+    } catch (error) {
+      setErrors(errorHandler(`An error occured. Please try again`));
+      setTimeout(() => setErrors([]), 10000);
+    } finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -15,6 +52,7 @@ const MedicationCard = ({ medication }) => {
       <p className="text-sm">Instructions: {medication.instructions}</p>
       <p className="text-sm">Quantity: {medication.quantity}</p>
       <p className="text-sm">Diagnosis: {medication.diagnosis}</p>
+      <p className="text-sm">Status: {medication.status}</p>
 
       <div className="mt-2">
         <p className="text-sm font-semibold">Times:</p>
@@ -61,8 +99,16 @@ const MedicationCard = ({ medication }) => {
           className="mt-2 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-gray-400"
           disabled={!status}
         >
-          Submit
+          {loading? "Submitting...": "Submit"}
         </button>
+        {errors.length > 0 && (
+          <div className="mb-4 p-3 bg-white rounded">
+            {errors.map((error, index) => (
+              <p key={index} className="text-sm text-red-600">{error}</p>
+            ))}
+          </div>
+      )}
+      {message && <p className="text-green-600">{message}</p>}
       </div>
     </div>
   );

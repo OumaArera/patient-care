@@ -151,8 +151,8 @@ const CreateUser = () => {
             <div>
               <label className="block text-gray-300 mb-1">Role</label>
               <select name="role" value={formData.role} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
+                <option value="">Select Role</option>
                 <option value="care giver">Care Giver</option>
-                <option value="manager">Manager</option>
                 <option value="superuser">Superuser</option>
               </select>
             </div>
