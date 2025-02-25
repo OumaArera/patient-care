@@ -25,20 +25,24 @@ const PatientManager = () => {
         setLoadingPatients(true);
         setLoadingCareGivers(true);
         setErrors(null);
-
+    
         try {
             const [patientManagersData, patientsData, careGiversData] = await Promise.all([
                 getpatientManagers(),
                 fetchPatients(),
                 getCareGivers()
             ]);
-
-            console.log("Residents raw: ", patientManagersData);
-            setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
-            setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
-            setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
+    
+            console.log("Patient Managers Data:", patientManagersData);
+            console.log("Patients Data:", patientsData);
+            console.log("Caregivers Data:", careGiversData);
+    
+            setResidents(patientManagersData?.responseObject ?? []);
+            setPatients(patientsData?.responseObject ?? []);
+            setCareGivers(careGiversData?.responseObject ?? []);
             
         } catch (error) {
+            console.error("Error fetching data:", error);
             setErrors("Failed to fetch data.");
         } finally {
             setLoadingResidents(false);
@@ -46,6 +50,7 @@ const PatientManager = () => {
             setLoadingCareGivers(false);
         }
     };
+    
 
     useEffect(() => {
         fetchData(); 
