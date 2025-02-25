@@ -33,7 +33,7 @@ const ManagePatient = ({ patientManagers, fetchData }) => {
     };
 
     return (
-        <div className=" top-2 overflow-x-auto">
+        <div className="overflow-x-auto">
             {errors && <p className="text-red-500">{errors}</p>}
             {message && <p className="text-green-500">{message}</p>}
             <table className="table-auto w-full border-collapse border border-gray-300">

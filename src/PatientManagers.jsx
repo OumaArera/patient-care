@@ -144,9 +144,12 @@ const PatientManager = () => {
                 </div>
             )}
 
-           {residents &&(
-            <ManagePatient patientManagers={residents} fetchData={fetchData}/>
-           )}
+            {residents && (
+                <div className="mt-6"> {/* Add margin-top for spacing */}
+                    <ManagePatient patientManagers={residents} fetchData={fetchData} />
+                </div>
+            )}
+
             
             
         </div>
