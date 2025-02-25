@@ -96,8 +96,8 @@ const ChartMedication = () => {
 
       {show && (
         <div
-          // className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
-          className ="absolute top-2 bg-gray-900 p-6 rounded-lg shadow-lg  overflow-y-auto z-50 border border-gray-700"
+          className="fixed inset-0 bg-opacity-50 flex justify-center overflow-y-auto items-center"
+          // className ="absolute bg-gray-900 p-6 rounded-lg shadow-lg  overflow-y-auto border border-gray-700"
           onClick={closeMedicationModal}
         >
           <div
