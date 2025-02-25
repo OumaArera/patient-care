@@ -14,7 +14,7 @@ const MedAdministration = () => {
     const [showResubmit, setShowResubmit] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
-
+    console.log("Medications: ", medAdmins);
     useEffect(() => {
         setLoading(true);
         fetchPatients()
