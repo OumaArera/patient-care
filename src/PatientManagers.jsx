@@ -33,11 +33,11 @@ const PatientManager = () => {
                     fetchPatients(),
                     getCareGivers()
                 ]);
-    
+                console.log("Residents raw: ", patientManagersData);
                 setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
                 setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
                 setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
-                console.log("State data: ", residents)
+                console.log("State data: ", residents);
             } catch (error) {
                 setErrors("Failed to fetch data.");
             } finally {
