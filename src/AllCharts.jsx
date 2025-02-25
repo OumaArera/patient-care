@@ -62,7 +62,9 @@ const AllCharts = () => {
 
     const filterCharts = () => {
         if (selectedYear && selectedMonth) {
+            console.log("Charts: ", charts);
             const filtered = charts.filter(chart => {
+                
                 const date = new Date(chart.dateTaken);
                 return date.getFullYear() === parseInt(selectedYear) && date.getMonth() + 1 === parseInt(selectedMonth);
             });
