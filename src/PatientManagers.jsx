@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCareGivers } from "../services/getCareGivers";
 import { postPatientManager } from "../services/postPatientManagers";
+import { getPatientManagers } from "../services/getPatientManagers";
 import { Loader } from "lucide-react";
+
 
 const PatientManager = () => {
     const [loadingPatients, setLoadingPatients] = useState(false);
@@ -15,32 +17,39 @@ const PatientManager = () => {
     const [patientManager, setPatientManager] = useState([]);
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
-    
-    useEffect(() => {
-        setLoadingPatients(true);
-        fetchPatients()
-            .then((data) => {
-                setPatients(Array.isArray(data.responseObject) ? data.responseObject : []);
-                setLoadingPatients(false);
-            })
-            .catch(() => {
-                setErrors("Failed to fetch patients.");
-                setLoadingPatients(false);
-            });
-    }, []);
+    const [residents, setResidents] = useState(null);
+    const [loadingResident, setLoadingResidents] = useState(false);
 
     useEffect(() => {
-        setLoadingCareGivers(true);
-        getCareGivers()
-            .then((data) => {
-                setCareGivers(Array.isArray(data.responseObject) ? data.responseObject : []);
+        const fetchData = async () => {
+            setLoadingResidents(true);
+            setLoadingPatients(true);
+            setLoadingCareGivers(true);
+            setErrors(null);
+    
+            try {
+                const [patientManagersData, patientsData, careGiversData] = await Promise.all([
+                    getPatientManagers(),
+                    fetchPatients(),
+                    getCareGivers()
+                ]);
+    
+                setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
+                setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
+                setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
+                console.log("State data: ", residents)
+            } catch (error) {
+                setErrors("Failed to fetch data.");
+            } finally {
+                setLoadingResidents(false);
+                setLoadingPatients(false);
                 setLoadingCareGivers(false);
-            })
-            .catch(() => {
-                setErrors("Failed to fetch caregivers.");
-                setLoadingCareGivers(false);
-            });
+            }
+        };
+    
+        fetchData();
     }, []);
+    
 
 
     const handleSubmit = async () => {
@@ -68,13 +77,6 @@ const PatientManager = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h1 className="text-2xl font-bold mb-4">Resident Manager</h1>
-            {/* {errors.length > 0 && (
-                <div className="bg-red-100 p-3 rounded-md mb-4">
-                    {errors.map((error, index) => (
-                        <p key={index} className="text-red-700 text-sm">{error}</p>
-                    ))}
-                </div>
-            )} */}
             {errors && <p className="text-red-500">{errors}</p>}
             {message && <p className="text-green-500">{message}</p>}
 

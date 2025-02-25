@@ -1,10 +1,17 @@
-export const getpatientManagers = async (careGiver) => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(
-      `https://patient-care-server.onrender.com/api/v1/patient-managers?careGiver=${careGiver}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    return response.json();
-  };
+export const getPatientManagers = async (careGiver) => {
+  const token = localStorage.getItem("token");
+
+  // Construct the base URL
+  let url = "https://patient-care-server.onrender.com/api/v1/patient-managers";
+
+  // Append the query parameter only if careGiver is provided
+  if (careGiver) {
+    url += `?careGiver=${encodeURIComponent(careGiver)}`;
+  }
+
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return response.json();
+};
