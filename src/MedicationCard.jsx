@@ -52,7 +52,18 @@ const MedicationCard = ({ medication, handleMedication }) => {
       <p className="text-sm">Instructions: {medication.instructions}</p>
       <p className="text-sm">Quantity: {medication.quantity}</p>
       <p className="text-sm">Diagnosis: {medication.diagnosis}</p>
-      <p className="text-sm">Status: {medication.status}</p>
+      <p className="text-sm font-semibold mt-2">
+        Status:{" "}
+        <span
+          className={`px-2 py-1 rounded text-xs font-bold 
+            ${medication.status === "active" ? "bg-green-500 text-white" : ""} 
+            ${medication.status === "paused" ? "bg-yellow-500 text-gray-900" : ""} 
+            ${medication.status === "removed" ? "bg-red-500 text-white" : ""}`}
+        >
+          {medication.status.charAt(0).toUpperCase() + medication.status.slice(1)}
+        </span>
+      </p>
+
 
       <div className="mt-2">
         <p className="text-sm font-semibold">Times:</p>
