@@ -29,7 +29,10 @@ const Medication = () => {
     });
 
     useEffect(() => {
-        if (!formData) return;
+        if (!formData.patient) {
+            setMedications([]);
+            return;
+        }
         setLoadingMedications(true);
         fetchMedications(pageNumber, pageSize, formData.patient)
             .then((data) => {
