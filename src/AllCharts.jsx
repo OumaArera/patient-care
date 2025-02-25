@@ -66,11 +66,12 @@ const AllCharts = () => {
                 const date = new Date(chart.dateTaken);
                 return date.getFullYear() === parseInt(selectedYear) && date.getMonth() + 1 === parseInt(selectedMonth);
             });
+            console.log("Filtered Charts: ", filtered);
             setFilteredCharts(filtered);
         }
     };
 
-    
+
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
         <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">1st EDMONDS</h2>
@@ -119,7 +120,7 @@ const AllCharts = () => {
         )}
         {filteredCharts.length > 0 && (
             <>
-                <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}>Download Report</button>
+                <button className="mb-4 bg-blue-500 text-white px-4 py-2 rounded" onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}>Download Charts</button>
                 <div className="bg-gray-800 p-4 rounded-lg overflow-auto max-w-[80vw]">
                     <h3 className="font-semibold text-lg text-blue-300">Behavior Log</h3>
                     <div className="overflow-x-auto max-w-full">
