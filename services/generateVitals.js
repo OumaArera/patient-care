@@ -62,7 +62,7 @@ export const generateVitalsPDFReport = async (charts, selectedYear, selectedMont
             vitalsHTML += `
                 <tr>
                     <td style="padding: 6px; border: 1px solid #000;">${date}</td>
-                    <td style="padding: 6px; border: 1px solid #000; text-align: center;">______</td> <!-- Blank Weight -->
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center;"></td> <!-- Blank Weight -->
                     ${vitalsTypes.map(type => `<td style="padding: 6px; border: 1px solid #000; text-align: center;">${vitalsData[type] || "-"}</td>`).join("")}
                     <td style="padding: 6px; border: 1px solid #000; text-align: center;">${chart.careGiver || "-"}</td>
                 </tr>`;

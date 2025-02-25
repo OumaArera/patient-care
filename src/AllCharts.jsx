@@ -119,16 +119,21 @@ const AllCharts = () => {
         )}
         {filteredCharts.length > 0 && (
             <>
-                <button 
-                className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded" 
-                onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}
-                >Download Charts
-                </button>
-                <button 
-                className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded" 
-                onClick={() => generateVitalsPDFReport(filteredCharts, selectedYear, selectedMonth)}
-                >Download Vitals
-                </button>
+                <div className="flex space-x-4">
+                    <button 
+                        className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                        onClick={() => generatePDFReport(filteredCharts, selectedYear, selectedMonth)}
+                    >
+                        Download Charts
+                    </button>
+                    <button 
+                        className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                        onClick={() => generateVitalsPDFReport(filteredCharts, selectedYear, selectedMonth)}
+                    >
+                        Download Vitals
+                    </button>
+                </div>
+
                 <div className="bg-gray-800 p-4 rounded-lg overflow-auto max-w-[80vw]">
                     <h3 className="font-semibold text-lg text-blue-300">Behavior Log</h3>
                     <div className="overflow-x-auto max-w-full">
