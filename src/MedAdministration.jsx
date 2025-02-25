@@ -102,7 +102,7 @@ const MedAdministration = () => {
                     ))}
                 </select>
             </div>
-            {medAdmins &&(
+            {medAdmins && selectedPatient &&(
                 <button 
                 className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
                 onClick={() => generateMedicationPDFReport(medAdmins)}
