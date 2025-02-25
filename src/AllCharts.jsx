@@ -67,15 +67,15 @@ const AllCharts = () => {
                 const date = new Date(chart.dateTaken);
                 return date.getFullYear() === parseInt(selectedYear) && date.getMonth() + 1 === parseInt(selectedMonth);
             });
-    
+            console.log("Charts: ", filtered);
             const extractedVitals = filtered.map(chart => chart.vitals).flat();
-            console.log("Vitals: ", vitals);
+            console.log("Vitals: ", extractedVitals);
             setFilteredCharts(filtered);
             setVitals(extractedVitals);
         }
     };
     
-
+    console.log("Vitals State: ", vitals);
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
