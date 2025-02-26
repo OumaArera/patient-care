@@ -109,7 +109,7 @@ const ChartData = () => {
                         <tr className="bg-gray-900">
                             <th className="p-2 border">Category</th>
                             <th className="p-2 border">Behavior</th>
-                            <th className="p-2 border">Status</th>
+                            {/* <th className="p-2 border">Status</th> */}
                             <th className="p-2 border">Action</th>
                         </tr>
                     </thead>
@@ -121,7 +121,7 @@ const ChartData = () => {
                                         <td rowSpan={items.length} className="p-2 border font-semibold">{category}</td>
                                     )}
                                     <td className="p-2 border">{item.behavior}</td>
-                                    <td className="p-2 border">{item.status}</td>
+                                    {/* <td className="p-2 border">{item.status}</td> */}
                                     <td className="p-2 border">
                                         <button 
                                             onClick={() => deleteBehavior(chartData.indexOf(item))} 
