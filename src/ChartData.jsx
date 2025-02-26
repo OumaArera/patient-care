@@ -104,13 +104,19 @@ const ChartData = () => {
         }));
     };
 
-    useEffect(() =>{
+    useEffect(() => {
         fetchChartData()
-            .then((data)=> {
-                setChartData(data?.responseObject?.behaviors);
+            .then((data) => {
+                if (data?.responseObject) {
+                    const behaviorsArray = Object.values(data.responseObject).flatMap(obj => obj.behaviors);
+                    setChartData(behaviorsArray);
+                }
             })
-            .catch((err) =>{console.log("Error: ", err)})
-    }, [])
+            .catch((err) => {
+                console.log("Error: ", err);
+            });
+    }, []);
+    
     
     console.log("Data: ", chartData);
 
