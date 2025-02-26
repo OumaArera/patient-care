@@ -80,6 +80,8 @@ const ChartData = () => {
     const [message, setMessage] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [chartData, setChartData] = useState([]);
+    const [newBehavior, setNewBehavior] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -168,72 +170,102 @@ const ChartData = () => {
         }
     };
 
+
+    const categories = [...new Set(data.map(item => item.category))];
+    
+    // Function to delete behavior
+    const deleteBehavior = (index) => {
+        const updatedBehaviors = behaviors.filter((_, i) => i !== index);
+        console.log("Remaining behaviors:", updatedBehaviors);
+        setBehaviors(updatedBehaviors);
+    };
+    
+    // Function to add a new behavior
+    const addBehavior = () => {
+        if (newBehavior && selectedCategory) {
+            const newEntry = {
+                status: "Yes",
+                behavior: newBehavior,
+                category: selectedCategory
+            };
+            const updatedBehaviors = [...behaviors, newEntry];
+            console.log("Updated behaviors:", updatedBehaviors);
+            setBehaviors(updatedBehaviors);
+            setNewBehavior("");
+        }
+    };
+    
+    // Group behaviors by category
+    const groupedData = chartData.reduce((acc, item) => {
+        if (!acc[item.category]) acc[item.category] = [];
+        acc[item.category].push(item);
+        return acc;
+    }, {});
+
     return (
         <div className="bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Chart Data</h2>
-            <label className="block text-gray-300">Time to be Taken:</label>
-            <input 
-                type="time" 
-                value={timeToBeTaken} onChange={(e) => setTimeToBeTaken(e.target.value)} 
-                className="border p-2 rounded w-full bg-gray-700 text-white" />
             
-            <label className="block mt-2 text-gray-300">Select Resident:</label>
-            {loadingPatients ? (
-                <div className="flex items-center space-x-2">
-                    <Loader className="animate-spin text-gray-400" size={20} />
-                    <p className="text-gray-400">Loading residents...</p>
-                </div>
-            ) : (
+            <div className="overflow-x-auto">
+                <table className="min-w-full border border-gray-300 text-left">
+                    <thead>
+                        <tr className="bg-gray-200">
+                            <th className="p-2 border">Category</th>
+                            <th className="p-2 border">Behavior</th>
+                            <th className="p-2 border">Status</th>
+                            <th className="p-2 border">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.entries(groupedData).map(([category, items]) => (
+                            items.map((item, index) => (
+                                <tr key={index} className="border">
+                                    {index === 0 && (
+                                        <td rowSpan={items.length} className="p-2 border font-semibold">{category}</td>
+                                    )}
+                                    <td className="p-2 border">{item.behavior}</td>
+                                    <td className="p-2 border">{item.status}</td>
+                                    <td className="p-2 border">
+                                        <button 
+                                            onClick={() => deleteBehavior(behaviors.indexOf(item))} 
+                                            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3 className="text-xl font-semibold mt-6">Add New Behavior</h3>
+            <div className="flex items-center gap-4 mt-4">
                 <select 
-                value={patient} 
-                onChange={(e) => setPatient(e.target.value)} 
-                className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded">
-                    <option className="" value="">Select a Resident</option>
-                    {patients.map((p) => (
-                        <option className="" key={p.patientId} value={p.patientId}>
-                            {p.firstName} {p.lastName}
-                        </option>
+                    onChange={(e) => setSelectedCategory(e.target.value)} 
+                    value={selectedCategory} 
+                    className="border border-gray-300 p-2 rounded w-1/3"
+                >
+                    <option value="">Select Category</option>
+                    {categories.map((category, index) => (
+                        <option key={index} value={category}>{category}</option>
                     ))}
                 </select>
-            )}
-            
-            <table className="w-full border-collapse border border-gray-700 text-white">
-                <thead>
-                    <tr>
-                        <th className="p-3 border border-gray-600">Category</th>
-                        <th className="p-3 border border-gray-600">Behavior</th>
-                        <th className="p-3 border border-gray-600">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Object.entries(behaviors).map(([category, items]) => {
-                        const keys = Object.keys(items);
-                        return keys.map((key, index) => (
-                            <tr 
-                                key={key}
-                                className="bg-gray-900 text-gray-300"
-                            >
-                                {index === 0 && (
-                                    <td 
-                                        className="p-2 border border-gray-700" 
-                                        rowSpan={keys.length}>
-                                        {category}
-                                    </td>
-                                )}
-                                <td className="p-2 border border-gray-700">{key.replace(/_/g, " ")}</td>
-                                <td className="p-2 border border-gray-700">
-                                    <button 
-                                        onClick={() => handleToggle(category, key)} 
-                                        className={`p-2 rounded ${items[key] === "Yes" ? "bg-gray-700" : "bg-red-500"} text-white`}
-                                    >
-                                        {items[key]}
-                                    </button>
-                                </td>
-                            </tr>
-                        ));
-                    })}
-                </tbody>
-            </table>
+                <input 
+                    type="text" 
+                    placeholder="Enter behavior" 
+                    value={newBehavior} 
+                    onChange={(e) => setNewBehavior(e.target.value)}
+                    className="border border-gray-300 p-2 rounded w-1/3"
+                />
+                <button 
+                    onClick={addBehavior} 
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                    Add
+                </button>
+            </div>
             
             <button 
                 onClick={handleSubmit} 
