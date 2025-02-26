@@ -74,7 +74,7 @@ const ChartData = () => {
             behaviors: chartData,
             behaviorsDescription: behaviorsDescriptionArray
         };
-        
+        setSubmitting(false);
         return Object.entries(payload).forEach(([key, value]) => console.log(`${key} : ${value}`))
         // try {
         //     const response = await createChartData(payload);
