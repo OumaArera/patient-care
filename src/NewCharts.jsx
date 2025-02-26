@@ -10,6 +10,7 @@ import BehaviorDescriptions from "./BehaviorDescription";
 const NewCharts = ({ charts, chartsData }) => {
   const chart = chartsData[0];
   const chart_ = charts[0];
+  console.log("Patient: ", charts);
 
   const [behaviors, setBehaviors] = useState(chart.behaviors);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
