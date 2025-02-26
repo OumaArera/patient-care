@@ -117,7 +117,7 @@ const ChartPatient = () => {
                   <div 
                     className="fixed inset-0 flex items-center w-[70vw] h-[80vh] justify-center bg-black bg-opacity-50 z-50"
                   >
-                    <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto border border-gray-700 relative">
+                    <div className="bg-gray-900 p-6 rounded-lg shadow-lg  overflow-y-auto border border-gray-700 relative">
                       <button
                         className="absolute top-2 right-2 text-white hover:text-gray-400"
                         onClick={() => setShowNewCharts(false)}
@@ -127,6 +127,7 @@ const ChartPatient = () => {
                       <NewCharts charts={charts} chartsData={chartData} />
                     </div>
                   </div>
+                
                 )}
 
               </div>
