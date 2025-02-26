@@ -12,7 +12,7 @@ const NewCharts = ({ charts, chartsData }) => {
   //   return <p className="text-red-500 text-center p-4">The resident has not been assigned charts data.</p>;
   // }
   // Pick the first chart entry
-  console.log("Patient: ", charts);
+  // console.log("Patient: ", charts);
   const chart = chartsData[0];
   const chart_ = charts[0];
 
@@ -86,7 +86,7 @@ const NewCharts = ({ charts, chartsData }) => {
     }
     const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
     const payload = {
-      patient: chart.patientId,
+      patient: charts,
       behaviors,
       behaviorsDescription: behaviorsDescription,
       dateTaken: time,
