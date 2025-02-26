@@ -15,7 +15,8 @@ const ChartData = () => {
     const [dataId, setDataId] = useState(null);
 
 
-    useEffect(() => {
+    
+    const getChartData = () =>{
         setLoading(true)
         fetchChartData()
             .then((data) => {
@@ -32,6 +33,9 @@ const ChartData = () => {
                 console.log("Error: ", err);
             })
             .finally(()=> setLoading(false))
+    }
+    useEffect(() => {
+        getChartData()
     }, []);
 
     const handleSubmit = async () => {
@@ -52,6 +56,7 @@ const ChartData = () => {
             }else{
                 setMessage(["Chart data updated successfully."]);
                 setTimeout(() => setMessage(""), 5000);
+                getChartData();
             }
         } catch (err) {
             setErrors(["Something went wrong. Please try again."]);
