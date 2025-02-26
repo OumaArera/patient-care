@@ -13,7 +13,7 @@ const NewCharts = ({ charts, chartsData }) => {
   }
   console.log("Charts Data 2: ", chartsData);
   // Pick the first chart entry
-  const chart = chartsData;
+  const chart = chartsData[0];
 
   const [behaviors, setBehaviors] = useState(chart.behaviors);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
