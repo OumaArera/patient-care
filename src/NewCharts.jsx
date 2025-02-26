@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import VitalsComponent from "./VitalsComponent";
 import BehaviorDescriptions from "./BehaviorDescription";
 
-const NewCharts = ({ charts, chartsData }) => {
+const NewCharts = ({ chartsData }) => {
   if (!chartsData.length) {
     return <p className="text-red-500 text-center p-4">The resident has not been assigned charts data.</p>;
   }
