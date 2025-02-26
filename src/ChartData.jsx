@@ -171,7 +171,7 @@ const ChartData = () => {
                     <select 
                         onChange={(e) => setSelectedCategory(e.target.value)} 
                         value={selectedCategory} 
-                        className="border border-gray-300 p-2 rounded w-1/3"
+                        className="border border-gray-800 text-white p-2 rounded w-1/3"
                     >
                         <option value="">Select Category</option>
                         {categories.map((category, index) => (
