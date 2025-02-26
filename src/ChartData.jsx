@@ -19,8 +19,10 @@ const ChartData = () => {
         fetchChartData()
             .then((data) => {
                 if (data?.responseObject) {
-                    console.log("ID: ", data?.responseObject?.chartDataId);
+                    
                     const behaviorsArray = Object.values(data.responseObject).flatMap(obj => obj.behaviors);
+                    const chartDataIds = Object.values(data?.responseObject).flatMap(obj => obj.chartDataId)
+                    console.log("ID: ", chartDataIds);
                     setChartData(behaviorsArray);
                 }
             })
