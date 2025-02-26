@@ -124,11 +124,10 @@ const ChartPatient = () => {
                       >
                         ✖
                       </button>
-                      <NewCharts patient={patient} chartsData={chartData} />
+                      <NewCharts charts={selectedPatientId} chartsData={chartData} />
                     </div>
                   </div>
                 )}
-
 
               </div>
             ))}
