@@ -1,8 +1,9 @@
-export const updateChartData = async (chartData) => {
+export const updateChartData = async (chartData, dataId) => {
     const token = localStorage.getItem("token");
     if (!token) return;
+    const URL = "https://patient-care-server.onrender.com/api/v1/charts-data";
     try {
-        const response = await fetch("https://patient-care-server.onrender.com/api/v1/charts-data", {
+        const response = await fetch(`${URL}/${dataId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

@@ -12,6 +12,7 @@ const ChartData = () => {
     const [newBehavior, setNewBehavior] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
     const [loading, setLoading] = useState(false);
+    const [dataId, setDataId] = useState(null);
 
 
     useEffect(() => {
@@ -22,7 +23,8 @@ const ChartData = () => {
                     
                     const behaviorsArray = Object.values(data.responseObject).flatMap(obj => obj.behaviors);
                     const chartDataIds = Object.values(data?.responseObject).flatMap(obj => obj.chartDataId)
-                    console.log("ID: ", chartDataIds);
+                    console.log("ID: ", chartDataIds[0]);
+                    setDataId(chartDataIds[0])
                     setChartData(behaviorsArray);
                 }
             })
@@ -33,30 +35,30 @@ const ChartData = () => {
     }, []);
 
     const handleSubmit = async () => {
+        if (!dataId || !chartData) return;
         setSubmitting(true);
         setErrors([]);
         const payload = {
             behaviors: chartData,
         };
-        setSubmitting(false);
-        return Object.entries(payload).forEach(([key, value]) => 
+        Object.entries(payload).forEach(([key, value]) => 
             console.log(`${key} :`, JSON.stringify(value, null, 2))
         );
-        // try {
-        //     const response = await createChartData(payload);
-        //     if (response?.error) {
-        //         setErrors(errorHandler(response?.error));
-        //         setTimeout(() => setErrors([]), 5000);
-        //     }else{
-        //         setMessage(["Chart data posted successfully."]);
-        //         setTimeout(() => setMessage(""), 5000);
-        //     }
-        // } catch (err) {
-        //     setErrors(["Something went wrong. Please try again."]);
-        //     setTimeout(() => setErrors([]), 5000);
-        // } finally {
-        //     setSubmitting(false);
-        // }
+        try {
+            const response = await updateChartData(payload, dataId);
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            }else{
+                setMessage(["Chart data updated successfully."]);
+                setTimeout(() => setMessage(""), 5000);
+            }
+        } catch (err) {
+            setErrors(["Something went wrong. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
 
