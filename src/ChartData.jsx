@@ -171,7 +171,7 @@ const ChartData = () => {
     };
 
 
-    const categories = [...new Set(data.map(item => item.category))];
+    const categories = [...new Set(chartData.map(item => item.category))];
     
     // Function to delete behavior
     const deleteBehavior = (index) => {
