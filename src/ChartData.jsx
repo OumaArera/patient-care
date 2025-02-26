@@ -69,7 +69,6 @@ const ChartData = () => {
         );
 
         const payload = {
-            patient,
             vitals: vitalsArray,
             behaviors: chartData,
             behaviorsDescription: behaviorsDescriptionArray
