@@ -96,7 +96,7 @@ const ChartPatient = () => {
                 <div className="flex justify-between mt-4">
                   {loadingCharts && selectedPatientId === patient.patientId ? (
                     <p className="text-sm text-gray-300">Loading charts...</p>
-                  ) : charts.length > 0 && chartData.length > 0 && selectedPatientId === patient.patientId ? (
+                  ) : chartData.length > 0 && selectedPatientId === patient.patientId ? (
                     <button
                       className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                       onClick={() => setShowNewCharts(true)}
