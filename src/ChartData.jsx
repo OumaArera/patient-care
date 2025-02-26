@@ -113,6 +113,7 @@ const ChartData = () => {
     }, [])
     
     console.log("Data: ", chartData);
+
     const handleSubmit = async () => {
         setSubmitting(true);
         setErrors([]);
