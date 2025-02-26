@@ -20,7 +20,6 @@ const Charts = () => {
     setLoadingPatients(true);
     fetchPatients()
       .then((data) => {
-        console.log("Patients D: ", data?.responseObject);
         setPatients(data?.responseObject || []);
         setLoadingPatients(false);
       })
