@@ -44,20 +44,17 @@ const ChartData = () => {
             })
             .finally(()=> setLoading(false))
     }, []);
-    
-    
-    console.log("Data: ", chartData);
 
     const handleSubmit = async () => {
         setSubmitting(true);
         setErrors([]);
-        const behaviorsArray = Object.entries(chartData).flatMap(([category, items]) =>
-            Object.entries(items).map(([key, value]) => ({
-                category,
-                behavior: key.replace(/_/g, " "),
-                status: value 
-            }))
-        );
+        // const behaviorsArray = Object.entries(chartData).flatMap(([category, items]) =>
+        //     Object.entries(items).map(([key, value]) => ({
+        //         category,
+        //         behavior: key.replace(/_/g, " "),
+        //         status: value 
+        //     }))
+        // );
         const behaviorsDescriptionArray = Object.entries(behaviorsDescription).map(([key, value]) => ({
             descriptionType: key,
             status: value,
@@ -71,28 +68,29 @@ const ChartData = () => {
             })
         );
 
-        const data = {
+        const payload = {
             patient,
             vitals: vitalsArray,
-            behaviors: behaviorsArray,
+            behaviors: chartData,
             behaviorsDescription: behaviorsDescriptionArray
         };
-        Object.entries(data).forEach(([key, value]) => console.log(`${key} : ${value}`))
-        try {
-            const response = await createChartData(data);
-            if (response?.error) {
-                setErrors(errorHandler(response?.error));
-                setTimeout(() => setErrors([]), 5000);
-            }else{
-                setMessage(["Chart data posted successfully."]);
-                setTimeout(() => setMessage(""), 5000);
-            }
-        } catch (err) {
-            setErrors(["Something went wrong. Please try again."]);
-            setTimeout(() => setErrors([]), 5000);
-        } finally {
-            setSubmitting(false);
-        }
+        
+        return Object.entries(payload).forEach(([key, value]) => console.log(`${key} : ${value}`))
+        // try {
+        //     const response = await createChartData(payload);
+        //     if (response?.error) {
+        //         setErrors(errorHandler(response?.error));
+        //         setTimeout(() => setErrors([]), 5000);
+        //     }else{
+        //         setMessage(["Chart data posted successfully."]);
+        //         setTimeout(() => setMessage(""), 5000);
+        //     }
+        // } catch (err) {
+        //     setErrors(["Something went wrong. Please try again."]);
+        //     setTimeout(() => setErrors([]), 5000);
+        // } finally {
+        //     setSubmitting(false);
+        // }
     };
 
 
@@ -168,35 +166,36 @@ const ChartData = () => {
                         ))}
                     </tbody>
                 </table>
+                <h3 className="text-xl font-semibold mt-6">Add New Behavior</h3>
+                <div className="flex items-center gap-4 mt-4">
+                    <select 
+                        onChange={(e) => setSelectedCategory(e.target.value)} 
+                        value={selectedCategory} 
+                        className="border border-gray-300 p-2 rounded w-1/3"
+                    >
+                        <option value="">Select Category</option>
+                        {categories.map((category, index) => (
+                            <option key={index} value={category}>{category}</option>
+                        ))}
+                    </select>
+                    <input 
+                        type="text" 
+                        placeholder="Enter behavior" 
+                        value={newBehavior} 
+                        onChange={(e) => setNewBehavior(e.target.value)}
+                        className="border border-gray-300 p-2 rounded w-1/3"
+                    />
+                    <button 
+                        onClick={addBehavior} 
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
+                        Add
+                    </button>
+                </div>
             </div>
             )}
             
-            <h3 className="text-xl font-semibold mt-6">Add New Behavior</h3>
-            <div className="flex items-center gap-4 mt-4">
-                <select 
-                    onChange={(e) => setSelectedCategory(e.target.value)} 
-                    value={selectedCategory} 
-                    className="border border-gray-300 p-2 rounded w-1/3"
-                >
-                    <option value="">Select Category</option>
-                    {categories.map((category, index) => (
-                        <option key={index} value={category}>{category}</option>
-                    ))}
-                </select>
-                <input 
-                    type="text" 
-                    placeholder="Enter behavior" 
-                    value={newBehavior} 
-                    onChange={(e) => setNewBehavior(e.target.value)}
-                    className="border border-gray-300 p-2 rounded w-1/3"
-                />
-                <button 
-                    onClick={addBehavior} 
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                    Add
-                </button>
-            </div>
+            
             
             <button 
                 onClick={handleSubmit} 
