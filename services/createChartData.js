@@ -1,9 +1,9 @@
-export const createChartData = async (chartData) => {
+export const updateChartData = async (chartData) => {
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
         const response = await fetch("https://patient-care-server.onrender.com/api/v1/charts-data", {
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
