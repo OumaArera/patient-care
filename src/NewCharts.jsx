@@ -110,7 +110,7 @@ const NewCharts = ({ charts, chartsData }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white">
-      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {chart_.patientName}</h2>
+      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {chart_?.patientName}</h2>
 
       {/* Behaviors Table */}
       <div className="bg-gray-900 p-4 rounded-lg">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getpatientManagers } from "../services/getPatientManagers";
 import { getCharts } from "../services/getCharts";
+import { getChartsData } from "../services/getChartData";
 import { fetchChartData } from "../services/fetchChartData";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
@@ -94,7 +95,7 @@ const ChartPatient = () => {
                 <div className="flex justify-between mt-4">
                   {loadingCharts && selectedPatientId === patient.patientId ? (
                     <p className="text-sm text-gray-300">Loading charts...</p>
-                  ) : charts.length > 0 && selectedPatientId === patient.patientId ? (
+                  ) : chartData.length > 0 && selectedPatientId === patient.patientId ? (
                     <button
                       className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                       onClick={() => setShowNewCharts(true)}
