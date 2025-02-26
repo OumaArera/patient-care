@@ -12,6 +12,7 @@ const NewCharts = ({ charts, chartsData }) => {
   //   return <p className="text-red-500 text-center p-4">The resident has not been assigned charts data.</p>;
   // }
   // Pick the first chart entry
+  console.log("Patient: ", charts);
   const chart = chartsData[0];
   const chart_ = charts[0];
 
