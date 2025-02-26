@@ -137,9 +137,9 @@ const ChartData = () => {
                 </div>
             ) : (
                 <div className="overflow-x-auto">
-                <table className="min-w-full border border-gray-900 text-left">
+                <table className="min-w-full border border-gray-800 text-left">
                     <thead>
-                        <tr className="bg-gray-200">
+                        <tr className="bg-gray-900">
                             <th className="p-2 border">Category</th>
                             <th className="p-2 border">Behavior</th>
                             <th className="p-2 border">Status</th>
