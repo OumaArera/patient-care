@@ -113,7 +113,7 @@ const ChartPatient = () => {
                 </div>
 
                 {/* Overlay for NewCharts */}
-                {showNewCharts && selectedPatientId === patient.patientId && charts.length > 0 && chartData.length > 0 && (
+                {showNewCharts && selectedPatientId === patient.patientId && chartData.length > 0 && (
                   <div 
                     className="absolute top-2 bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto z-50 border border-gray-700"
                     >
