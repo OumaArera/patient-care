@@ -118,7 +118,7 @@ const ChartData = () => {
     }, []);
     
     
-    console.log("Data: ", chartData);
+    console.log("Data: ", chartData[0]);
 
     const handleSubmit = async () => {
         setSubmitting(true);
