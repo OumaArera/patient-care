@@ -28,7 +28,6 @@ const ChartPatient = () => {
         fetchChartData(),
       ]);
       setCharts(chartsResponse?.responseObject || []);
-      console.log("Chart Data: ", chartsDataResponse?.responseObject )
       setChartData(chartsDataResponse?.responseObject || []);
     } catch (error) {
       console.error("Error fetching charts:", error);
