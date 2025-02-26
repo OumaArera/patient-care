@@ -7,13 +7,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import VitalsComponent from "./VitalsComponent";
 import BehaviorDescriptions from "./BehaviorDescription";
 
-const NewCharts = ({ chartsData }) => {
+const NewCharts = ({ charts, chartsData }) => {
   if (!chartsData.length) {
     return <p className="text-red-500 text-center p-4">The resident has not been assigned charts data.</p>;
   }
-  console.log("Charts Data 2: ", chartsData);
   // Pick the first chart entry
-  const chart = chartsData[0];
+  const chart = charts[0];
 
   const [behaviors, setBehaviors] = useState(chart.behaviors);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -110,7 +109,7 @@ const NewCharts = ({ chartsData }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white">
-      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts</h2>
+      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {chart.patientName}</h2>
 
       {/* Behaviors Table */}
       <div className="bg-gray-900 p-4 rounded-lg">

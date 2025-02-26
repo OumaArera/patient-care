@@ -15,6 +15,7 @@ const ChartPatient = () => {
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [loadingCharts, setLoadingCharts] = useState(false);
   const [chartData, setChartData] = useState([]);
+  const [charts, setCharts] = useState([]);
   const [showNewCharts, setShowNewCharts] = useState(false);
   const overlayRef = useRef(null);
 
@@ -22,13 +23,13 @@ const ChartPatient = () => {
     setLoadingCharts(true);
     setSelectedPatientId(patientId);
     try {
-      
-      await fetchChartData()
-        .then((data) =>{
-          setChartData(data?.responseObject || []);
-        })
-        .catch(() => {})
-      
+      const [chartsResponse, chartsDataResponse] = await Promise.all([
+        getCharts(patientId),
+        fetchChartData(),
+      ]);
+      setCharts(chartsResponse?.responseObject || []);
+      console.log("Chart Data: ", chartsDataResponse?.responseObject )
+      setChartData(chartsDataResponse?.responseObject || []);
     } catch (error) {
       console.error("Error fetching charts:", error);
     } finally {
@@ -95,7 +96,7 @@ const ChartPatient = () => {
                 <div className="flex justify-between mt-4">
                   {loadingCharts && selectedPatientId === patient.patientId ? (
                     <p className="text-sm text-gray-300">Loading charts...</p>
-                  ) : chartData && selectedPatientId === patient.patientId ? (
+                  ) : charts.length > 0 && chartData.length > 0 && selectedPatientId === patient.patientId ? (
                     <button
                       className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                       onClick={() => setShowNewCharts(true)}
@@ -113,7 +114,7 @@ const ChartPatient = () => {
                 </div>
 
                 {/* Overlay for NewCharts */}
-                {showNewCharts && selectedPatientId === patient.patientId && chartData.length > 0 && (
+                {showNewCharts && selectedPatientId === patient.patientId && charts.length > 0 && chartData.length > 0 && (
                   <div 
                     className="absolute top-2 bg-gray-900 p-6 rounded-lg shadow-lg w-[70vw] h-[80vh] overflow-y-auto z-50 border border-gray-700"
                     >
@@ -123,7 +124,7 @@ const ChartPatient = () => {
                     >
                         ✖
                     </button>
-                    <NewCharts chartsData={chartData} />
+                    <NewCharts charts={charts} chartsData={chartData} />
                 </div>
                 )}
               </div>
