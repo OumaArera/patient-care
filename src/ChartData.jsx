@@ -105,7 +105,7 @@ const ChartData = () => {
     };
 
     useEffect(() =>{
-        fetchChartData()
+        fetchChartData(1, 366)
             .then((data)=> {
                 setChartData(data?.responseObject);
             })
