@@ -12,7 +12,7 @@ const NewCharts = ({ charts, chartsData }) => {
     return <p className="text-red-500 text-center p-4">The resident has not been assigned charts data.</p>;
   }
   // Pick the first chart entry
-  const chart = charts[0];
+  const chart = chartsData;
 
   const [behaviors, setBehaviors] = useState(chart.behaviors);
   const [loadingSubmit, setLoadingSubmit] = useState(false);

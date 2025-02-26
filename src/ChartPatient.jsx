@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { getpatientManagers } from "../services/getPatientManagers";
 import { getCharts } from "../services/getCharts";
 import { getChartsData } from "../services/getChartData";
+import { fetchChartData } from "../services/fetchChartData";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
 import NewCharts from "./NewCharts";
@@ -24,7 +25,7 @@ const ChartPatient = () => {
     try {
       const [chartsResponse, chartsDataResponse] = await Promise.all([
         getCharts(patientId),
-        getChartsData(patientId),
+        fetchChartData(),
       ]);
       setCharts(chartsResponse?.responseObject || []);
       setChartData(chartsDataResponse?.responseObject || []);

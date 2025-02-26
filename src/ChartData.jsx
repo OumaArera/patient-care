@@ -24,7 +24,6 @@ const ChartData = () => {
                     
                     const behaviorsArray = Object.values(data.responseObject).flatMap(obj => obj.behaviors);
                     const chartDataIds = Object.values(data?.responseObject).flatMap(obj => obj.chartDataId)
-                    console.log("ID: ", chartDataIds[0]);
                     setDataId(chartDataIds[0])
                     setChartData(behaviorsArray);
                 }
@@ -45,9 +44,6 @@ const ChartData = () => {
         const payload = {
             behaviors: chartData,
         };
-        Object.entries(payload).forEach(([key, value]) => 
-            console.log(`${key} :`, JSON.stringify(value, null, 2))
-        );
         try {
             const response = await updateChartData(payload, dataId);
             if (response?.error) {
