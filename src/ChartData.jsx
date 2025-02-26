@@ -3,6 +3,8 @@ import { fetchPatients } from "../services/fetchPatients";
 import { createChartData } from "../services/createChartData";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
+import { fetchChartData } from "../services/fetchChartData";
+// import { data } from "react-router-dom";
 
 const ChartData = () => {
     const [behaviors, setBehaviors] = useState({
@@ -77,6 +79,7 @@ const ChartData = () => {
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+    const [chartData, setChartData] = useState([]);
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -100,8 +103,16 @@ const ChartData = () => {
             }
         }));
     };
-    
 
+    useEffect(() =>{
+        fetchChartData()
+            .then((data)=> {
+                setChartData(data?.responseObject);
+            })
+            .catch(() =>{})
+    }, [])
+    
+    console.log("Data: ", chartData);
     const handleSubmit = async () => {
         setSubmitting(true);
         setErrors([]);
