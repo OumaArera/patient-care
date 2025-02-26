@@ -6,21 +6,21 @@ import { Loader } from "lucide-react";
 
 const ChartData = () => {
 
-    const [behaviorsDescription, setBehaviorsDescription] = useState({
-        Date: true,
-        Outcome: true,
-        Trigger: true,
-        Behavior_Description: true,
-        Care_Giver_Intervention: true,
-        Reported_Provider_And_Careteam: true,
-    });
-    const [vitals, setVitals] = useState({
-        Blood_Pressure: true,
-        Pulse: true,
-        Temperature: true,
-        Oxygen_Saturation: true,
-        Pain: true
-    })
+    // const [behaviorsDescription, setBehaviorsDescription] = useState({
+    //     Date: true,
+    //     Outcome: true,
+    //     Trigger: true,
+    //     Behavior_Description: true,
+    //     Care_Giver_Intervention: true,
+    //     Reported_Provider_And_Careteam: true,
+    // });
+    // const [vitals, setVitals] = useState({
+    //     Blood_Pressure: true,
+    //     Pulse: true,
+    //     Temperature: true,
+    //     Oxygen_Saturation: true,
+    //     Pain: true
+    // })
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState(null);
     const [submitting, setSubmitting] = useState(false);
@@ -55,23 +55,23 @@ const ChartData = () => {
         //         status: value 
         //     }))
         // );
-        const behaviorsDescriptionArray = Object.entries(behaviorsDescription).map(([key, value]) => ({
-            descriptionType: key,
-            status: value,
-            response: null
-        }));
+        // const behaviorsDescriptionArray = Object.entries(behaviorsDescription).map(([key, value]) => ({
+        //     descriptionType: key,
+        //     status: value,
+        //     response: null
+        // }));
 
-        const vitalsArray = Object.entries(vitals).map(([key, value]) => ({
-            vitalsType: key.replace(/_/g, " "),
-            status: value,
-            response: null
-            })
-        );
+        // const vitalsArray = Object.entries(vitals).map(([key, value]) => ({
+        //     vitalsType: key.replace(/_/g, " "),
+        //     status: value,
+        //     response: null
+        //     })
+        // );
 
         const payload = {
-            vitals: vitalsArray,
+            // vitals: vitalsArray,
             behaviors: chartData,
-            behaviorsDescription: behaviorsDescriptionArray
+            // behaviorsDescription: behaviorsDescriptionArray
         };
         setSubmitting(false);
         return Object.entries(payload).forEach(([key, value]) => 
