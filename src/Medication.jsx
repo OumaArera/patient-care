@@ -29,7 +29,7 @@ const Medication = () => {
     });
     console.log("Medications: ", medications);
     
-    const handleMedications =()=>{
+    const handleMedications = () => {
         if (!formData.patient) {
             setMedications([]);
             return;
@@ -37,15 +37,15 @@ const Medication = () => {
         setLoadingMedications(true);
         fetchMedications(pageNumber, pageSize, formData.patient)
             .then((data) => {
-                setMedications(data);
+                setMedications(data.slice(0, 4)); // Ensure only 4 items are displayed per page
                 setLoadingMedications(false);
             })
             .catch(() => {
                 setError("Failed to fetch medications.");
                 setLoadingMedications(false);
             });
-
-    }
+    };
+    
     useEffect(() => {
         handleMedications();
     }, [pageNumber, pageSize, formData.patient]);
@@ -310,11 +310,12 @@ const Medication = () => {
                 <button
                     onClick={() => setPageNumber((prev) => prev + 1)}
                     className="bg-blue-500 text-white py-2 px-4 rounded-lg disabled:bg-gray-400"
-                    disabled={loadingMedications}
+                    disabled={loadingMedications || medications.length < 4}
                 >
                     Next
                 </button>
             </div>
+
         </div>
     );
     
