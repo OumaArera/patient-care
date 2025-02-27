@@ -316,7 +316,7 @@ const Medication = () => {
                 </div>
             ) : (
                 <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {Array.isArray(medications) && medications.length > 0 ? (
+                    {Array.isArray(displayedMedications) && displayedMedications.length > 0 ? (
                         displayedMedications.map((med) => <MedicationCard key={med.medicationId} handleMedication={handleMedications} medication={med} />)
                     ) : (
                         <p className="text-gray-400">No medications found.</p>
