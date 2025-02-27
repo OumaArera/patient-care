@@ -40,6 +40,7 @@ const MedAdministration = () => {
                 setLoading(false);
             })
             .catch(() => {
+                setMedAdmins([]);
                 setLoading(false);
             });
     };
@@ -115,11 +116,11 @@ const MedAdministration = () => {
 
             <div className="bg-gray-800 rounded-lg shadow-lg p-4 max-w-[78vw] w-full">
                 <div className="overflow-auto max-h-[500px] w-full">
-                    {displayedDays.map(([day, medications]) => (
+                {(displayedDays.length > 0 ? displayedDays : [["No Records", {}]]).map(([day, medications]) => (
                         <div key={day} className="mb-6 border-b border-gray-700 pb-4">
                             <h3 className="text-xl font-bold text-blue-300 mb-3">📅 {moment(day).format("MMMM D, YYYY")}</h3>
                             <div className="space-y-4">
-                                {Object.values(medications).map((med, index) => (
+                            {(Object.values(medications).length > 0 ? Object.values(medications) : patients.find(p => p.patientId === selectedPatient)?.medications || []).map((med, index) => (
                                     <div key={index} className="grid grid-cols-2 gap-4 items-start p-3 bg-gray-700 rounded-lg shadow">
                                         <div>
                                             <p className="font-bold text-white">{med.details.medicationName}</p>
@@ -146,6 +147,7 @@ const MedAdministration = () => {
                                             >
                                                 ➕ Add
                                             </button>
+
                                         </div>
                                         <div>
                                             <h4 className="text-lg font-semibold text-white mb-2">Time Administered</h4>
