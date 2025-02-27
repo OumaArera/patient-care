@@ -16,6 +16,11 @@ const Medication = () => {
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [errors, setErrors] = useState([]);
+    const [allMedications, setAllMedications] = useState([]);
+    const [displayedMedications, setDisplayedMedications] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
+
 
     const [formData, setFormData] = useState({
         medicationName: "",
@@ -27,17 +32,19 @@ const Medication = () => {
         medicationTime: "",
         patient: "",
     });
-    console.log("Medications: ", medications);
     
     const handleMedications = () => {
         if (!formData.patient) {
-            setMedications([]);
+            setAllMedications([]);
+            setDisplayedMedications([]);
             return;
         }
         setLoadingMedications(true);
         fetchMedications(pageNumber, pageSize, formData.patient)
             .then((data) => {
-                setMedications(data.slice(0, 4)); // Ensure only 4 items are displayed per page
+                setAllMedications(data); // Store all fetched medications
+                setDisplayedMedications(data.slice(0, itemsPerPage)); // Display only first 3
+                setCurrentPage(1);
                 setLoadingMedications(false);
             })
             .catch(() => {
@@ -108,6 +115,24 @@ const Medication = () => {
             setSubmitting(false);
         }
     };
+
+
+    const handleNext = () => {
+        const nextIndex = currentPage * itemsPerPage;
+        if (nextIndex < allMedications.length) {
+            setDisplayedMedications(allMedications.slice(nextIndex, nextIndex + itemsPerPage));
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
+    
+    const handlePrevious = () => {
+        const prevIndex = (currentPage - 2) * itemsPerPage;
+        if (prevIndex >= 0) {
+            setDisplayedMedications(allMedications.slice(prevIndex, prevIndex + itemsPerPage));
+            setCurrentPage((prev) => prev - 1);
+        }
+    };
+    
 
     return (
         <div className="p-6 bg-gray-900 min-h-screen text-white">
@@ -301,16 +326,16 @@ const Medication = () => {
     
             <div className="flex justify-between mt-4">
                 <button
-                    onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+                    onClick={handlePrevious}
                     className="bg-blue-500 text-white py-2 px-4 rounded-lg disabled:bg-gray-400"
-                    disabled={pageNumber === 1 || loadingMedications}
+                    disabled={currentPage === 1}
                 >
                     Previous
                 </button>
                 <button
-                    onClick={() => setPageNumber((prev) => prev + 1)}
+                    onClick={handleNext}
                     className="bg-blue-500 text-white py-2 px-4 rounded-lg disabled:bg-gray-400"
-                    disabled={loadingMedications || medications.length < 4}
+                    disabled={currentPage * itemsPerPage >= allMedications.length}
                 >
                     Next
                 </button>
