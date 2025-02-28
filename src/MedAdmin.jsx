@@ -36,7 +36,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
             setErrors(["Failed to submit medication."]);
             setTimeout(() => setErrors([]), 10000);
         } finally {
-            setLoading(null); // Reset loading to null
+            setLoading(null); 
         }
     };
     

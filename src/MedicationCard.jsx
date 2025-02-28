@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { errorHandler } from "../services/errorHandler";
+import UpdateMedication from "./UpdateMedication";
 const URL ="https://patient-care-server.onrender.com/api/v1/medications";
 
 
@@ -8,6 +9,7 @@ const MedicationCard = ({ medication, handleMedication }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState([]);
+  const [showResubmit, setShowResubmit] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -43,6 +45,10 @@ const MedicationCard = ({ medication, handleMedication }) => {
       setLoading(false);
     }
   };
+
+  const closeResubmitModal = () => {
+    setShowResubmit(false);
+};
 
   return (
     <div className="bg-gray-800 p-4 rounded-lg shadow-md text-white">
@@ -125,6 +131,29 @@ const MedicationCard = ({ medication, handleMedication }) => {
         )}
         {message && <p className="text-green-600">{message}</p>}
       </div>
+      {showResubmit && (
+        <div
+            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+            onClick={closeResubmitModal}
+        >
+            <div
+                className="bg-gray-800 p-6 rounded-lg shadow-lg"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <h3 className="text-xl font-bold text-white mb-4">Update Medication</h3>
+                <UpdateMedication
+                    medication={medication}
+                    onUpdate={handleMedication}
+                />
+                <button
+                    className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+                    onClick={closeResubmitModal}
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+      )}
     </div>
   );
 };
