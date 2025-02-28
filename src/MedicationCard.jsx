@@ -133,25 +133,24 @@ const MedicationCard = ({ medication, handleMedication }) => {
       </div>
       {showResubmit && (
         <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-            onClick={closeResubmitModal}
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closeResubmitModal}
         >
-            <div
-                className="bg-gray-800 p-6 rounded-lg shadow-lg"
-                onClick={(e) => e.stopPropagation()}
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[60vw] max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <UpdateMedication
+                medication={medication}
+                onUpdate={handleMedication}
+            />
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={closeResubmitModal}
             >
-                <h3 className="text-xl font-bold text-white mb-4">Update Medication</h3>
-                <UpdateMedication
-                    medication={medication}
-                    onUpdate={handleMedication}
-                />
-                <button
-                    className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
-                    onClick={closeResubmitModal}
-                >
-                    Close
-                </button>
-            </div>
+              ✖
+            </button>
+          </div>
         </div>
       )}
     </div>
