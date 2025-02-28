@@ -17,7 +17,6 @@ const MedAdministration = () => {
     const [selectedData, setSelectedData] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [medications, setMedications] = useState([]);
-    const [showMedicationModal, setShowMedicationModal] = useState(false);
     useEffect(() => {
         setLoading(true);
         fetchPatients()
@@ -50,7 +49,7 @@ const MedAdministration = () => {
         fetchMedications(1, 366, patientId)
             .then((data) => {
                 console.log("Data: ", data);
-                setMedications(data.responseObject || []);
+                setMedications(data || []);
             })
             .catch(() => setMedications([]));
     };
