@@ -90,6 +90,8 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                                 <div key={time} className="flex items-center gap-4">
                                     <p className="w-20">{time}</p>
                                     {med.status === "active" && (
+                                        <div>
+                                        {loading === med.medicationId && message && <p className="text-green-600">{message}</p>}
                                         <button
                                             className={`px-4 py-2 rounded w-40 ${
                                                 isTimeWithinRange(time, med.instructions)
@@ -101,6 +103,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                                         >
                                             {loading === med.medicationId ? "Submitting..." : "Administer"}
                                         </button>
+                                        </div>
                                     )}
                                 </div>
                             ))
