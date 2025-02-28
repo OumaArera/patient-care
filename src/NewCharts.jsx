@@ -66,7 +66,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const handleStatusChange = (index, value) => {
     setBehaviorStatuses((prevStatuses) => {
       const updatedStatuses = [...prevStatuses];
-      updatedStatuses[index] = value;
+      updatedStatuses[index] = value; // Update only the selected behavior
       return updatedStatuses;
     });
   
@@ -74,6 +74,12 @@ const NewCharts = ({ charts, chartsData }) => {
       prev.map((b, i) => (i === index ? { ...b, status: value } : b))
     );
   };
+  
+  
+  //   setBehaviors((prev) =>
+  //     prev.map((b, i) => (i === index ? { ...b, status: value } : b))
+  //   );
+  // };
   
 
   const isWithinAllowedTime = () => {
@@ -133,33 +139,31 @@ const NewCharts = ({ charts, chartsData }) => {
             </tr>
           </thead>
           <tbody>
-          {Object.entries(groupedBehaviors).map(([category, behaviorList], categoryIndex) => (
-            behaviorList.map((behavior, behaviorIndex) => (
-              <tr key={`${category}-${behaviorIndex}`} className="border border-gray-700">
-                {behaviorIndex === 0 && (
-                  <td
-                    className="p-3 border border-gray-700 text-center align-middle"
-                    rowSpan={behaviorList.length}
-                  >
-                    {category}
+          {Object.entries(groupedBehaviors).map(([category, behaviorList]) =>
+            behaviorList.map((behavior) => {
+              // Find the original index of this behavior in `chart.behaviors`
+              const originalIndex = chart.behaviors.findIndex((b) => b === behavior);
+
+              return (
+                <tr key={behavior.id} className="border border-gray-700">
+                  <td className="p-3 border border-gray-700">{behavior.behavior}</td>
+                  <td className="p-3 border border-gray-700">
+                    <select
+                      value={behaviorStatuses[originalIndex] || ""}
+                      onChange={(e) => handleStatusChange(originalIndex, e.target.value)}
+                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                      required
+                    >
+                      <option value="">Select Status</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
                   </td>
-                )}
-                <td className="p-3 border border-gray-700">{behavior.behavior}</td>
-                <td className="p-3 border border-gray-700">
-                  <select
-                    value={behaviorStatuses[behaviorIndex] || ""}
-                    onChange={(e) => handleStatusChange(behaviorIndex, e.target.value)}
-                    className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                    required
-                  >
-                    <option value="">Select Status</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </select>
-                </td>
-              </tr>
-            ))
-          ))}
+                </tr>
+              );
+            })
+          )}
+
         </tbody>
 
         </table>
