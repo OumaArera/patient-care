@@ -4,7 +4,7 @@ import { postMedications } from "../services/postMedications";
 import { errorHandler } from "../services/errorHandler";
 
 const MedAdmin = ({ meds, selectedPatient }) => {
-    const [loading, setLoading] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
 
@@ -15,10 +15,9 @@ const MedAdmin = ({ meds, selectedPatient }) => {
         return now.isAfter(scheduledTime.subtract(1, "hour")) && now.isBefore(scheduledTime.add(1, "hour"));
     };
 
-    const handleSubmit = async (medicationId, medicationTime) => {
-        setLoading(medicationTime);
+    const handleSubmit = async (medicationId) => {
+        setLoading(true);
         const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
-        console.log("Time: ", time);
         const payload = {
             medication: medicationId,
             patient: selectedPatient,
@@ -37,7 +36,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
             setErrors(["Failed to submit medication."]);
             setTimeout(() => setErrors([]), 10000);
         } finally {
-            setLoading(null);
+            setLoading(false);
         }
     };
 
@@ -80,7 +79,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                         {med.instructions === "PRN" ? (
                             <button
                                 className="px-4 py-2 rounded w-40 bg-blue-600 hover:bg-blue-700"
-                                onClick={() => handleSubmit(med.medicationId, dayjs().format("HH:mm"))}
+                                onClick={() => handleSubmit(med.medicationId)}
                                 disabled={loading === med.medicationId}
                             >
                                 {loading === med.medicationId ? "Submitting..." : "Administer"}
