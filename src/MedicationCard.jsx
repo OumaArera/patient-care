@@ -89,6 +89,12 @@ const MedicationCard = ({ medication, handleMedication }) => {
       <p className="text-sm font-semibold text-green-400 mt-2">
         Resident: {medication.patientFirstName} {medication.patientLastName}
       </p>
+      <button
+        onClick={() => console.log("Medication Details:", medication)}
+        className="mt-2 w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+      >
+        Update
+      </button>
 
       {/* Modify Medication Status */}
       <div className="mt-4">
