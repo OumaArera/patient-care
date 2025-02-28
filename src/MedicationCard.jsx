@@ -96,7 +96,7 @@ const MedicationCard = ({ medication, handleMedication }) => {
         Resident: {medication.patientFirstName} {medication.patientLastName}
       </p>
       <button
-        onClick={() => console.log("Medication Details:", medication)}
+        onClick={() => setShowResubmit(true)}
         className="mt-2 w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
       >
         Update
