@@ -17,7 +17,7 @@ const MedAdministration = () => {
     const [selectedData, setSelectedData] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [medications, setMedications] = useState([]);
-    // console.log("Medications: ", medAdmins);
+    const [showMedicationModal, setShowMedicationModal] = useState(false);
     useEffect(() => {
         setLoading(true);
         fetchPatients()
@@ -111,10 +111,29 @@ const MedAdministration = () => {
                     ))}
                 </select>
             </div>
-            {selectedPatient && (
+            {medications &&(
+                <>
+                <h3 className="text-xl font-bold text-white mb-4">Select Medication</h3>
+                <select
+                    className="w-full p-2 bg-gray-700 text-white rounded"
+                    onChange={(e) => setSelectedData(e.target.value)}
+                >
+                    <option value="">-- Select Medication --</option>
+                    {medications.map((med) => (
+                        <option key={med.medicationId} value={med.medicationId}>
+                            {med.medicationName} - {med.instructions}
+                        </option>
+                    ))}
+                </select>
+                </>
+            )}
+            {selectedPatient && medications.length > 0 && selectedData && (
                 <button 
                     className="mb-4 bg-green-600 text-white px-4 py-2 rounded"
-                    onClick={() => setShowResubmit(true)}
+                    onClick={() => {
+                        setSelectedData({ patientId: selectedPatient, medicationId: selectedData });
+                        setShowResubmit(true);
+                    }}
                 >
                     ➕ Add Medication
                 </button>
@@ -149,18 +168,7 @@ const MedAdministration = () => {
                                                     <p key={i} className="text-gray-300">{time}</p>
                                                 ))}
                                             </div>
-                                            {/* <button
-                                                className="mt-2 bg-green-600 text-white px-3 py-1 rounded"
-                                                onClick={() => {
-                                                    setShowResubmit(true);
-                                                    setSelectedData({
-                                                        patientId: selectedPatient,
-                                                        medicationId: med.details.medicationId,
-                                                    });
-                                                }}
-                                            >
-                                                ➕ Add
-                                            </button> */}
+                                            
                                         </div>
                                         <div>
                                             <h4 className="text-lg font-semibold text-white mb-2">Time Administered</h4>
