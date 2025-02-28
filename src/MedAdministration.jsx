@@ -164,9 +164,13 @@ const MedAdministration = () => {
                                             <p className="text-gray-400">Diagnosis: {med.details.diagnosis}</p>
                                             <div className="bg-gray-600 p-2 rounded-lg mt-2">
                                                 <h4 className="font-bold text-white mb-1">Medication Times:</h4>
-                                                {med.details.medicationTimes.map((time, i) => (
-                                                    <p key={i} className="text-gray-300">{time}</p>
-                                                ))}
+                                                {med.details.instructions === "PRN" ? (
+                                                    <p className="text-gray-300">As Instructed</p>
+                                                ) : (
+                                                    med.details.medicationTimes.map((time, i) => (
+                                                        <p key={i} className="text-gray-300">{time}</p>
+                                                    ))
+                                                )}
                                             </div>
                                             
                                         </div>
