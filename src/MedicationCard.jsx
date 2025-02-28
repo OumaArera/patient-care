@@ -52,40 +52,38 @@ const MedicationCard = ({ medication, handleMedication }) => {
       <p className="text-sm">Instructions: {medication.instructions}</p>
       <p className="text-sm">Quantity: {medication.quantity}</p>
       <p className="text-sm">Diagnosis: {medication.diagnosis}</p>
+      
       <p className="text-sm font-semibold mt-2">
-        Status:{" "}
-        <span
-          className={`px-2 py-1 rounded text-xs font-bold 
-            ${medication.status === "active" ? "bg-green-500 text-white" : ""} 
-            ${medication.status === "paused" ? "bg-yellow-500 text-gray-900" : ""} 
-            ${medication.status === "removed" ? "bg-red-500 text-white" : ""}`}
-        >
+        Status: <span className={`px-2 py-1 rounded text-xs font-bold ${
+          medication.status === "active" ? "bg-green-500 text-white" :
+          medication.status === "paused" ? "bg-yellow-500 text-gray-900" :
+          medication.status === "removed" ? "bg-red-500 text-white" : ""
+        }`}>
           {medication.status.charAt(0).toUpperCase() + medication.status.slice(1)}
         </span>
       </p>
 
-
       <div className="mt-2">
         <p className="text-sm font-semibold">Times:</p>
-        <div className="flex flex-wrap gap-2 mt-1">
-          {medication.medicationTime.map((time, index) => {
-            const [hours, minutes] = time.split(":");
-            const formattedTime = new Date(0, 0, 0, hours, minutes).toLocaleTimeString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            });
-
-            return (
-              <div
-                key={index}
-                className="bg-gray-700 text-white px-3 py-1 rounded-md text-xs shadow"
-              >
-                {formattedTime}
-              </div>
-            );
-          })}
-        </div>
+        {medication.instructions === "PRN" ? (
+          <p className="text-sm text-gray-300">As Instructed</p>
+        ) : (
+          <div className="flex flex-wrap gap-2 mt-1">
+            {medication.medicationTime.map((time, index) => {
+              const [hours, minutes] = time.split(":");
+              const formattedTime = new Date(0, 0, 0, hours, minutes).toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+              });
+              return (
+                <div key={index} className="bg-gray-700 text-white px-3 py-1 rounded-md text-xs shadow">
+                  {formattedTime}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <p className="text-sm font-semibold text-green-400 mt-2">
@@ -110,7 +108,7 @@ const MedicationCard = ({ medication, handleMedication }) => {
           className="mt-2 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:bg-gray-400"
           disabled={!status}
         >
-          {loading? "Submitting...": "Submit"}
+          {loading ? "Submitting..." : "Submit"}
         </button>
         {errors.length > 0 && (
           <div className="mb-4 p-3 bg-white rounded">
@@ -118,8 +116,8 @@ const MedicationCard = ({ medication, handleMedication }) => {
               <p key={index} className="text-sm text-red-600">{error}</p>
             ))}
           </div>
-      )}
-      {message && <p className="text-green-600">{message}</p>}
+        )}
+        {message && <p className="text-green-600">{message}</p>}
       </div>
     </div>
   );
