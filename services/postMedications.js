@@ -3,7 +3,7 @@ export const postMedications = async (payload) => {
     if (!token) return;
 
     try {
-        const response = await fetch("https://patient-care-server.onrender.com/api/v1/medication-administrations", {
+        const response = await fetch("http://127.0.0.1:8000/api/v1/medication-administrations", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
