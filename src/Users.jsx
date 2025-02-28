@@ -27,7 +27,7 @@ const Users = () => {
             <table className="w-full table-auto border-collapse border border-gray-700">
             <thead>
                 <tr className="bg-gray-800 text-white">
-                <th className="p-3 border border-gray-700">ID</th>
+                {/* <th className="p-3 border border-gray-700">ID</th> */}
                 <th className="p-3 border border-gray-700">Full Name</th>
                 <th className="p-3 border border-gray-700">Email</th>
                 <th className="p-3 border border-gray-700">Phone</th>
@@ -51,7 +51,7 @@ const Users = () => {
                     )
                     .map((user) => (
                     <tr key={user.userId} className="text-white bg-gray-800">
-                    <td className="p-3 border border-gray-700">{user.userId}</td>
+                    {/* <td className="p-3 border border-gray-700">{user.userId}</td> */}
                     <td className="p-3 border border-gray-700">{user.fullName}</td>
                     <td className="p-3 border border-gray-700">{user.email}</td>
                     <td className="p-3 border border-gray-700">{user.phoneNumber}</td>
