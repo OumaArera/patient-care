@@ -91,7 +91,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                                     <p className="w-20">{time}</p>
                                     {med.status === "active" && (
                                         <div>
-                                        {loading === med.medicationId && message && <p className="text-green-600">{message}</p>}
+                                        {message && <p className="text-green-600">{message}</p>}
                                         <button
                                             className={`px-4 py-2 rounded w-40 ${
                                                 isTimeWithinRange(time, med.instructions)
