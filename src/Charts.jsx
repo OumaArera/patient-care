@@ -4,6 +4,12 @@ import { getCharts } from "../services/getCharts";
 import ChartCard from "./ChartCard";
 import { Loader } from "lucide-react";
 import ResubmitChart from "./ResubmitChart";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+
+
 
 const Charts = () => {
   const [patients, setPatients] = useState([]);
@@ -15,6 +21,8 @@ const Charts = () => {
   const [selectedChart, setSelectedChart] = useState(null);
   const [show, setShow] = useState(false);
 
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
 
   useEffect(() => {
     setLoadingPatients(true);
@@ -110,7 +118,9 @@ const Charts = () => {
                     const chart = charts.find((c) => c.dateTaken.startsWith(date));
                     return (
                       <tr key={date} className="bg-gray-900 text-gray-300">
-                        <td className="p-2 border border-gray-700">{date}</td>
+                        <td className="p-2 border border-gray-700">
+                          {dayjs.tz(date, "America/Los_Angeles").tz(dayjs.tz.guess()).format("YYYY-MM-DD HH:mm:ss")}
+                        </td>
                         <td className="p-2 border border-gray-700">
                           {chart ? chart.patientName : "Missing"}
                         </td>
