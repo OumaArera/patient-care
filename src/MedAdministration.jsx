@@ -116,7 +116,7 @@ const MedAdministration = () => {
                 <h3 className="text-xl font-bold text-white mb-4">Select Medication</h3>
                 <select
                     className="w-full p-2 bg-gray-700 text-white rounded"
-                    onChange={(e) => setSelectedData(e.target.value)}
+                    onChange={(e) => setSelectedData(e.target.value)} // Store medicationId only
                 >
                     <option value="">-- Select Medication --</option>
                     {medications.map((med) => (
