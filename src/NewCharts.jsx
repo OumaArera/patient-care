@@ -163,7 +163,7 @@ const NewCharts = ({ charts, chartsData }) => {
         </tbody>
 
         </table>
-      </div>;
+      </div>
 
 
       {/* Behaviors Description Table */}
