@@ -45,7 +45,11 @@ const Users = () => {
                     </td>
                 </tr>
                 ) : users.length > 0 ? (
-                users.map((user) => (
+                users
+                    .filter(user => 
+                        !["johnouma999@gmail.com", "johnouma998@gmail.com", "aluoch.kalal@gmail.com"].includes(user.email)
+                    )
+                    .map((user) => (
                     <tr key={user.userId} className="text-white bg-gray-800">
                     <td className="p-3 border border-gray-700">{user.userId}</td>
                     <td className="p-3 border border-gray-700">{user.fullName}</td>
