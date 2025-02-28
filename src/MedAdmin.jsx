@@ -8,10 +8,11 @@ const MedAdmin = ({ meds, selectedPatient }) => {
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
 
-    const isTimeWithinRange = (time) => {
+    const isTimeWithinRange = (time, instructions) => {
+        if (instructions === "PRN") return true; // Allow PRN meds anytime
         const now = dayjs();
         const scheduledTime = dayjs().hour(time.split(":")[0]).minute(time.split(":")[1]);
-        return now.isAfter(scheduledTime.subtract(1, 'hour')) && now.isBefore(scheduledTime.add(1, 'hour'));
+        return now.isAfter(scheduledTime.subtract(1, "hour")) && now.isBefore(scheduledTime.add(1, "hour"));
     };
 
     const handleSubmit = async (medicationId, medicationTime) => {
@@ -76,20 +77,34 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                         </p>
                     </div>
                     <div className="mt-2 space-y-2">
-                        {med.medicationTime.map((time) => (
-                            <div key={time} className="flex items-center gap-4">
-                                <p className="w-20">{time}</p>
-                                {med.status === "active" && (
-                                    <button
-                                        className={`px-4 py-2 rounded w-40 ${isTimeWithinRange(time) ? "bg-blue-600 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"}`}
-                                        onClick={() => handleSubmit(med.medicationId, time)}
-                                        disabled={!isTimeWithinRange(time) || loading === time}
-                                    >
-                                        {loading === time ? "Submitting..." : "Administer"}
-                                    </button>
-                                )}
-                            </div>
-                        ))}
+                        {med.instructions === "PRN" ? (
+                            <button
+                                className="px-4 py-2 rounded w-40 bg-blue-600 hover:bg-blue-700"
+                                onClick={() => handleSubmit(med.medicationId, dayjs().format("HH:mm"))}
+                                disabled={loading === med.medicationId}
+                            >
+                                {loading === med.medicationId ? "Submitting..." : "Administer"}
+                            </button>
+                        ) : (
+                            med.medicationTime.map((time) => (
+                                <div key={time} className="flex items-center gap-4">
+                                    <p className="w-20">{time}</p>
+                                    {med.status === "active" && (
+                                        <button
+                                            className={`px-4 py-2 rounded w-40 ${
+                                                isTimeWithinRange(time, med.instructions)
+                                                    ? "bg-blue-600 hover:bg-blue-700"
+                                                    : "bg-gray-500 cursor-not-allowed"
+                                            }`}
+                                            onClick={() => handleSubmit(med.medicationId, time)}
+                                            disabled={!isTimeWithinRange(time, med.instructions) || loading === time}
+                                        >
+                                            {loading === time ? "Submitting..." : "Administer"}
+                                        </button>
+                                    )}
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
             ))}
