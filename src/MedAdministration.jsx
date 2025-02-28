@@ -49,6 +49,7 @@ const MedAdministration = () => {
         // Fetch available medications for the patient
         fetchMedications(1, 366, patientId)
             .then((data) => {
+                console.log("Data: ", data);
                 setMedications(data.responseObject || []);
             })
             .catch(() => setMedications([]));
@@ -111,7 +112,7 @@ const MedAdministration = () => {
                     ))}
                 </select>
             </div>
-            {medications &&(
+            {medications.length > 0 && (
                 <>
                 <h3 className="text-xl font-bold text-white mb-4">Select Medication</h3>
                 <select
