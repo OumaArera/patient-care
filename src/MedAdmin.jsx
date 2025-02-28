@@ -4,7 +4,7 @@ import { postMedications } from "../services/postMedications";
 import { errorHandler } from "../services/errorHandler";
 
 const MedAdmin = ({ meds, selectedPatient }) => {
-    const [loading, setLoading] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
 
@@ -16,8 +16,8 @@ const MedAdmin = ({ meds, selectedPatient }) => {
     };
 
     const handleSubmit = async (medicationId) => {
-        setLoading(medicationId); 
-        const time = dayjs().format("YYYY-MM-DD HH:mm:ss");
+        setLoading(true);
+        const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
         const payload = {
             medication: medicationId,
             patient: selectedPatient,
@@ -36,10 +36,9 @@ const MedAdmin = ({ meds, selectedPatient }) => {
             setErrors(["Failed to submit medication."]);
             setTimeout(() => setErrors([]), 10000);
         } finally {
-            setLoading(null); // Reset loading to null
+            setLoading(false);
         }
     };
-    
 
     const filteredMeds = meds.filter(med => med.status !== "removed");
 
@@ -97,9 +96,9 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                                                     : "bg-gray-500 cursor-not-allowed"
                                             }`}
                                             onClick={() => handleSubmit(med.medicationId, time)}
-                                            disabled={!isTimeWithinRange(time, med.instructions) || loading === med.medicationId}
+                                            disabled={!isTimeWithinRange(time, med.instructions)}
                                         >
-                                            {loading === med.medicationId ? "Submitting..." : "Administer"} 
+                                            {loading ? "Submitting..." : "Administer"}
                                         </button>
                                     )}
                                 </div>
