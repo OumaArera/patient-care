@@ -19,7 +19,7 @@ const Update = ({ patientId }) => {
     const hour = today.getHours();
   
     if (updateType === "weekly") {
-      if (day === 5 && hour < 12) {
+      if (day === 1 && hour < 12 || day === 2 && hour < 12 || day === 3 && hour < 12 || day === 4 && hour < 12 || day === 5 && hour < 12 || day === 6 && hour < 12) {
         setDate(today.toISOString().split("T")[0]);
       } else {
         setDate("");
