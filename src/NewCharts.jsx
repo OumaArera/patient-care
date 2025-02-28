@@ -121,20 +121,24 @@ const NewCharts = ({ charts, chartsData }) => {
           </thead>
           <tbody>
             {behaviors.reduce((acc, behavior, index, arr) => {
-              const isNewCategory = index === 0 || behavior.category !== arr[index - 1].category;
+              const isNewCategory =
+                index === 0 || behavior.category !== arr[index - 1].category;
               const rowspan = arr.filter((b) => b.category === behavior.category).length;
 
               acc.push(
                 <tr key={index} className="border border-gray-700">
                   {isNewCategory && (
-                    <td className="p-3 border border-gray-700 text-center align-middle" rowSpan={rowspan}>
+                    <td
+                      className="p-3 border border-gray-700 text-center align-middle"
+                      rowSpan={rowspan}
+                    >
                       {behavior.category}
                     </td>
                   )}
                   <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                   <td className="p-3 border border-gray-700">
                     <select
-                      value={behaviorStatuses[index]} // Uses the new state
+                      value={behaviorStatuses[index] || ""}
                       onChange={(e) => handleStatusChange(index, e.target.value)}
                       className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                       required
@@ -151,7 +155,8 @@ const NewCharts = ({ charts, chartsData }) => {
             }, [])}
           </tbody>
         </table>
-      </div>
+      </div>;
+
 
       {/* Behaviors Description Table */}
       <div>
