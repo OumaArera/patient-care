@@ -15,7 +15,7 @@ const UpdateMedication = ({ medication, onUpdate }) => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState([]);
   const token = localStorage.getItem("token");
-  const URL = `https://patient-care-server.onrender.com/api/v1/medications/${medication.medicationId}`;
+  const URL = `http://127.0.0.1:8000/api/v1/medications/${medication.medicationId}`;
 
   // Handle input changes
   const handleChange = (e) => {
