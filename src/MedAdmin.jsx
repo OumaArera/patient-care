@@ -98,7 +98,7 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                                             onClick={() => handleSubmit(med.medicationId, time)}
                                             disabled={!isTimeWithinRange(time, med.instructions) || loading === time}
                                         >
-                                            {loading === time ? "Submitting..." : "Administer"}
+                                            {loading ? "Submitting..." : "Administer"}
                                         </button>
                                     )}
                                 </div>
