@@ -5,6 +5,7 @@ import { Loader } from "lucide-react";
 import moment from "moment-timezone";
 import ResubmitMedAdmin from "./ResubmitMedAdmin";
 import { generateMedicationPDFReport } from "../services/generateMedReport";
+import { fetchMedications } from "../services/fetchMedications";
 
 const MedAdministration = () => {
     const [patients, setPatients] = useState([]);
@@ -15,6 +16,7 @@ const MedAdministration = () => {
     const [showResubmit, setShowResubmit] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
+    const [medications, setMedications] = useState([]);
     // console.log("Medications: ", medAdmins);
     useEffect(() => {
         setLoading(true);
@@ -33,17 +35,24 @@ const MedAdministration = () => {
     const fetchMedAdmin = (patientId) => {
         setLoading(true);
         setSelectedPatient(patientId);
+        
+        // Fetch medication administration data
         getMedicationAdmininstration(patientId)
             .then((data) => {
                 setMedAdmins(data);
-                setCurrentPage(0);
                 setLoading(false);
             })
             .catch(() => {
                 setLoading(false);
             });
-    };
 
+        // Fetch available medications for the patient
+        fetchMedications(1, 366, patientId)
+            .then((data) => {
+                setMedications(data.responseObject || []);
+            })
+            .catch(() => setMedications([]));
+    };
     const closeResubmitModal = () => {
         setShowResubmit(false);
         setSelectedData(null);
@@ -102,6 +111,14 @@ const MedAdministration = () => {
                     ))}
                 </select>
             </div>
+            {selectedPatient && (
+                <button 
+                    className="mb-4 bg-green-600 text-white px-4 py-2 rounded"
+                    onClick={() => setShowMedicationModal(true)}
+                >
+                    ➕ Add Medication
+                </button>
+            )}
             {medAdmins && selectedPatient &&(
                 <button 
                 className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
@@ -132,7 +149,7 @@ const MedAdministration = () => {
                                                     <p key={i} className="text-gray-300">{time}</p>
                                                 ))}
                                             </div>
-                                            <button
+                                            {/* <button
                                                 className="mt-2 bg-green-600 text-white px-3 py-1 rounded"
                                                 onClick={() => {
                                                     setShowResubmit(true);
@@ -143,7 +160,7 @@ const MedAdministration = () => {
                                                 }}
                                             >
                                                 ➕ Add
-                                            </button>
+                                            </button> */}
                                         </div>
                                         <div>
                                             <h4 className="text-lg font-semibold text-white mb-2">Time Administered</h4>
