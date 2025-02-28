@@ -4,7 +4,7 @@ import { postMedications } from "../services/postMedications";
 import { errorHandler } from "../services/errorHandler";
 
 const MedAdmin = ({ meds, selectedPatient }) => {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(null);
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState("");
 
@@ -16,8 +16,8 @@ const MedAdmin = ({ meds, selectedPatient }) => {
     };
 
     const handleSubmit = async (medicationId) => {
-        setLoading(true);
-        const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
+        setLoading(medicationId); // Set loading to medicationId instead of true
+        const time = dayjs().format("YYYY-MM-DD HH:mm:ss");
         const payload = {
             medication: medicationId,
             patient: selectedPatient,
@@ -36,9 +36,10 @@ const MedAdmin = ({ meds, selectedPatient }) => {
             setErrors(["Failed to submit medication."]);
             setTimeout(() => setErrors([]), 10000);
         } finally {
-            setLoading(false);
+            setLoading(null); // Reset loading to null
         }
     };
+    
 
     const filteredMeds = meds.filter(med => med.status !== "removed");
 
@@ -96,9 +97,9 @@ const MedAdmin = ({ meds, selectedPatient }) => {
                                                     : "bg-gray-500 cursor-not-allowed"
                                             }`}
                                             onClick={() => handleSubmit(med.medicationId, time)}
-                                            disabled={!isTimeWithinRange(time, med.instructions)}
+                                            disabled={!isTimeWithinRange(time, med.instructions) || loading === med.medicationId}
                                         >
-                                            {loading ? "Submitting..." : "Administer"}
+                                            {loading === med.medicationId ? "Submitting..." : "Administer"}
                                         </button>
                                     )}
                                 </div>
