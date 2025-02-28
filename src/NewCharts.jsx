@@ -40,6 +40,19 @@ const NewCharts = ({ charts, chartsData }) => {
       return updatedVitals;
     });
   };
+
+  const groupBehaviorsByCategory = (behaviors) => {
+    return behaviors.reduce((acc, behavior) => {
+      if (!acc[behavior.category]) {
+        acc[behavior.category] = [];
+      }
+      acc[behavior.category].push(behavior);
+      return acc;
+    }, {});
+  };
+  
+  const groupedBehaviors = groupBehaviorsByCategory(chart.behaviors);
+  
   
 
   const handleChangeBehaviorDescription = (index, value) => {
@@ -120,40 +133,35 @@ const NewCharts = ({ charts, chartsData }) => {
             </tr>
           </thead>
           <tbody>
-            {behaviors.reduce((acc, behavior, index, arr) => {
-              const isNewCategory =
-                index === 0 || behavior.category !== arr[index - 1].category;
-              const rowspan = arr.filter((b) => b.category === behavior.category).length;
-
-              acc.push(
-                <tr key={index} className="border border-gray-700">
-                  {isNewCategory && (
-                    <td
-                      className="p-3 border border-gray-700 text-center align-middle"
-                      rowSpan={rowspan}
-                    >
-                      {behavior.category}
-                    </td>
-                  )}
-                  <td className="p-3 border border-gray-700">{behavior.behavior}</td>
-                  <td className="p-3 border border-gray-700">
-                    <select
-                      value={behaviorStatuses[index] || ""}
-                      onChange={(e) => handleStatusChange(index, e.target.value)}
-                      className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                      required
-                    >
-                      <option value="">Select Status</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </select>
+          {Object.entries(groupedBehaviors).map(([category, behaviorList], categoryIndex) => (
+            behaviorList.map((behavior, behaviorIndex) => (
+              <tr key={`${category}-${behaviorIndex}`} className="border border-gray-700">
+                {behaviorIndex === 0 && (
+                  <td
+                    className="p-3 border border-gray-700 text-center align-middle"
+                    rowSpan={behaviorList.length}
+                  >
+                    {category}
                   </td>
-                </tr>
-              );
+                )}
+                <td className="p-3 border border-gray-700">{behavior.behavior}</td>
+                <td className="p-3 border border-gray-700">
+                  <select
+                    value={behaviorStatuses[behaviorIndex] || ""}
+                    onChange={(e) => handleStatusChange(behaviorIndex, e.target.value)}
+                    className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                    required
+                  >
+                    <option value="">Select Status</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </td>
+              </tr>
+            ))
+          ))}
+        </tbody>
 
-              return acc;
-            }, [])}
-          </tbody>
         </table>
       </div>;
 
