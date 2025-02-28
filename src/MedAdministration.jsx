@@ -114,7 +114,7 @@ const MedAdministration = () => {
             {selectedPatient && (
                 <button 
                     className="mb-4 bg-green-600 text-white px-4 py-2 rounded"
-                    onClick={() => setShowMedicationModal(true)}
+                    onClick={() => setShowResubmit(true)}
                 >
                     ➕ Add Medication
                 </button>
