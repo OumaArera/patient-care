@@ -180,21 +180,21 @@ const NewCharts = ({ charts, chartsData }) => {
       </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
-      {!isWithinAllowedTime() && (
+      {/* {!isWithinAllowedTime() && (
         <p className="text-red-600 mb-2">
           Chart entry must be done between 7:00 PM and 9:00 PM.
         </p>
-      )}
+      )} */}
       <button
         onClick={handleSubmit}
         className={`px-6 py-3 rounded-lg flex items-center justify-center ${
           loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
-          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) || !isWithinAllowedTime()
+          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) 
             ? "bg-gray-500 cursor-not-allowed"
             : "bg-blue-500 hover:bg-blue-600 text-white"
         }`}
         disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
-          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) || !isWithinAllowedTime()}
+          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) }
       >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
