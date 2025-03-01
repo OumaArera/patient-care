@@ -72,11 +72,8 @@ const CreateUser = () => {
         setSuccessMessage('User successfully created!');
         setFormData({ email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver' });
       } else {
-        const errors = JSON.parse(data.responseObject.errors);
-        delete errors.username;
-        // setError(Object.values(errors).flat().join(' '));
-        let errorString = data?.responseObject?.errors;
-        setErrors(errorHandler(errorString));
+        setErrors(errorHandler(data?.responseObject?.errors));
+        setTimeout(() => setErrors([]));
       }
     } catch (err) {
       setError('An error occurred while processing your request.');
