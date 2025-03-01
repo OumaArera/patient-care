@@ -37,7 +37,7 @@ const ChartPatient = () => {
   };
   
 
-  const patientsPerPage = 3;
+  const patientsPerPage = 300;
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
