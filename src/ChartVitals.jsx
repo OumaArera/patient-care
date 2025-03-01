@@ -51,6 +51,10 @@ const ChartVitals = () => {
         setShowForm(false);
     };
 
+    const closeVitalsModal = () => {
+        setShowForm(false);
+      };
+
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold mb-4 text-center">Chart Vitals</h2>
@@ -79,8 +83,14 @@ const ChartVitals = () => {
             )}
 
             {showForm && (
-                <div className="fixed inset-0 w-96 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
+                <div
+                    className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+                    onClick={closeVitalsModal}
+                >
+                    <div
+                    className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
+                    >
                         <h2 className="text-xl font-bold mb-4">Enter Vitals</h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <input type="hidden" name="patientId" value={formData.patientId} />
@@ -105,7 +115,7 @@ const ChartVitals = () => {
                                 <textarea name="pain" value={formData.pain} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="Describe pain level..." />
                             </div>
                             <div className="flex justify-between">
-                                <button type="button" className="px-4 py-2 bg-red-600 rounded" onClick={() => setShowForm(false)}>Cancel</button>
+                                <button type="button" className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600" onClick={() => closeAppointmentModal(false)}>✖</button>
                                 <button type="submit" className="px-4 py-2 bg-blue-600 rounded">Submit</button>
                             </div>
                         </form>
