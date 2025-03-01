@@ -119,10 +119,12 @@ const MedAdministration = () => {
                     onChange={(e) => setSelectedData(e.target.value)} // Store medicationId only
                 >
                     <option value="">-- Select Medication --</option>
-                    {medications.map((med) => (
-                        <option key={med.medicationId} value={med.medicationId}>
-                            {med.medicationName} - {med.instructions}
-                        </option>
+                    {[...medications]
+                        .sort((a, b) => a.medicationName.localeCompare(b.medicationName))
+                        .map((med) => (
+                            <option key={med.medicationId} value={med.medicationId}>
+                                {med.medicationName} - {med.instructions}
+                            </option>
                     ))}
                 </select>
                 </>
