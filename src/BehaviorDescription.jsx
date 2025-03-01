@@ -3,6 +3,14 @@ import { useState } from "react";
 const BehaviorDescriptions = ({ behaviorDescription, handleChangeBehaviorDescription }) => {
   const [editedData, setEditedData] = useState({});
 
+  const handleInputChange = (index, field, value) => {
+    setEditedData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+    handleChangeBehaviorDescription(index, value);
+  };
+
   return (
     <div className="bg-gray-900 p-4 rounded-lg mt-6">
       <h3 className="text-lg font-bold text-blue-400 mb-3">Behavior Descriptions</h3>
@@ -23,18 +31,18 @@ const BehaviorDescriptions = ({ behaviorDescription, handleChangeBehaviorDescrip
               <input
                 type="datetime-local"
                 className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                value={editedData.date || behaviorDescription[0]?.date || ""}
-                onChange={(e) => handleChangeBehaviorDescription(0, "date", e.target.value)}
+                value={editedData.date || behaviorDescription[0]?.response || ""}
+                onChange={(e) => handleInputChange(0, "date", e.target.value)}
               />
             </td>
-            {["behavior", "trigger", "caregiverIntervention", "reportedToProvider", "outcome"].map((field) => (
-              <td key={field} className="p-3 border border-gray-700">
+            {behaviorDescription.slice(1).map((desc, index) => (
+              <td key={desc.descriptionType} className="p-3 border border-gray-700">
                 <input
                   type="text"
-                  placeholder={`Enter ${field.replace(/([A-Z])/g, " $1")}`}
+                  placeholder={`Enter ${desc.descriptionType.replace(/_/g, " ")}`}
                   className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                  value={editedData[field] || behaviorDescription[0]?.[field] || ""}
-                  onChange={(e) => handleChangeBehaviorDescription(0, field, e.target.value)}
+                  value={editedData[desc.descriptionType] || desc.response || ""}
+                  onChange={(e) => handleInputChange(index + 1, desc.descriptionType, e.target.value)}
                 />
               </td>
             ))}
