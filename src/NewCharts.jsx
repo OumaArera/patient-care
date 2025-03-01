@@ -85,7 +85,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const isWithinAllowedTime = () => {
     const now = new Date();
     const hours = now.getHours();
-    return hours >= 1 && hours < 23; 
+    return (hours === 19 || hours === 20 || (hours === 21 && minutes <= 59));
   };
 
   const handleSubmit = async () => {
