@@ -72,6 +72,7 @@ const CreateUser = () => {
         setSuccessMessage('User successfully created!');
         setFormData({ email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver' });
       } else {
+        console.log("Error: ", data.responseObject);
         setErrors(errorHandler(data?.responseObject?.errors));
         setTimeout(() => setErrors([]), 10000);
       }
