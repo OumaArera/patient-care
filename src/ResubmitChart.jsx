@@ -11,7 +11,7 @@ import { fetchChartData } from "../services/fetchChartData";
 
 const ResubmitChart = ({ patient, handleGetCharts }) => {
 
-  const [behaviors, setBehaviors] = useState();
+  const [behaviors, setBehaviors] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [errors, setErrors] = useState([]);
@@ -40,6 +40,7 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
     setLoading(true);
     fetchChartData()
       .then((data) =>{
+        console.log("Data: ", data);
         setBehaviors(data?.responseObject[0]?.behaviors || []);
         setLoading(false);
       })
