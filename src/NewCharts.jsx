@@ -138,15 +138,21 @@ const NewCharts = ({ charts, chartsData }) => {
               <th className="p-3 border border-gray-700">Date</th>
             </tr>
           </thead>
-          <tbody>
-          {Object.entries(groupedBehaviors).map(([category, behaviorList]) =>
-            behaviorList.map((behavior) => {
-              // Find the original index of this behavior in `chart.behaviors`
-              const originalIndex = chart.behaviors.findIndex((b) => b === behavior);
 
+        <tbody>
+          {Object.entries(groupedBehaviors).map(([category, behaviorList]) => {
+            return behaviorList.map((behavior, index) => {
+              const originalIndex = chart.behaviors.findIndex((b) => b === behavior);
               return (
                 <tr key={behavior.id} className="border border-gray-700">
-                  <td className="p-3 border border-gray-700">{category}</td>
+                  {index === 0 && (
+                    <td
+                      className="p-3 border border-gray-700"
+                      rowSpan={behaviorList.length} // Merge cells
+                    >
+                      {category}
+                    </td>
+                  )}
                   <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                   <td className="p-3 border border-gray-700">
                     <select
@@ -162,9 +168,8 @@ const NewCharts = ({ charts, chartsData }) => {
                   </td>
                 </tr>
               );
-            })
-          )}
-
+            });
+          })}
         </tbody>
 
         </table>
