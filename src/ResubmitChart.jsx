@@ -161,14 +161,19 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
             </tr>
           </thead>
           <tbody>
-          {Object.entries(groupedBehaviors).map(([category, behaviorList]) =>
-            behaviorList.map((behavior) => {
-              // Find the original index of this behavior in `chart.behaviors`
+          {Object.entries(groupedBehaviors).map(([category, behaviorList]) => {
+            return behaviorList.map((behavior, index) => {
               const originalIndex = behaviors.findIndex((b) => b === behavior);
-
               return (
                 <tr key={behavior.id} className="border border-gray-700">
-                  <td className="p-3 border border-gray-700">{category}</td>
+                  {index === 0 && (
+                    <td
+                      className="p-3 border border-gray-700"
+                      rowSpan={behaviorList.length} // Merge cells
+                    >
+                      {category}
+                    </td>
+                  )}
                   <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                   <td className="p-3 border border-gray-700">
                     <select
@@ -184,10 +189,10 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
                   </td>
                 </tr>
               );
-            })
-          )}
-
+            });
+          })}
         </tbody>
+
         </table>
       </div>
 
