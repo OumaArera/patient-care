@@ -73,7 +73,7 @@ const CreateUser = () => {
         setFormData({ email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver' });
       } else {
         console.log("Error: ", data.responseObject.errors);
-        setErrors(errorHandler(data?.responseObject?.errors));
+        setErrors(data?.responseObject?.errors);
         setTimeout(() => setErrors([]), 10000);
       }
     } catch (err) {
