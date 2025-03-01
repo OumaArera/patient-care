@@ -73,7 +73,7 @@ const CreateUser = () => {
         setFormData({ email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver' });
       } else {
         setErrors(errorHandler(data?.responseObject?.errors));
-        setTimeout(() => setErrors([]), 5000);
+        setTimeout(() => setErrors([]), 10000);
       }
     } catch (err) {
       setError('An error occurred while processing your request.');
