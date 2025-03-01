@@ -115,7 +115,7 @@ const ChartVitals = () => {
                                 <textarea name="pain" value={formData.pain} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="Describe pain level..." />
                             </div>
                             <div className="flex justify-between">
-                                <button type="button" className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600" onClick={() => closeAppointmentModal(false)}>✖</button>
+                                <button type="button" className="px-4 py-2 bg-red-600 rounded" onClick={() => closeAppointmentModal(false)}>✖</button>
                                 <button type="submit" className="px-4 py-2 bg-blue-600 rounded">Submit</button>
                             </div>
                         </form>
