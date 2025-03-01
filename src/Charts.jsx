@@ -77,11 +77,13 @@ const Charts = () => {
             className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
           >
             <option value="">Select Resident</option>
-            {patients.map((patient) => (
-              <option key={patient.patientId} value={patient.patientId}>
-                {patient.firstName} {patient.lastName}
-              </option>
-            ))}
+            {[...patients]
+              .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+              .map((p) => (
+                  <option key={p.patientId} value={p.patientId}>
+                      {p.firstName} {p.lastName}
+                  </option>
+              ))}
           </select>
           <br />
         </>
