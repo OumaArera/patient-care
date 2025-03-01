@@ -1,140 +1,119 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getpatientManagers } from "../services/getPatientManagers";
+import { FaUserCircle } from "react-icons/fa";
 
 const ChartVitals = () => {
-  const [formData, setFormData] = useState({
-    bloodPressure: "",
-    temperature: "",
-    pulse: "",
-    oxygenSaturation: "",
-    pain: "",
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const validateInputs = () => {
-    let newErrors = {};
-
-    // Validate Blood Pressure (Format: 120/80)
-    if (!/^\d{2,3}\/\d{2,3}$/.test(formData.bloodPressure)) {
-      newErrors.bloodPressure = "Enter in format 120/80";
-    }
-
-    // Validate numerical fields (must be greater than 0)
-    ["temperature", "pulse", "oxygenSaturation"].forEach((field) => {
-      if (!formData[field] || isNaN(formData[field]) || formData[field] <= 0) {
-        newErrors[field] = `${field.replace(/([A-Z])/g, " $1")} must be a number greater than 0`;
-      }
+    const [formData, setFormData] = useState({
+        bloodPressure: "",
+        temperature: "",
+        pulse: "",
+        oxygenSaturation: "",
+        pain: "",
+        patientId: null,
     });
+    const [loadingPatients, setLoadingPatients] = useState(false);
+    const [patientManagers, setPatientManagers] = useState([]);
+    const [showForm, setShowForm] = useState(false);
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    useEffect(() => {
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+        setLoadingPatients(true);
+        getpatientManagers(userId)
+            .then((data) => {
+                setPatientManagers(data?.responseObject || []);
+            })
+            .catch(() => {})
+            .finally(() => setLoadingPatients(false));
+    }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validateInputs()) return;
-
-    const payload = {
-      bloodPressure: formData.bloodPressure,
-      temperature: parseFloat(formData.temperature),
-      pulse: parseInt(formData.pulse, 10),
-      oxygenSaturation: parseInt(formData.oxygenSaturation, 10),
-      pain: formData.pain || "N/A", 
+    const handleUpdateClick = (patientId) => {
+        setFormData((prev) => ({ ...prev, patientId }));
+        setShowForm(true);
     };
 
-    console.log("Submitted Payload:", payload);
-  };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
 
-  return (
-    <div className="max-w-lg mx-auto bg-gray-800 text-white p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-center">Chart Vitals</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Blood Pressure */}
-        <div>
-          <label className="block text-gray-300">Blood Pressure (e.g. 120/80)</label>
-          <input
-            type="text"
-            name="bloodPressure"
-            value={formData.bloodPressure}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-700 text-white"
-            placeholder="120/80"
-          />
-          {errors.bloodPressure && <p className="text-red-400 text-sm">{errors.bloodPressure}</p>}
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const payload = {
+            bloodPressure: formData.bloodPressure,
+            temperature: parseFloat(formData.temperature),
+            pulse: parseInt(formData.pulse, 10),
+            oxygenSaturation: parseInt(formData.oxygenSaturation, 10),
+            pain: formData.pain || "N/A",
+            patientId: formData.patientId,
+        };
+        console.log("Submitted Payload:", payload);
+        setShowForm(false);
+    };
+
+    return (
+        <div className="max-w-lg mx-auto bg-gray-800 text-white p-6 rounded-lg shadow-lg relative">
+            <h2 className="text-2xl font-bold mb-4 text-center">Chart Vitals</h2>
+            {loadingPatients ? (
+                <div className="flex justify-center items-center h-64">Loading...</div>
+            ) : (
+                <div className="grid md:grid-cols-3 gap-4">
+                    {patientManagers.map(({ patient }) => (
+                        <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left relative">
+                            <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
+                            <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
+                            <p className="text-sm font-bold text-gray-400">DOB: {patient.dateOfBirth}</p>
+                            <p className="text-sm font-bold text-gray-400">Diagnosis: {patient.diagnosis}</p>
+                            <p className="text-sm font-bold text-gray-400">Physician: {patient.physicianName}</p>
+                            <div className="flex justify-center mt-4">
+                                <button
+                                    className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
+                                    onClick={() => handleUpdateClick(patient.patientId)}
+                                >
+                                    Vitals
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {showForm && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-96">
+                        <h2 className="text-xl font-bold mb-4">Enter Vitals</h2>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <input type="hidden" name="patientId" value={formData.patientId} />
+                            <div>
+                                <label className="block text-gray-300">Blood Pressure (e.g. 120/80)</label>
+                                <input type="text" name="bloodPressure" value={formData.bloodPressure} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="120/80" />
+                            </div>
+                            <div>
+                                <label className="block text-gray-300">Temperature (°F)</label>
+                                <input type="number" name="temperature" value={formData.temperature} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="98" />
+                            </div>
+                            <div>
+                                <label className="block text-gray-300">Pulse (bpm)</label>
+                                <input type="number" name="pulse" value={formData.pulse} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="75" />
+                            </div>
+                            <div>
+                                <label className="block text-gray-300">Oxygen Saturation (%)</label>
+                                <input type="number" name="oxygenSaturation" value={formData.oxygenSaturation} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="98" />
+                            </div>
+                            <div>
+                                <label className="block text-gray-300">Pain (Optional)</label>
+                                <textarea name="pain" value={formData.pain} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="Describe pain level..." />
+                            </div>
+                            <div className="flex justify-between">
+                                <button type="button" className="px-4 py-2 bg-red-600 rounded" onClick={() => setShowForm(false)}>Cancel</button>
+                                <button type="submit" className="px-4 py-2 bg-blue-600 rounded">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
-
-        {/* Temperature */}
-        <div>
-          <label className="block text-gray-300">Temperature (°C)</label>
-          <input
-            type="number"
-            name="temperature"
-            value={formData.temperature}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-700 text-white"
-            placeholder="37"
-            min="1"
-          />
-          {errors.temperature && <p className="text-red-400 text-sm">{errors.temperature}</p>}
-        </div>
-
-        {/* Pulse */}
-        <div>
-          <label className="block text-gray-300">Pulse (bpm)</label>
-          <input
-            type="number"
-            name="pulse"
-            value={formData.pulse}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-700 text-white"
-            placeholder="75"
-            min="1"
-          />
-          {errors.pulse && <p className="text-red-400 text-sm">{errors.pulse}</p>}
-        </div>
-
-        {/* Oxygen Saturation */}
-        <div>
-          <label className="block text-gray-300">Oxygen Saturation (%)</label>
-          <input
-            type="number"
-            name="oxygenSaturation"
-            value={formData.oxygenSaturation}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-700 text-white"
-            placeholder="98"
-            min="1"
-          />
-          {errors.oxygenSaturation && <p className="text-red-400 text-sm">{errors.oxygenSaturation}</p>}
-        </div>
-
-        {/* Pain Level (Optional) */}
-        <div>
-          <label className="block text-gray-300">Pain (Optional)</label>
-          <textarea
-            name="pain"
-            value={formData.pain}
-            onChange={handleChange}
-            className="w-full p-2 rounded bg-gray-700 text-white"
-            placeholder="Describe pain level..."
-          />
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-full p-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200 shadow-lg"
-        >
-          Submit Vitals
-        </button>
-      </form>
-    </div>
-  );
+    );
 };
 
 export default ChartVitals;
