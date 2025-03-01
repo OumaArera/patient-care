@@ -85,11 +85,13 @@ const PatientManager = () => {
                         onChange={(e) => setSelectedPatient(patients.find(p => p.patientId === Number(e.target.value)))}
                     >
                         <option value="">-- Choose a Resident --</option>
-                        {patients.map(patient => (
-                            <option key={patient.patientId} value={patient.patientId}>
-                                {patient.firstName} {patient.middleNames || ''} {patient.lastName}
-                            </option>
-                        ))}
+                        {[...patients]
+                            .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+                            .map((p) => (
+                                <option key={p.patientId} value={p.patientId}>
+                                    {p.firstName} {p.lastName}
+                                </option>
+                            ))}
                     </select>
                 )}
             </div>
@@ -103,9 +105,11 @@ const PatientManager = () => {
                         onChange={(e) => setSelectedCareGiver(careGivers.find(cg => cg.userId === Number(e.target.value)))}
                     >
                         <option value="">-- Choose a Caregiver --</option>
-                        {careGivers.map(cg => (
-                            <option key={cg.userId} value={cg.userId}>{cg.fullName}</option>
-                        ))}
+                        {[...careGivers]
+                            .sort((a, b) => a.fullName.localeCompare(b.fullName)) // Sorting caregivers alphabetically
+                            .map(cg => (
+                                <option key={cg.userId} value={cg.userId}>{cg.fullName}</option>
+                            ))}
                     </select>
                 )}
             </div>
