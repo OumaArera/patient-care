@@ -165,7 +165,7 @@ const ChartVitals = () => {
                                     ))}
                                 </div>
                             )}
-                            {!isTimeAllowed() && (
+                            {!isTimeAllowed && (
                                 <p className="text-red-600 mb-2">
                                 Vitals entries should be done from 8.00 AM to 9.59 AM
                                 </p>
