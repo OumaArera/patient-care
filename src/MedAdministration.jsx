@@ -177,9 +177,10 @@ const MedAdministration = () => {
                                         <div>
                                             <h4 className="text-lg font-semibold text-white mb-2">Time Administered</h4>
                                             <div className="space-y-1">
-                                                {med.timesAdministered.map((time, idx) => (
-                                                    <div key={idx} className="text-gray-300">✅ {time}</div>
-                                                ))}
+                                            {med.timesAdministered.map((time, idx) => {
+                                                const adjustedTime = moment(time, "HH:mm").add(1, "hour").format("HH:mm");
+                                                return <div key={idx} className="text-gray-300">✅ {adjustedTime}</div>;
+                                            })}
                                             </div>
                                         </div>
                                     </div>
