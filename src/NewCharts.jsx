@@ -192,7 +192,7 @@ const NewCharts = ({ charts, chartsData }) => {
       <div className="mt-6 text-center">
       {!isWithinAllowedTime() && (
         <p className="text-red-600 mb-2">
-          Chart entry must be done between 7:00 PM and 9:00 PM.
+          Chart entry must be done between 7:00 PM and 9:59 PM.
         </p>
       )}
       <button
