@@ -94,25 +94,26 @@ const ChartMedication = () => {
         </div>
       )}
 
-      {show && (
+    {show && (
+      <div
+        className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4"
+        onClick={closeMedicationModal}
+      >
         <div
-          className="fixed inset-0 top-3 bg-opacity-50 flex justify-center overflow-y-auto items-center"
-          onClick={closeMedicationModal}
+          className="bg-gray-800 p-6 rounded-lg shadow-lg max-h-[90vh] overflow-auto w-full max-w-lg mt-16"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()}
+          <MedAdmin meds={medications} selectedPatient={selectedPatientId} />
+          <button
+            className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+            onClick={closeMedicationModal}
           >
-            <MedAdmin meds={medications} selectedPatient={selectedPatientId} />
-            <button
-              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
-              onClick={closeMedicationModal}
-            >
-              ✖
-            </button>
-          </div>
+            ✖
+          </button>
         </div>
-      )}
+      </div>
+    )}
+
     </div>
   );
 };
