@@ -104,11 +104,13 @@ const MedAdministration = () => {
                     value={selectedPatient || ""}
                 >
                     <option value="">-- Select --</option>
-                    {patients.map((p) => (
-                        <option key={p.patientId} value={p.patientId}>
-                            {p.firstName} {p.lastName}
-                        </option>
-                    ))}
+                    {[...patients]
+                        .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+                        .map((p) => (
+                            <option key={p.patientId} value={p.patientId}>
+                                {p.firstName} {p.lastName}
+                            </option>
+                        ))}
                 </select>
             </div>
             {medications.length > 0 && (
