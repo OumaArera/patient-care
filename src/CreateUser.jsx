@@ -157,7 +157,7 @@ const CreateUser = () => {
           </div>
           {errors.length > 0 && (
             <div className="mb-4 p-3 rounded">
-              <p key={index} className="text-sm text-red-600">{errors}</p>
+              <p className="text-sm text-red-600">{errors}</p>
             </div>
           )}
           {error && <p className="text-red-400 mt-2 text-center">{error}</p>}
