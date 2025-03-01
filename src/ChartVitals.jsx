@@ -52,7 +52,8 @@ const ChartVitals = () => {
             pulse: parseInt(formData.pulse, 10),
             oxygenSaturation: parseInt(formData.oxygenSaturation, 10),
             pain: formData.pain || "N/A",
-            patientId: formData.patientId,
+            patient: formData.patientId,
+            dateTaken: new Date().toISOString(),
         };
         try {
             const response = await postVitals(payload);
