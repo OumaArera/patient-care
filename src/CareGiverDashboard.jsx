@@ -11,6 +11,7 @@ import ChartMedication from "./ChartMedication";
 import LandingPage from "./LandingPage";
 import ChartAppointments from "./ChartAppointments";
 import ChartUpdate from "./ChartUpdates";
+import ChartVitals from "./ChartVitals";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -83,6 +84,12 @@ const CareGiverDashboard = () => {
         >
           <FaCalendarAlt /> Appointments
         </button>
+        <button 
+          className={`p-3 flex items-center gap-2 ${activeTab === "vitals" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
+          onClick={() => setActiveTab("vitals")}
+        >
+          <FaCalendarAlt /> Appointments
+        </button>
       </div>
       
 
@@ -124,6 +131,7 @@ const CareGiverDashboard = () => {
         {activeTab === "medications" && <ChartMedication />}  
         {activeTab === "dashboard" && <LandingPage />}
         {activeTab === "appointments" && <ChartAppointments />}
+        {activeTab === "vitals" && <ChartVitals />}
         
 
         {/* Change Password Overlay (only inside user menu) */}
