@@ -177,7 +177,7 @@ const NewCharts = ({ charts, chartsData }) => {
 
 
       {/* Behaviors Description Table */}
-      <div>
+      <div className="w-[70vw]" >
         <BehaviorDescriptions
           behaviorDescription={behaviorsDescription}
           handleChangeBehaviorDescription={handleChangeBehaviorDescription}
