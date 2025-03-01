@@ -69,8 +69,9 @@ const ChartVitals = () => {
                     pain: "",
                     patientId: null,
                 })
-            setTimeout(() => setMessage(""), 5000);
-            setTimeout(() => setShowForm(false), 5000);
+            setMessage("Vitals Updated successfully")
+            setTimeout(() => setMessage(""), 10000);
+            setTimeout(() => setShowForm(false), 10000);
             }
         } catch (error) {
             setErrors([`Errors: ${error}`]);
