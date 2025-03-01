@@ -198,7 +198,7 @@ const NewCharts = ({ charts, chartsData }) => {
       <button
         onClick={handleSubmit}
         className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-          loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
+          loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || !isWithinAllowedTime() ||
           vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) 
             ? "bg-gray-500 cursor-not-allowed"
             : "bg-blue-500 hover:bg-blue-600 text-white"
