@@ -127,7 +127,7 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
     }, {});
   };
   
-  const groupedBehaviors = groupBehaviorsByCategory(chart.behaviors);
+  const groupedBehaviors = groupBehaviorsByCategory(behaviors);
 
 
   return (
