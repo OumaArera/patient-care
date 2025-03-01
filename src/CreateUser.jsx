@@ -156,10 +156,22 @@ const CreateUser = () => {
             </div>
           </div>
           {errors.length > 0 && (
-            <div className="mb-4 p-3 rounded">
-              <p className="text-sm text-red-600">{errors}</p>
+            <div className="mb-4 p-3 rounded bg-red-900 text-white">
+              {errors.map((err, index) => {
+                if (err.username) {
+                  return <p key={index} className="text-sm text-red-400">Username: {err.username}</p>;
+                }
+                if (err.email) {
+                  return <p key={index} className="text-sm text-red-400">Email: {err.email}</p>;
+                }
+                if (err.phoneNumber) {
+                  return <p key={index} className="text-sm text-red-400">Phone Number: {err.phoneNumber}</p>;
+                }
+                return null; // Skip errors that are not related
+              })}
             </div>
           )}
+
           {error && <p className="text-red-400 mt-2 text-center">{error}</p>}
           {successMessage && <p className="text-green-400 mt-2 text-center">{successMessage}</p>}
 
