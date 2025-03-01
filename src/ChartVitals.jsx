@@ -52,7 +52,7 @@ const ChartVitals = () => {
     };
 
     return (
-        <div className="max-w-lg mx-auto bg-gray-800 text-white p-6 rounded-lg shadow-lg relative">
+        <div className="max-w-lg w-[80vw] mx-auto bg-gray-800 text-white p-6 rounded-lg shadow-lg relative">
             <h2 className="text-2xl font-bold mb-4 text-center">Chart Vitals</h2>
             {loadingPatients ? (
                 <div className="flex justify-center items-center h-64">Loading...</div>
