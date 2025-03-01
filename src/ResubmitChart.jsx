@@ -116,7 +116,17 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
       setLoadingSubmit(false);
     }
   };
-  console.log("Behaviors: ", behaviors)
+  const groupBehaviorsByCategory = (behaviors) => {
+    return behaviors.reduce((acc, behavior) => {
+      if (!acc[behavior.category]) {
+        acc[behavior.category] = [];
+      }
+      acc[behavior.category].push(behavior);
+      return acc;
+    }, {});
+  };
+  
+  const groupedBehaviors = groupBehaviorsByCategory(behaviors);
 
   return (
     <div className="p-6 bg-gray-900 text-white">
@@ -151,22 +161,19 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
             </tr>
           </thead>
           <tbody>
-            {behaviors?.length > 0 && behaviors.reduce((acc, behavior, index, arr) => {
-              const isNewCategory = index === 0 || behavior.category !== arr[index - 1].category;
-              const rowspan = arr.filter((b) => b.category === behavior.category).length;
+          {Object.entries(groupedBehaviors).map(([category, behaviorList]) =>
+            behaviorList.map((behavior) => {
+              // Find the original index of this behavior in `chart.behaviors`
+              const originalIndex = behaviors.findIndex((b) => b === behavior);
 
-              acc.push(
-                <tr key={index} className="border border-gray-700">
-                  {isNewCategory && (
-                    <td className="p-3 border border-gray-700 text-center align-middle" rowSpan={rowspan}>
-                      {behavior.category}
-                    </td>
-                  )}
+              return (
+                <tr key={behavior.id} className="border border-gray-700">
+                  <td className="p-3 border border-gray-700">{category}</td>
                   <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                   <td className="p-3 border border-gray-700">
                     <select
-                      value={behaviorStatuses[index]} // Uses the new state
-                      onChange={(e) => handleStatusChange(index, e.target.value)}
+                      value={behaviorStatuses[originalIndex] || ""}
+                      onChange={(e) => handleStatusChange(originalIndex, e.target.value)}
                       className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                       required
                     >
@@ -177,10 +184,10 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
                   </td>
                 </tr>
               );
+            })
+          )}
 
-              return acc;
-            }, [])}
-          </tbody>
+        </tbody>
         </table>
       </div>
 
