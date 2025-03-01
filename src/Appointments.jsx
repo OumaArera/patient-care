@@ -63,11 +63,13 @@ const Appointments = () => {
             value={selectedResident || ""}
           >
             <option value="">Select a Resident</option>
-            {residents.map((resident) => (
-              <option key={resident.patientId} value={resident.patientId}>
-                {`${resident.firstName} ${resident.lastName}`}
-              </option>
-            ))}
+            {[...residents]
+              .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+              .map((p) => (
+                  <option key={p.patientId} value={p.patientId}>
+                      {p.firstName} {p.lastName}
+                  </option>
+              ))}
           </select>
         )}
       </div>
