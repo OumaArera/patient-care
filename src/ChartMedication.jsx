@@ -96,13 +96,21 @@ const ChartMedication = () => {
 
     {show && (
       <div
+        className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+        onClick={closeMedicationModal}
+    >
+        <div
+        className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+        >
+      {/* <div
         className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4"
         onClick={closeMedicationModal}
       >
         <div
           className="bg-gray-800 p-6 rounded-lg shadow-lg max-h-[90vh] overflow-auto w-full max-w-lg mt-16"
           onClick={(e) => e.stopPropagation()}
-        >
+        > */}
           <MedAdmin meds={medications} selectedPatient={selectedPatientId} />
           <button
             className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
