@@ -84,11 +84,13 @@ const AllCharts = () => {
             <label className="font-semibold">Select Resident: </label>
             <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={handlePatientChange} value={selectedPatient || ""}>
                 <option value="">-- Select --</option>
-                {patients.map((p) => (
-                    <option key={p.patientId} value={p.patientId}>
-                        {p.firstName} {p.lastName}
-                    </option>
-                ))}
+                {[...patients]
+                    .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+                    .map((p) => (
+                        <option key={p.patientId} value={p.patientId}>
+                            {p.firstName} {p.lastName}
+                        </option>
+                    ))}
             </select>
         </div>
         {loadingCharts && (
