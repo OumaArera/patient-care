@@ -146,6 +146,7 @@ const NewCharts = ({ charts, chartsData }) => {
 
               return (
                 <tr key={behavior.id} className="border border-gray-700">
+                  <td className="p-3 border border-gray-700">{category}</td>
                   <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                   <td className="p-3 border border-gray-700">
                     <select
