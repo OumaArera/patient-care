@@ -19,6 +19,19 @@ const ChartVitals = () => {
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [isTimeAllowed, setIsTimeAllowed] = useState(true);
+
+    useEffect(() => {
+        const checkTime = () => {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            setIsTimeAllowed(hours === 8 || (hours === 9 && minutes < 60));
+        };
+        checkTime();
+        const interval = setInterval(checkTime, 60000); 
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const userId = localStorage.getItem("userId");
@@ -147,14 +160,31 @@ const ChartVitals = () => {
                             {message && <p className="text-green-600">{message}</p>}
                             {errors.length > 0 && (
                                 <div className="mb-4 p-3 bg-red-800 rounded">
-                                {errors.map((error, index) => (
-                                    <p key={index} className="text-sm text-white">{error}</p>
-                                ))}
+                                    {errors.map((error, index) => (
+                                        <p key={index} className="text-sm text-white">{error}</p>
+                                    ))}
                                 </div>
                             )}
-                            <div className="flex justify-between">
-                                <button type="button" className="px-4 py-2 bg-red-600 rounded" onClick={() => closeAppointmentModal(false)}>✖</button>
-                                <button type="submit" className="px-4 py-2 bg-blue-600 rounded">{loading ? "Submitting" : "Submit" }</button>
+                            {!isTimeAllowed() && (
+                                <p className="text-red-600 mb-2">
+                                Vitals entries should be done from 8.00 AM to 9.59 AM
+                                </p>
+                            )}
+                            <div className="flex justify-center space-x-4 mt-4">
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 bg-red-600 rounded"
+                                    onClick={closeVitalsModal}
+                                >
+                                    ✖ Close
+                                </button>
+                                <button
+                                    type="submit"
+                                    className={`px-4 py-2 rounded ${isTimeAllowed ? "bg-blue-600" : "bg-gray-500 cursor-not-allowed"}`}
+                                    disabled={!isTimeAllowed || loading}
+                                >
+                                    {loading ? "Submitting..." : "Submit"}
+                                </button>
                             </div>
                         </form>
                     </div>
