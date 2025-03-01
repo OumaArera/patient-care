@@ -69,6 +69,10 @@ const ChartPatient = () => {
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
   const currentPatients = patientManagers.slice(indexOfFirstPatient, indexOfLastPatient);
 
+  const closChartModal =()=>{
+    setShowNewCharts(false)
+  }
+
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Residents</h2>
@@ -117,17 +121,26 @@ const ChartPatient = () => {
 
                 {/* Overlay for NewCharts */}
                 {showNewCharts && selectedPatient && selectedPatientId === patient.patientId && chartData.length > 0 && (
-                  <div 
-                    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                  >
-                    <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-[80vw] h-[80vh] overflow-y-auto border border-gray-700 relative">
+                  // <div 
+                  //   className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                  // >
+                  //   <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-[80vw] h-[80vh] overflow-y-auto border border-gray-700 relative">
+                  <div
+                    className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+                    onClick={closChartModal}
+                >
+                    <div
+                    className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
+                    >
+                      
+                      <NewCharts charts={selectedPatient} chartsData={chartData} />
                       <button
                         className="absolute top-2 right-2 text-white hover:text-gray-400"
-                        onClick={() => setShowNewCharts(false)}
+                        onClick={() => closChartModal}
                       >
                         ✖
                       </button>
-                      <NewCharts charts={selectedPatient} chartsData={chartData} />
                     </div>
                   </div>
                 )}
