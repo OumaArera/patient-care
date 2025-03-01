@@ -52,14 +52,14 @@ const ChartVitals = () => {
     };
 
     return (
-        <div className="max-w-lg w-[80vw] mx-auto bg-gray-800 text-white p-6 rounded-lg shadow-lg relative">
+        <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold mb-4 text-center">Chart Vitals</h2>
             {loadingPatients ? (
                 <div className="flex justify-center items-center h-64">Loading...</div>
             ) : (
                 <div className="grid md:grid-cols-3 gap-4">
                     {patientManagers.map(({ patient }) => (
-                        <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left relative">
+                        <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left">
                             <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
                             <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
                             <p className="text-sm font-bold text-gray-400">DOB: {patient.dateOfBirth}</p>
