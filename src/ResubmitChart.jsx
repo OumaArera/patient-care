@@ -36,16 +36,22 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
     {"status": true, "response": "", "descriptionType": "Reported_Provider_And_Careteam"}
   ]);
 
-  useEffect(() =>{
+  useEffect(() => {
     setLoading(true);
     fetchChartData()
-      .then((data) =>{
+      .then((data) => {
         console.log("Data: ", data);
-        setBehaviors(data?.responseObject[0]?.behaviors || []);
+        const newBehaviors = data?.responseObject?.[0]?.behaviors || [];
+        setBehaviors(newBehaviors);
         setLoading(false);
       })
-      .catch(() =>{})
-  }, [])
+      .catch((error) => {
+        console.error("Error fetching chart data:", error);
+        setBehaviors([]); 
+        setLoading(false);
+      });
+  }, []);
+  
 
   const handleVitalsChange = (index, value) => {
     setVitals((prevVitals) => {
@@ -145,7 +151,7 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
             </tr>
           </thead>
           <tbody>
-            {behaviors.reduce((acc, behavior, index, arr) => {
+            {behaviors?.length > 0 && behaviors.reduce((acc, behavior, index, arr) => {
               const isNewCategory = index === 0 || behavior.category !== arr[index - 1].category;
               const rowspan = arr.filter((b) => b.category === behavior.category).length;
 
