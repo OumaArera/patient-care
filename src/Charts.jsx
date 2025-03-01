@@ -174,7 +174,7 @@ const Charts = () => {
           onClick={closeChartModal}
         >
           <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[60vw] max-h-[80vh] overflow-y-auto"
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <ResubmitChart patient={selectedPatient} handleGetCharts={fetchCharts} />
