@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { getpatientManagers } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
+import { postVitals } from "../services/postVitals";
+import { errorHandler } from "../services/errorHandler";
 
 const ChartVitals = () => {
     const [formData, setFormData] = useState({
@@ -14,6 +16,9 @@ const ChartVitals = () => {
     const [loadingPatients, setLoadingPatients] = useState(false);
     const [patientManagers, setPatientManagers] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const [errors, setErrors] = useState([]);
+    const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const userId = localStorage.getItem("userId");
@@ -37,8 +42,10 @@ const ChartVitals = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData) return
+        setLoading(true);
         const payload = {
             bloodPressure: formData.bloodPressure,
             temperature: parseFloat(formData.temperature),
@@ -47,8 +54,29 @@ const ChartVitals = () => {
             pain: formData.pain || "N/A",
             patientId: formData.patientId,
         };
-        console.log("Submitted Payload:", payload);
-        setShowForm(false);
+        try {
+            const response = await postVitals(payload);
+            if (response?.error) {
+            setErrors(errorHandler(response.error));
+            setTimeout(() => setErrors([]), 5000);
+            } else {
+                setFormData({
+                    bloodPressure: "",
+                    temperature: "",
+                    pulse: "",
+                    oxygenSaturation: "",
+                    pain: "",
+                    patientId: null,
+                })
+            setTimeout(() => setMessage(""), 5000);
+            setTimeout(() => setShowForm(false), 5000);
+            }
+        } catch (error) {
+            setErrors([`Errors: ${error}`]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const closeVitalsModal = () => {
@@ -114,9 +142,17 @@ const ChartVitals = () => {
                                 <label className="block text-gray-300">Pain (Optional)</label>
                                 <textarea name="pain" value={formData.pain} onChange={handleChange} className="w-full p-2 rounded bg-gray-700 text-white" placeholder="Describe pain level..." />
                             </div>
+                            {message && <p className="text-green-600">{message}</p>}
+                            {errors.length > 0 && (
+                                <div className="mb-4 p-3 bg-red-800 rounded">
+                                {errors.map((error, index) => (
+                                    <p key={index} className="text-sm text-white">{error}</p>
+                                ))}
+                                </div>
+                            )}
                             <div className="flex justify-between">
                                 <button type="button" className="px-4 py-2 bg-red-600 rounded" onClick={() => closeAppointmentModal(false)}>✖</button>
-                                <button type="submit" className="px-4 py-2 bg-blue-600 rounded">Submit</button>
+                                <button type="submit" className="px-4 py-2 bg-blue-600 rounded">{loading ? "Submitting" : "Submit" }</button>
                             </div>
                         </form>
                     </div>
