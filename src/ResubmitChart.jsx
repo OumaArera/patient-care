@@ -7,56 +7,16 @@ import { errorHandler } from "../services/errorHandler";
 import "react-datepicker/dist/react-datepicker.css";
 import VitalsComponent from "./VitalsComponent";
 import BehaviorDescriptions from "./BehaviorDescription";
+import { fetchChartData } from "../services/fetchChartData";
 
 const ResubmitChart = ({ patient, handleGetCharts }) => {
 
-  const [behaviors, setBehaviors] = useState(
-    [
-        { "status": "No", "behavior": "Meals", "category": "Resistive" },
-        { "status": "Yes", "behavior": "Shower", "category": "Resistive" },
-        { "status": "No", "behavior": "Grooming", "category": "Resistive" },
-        { "status": "Yes", "behavior": "Medication", "category": "Resistive" },
-        { "status": "Yes", "behavior": "Log in and out", "category": "Resistive" },
-        { "status": "Yes", "behavior": "Walk activities", "category": "Resistive" },
-        { "status": "Yes", "behavior": "Change of clothing", "category": "Resistive" },
-        { "status": "Yes", "behavior": "Coming back late hours", "category": "Resistive" },
-        { "status": "Yes", "behavior": "To speak care provider", "category": "Resistive" },
-        { "status": "Yes", "behavior": "Pacing", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Anxiety", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Agitated", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Drunkard", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Freezing", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Suicidal", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Elopement", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Long naps", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Delusional", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Naked Nude", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Gaslighting", "category": "Behavior" },
-        { "status": "No", "behavior": "Short memory", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Hallucination", "category": "Behavior" },
-        { "status": "No", "behavior": "Sexual acting out", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Yelling screaming", "category": "Behavior" },
-        { "status": "No", "behavior": "Extreme mood swing", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Sleep disturbances", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Disruptive at night", "category": "Behavior" },
-        { "status": "No", "behavior": "Abusive cursing words", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Incontinent urination", "category": "Behavior" },
-        { "status": "No", "behavior": "Intentional self HARM", "category": "Behavior" },
-        { "status": "Yes", "behavior": "Wandering seeking exit", "category": "Behavior" },
-        { "status": "Yes", "behavior": "BP low", "category": "Others" },
-        { "status": "No", "behavior": "BP high", "category": "Others" },
-        { "status": "No", "behavior": "Accident", "category": "Others" },
-        { "status": "No", "behavior": "Dehydration", "category": "Others" },
-        { "status": "Yes", "behavior": "Constipation", "category": "Others" },
-        { "status": "Yes", "behavior": "Sick 911 call", "category": "Others" },
-        { "status": "Yes", "behavior": "Blood sugar low", "category": "Others" },
-        { "status": "Yes", "behavior": "Blood sugar high", "category": "Others" }
-    ]
-  );
+  const [behaviors, setBehaviors] = useState();
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     behaviors.map(() => null) 
   );
@@ -75,6 +35,16 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
     {"status": true, "response": "", "descriptionType": "Care_Giver_Intervention"},
     {"status": true, "response": "", "descriptionType": "Reported_Provider_And_Careteam"}
   ]);
+
+  useEffect(() =>{
+    setLoading(true);
+    fetchChartData()
+      .then((data) =>{
+        setBehaviors(data?.responseObject[0]?.behaviors || []);
+        setLoading(false);
+      })
+      .catch(() =>{})
+  }, [])
 
   const handleVitalsChange = (index, value) => {
     setVitals((prevVitals) => {
@@ -143,7 +113,15 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white">
-      <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {patient.firstName} {patient.lastName}</h2>
+      {loading? (
+        <div className="flex justify-center items-center h-64">
+          <Loader className="animate-spin" size={32} />
+          <p>Loading Charts Data</p>
+      </div>
+      ):(
+        <>
+          <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {patient.firstName} {patient.lastName}</h2>
+      
       <div className="mb-4 text-center">
         <label className="block text-lg text-blue-400">Select Date & Time:</label>
         <DatePicker
@@ -235,6 +213,9 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
           </div>
         )}
       </div>
+        </>
+      )}
+      
     </div>
   );
 };
