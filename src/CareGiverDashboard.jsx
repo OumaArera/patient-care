@@ -47,7 +47,7 @@ const CareGiverDashboard = () => {
   return (
     <div className="flex min-h-screen bg-black text-white">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-900 p-5 flex flex-col">
+      <div className="bg-gray-900 p-5 flex flex-col">
         <h1 className="text-xl font-bold text-blue-500 mb-6">Workflow</h1>
 
         {/* Sidebar Buttons */}
@@ -88,7 +88,7 @@ const CareGiverDashboard = () => {
           className={`p-3 flex items-center gap-2 ${activeTab === "vitals" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
           onClick={() => setActiveTab("vitals")}
         >
-          <FaCalendarAlt /> Appointments
+          <FaCalendarAlt /> Vitals
         </button>
       </div>
       
