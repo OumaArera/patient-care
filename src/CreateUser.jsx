@@ -158,9 +158,6 @@ const CreateUser = () => {
           {errors.length > 0 && (
             <div className="mb-4 p-3 rounded bg-red-900 text-white">
               {errors.map((err, index) => {
-                if (err.username) {
-                  return <p key={index} className="text-sm text-red-400">Username: {err.username}</p>;
-                }
                 if (err.email) {
                   return <p key={index} className="text-sm text-red-400">Email: {err.email}</p>;
                 }
