@@ -166,7 +166,7 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
           {Object.entries(groupedBehaviors).map(([category, behaviorList]) =>
             behaviorList.map((behavior) => {
               // Find the original index of this behavior in `chart.behaviors`
-              const originalIndex = chart.behaviors.findIndex((b) => b === behavior);
+              const originalIndex = behaviors.findIndex((b) => b === behavior);
 
               return (
                 <tr key={behavior.id} className="border border-gray-700">
