@@ -164,7 +164,7 @@ const CreateUser = () => {
                 if (err.phoneNumber) {
                   return <p key={index} className="text-sm text-red-400">Phone Number: {err.phoneNumber}</p>;
                 }
-                return null; // Skip errors that are not related
+                return null; 
               })}
             </div>
           )}
