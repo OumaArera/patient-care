@@ -20,6 +20,9 @@ const PatientCard = ({ patient }) => {
     console.log("Payload", updatedData);
     // setIsEditing(false);
   };
+  const closeResidentModal = () => {
+    setIsEditing(false);
+  };
 
 
 
@@ -62,9 +65,15 @@ const PatientCard = ({ patient }) => {
 
       {/* Overlay Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full">
-            <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Patient</h3>
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closeResidentModal}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Resident Details</h3>
 
             <div className="grid gap-3">
               <label className="block">
@@ -163,7 +172,7 @@ const PatientCard = ({ patient }) => {
                 </button>
                 <button 
                   className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                  onClick={() => setIsEditing(false)}
+                  onClick={closeResidentModal}
                 >
                   Cancel
                 </button>
