@@ -63,7 +63,7 @@ const PatientCard = ({ patient }) => {
       {/* Overlay Modal */}
       {isEditing && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full">
             <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Patient</h3>
 
             <div className="grid gap-3">
