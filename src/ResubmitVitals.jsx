@@ -76,7 +76,7 @@ const ResubmitVitals = ({ patient }) => {
     };
 
     return (
-        <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg max-w-md mx-auto">
+        <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg mx-auto">
             <h2 className="text-xl font-bold text-blue-400 mb-4">Resubmit Vitals</h2>
 
             
