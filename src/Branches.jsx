@@ -149,7 +149,10 @@ const Branches = () => {
               <h3 className="font-semibold text-blue-300">{branch.branchName}</h3>
               <p className="text-gray-400">{branch.branchAddress}</p>
               <p className="text-gray-500">Facility: {branch.facilityName}</p>
-              <button onClick={() => handleEditClick(branch)} className="bg-yellow-500 text-white px-4 py-2 rounded mt-2 hover:bg-yellow-600">Edit</button>
+              <button 
+                onClick={() => handleEditClick(branch)} 
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-3 hover:bg-blue-600"
+              >Edit</button>
             </div>
           ))
         ) : (
@@ -163,8 +166,8 @@ const Branches = () => {
         <button onClick={() => setPageNumber((prev) => prev + 1)} className="bg-gray-700 px-4 py-2 rounded">Next</button>
       </div>
       {editingBranch && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full">
             <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Branch</h3>
             <label className="block text-gray-300 font-semibold mb-1">Branch Name</label>
             <input
