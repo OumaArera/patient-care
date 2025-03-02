@@ -16,9 +16,9 @@ const PatientCard = ({ patient }) => {
   };
 
   const handleSubmit = () => {
-    const updatedData = { ...editedPatient, status: removeResident ? "Removed" : "Active" };
+    const updatedData = { ...editedPatient, status: removeResident ? true : false };
     console.log("Update payload",updatedData);
-    setIsEditing(false);
+    // setIsEditing(false);
   };
 
 
