@@ -149,6 +149,7 @@ const Branches = () => {
               <h3 className="font-semibold text-blue-300">{branch.branchName}</h3>
               <p className="text-gray-400">{branch.branchAddress}</p>
               <p className="text-gray-500">Facility: {branch.facilityName}</p>
+              <button onClick={() => handleEditClick(branch)} className="bg-yellow-500 text-white px-4 py-2 rounded mt-2 hover:bg-yellow-600">Edit</button>
             </div>
           ))
         ) : (
