@@ -4,6 +4,7 @@ import { getVitals } from "../services/getVitals";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Loader } from "lucide-react";
 import { generateVitalsPDFReport } from "../services/generateVitals";
+import ResubmitVitals from "./ResubmitVitals";
 
 const Vitals = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -14,7 +15,12 @@ const Vitals = () => {
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState((new Date().getMonth() + 1).toString().padStart(2, "0"));
   const [currentPage, setCurrentPage] = useState(1);
+  const [showVitals, setShowVitals] = useState(false);
   const vitalsPerPage = 10;
+
+  const closVitalsModal =()=>{
+    setShowVitals(false)
+  }
 
   useEffect(() => {
     setLoadingPatients(true);
@@ -130,12 +136,20 @@ const Vitals = () => {
 
           </ResponsiveContainer>
             {vitals.length > 0 && (
-                <button 
-                    className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={() => generateVitalsPDFReport(vitals, year, month)}
-                >
-                    Download Vitals
-                </button>
+                <>
+                    <button 
+                        className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                        onClick={() => generateVitalsPDFReport(vitals, year, month)}
+                    >
+                        Download Vitals
+                    </button>
+                    <button
+                        className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                        onClick={() => setShowVitals(true)}
+                    >
+                        New Vitals
+                    </button>
+              </>
             )}
 
           <table className="w-full border-collapse border border-gray-700 mt-4">
@@ -165,6 +179,26 @@ const Vitals = () => {
             </tbody>
           </table>
         </>
+      )}
+      {showVitals &&(
+        <div
+        className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+        onClick={closVitalsModal}
+    >
+        <div
+        className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+        >
+          
+          <ResubmitVitals patient={selectedPatient} />
+          <button
+            className="absolute top-2 right-2 text-white hover:text-gray-400"
+            onClick={closVitalsModal}
+          >
+            ✖
+          </button>
+        </div>
+      </div>
       )}
     </div>
   );
