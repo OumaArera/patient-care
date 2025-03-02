@@ -28,11 +28,7 @@ const PatientCard = ({ patients }) => {
           <div key={index} className="bg-gray-800 p-6 rounded-2xl shadow-lg text-white flex flex-col items-center space-y-4 transition-transform transform hover:scale-105">
             {/* Avatar */}
             <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-700">
-              {patient.avatar ? (
-                <img src={patient.avatar} alt="Avatar" className="w-full h-full object-cover rounded-full" />
-              ) : (
-                <FaUserCircle className="w-16 h-16 text-gray-500" />
-              )}
+              <FaUserCircle className="w-16 h-16 text-gray-500" />
             </div>
 
             {/* Patient Info */}

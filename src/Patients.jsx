@@ -128,7 +128,6 @@ const Patients = () => {
                 accept="image/*"
                 onChange={handleFileChange}
                 className="border p-2 rounded w-full bg-gray-700 text-white"
-                required
               />
             ) : key === "middleNames" ? (
                 <input
