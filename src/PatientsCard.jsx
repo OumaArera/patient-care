@@ -63,124 +63,123 @@ const PatientCard = ({ patient }) => {
         Edit
       </button>
 
-      {/* Overlay Modal */}
       {isEditing && (
-        <div
-          className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
-          onClick={closeResidentModal}
-        >
           <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+            onClick={closeResidentModal} // This closes when clicking outside
           >
-            <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Resident Details</h3>
+            <div
+              className="bg-gray-800 p-6 rounded-lg shadow-lg relative w-full max-w-md"
+              onClick={(e) => e.stopPropagation()} // Prevents modal from closing when clicking inside
+            >
+              <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Resident Details</h3>
 
-            <div className="">
-              <label className="block">
-                <span className="text-gray-300">First Name:</span>
-                <input 
-                  type="text" 
-                  name="firstName" 
-                  value={editedPatient.firstName} 
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-700 text-white"
-                />
-              </label>
+              <div className="">
+                <label className="block">
+                  <span className="text-gray-300">First Name:</span>
+                  <input 
+                    type="text" 
+                    name="firstName" 
+                    value={editedPatient.firstName} 
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-700 text-white"
+                  />
+                </label>
 
-              <label className="block">
-                <span className="text-gray-300">Middle Name:</span>
-                <input 
-                  type="text" 
-                  name="middleNames" 
-                  value={editedPatient.middleNames} 
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-700 text-white"
-                />
-              </label>
+                <label className="block">
+                  <span className="text-gray-300">Middle Name:</span>
+                  <input 
+                    type="text" 
+                    name="middleNames" 
+                    value={editedPatient.middleNames} 
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-700 text-white"
+                  />
+                </label>
 
-              <label className="block">
-                <span className="text-gray-300">Last Name:</span>
-                <input 
-                  type="text" 
-                  name="lastName" 
-                  value={editedPatient.lastName} 
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-700 text-white"
-                />
-              </label>
+                <label className="block">
+                  <span className="text-gray-300">Last Name:</span>
+                  <input 
+                    type="text" 
+                    name="lastName" 
+                    value={editedPatient.lastName} 
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-700 text-white"
+                  />
+                </label>
 
-              <label className="block">
-                <span className="text-gray-300">Diagnosis:</span>
-                <input 
-                  type="text" 
-                  name="diagnosis" 
-                  value={editedPatient.diagnosis} 
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-700 text-white"
-                />
-              </label>
+                <label className="block">
+                  <span className="text-gray-300">Diagnosis:</span>
+                  <input 
+                    type="text" 
+                    name="diagnosis" 
+                    value={editedPatient.diagnosis} 
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-700 text-white"
+                  />
+                </label>
 
-              <label className="block">
-                <span className="text-gray-300">Physician:</span>
-                <input 
-                  type="text" 
-                  name="physicianName" 
-                  value={editedPatient.physicianName} 
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-700 text-white"
-                />
-              </label>
+                <label className="block">
+                  <span className="text-gray-300">Physician:</span>
+                  <input 
+                    type="text" 
+                    name="physicianName" 
+                    value={editedPatient.physicianName} 
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-700 text-white"
+                  />
+                </label>
 
-              <label className="block">
-                <span className="text-gray-300">PCP/Doctor:</span>
-                <input 
-                  type="text" 
-                  name="pcpOrDoctor" 
-                  value={editedPatient.pcpOrDoctor} 
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-700 text-white"
-                />
-              </label>
+                <label className="block">
+                  <span className="text-gray-300">PCP/Doctor:</span>
+                  <input 
+                    type="text" 
+                    name="pcpOrDoctor" 
+                    value={editedPatient.pcpOrDoctor} 
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-700 text-white"
+                  />
+                </label>
 
-              <label className="block">
-                <span className="text-gray-300">Branch:</span>
-                <input 
-                  type="text" 
-                  name="branchName" 
-                  value={editedPatient.branchName} 
-                  onChange={handleChange}
-                  className="w-full p-2 rounded bg-gray-700 text-white"
-                />
-              </label>
+                <label className="block">
+                  <span className="text-gray-300">Branch:</span>
+                  <input 
+                    type="text" 
+                    name="branchName" 
+                    value={editedPatient.branchName} 
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-700 text-white"
+                  />
+                </label>
 
-              <label className="flex items-center space-x-2">
-                <input 
-                  type="checkbox" 
-                  checked={removeResident} 
-                  onChange={handleCheckboxChange}
-                  className="h-5 w-5"
-                />
-                <span className="text-red-500 font-bold">Remove Resident</span>
-              </label>
+                <label className="flex items-center space-x-2 mt-2">
+                  <input 
+                    type="checkbox" 
+                    checked={removeResident} 
+                    onChange={handleCheckboxChange}
+                    className="h-5 w-5"
+                  />
+                  <span className="text-red-500 font-bold">Remove Resident</span>
+                </label>
 
-              <div className="flex justify-between mt-4">
-                <button 
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                  onClick={handleSubmit}
-                >
-                  Save Changes
-                </button>
-                <button 
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                  onClick={closeResidentModal}
-                >
-                  Cancel
-                </button>
+                <div className="flex justify-between mt-4">
+                  <button 
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                    onClick={handleSubmit}
+                  >
+                    Save Changes
+                  </button>
+                  <button 
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                    onClick={closeResidentModal}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };
