@@ -75,7 +75,7 @@ const PatientCard = ({ patient }) => {
           >
             <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Resident Details</h3>
 
-            <div className="grid gap-3">
+            <div className="">
               <label className="block">
                 <span className="text-gray-300">First Name:</span>
                 <input 
