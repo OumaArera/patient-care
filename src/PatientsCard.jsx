@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 
 const PatientCard = ({ patients }) => {
+  console.log("Patients: ", patients);
   const [currentPage, setCurrentPage] = useState(0);
   const patientsPerPage = 3;
 
