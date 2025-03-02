@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { postVitals } from "../services/postVitals";
+import { errorHandler } from "../services/errorHandler";
 
 const ResubmitVitals = ({ patient }) => {
     const [formData, setFormData] = useState({
@@ -11,6 +13,9 @@ const ResubmitVitals = ({ patient }) => {
     });
 
     const [error, setError] = useState("");
+    const [errors, setErrors] = useState([]);
+    const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,7 +34,7 @@ const ResubmitVitals = ({ patient }) => {
         return bpRegex.test(bp);
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const { bloodPressure, temperature, pulse, oxygenSaturation, dateTaken } = formData;
 
         if (!bloodPressure || !temperature || !pulse || !oxygenSaturation || !dateTaken) {
@@ -41,15 +46,40 @@ const ResubmitVitals = ({ patient }) => {
             setError("Invalid blood pressure format. Use 'number/number' e.g., 120/80.");
             return;
         }
+        setLoading(true);
+        const payload = { ...formData, patient }
 
-        console.log({ ...formData, patient });
+        console.log(payload);
+        try {
+            const response = await postVitals(payload);
+            if (response?.error) {
+            setErrors(errorHandler(response.error));
+            setTimeout(() => setErrors([]), 5000);
+            } else {
+                setFormData({
+                    bloodPressure: "",
+                    temperature: "",
+                    pulse: "",
+                    oxygenSaturation: "",
+                    pain: "",
+                    dateTaken: ""
+                })
+            setMessage("Vitals Updated successfully")
+            setTimeout(() => setMessage(""), 10000);
+            }
+        } catch (error) {
+            setErrors([`Errors: ${error}`]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg max-w-md mx-auto">
             <h2 className="text-xl font-bold text-blue-400 mb-4">Resubmit Vitals</h2>
 
-            {error && <p className="text-red-500 mb-4">{error}</p>}
+            
 
             <label className="block mb-2">Date:</label>
             <input
@@ -116,12 +146,20 @@ const ResubmitVitals = ({ patient }) => {
                 placeholder="Enter Pain description, or leave blank"
                 className="w-full p-2 mb-4 bg-gray-800 border border-gray-700 rounded"
             ></textarea>
-
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+            {message && <p className="text-green-600">{message}</p>}
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 bg-red-800 rounded">
+                    {errors.map((error, index) => (
+                        <p key={index} className="text-sm text-white">{error}</p>
+                    ))}
+                </div>
+            )}
             <button
                 onClick={handleSubmit}
                 className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
             >
-                Submit
+                {loading ? "Submitting..." : "Submit"}
             </button>
         </div>
     );
