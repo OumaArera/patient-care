@@ -113,18 +113,19 @@ const Vitals = () => {
       ) : (
         <>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="systolic" stroke="#8884d8" name="Systolic" />
-              <Line type="monotone" dataKey="diastolic" stroke="#82ca9d" name="Diastolic" />
-              <Line type="monotone" dataKey="temperature" stroke="#ffc658" name="Temperature" />
-              <Line type="monotone" dataKey="pulse" stroke="#ff7300" name="Pulse" />
-              <Line type="monotone" dataKey="oxygenSaturation" stroke="#00C49F" name="Oxygen Saturation" />
+          <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis domain={[0, 200]} tickCount={21} />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="systolic" stroke="#8884d8" name="Systolic" />
+            <Line type="monotone" dataKey="diastolic" stroke="#82ca9d" name="Diastolic" />
+            <Line type="monotone" dataKey="temperature" stroke="#ffc658" name="Temperature" />
+            <Line type="monotone" dataKey="pulse" stroke="#ff7300" name="Pulse" />
+            <Line type="monotone" dataKey="oxygenSaturation" stroke="#00C49F" name="Oxygen Saturation" />
             </LineChart>
+
           </ResponsiveContainer>
 
           <table className="w-full border-collapse border border-gray-700 mt-4">
