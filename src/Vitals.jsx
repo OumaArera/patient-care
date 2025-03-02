@@ -155,12 +155,12 @@ const Vitals = () => {
           <table className="w-full border-collapse border border-gray-700 mt-4">
             <thead>
               <tr className="bg-gray-800 text-blue-400">
-                <th className="p-2">Date</th>
-                <th className="p-2">Blood Pressure</th>
-                <th className="p-2">Temperature</th>
-                <th className="p-2">Pulse</th>
-                <th className="p-2">Oxygen Saturation</th>
-                <th className="p-2">Pain</th>
+                <th className="p-2 border border-gray-700">Date</th>
+                <th className="p-2 border border-gray-700">Blood Pressure</th>
+                <th className="p-2 border border-gray-700">Temperature</th>
+                <th className="p-2 border border-gray-700">Pulse</th>
+                <th className="p-2 border border-gray-700">Oxygen Saturation</th>
+                <th className="p-2 border border-gray-700">Pain</th>
               </tr>
             </thead>
             <tbody>
