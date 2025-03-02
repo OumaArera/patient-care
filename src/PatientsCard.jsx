@@ -39,20 +39,29 @@ const PatientCard = ({ patient }) => {
 
       <div className="w-full bg-gray-700 p-4 rounded-lg text-sm space-y-2">
         <div>
-          <span className="text-gray-400 font-semibold">Diagnosis:</span>
-          <p className="text-blue-300 text-right">{patient.diagnosis}</p>
+          
+          <p className="text-blue-300 text-right">
+            <span className="text-gray-400 font-semibold">Diagnosis:</span>
+            {patient.diagnosis}
+          </p>
         </div>
         <div>
-          <span className="text-gray-400 font-semibold">Physician:</span>
-          <p className="text-blue-300 text-right">{patient.physicianName}</p>
+          <p className="text-blue-300">
+            <span className="text-gray-400 font-semibold">Physician:</span>
+            {patient.physicianName}
+            </p>
         </div>
         <div>
-          <span className="text-gray-400 font-semibold">PCP/Doctor:</span>
-          <p className="text-blue-300 text-right">{patient.pcpOrDoctor}</p>
+          <p className="text-blue-300">
+            <span className="text-gray-400 font-semibold">PCP/Doctor:</span>
+            {patient.pcpOrDoctor}
+            </p>
         </div>
         <div>
-          <span className="text-gray-400 font-semibold">Branch:</span>
-          <p className="text-blue-300 text-right">{patient.branchName}</p>
+          <p className="text-blue-300">
+            <span className="text-gray-400 font-semibold">Branch:</span>
+            {patient.branchName}
+          </p>
         </div>
       </div>
 
