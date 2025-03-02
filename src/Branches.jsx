@@ -76,6 +76,9 @@ const Branches = () => {
       setTimeout(() => setErrors([]), 5000);
     }
   };
+  const closeBranchModal = () => {
+    setEditingBranch(null);
+  };
 
   return (
     <div className="container mx-auto p-6 bg-gray-900 text-white min-h-screen">
@@ -166,8 +169,14 @@ const Branches = () => {
         <button onClick={() => setPageNumber((prev) => prev + 1)} className="bg-gray-700 px-4 py-2 rounded">Next</button>
       </div>
       {editingBranch && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full">
+        <div
+        className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closeBranchModal}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Branch</h3>
             <label className="block text-gray-300 font-semibold mb-1">Branch Name</label>
             <input
@@ -187,7 +196,9 @@ const Branches = () => {
 
             <div className="flex justify-between mt-4">
               <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={handleSave}>Submit</button>
-              <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" onClick={() => setEditingBranch(null)}>Cancel</button>
+              <button 
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" 
+                onClick={closeBranchModal}>Cancel</button>
             </div>
           </div>
         </div>
