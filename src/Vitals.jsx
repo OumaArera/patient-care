@@ -138,14 +138,14 @@ const Vitals = () => {
           <div className="flex justify-center space-x-4 mt-4">
             {vitals.length > 0 && (
                 <button 
-                    className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                    className="mb-4 mt-2 bg-blue-500 text-white "
                     onClick={() => generateVitalsPDFReport(vitals, year, month)}
                 >
                     Download Vitals
                 </button>
             )}
             {selectedPatient && (<button
-                className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                className="mb-4 mt-2 border-blue-500 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded"
                 onClick={() => setShowVitals(true)}
             >
                 New Vitals
