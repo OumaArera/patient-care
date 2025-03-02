@@ -141,13 +141,13 @@ const Vitals = () => {
             </thead>
             <tbody>
               {currentVitals.map((v) => (
-                <tr key={v.vitalId} className="border border-gray-700">
-                  <td className="p-2">{new Date(v.dateTaken).toLocaleDateString()}</td>
-                  <td className="p-2">{v.bloodPressure}</td>
-                  <td className="p-2">{v.temperature}°F</td>
-                  <td className="p-2">{v.pulse}</td>
-                  <td className="p-2">{v.oxygenSaturation}%</td>
-                  <td className="p-2">{v.pain}</td>
+                <tr key={v.vitalId} className="bg-gray-900 text-gray-300">
+                  <td className="p-2 border border-gray-700">{new Date(v.dateTaken).toLocaleDateString()}</td>
+                  <td className="p-2 border border-gray-700">{v.bloodPressure}</td>
+                  <td className="p-2 border border-gray-700">{v.temperature}°F</td>
+                  <td className="p-2 border border-gray-700">{v.pulse}</td>
+                  <td className="p-2 border border-gray-700">{v.oxygenSaturation}%</td>
+                  <td className="p-2 border border-gray-700">{v.pain}</td>
                 </tr>
               ))}
             </tbody>
