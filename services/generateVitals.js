@@ -1,10 +1,10 @@
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 
-export const generateVitalsPDFReport = async (charts, selectedYear, selectedMonth) => {
-    if (charts.length === 0) return;
+export const generateVitalsPDFReport = async (vitals, selectedYear, selectedMonth) => {
+    if (vitals.length === 0) return;
 
-    const { facilityName, branchName, patientName } = charts[0];
+    const { patientName } = vitals[0];
     const pdf = new jsPDF("p", "mm", "a4");
 
     const captureAsImage = async (htmlContent) => {
@@ -19,52 +19,42 @@ export const generateVitalsPDFReport = async (charts, selectedYear, selectedMont
         return canvas.toDataURL("image/png");
     };
 
-    // Extract unique vitals types to create table headers
-    const vitalsTypes = Array.from(new Set(charts.flatMap(chart => chart.vitals.map(v => v.vitalsType))));
-
     let pageIndex = 1;
-    let totalPages = Math.ceil(charts.length / 20); // 20 rows per page
+    let totalPages = Math.ceil(vitals.length / 20); // 20 rows per page
 
-    for (let i = 0; i < charts.length; i += 20) {
-        const chartsBatch = charts.slice(i, i + 20);
+    for (let i = 0; i < vitals.length; i += 20) {
+        const vitalsBatch = vitals.slice(i, i + 20);
 
         let vitalsHTML = `
             <div style="text-align: center; font-size: 16px; font-weight: bold;">
-                ${facilityName} - ${branchName}
+                VITAL SIGNS REPORT
             </div>
             <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px;">
-                VITAL SIGNS FLOW SHEET
-            </div>
-            <div style="font-size: 14px; margin-bottom: 10px;">
-                <strong>Resident Name:</strong> ${patientName} &nbsp;&nbsp;&nbsp;
-                <strong>M/F:</strong> ______ &nbsp;&nbsp;&nbsp;
-                <strong>Notes:</strong> _______________________________
+                Patient: ${patientName}
             </div>
             <table border="1" style="width: 100%; border-collapse: collapse; font-size: 12px;">
                 <thead>
                     <tr style="background: #f0f0f0; text-align: center; font-weight: bold;">
                         <th style="padding: 6px; border: 1px solid #000;">Date</th>
-                        <th style="padding: 6px; border: 1px solid #000;">Weight</th>
-                        ${vitalsTypes.map(type => `<th style="padding: 6px; border: 1px solid #000;">${type}</th>`).join("")}
-                        <th style="padding: 6px; border: 1px solid #000;">Caregiver Initials</th>
+                        <th style="padding: 6px; border: 1px solid #000;">Blood Pressure</th>
+                        <th style="padding: 6px; border: 1px solid #000;">Temperature</th>
+                        <th style="padding: 6px; border: 1px solid #000;">Pulse</th>
+                        <th style="padding: 6px; border: 1px solid #000;">Oxygen Saturation</th>
+                        <th style="padding: 6px; border: 1px solid #000;">Pain</th>
                     </tr>
                 </thead>
                 <tbody>`;
 
-        chartsBatch.forEach(chart => {
-            const date = new Date(chart.dateTaken).toLocaleDateString();
-            const vitalsData = {};
-            
-            chart.vitals.forEach(vital => {
-                vitalsData[vital.vitalsType] = vital.response || "-"; // Default to "-" if no response
-            });
-
+        vitalsBatch.forEach(vital => {
+            const date = new Date(vital.dateTaken).toLocaleDateString();
             vitalsHTML += `
                 <tr>
                     <td style="padding: 6px; border: 1px solid #000;">${date}</td>
-                    <td style="padding: 6px; border: 1px solid #000; text-align: center;"></td> <!-- Blank Weight -->
-                    ${vitalsTypes.map(type => `<td style="padding: 6px; border: 1px solid #000; text-align: center;">${vitalsData[type] || "-"}</td>`).join("")}
-                    <td style="padding: 6px; border: 1px solid #000; text-align: center;">${chart.careGiver || "-"}</td>
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center;">${vital.bloodPressure}</td>
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center;">${vital.temperature}°F</td>
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center;">${vital.pulse}</td>
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center;">${vital.oxygenSaturation}%</td>
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center;">${vital.pain}</td>
                 </tr>`;
         });
 
@@ -80,12 +70,12 @@ export const generateVitalsPDFReport = async (charts, selectedYear, selectedMont
         pdf.text(`Year: ${selectedYear} | Month: ${selectedMonth}`, 15, 285);
 
         // Add new page unless it's the last page
-        if (i + 20 < charts.length) {
+        if (i + 20 < vitals.length) {
             pdf.addPage();
         }
 
         pageIndex++;
     }
 
-    pdf.save(`Vitals_${patientName}_${branchName}_${facilityName}_${selectedYear}_${selectedMonth}.pdf`);
+    pdf.save(`Vitals_${patientName}_${selectedYear}_${selectedMonth}.pdf`);
 };

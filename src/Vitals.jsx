@@ -3,6 +3,7 @@ import { fetchPatients } from "../services/fetchPatients";
 import { getVitals } from "../services/getVitals";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { Loader } from "lucide-react";
+import { generateVitalsPDFReport } from "../services/generateVitals";
 
 const Vitals = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -104,6 +105,7 @@ const Vitals = () => {
           ))}
         </select>
       </div>
+      
 
       {loadingVitals ? (
         <div className="flex justify-center items-center">
@@ -127,6 +129,12 @@ const Vitals = () => {
             </LineChart>
 
           </ResponsiveContainer>
+            <button 
+                className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={() => generateVitalsPDFReport(vitals, year, month)}
+            >
+                Download Vitals
+            </button>
 
           <table className="w-full border-collapse border border-gray-700 mt-4">
             <thead>

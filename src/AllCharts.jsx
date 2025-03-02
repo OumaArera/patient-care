@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
 import { generatePDFReport } from "../services/generatePDFReport";
-import { generateVitalsPDFReport } from "../services/generateVitals";
+
 import { Loader } from "lucide-react";
 
 const AllCharts = () => {
@@ -128,12 +128,7 @@ const AllCharts = () => {
                     >
                         Download Charts
                     </button>
-                    <button 
-                        className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-                        onClick={() => generateVitalsPDFReport(filteredCharts, selectedYear, selectedMonth)}
-                    >
-                        Download Vitals
-                    </button>
+                    
                 </div>
 
                 <div className="bg-gray-800 p-4 rounded-lg overflow-auto max-w-[80vw]">
