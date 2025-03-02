@@ -64,15 +64,15 @@ const PatientCard = ({ patient }) => {
       </button>
 
       {isEditing && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-            onClick={closeResidentModal} // This closes when clicking outside
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={closeResidentModal}
           >
-            <div
-              className="bg-gray-800 p-6 rounded-lg shadow-lg relative w-full max-w-md"
-              onClick={(e) => e.stopPropagation()} // Prevents modal from closing when clicking inside
-            >
-              <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Resident Details</h3>
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full"
+            onClick={(e) => e.stopPropagation()} 
+          >
+            <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Resident Details</h3>
 
               <div className="">
                 <label className="block">
