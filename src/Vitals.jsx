@@ -136,21 +136,19 @@ const Vitals = () => {
 
           </ResponsiveContainer>
             {vitals.length > 0 && (
-                <>
-                    <button 
-                        className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-                        onClick={() => generateVitalsPDFReport(vitals, year, month)}
-                    >
-                        Download Vitals
-                    </button>
-                    <button
-                        className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                        onClick={() => setShowVitals(true)}
-                    >
-                        New Vitals
-                    </button>
-              </>
+                <button 
+                    className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                    onClick={() => generateVitalsPDFReport(vitals, year, month)}
+                >
+                    Download Vitals
+                </button>
             )}
+            <button
+                className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                onClick={() => setShowVitals(true)}
+            >
+                New Vitals
+            </button>
 
           <table className="w-full border-collapse border border-gray-700 mt-4">
             <thead>
