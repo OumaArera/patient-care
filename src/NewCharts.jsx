@@ -4,7 +4,6 @@ import { Loader } from "lucide-react";
 import dayjs from "dayjs";
 import { errorHandler } from "../services/errorHandler";
 import "react-datepicker/dist/react-datepicker.css";
-import VitalsComponent from "./VitalsComponent";
 import BehaviorDescriptions from "./BehaviorDescription";
 
 const NewCharts = ({ charts, chartsData }) => {
@@ -17,13 +16,6 @@ const NewCharts = ({ charts, chartsData }) => {
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     behaviors.map(() => null) 
   );
-  const [vitals, setVitals] = useState([
-    {status: true, response: '', vitalsType: 'Blood Pressure'},
-    {status: true, response: '', vitalsType: 'Pulse'},
-    {status: true, response: '', vitalsType: 'Temperature'},
-    {status: true, response: '', vitalsType: 'Oxygen Saturation'},
-    {status: true, response: '', vitalsType: 'Pain'},
-  ])
   const [behaviorsDescription, setBehaviorsDescription] = useState([
     {"status": true, "response": "", "descriptionType": "Date"},
     {"status": true, "response": "", "descriptionType": "Outcome"},
@@ -32,15 +24,6 @@ const NewCharts = ({ charts, chartsData }) => {
     {"status": true, "response": "", "descriptionType": "Care_Giver_Intervention"},
     {"status": true, "response": "", "descriptionType": "Reported_Provider_And_Careteam"}
   ]);
-
-  // const handleVitalsChange = (index, value) => {
-  //   setVitals((prevVitals) => {
-  //     const updatedVitals = [...prevVitals];
-  //     updatedVitals[index].response = value;
-  //     return updatedVitals;
-  //   });
-  // };
-
   const groupBehaviorsByCategory = (behaviors) => {
     return behaviors.reduce((acc, behavior) => {
       if (!acc[behavior.category]) {
@@ -74,12 +57,6 @@ const NewCharts = ({ charts, chartsData }) => {
       prev.map((b, i) => (i === index ? { ...b, status: value } : b))
     );
   };
-  
-  
-  //   setBehaviors((prev) =>
-  //     prev.map((b, i) => (i === index ? { ...b, status: value } : b))
-  //   );
-  // };
   
 
   const isWithinAllowedTime = () => {

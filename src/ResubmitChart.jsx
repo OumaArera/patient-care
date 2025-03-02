@@ -20,13 +20,13 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     behaviors.map(() => null) 
   );
-  const [vitals, setVitals] = useState([
-    {status: true, response: '', vitalsType: 'Blood Pressure'},
-    {status: true, response: '', vitalsType: 'Pulse'},
-    {status: true, response: '', vitalsType: 'Temperature'},
-    {status: true, response: '', vitalsType: 'Oxygen Saturation'},
-    {status: true, response: '', vitalsType: 'Pain'},
-  ])
+  // const [vitals, setVitals] = useState([
+  //   {status: true, response: '', vitalsType: 'Blood Pressure'},
+  //   {status: true, response: '', vitalsType: 'Pulse'},
+  //   {status: true, response: '', vitalsType: 'Temperature'},
+  //   {status: true, response: '', vitalsType: 'Oxygen Saturation'},
+  //   {status: true, response: '', vitalsType: 'Pain'},
+  // ])
   const [behaviorsDescription, setBehaviorsDescription] = useState([
     {"status": true, "response": "", "descriptionType": "Date"},
     {"status": true, "response": "", "descriptionType": "Outcome"},
@@ -53,13 +53,13 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
   }, []);
   
 
-  const handleVitalsChange = (index, value) => {
-    setVitals((prevVitals) => {
-      const updatedVitals = [...prevVitals];
-      updatedVitals[index].response = value;
-      return updatedVitals;
-    });
-  };
+  // const handleVitalsChange = (index, value) => {
+  //   setVitals((prevVitals) => {
+  //     const updatedVitals = [...prevVitals];
+  //     updatedVitals[index].response = value;
+  //     return updatedVitals;
+  //   });
+  // };
   
 
   const handleChangeBehaviorDescription = (index, value) => {
@@ -87,18 +87,17 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
     setLoadingSubmit(true);
     setErrors([]);
   
-    if (vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response)) {
-      setErrors(["All vitals except Pain must be provided."]);
-      setLoadingSubmit(false);
-      return;
-    }
+    // if (vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response)) {
+    //   setErrors(["All vitals except Pain must be provided."]);
+    //   setLoadingSubmit(false);
+    //   return;
+    // }
     const time = dayjs(selectedDate).format("YYYY-MM-DD HH:mm:ss");
     const payload = {
       patient: patient.patientId,
       behaviors,
       behaviorsDescription: behaviorsDescription,
-      dateTaken: time,
-      vitals
+      dateTaken: time
     };
     try {
       const response = await postCharts(payload);
@@ -203,23 +202,16 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
           handleChangeBehaviorDescription={handleChangeBehaviorDescription}
         />
       </div>
-      {/* Vitals Input Table */}
-      <div>
-      <VitalsComponent vitalsData={vitals} handleVitalsChange={handleVitalsChange} />
-
-      </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
       <button
         onClick={handleSubmit}
         className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-          loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
-          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) 
+          loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("")
             ? "bg-gray-500 cursor-not-allowed"
             : "bg-blue-500 hover:bg-blue-600 text-white"
         }`}
-        disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || 
-          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response)}
+        disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("")}
       >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
