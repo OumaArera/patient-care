@@ -23,6 +23,7 @@ import ChangePassword from "./ChangePassword";
 import LandingPage from "./LandingPage";
 import MedAdministration from "./MedAdministration";
 import Appointments from "./Appointments";
+import Vitals from "./Vitals";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -81,6 +82,9 @@ const SuperUserDashboard = () => {
         </button>
         <button className={`p-3 flex items-center gap-2 ${activeTab === "updates" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("updates")}>
           <FaNewspaper /> Updates
+        </button>
+        <button className={`p-3 flex items-center gap-2 ${activeTab === "vitals" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("vitals")}>
+          <FaUserTimes /> Vitals
         </button>
         <button className={`p-3 flex items-center gap-2 ${activeTab === "appointments" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("appointments")}>
           <FaCalendarAlt /> Appointments
@@ -190,6 +194,7 @@ const SuperUserDashboard = () => {
         {activeTab === "allCharts" && <AllCharts />}  
         {activeTab === "medications" && <MedAdministration />}  
         {activeTab === "dashboard" && <LandingPage />}
+        {activeTab === "vitals" && <Vitals />}
 
         {showChangePassword && (
           <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">
