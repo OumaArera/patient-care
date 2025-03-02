@@ -129,12 +129,14 @@ const Vitals = () => {
             </LineChart>
 
           </ResponsiveContainer>
-            <button 
-                className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={() => generateVitalsPDFReport(vitals, year, month)}
-            >
-                Download Vitals
-            </button>
+            {vitals.length > 0 && (
+                <button 
+                    className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+                    onClick={() => generateVitalsPDFReport(vitals, year, month)}
+                >
+                    Download Vitals
+                </button>
+            )}
 
           <table className="w-full border-collapse border border-gray-700 mt-4">
             <thead>
