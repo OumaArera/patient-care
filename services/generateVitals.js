@@ -30,7 +30,7 @@ export const generateVitalsPDFReport = async (vitals, selectedYear, selectedMont
                 VITAL SIGNS REPORT
             </div>
             <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px;">
-                Patient: ${patientName}
+                Resident: ${patientName}
             </div>
             <table border="1" style="width: 100%; border-collapse: collapse; font-size: 12px;">
                 <thead>
