@@ -17,6 +17,9 @@ const Branches = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [editingBranch, setEditingBranch] = useState(null);
+  const [editedBranchName, setEditedBranchName] = useState("");
+  const [editedBranchAddress, setEditedBranchAddress] = useState("");
   const pageSize = 10;
 
   useEffect(() => {
@@ -26,6 +29,17 @@ const Branches = () => {
   useEffect(() => {
     fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
   }, [pageNumber]);
+
+  const handleEditClick = (branch) => {
+    setEditingBranch(branch);
+    setEditedBranchName(branch.branchName);
+    setEditedBranchAddress(branch.branchAddress);
+  };
+
+  const handleSave = () => {
+    console.log("Updated Branch:", { editedBranchName, editedBranchAddress });
+    setEditingBranch(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -147,6 +161,33 @@ const Branches = () => {
         <span className="font-semibold text-blue-300">Page {pageNumber}</span>
         <button onClick={() => setPageNumber((prev) => prev + 1)} className="bg-gray-700 px-4 py-2 rounded">Next</button>
       </div>
+      {editingBranch && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Branch</h3>
+            <label className="block text-gray-300 font-semibold mb-1">Branch Name</label>
+            <input
+              type="text"
+              value={editedBranchName}
+              onChange={(e) => setEditedBranchName(e.target.value)}
+              className="border p-2 w-full rounded bg-gray-700 text-white"
+            />
+
+            <label className="block text-gray-300 font-semibold mb-1 mt-3">Branch Address</label>
+            <input
+              type="text"
+              value={editedBranchAddress}
+              onChange={(e) => setEditedBranchAddress(e.target.value)}
+              className="border p-2 w-full rounded bg-gray-700 text-white"
+            />
+
+            <div className="flex justify-between mt-4">
+              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={handleSave}>Submit</button>
+              <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" onClick={() => setEditingBranch(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
