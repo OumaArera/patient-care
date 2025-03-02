@@ -13,31 +13,24 @@ const PatientCard = ({ patient }) => {
         <p className="text-gray-400 text-sm">DOB: {patient.dateOfBirth}</p>
       </div>
 
-      <div className="w-full bg-gray-700 p-4 rounded-lg text-sm grid gap-2">
-        <p className="flex justify-between">
-          <span className="text-gray-400">Diagnosis:</span>
-          <span className="text-blue-300">{patient.diagnosis}</span>
-        </p>
-        <p className="flex justify-between">
-          <span className="text-gray-400">Physician:</span>
-          <span className="text-blue-300">{patient.physicianName}</span>
-        </p>
-        <p className="flex justify-between">
-          <span className="text-gray-400">PCP/Doctor:</span>
-          <span className="text-blue-300">{patient.pcpOrDoctor}</span>
-        </p>
-        <p className="flex justify-between">
-          <span className="text-gray-400">Branch:</span>
-          <span className="text-blue-300">{patient.branchName}</span>
-        </p>
-        <p className="flex justify-between">
-          <span className="text-gray-400">Room:</span>
-          <span className="text-blue-300">{patient.room}</span>
-        </p>
-        <p className="flex justify-between">
-          <span className="text-gray-400">Cart:</span>
-          <span className="text-blue-300">{patient.cart}</span>
-        </p>
+      {/* <div className="w-full bg-gray-700 p-4 rounded-lg text-sm grid gap-2"> */}
+      <div className="w-full bg-gray-700 p-4 rounded-lg text-sm space-y-2">
+        <div>
+          <span className="text-gray-400 font-semibold">Diagnosis:</span>
+          <p className="text-blue-300 text-right">{patient.diagnosis}</p>
+        </div>
+        <div>
+          <span className="text-gray-400 font-semibold">Physician:</span>
+          <p className="text-blue-300 text-right">{patient.physicianName}</p>
+        </div>
+        <div>
+          <span className="text-gray-400 font-semibold">PCP/Doctor:</span>
+          <p className="text-blue-300 text-right">{patient.pcpOrDoctor}</p>
+        </div>
+        <div>
+          <span className="text-gray-400 font-semibold">Branch:</span>
+          <p className="text-blue-300 text-right">{patient.branchName}</p>
+        </div>
       </div>
     </div>
   );

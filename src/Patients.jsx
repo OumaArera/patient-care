@@ -28,6 +28,13 @@ const Patients = () => {
     cart: "",
     file: null,
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const patientsPerPage = 3;
+
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * patientsPerPage;
+  const endIndex = startIndex + patientsPerPage;
+  const displayedPatients = patients.slice(startIndex, endIndex);
 
   // Fetch patients when pageNumber or pageSize changes
   useEffect(() => {
@@ -188,12 +195,34 @@ const Patients = () => {
         )}
       </form>
       
-      <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {patients.length > 0 ? (
-          patients.map((patient) => <PatientCard key={patient.patientId} patient={patient} />)
-        ) : (
-          <p className="text-gray-400">No patients found.</p>
-        )}
+      <div>
+        <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {displayedPatients.length > 0 ? (
+            displayedPatients.map((patient) => (
+              <PatientCard key={patient.patientId} patient={patient} />
+            ))
+          ) : (
+            <p className="text-gray-400">No residents found.</p>
+          )}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-4 space-x-4">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="bg-gray-600 px-4 py-2 rounded text-white disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => setCurrentPage((prev) => (endIndex < patients.length ? prev + 1 : prev))}
+            disabled={endIndex >= patients.length}
+            className="bg-blue-500 px-4 py-2 rounded text-white disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );
