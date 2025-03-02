@@ -33,13 +33,13 @@ const NewCharts = ({ charts, chartsData }) => {
     {"status": true, "response": "", "descriptionType": "Reported_Provider_And_Careteam"}
   ]);
 
-  const handleVitalsChange = (index, value) => {
-    setVitals((prevVitals) => {
-      const updatedVitals = [...prevVitals];
-      updatedVitals[index].response = value;
-      return updatedVitals;
-    });
-  };
+  // const handleVitalsChange = (index, value) => {
+  //   setVitals((prevVitals) => {
+  //     const updatedVitals = [...prevVitals];
+  //     updatedVitals[index].response = value;
+  //     return updatedVitals;
+  //   });
+  // };
 
   const groupBehaviorsByCategory = (behaviors) => {
     return behaviors.reduce((acc, behavior) => {
@@ -66,7 +66,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const handleStatusChange = (index, value) => {
     setBehaviorStatuses((prevStatuses) => {
       const updatedStatuses = [...prevStatuses];
-      updatedStatuses[index] = value; // Update only the selected behavior
+      updatedStatuses[index] = value; 
       return updatedStatuses;
     });
   
@@ -91,19 +91,12 @@ const NewCharts = ({ charts, chartsData }) => {
   const handleSubmit = async () => {
     setLoadingSubmit(true);
     setErrors([]);
-  
-    if (vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response)) {
-      setErrors(["All vitals except Pain must be provided."]);
-      setLoadingSubmit(false);
-      return;
-    }
     const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
     const payload = {
       patient: charts.patientId,
       behaviors,
       behaviorsDescription: behaviorsDescription,
       dateTaken: time,
-      vitals
     };
     try {
       const response = await postCharts(payload);
@@ -183,11 +176,6 @@ const NewCharts = ({ charts, chartsData }) => {
           handleChangeBehaviorDescription={handleChangeBehaviorDescription}
         />
       </div>
-      {/* Vitals Input Table */}
-      <div>
-      <VitalsComponent vitalsData={vitals} handleVitalsChange={handleVitalsChange} />
-
-      </div>
       {/* Submit Button */}
       <div className="mt-6 text-center">
       {!isWithinAllowedTime() && (
@@ -198,13 +186,11 @@ const NewCharts = ({ charts, chartsData }) => {
       <button
         onClick={handleSubmit}
         className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-          loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || !isWithinAllowedTime() ||
-          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) 
+          loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || !isWithinAllowedTime()
             ? "bg-gray-500 cursor-not-allowed"
             : "bg-blue-500 hover:bg-blue-600 text-white"
         }`}
-        disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || !isWithinAllowedTime() ||
-          vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response) }
+        disabled={loadingSubmit || behaviorStatuses.includes(null) || behaviorStatuses.includes("") || !isWithinAllowedTime()  }
       >
           {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Charts"}
         </button>
