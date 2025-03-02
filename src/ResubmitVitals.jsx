@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { postVitals } from "../services/postVitals";
 import { errorHandler } from "../services/errorHandler";
 
-const ResubmitVitals = ({ patient }) => {
+const ResubmitVitals = ({ patient, fetchVitals }) => {
     const [formData, setFormData] = useState({
         bloodPressure: "",
         temperature: "",
@@ -66,6 +66,7 @@ const ResubmitVitals = ({ patient }) => {
                 })
             setMessage("Vitals Updated successfully")
             setTimeout(() => setMessage(""), 10000);
+            setTimeout(() => fetchVitals(patient), 10000);
             }
         } catch (error) {
             setErrors([`Errors: ${error}`]);

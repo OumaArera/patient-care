@@ -188,7 +188,7 @@ const Vitals = () => {
         onClick={(e) => e.stopPropagation()}
         >
           
-          <ResubmitVitals patient={selectedPatient} />
+          <ResubmitVitals patient={selectedPatient} fetchVitals={fetchVitals} />
           <button
             className="absolute top-2 right-2 text-white hover:text-gray-400"
             onClick={closVitalsModal}
