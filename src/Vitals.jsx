@@ -135,6 +135,7 @@ const Vitals = () => {
             </LineChart>
 
           </ResponsiveContainer>
+          <div className="flex justify-center space-x-4 mt-4">
             {vitals.length > 0 && (
                 <button 
                     className="mb-4 mt-2 bg-blue-500 text-white px-4 py-2 rounded"
@@ -144,11 +145,12 @@ const Vitals = () => {
                 </button>
             )}
             {selectedPatient && (<button
-                className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100 mt-4"
+                className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                 onClick={() => setShowVitals(true)}
             >
                 New Vitals
             </button>)}
+        </div>
 
           <table className="w-full border-collapse border border-gray-700 mt-4">
             <thead>
