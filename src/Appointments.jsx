@@ -111,22 +111,24 @@ const Appointments = () => {
                           </td>
                         ) : null}
                         <td className="border border-gray-700 p-2">
-                          {new Date(curr.dateTaken + "T00:00:00Z").toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            timeZone: "UTC", 
-                          })}
+                          {new Date(new Date(curr.dateTaken + "T00:00:00Z").setDate(new Date(curr.dateTaken + "T00:00:00Z").getDate() + 1))
+                            .toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              timeZone: "UTC", 
+                            })}
                         </td>
                         <td className="border border-gray-700 p-2">{curr.type}</td>
                         <td className="border border-gray-700 p-2">{curr.details || ""}</td>
                         <td className="border border-gray-700 p-2">
-                          {new Date(curr.nextAppointmentDate + "T00:00:00Z").toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            timeZone: "UTC", // Forces UTC interpretation
-                          })}
+                        {new Date(new Date(curr.nextAppointmentDate + "T00:00:00Z").setDate(new Date(curr.nextAppointmentDate + "T00:00:00Z").getDate() + 1))
+                        .toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          timeZone: "UTC",
+                        })}
                         </td>
                       </tr>
                     );
