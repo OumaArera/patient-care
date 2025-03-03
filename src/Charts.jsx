@@ -59,8 +59,8 @@ const Charts = () => {
     return d.toISOString().split("T")[0];
   });
 
-  const editChart = () =>{
-    console.log("Selected Charts: ", selectedChart);
+  const editChart = (chart) =>{
+    console.log("Selected Charts: ", chart);
   }
   
 
@@ -152,8 +152,7 @@ const Charts = () => {
                             <button 
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() =>{
-                                editChart()
-                                setSelectedChart(chart);
+                                editChart(chart)
                               }}
                             >
                             Edit
