@@ -139,7 +139,7 @@ const Charts = () => {
                           )}
                         </td>
                         <td className="p-2 border border-gray-700">
-                          {!chart ?(
+                          {!chart ? (
                             <button 
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() =>{
@@ -153,6 +153,7 @@ const Charts = () => {
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() =>{
                                 editChart()
+                                setSelectedChart(chart);
                               }}
                             >
                             Edit
