@@ -64,12 +64,6 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white">
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loader className="animate-spin" size={32} />
-          <p>Loading chart data...</p>
-        </div>
-      ) : (
         <>
           <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">
             Update Chart for {chart.patientName}
@@ -144,7 +138,7 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
             </button>
           </div>
         </>
-      )}
+      
     </div>
   );
 };
