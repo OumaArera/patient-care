@@ -240,6 +240,14 @@ const Branches = () => {
               onChange={(e) => setEditedBranchAddress(e.target.value)}
               className="border p-2 w-full rounded bg-gray-700 text-white"
             />
+            {errors.length > 0 && (
+              <div className="mb-4 p-3 rounded">
+                {errors.map((error, index) => (
+                  <p key={index} className="text-sm text-red-600">{error}</p>
+                ))}
+              </div>
+            )}
+          {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
 
             <div className="flex justify-between mt-4">
               <button 
