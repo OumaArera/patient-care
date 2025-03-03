@@ -62,7 +62,8 @@ const Branches = () => {
 
       const { branchId, ...payload } = updatedFields; 
       try {
-        const response = updateData(updateURL, payload);
+        console.log("Data: ", payload);
+        const response = await updateData(updateURL, payload);
         if (!response.ok){
           setErrors(errorHandler(response?.errors));
           setTimeout(() => setErrors([]));
