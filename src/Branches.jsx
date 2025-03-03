@@ -58,6 +58,7 @@ const Branches = () => {
     if (Object.keys(updatedFields).length > 0) { 
         setLoading(true);
         const updateURL = `${URL}/${editingBranch.branchId}`;
+        console.log("URL: ", updateURL);
 
         try {
             console.log("Data Sent: ", updatedFields); // Debugging log
