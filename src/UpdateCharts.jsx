@@ -27,7 +27,6 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
     );
   };
 
-
   const handleSubmit = () => {
     setLoadingSubmit(true);
 
@@ -42,12 +41,20 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
     console.log("Updated Chart Data:", updatedData);
     handleGetCharts();
 
-    // Simulate a submit request (e.g., to a server)
     setTimeout(() => {
       setLoadingSubmit(false);
       alert("Chart data updated!");
     }, 2000);
   };
+
+  // Group behaviors by category
+  const groupedBehaviors = behaviors.reduce((acc, behavior, index) => {
+    if (!acc[behavior.category]) {
+      acc[behavior.category] = [];
+    }
+    acc[behavior.category].push({ ...behavior, index });
+    return acc;
+  }, {});
 
   return (
     <div className="p-6 bg-gray-900 text-white">
@@ -62,39 +69,48 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
             Update Chart for {chart.patientName}
           </h2>
 
-          {/* Behaviors Table */}
           <div className="bg-gray-900 p-4 rounded-lg">
             <h3 className="text-lg font-bold text-blue-400 mb-3">Behaviors</h3>
             <table className="w-full border-collapse border border-gray-700">
               <thead>
                 <tr className="bg-gray-800 text-white">
+                  <th className="p-3 border border-gray-700">Category</th>
                   <th className="p-3 border border-gray-700">Behavior</th>
                   <th className="p-3 border border-gray-700">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {behaviors.map((behavior, index) => (
-                  <tr key={index} className="border border-gray-700">
-                    <td className="p-3 border border-gray-700">{behavior.behavior}</td>
-                    <td className="p-3 border border-gray-700">
-                      <select
-                        value={behaviorStatuses[index] || ""}
-                        onChange={(e) => handleStatusChange(index, e.target.value)}
-                        className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-                        required
-                      >
-                        <option value="">Select Status</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                      </select>
-                    </td>
-                  </tr>
+                {Object.entries(groupedBehaviors).map(([category, behaviors]) => (
+                  <React.Fragment key={category}>
+                    <tr className="bg-gray-700 text-white">
+                      <td className="p-3 border border-gray-700 font-bold" colSpan="3">
+                        {category}
+                      </td>
+                    </tr>
+                    {behaviors.map(({ behavior, status, index }) => (
+                      <tr key={index} className="border border-gray-700">
+                        <td className="p-3 border border-gray-700"></td>
+                        <td className="p-3 border border-gray-700">{behavior}</td>
+                        <td className="p-3 border border-gray-700">
+                          <select
+                            value={behaviorStatuses[index] || ""}
+                            onChange={(e) => handleStatusChange(index, e.target.value)}
+                            className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+                            required
+                          >
+                            <option value="">Select Status</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                  </React.Fragment>
                 ))}
               </tbody>
             </table>
           </div>
 
-          {/* Submit Button */}
           <div className="mt-6 text-center">
             <button
               onClick={handleSubmit}
