@@ -146,29 +146,39 @@ const AllCharts = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredCharts.reduce((acc, chart) => {
-                                        chart.behaviors.forEach((behavior) => {
-                                            let existingRow = acc.find(row => row.behavior === behavior.behavior);
-                                            if (!existingRow) {
-                                                existingRow = { category: behavior.category, behavior: behavior.behavior, days: Array(31).fill(""), rowspan: 1 };
-                                                acc.push(existingRow);
-                                            } else {
-                                                existingRow.rowspan++;
-                                            }
-                                            existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
-                                        });
-                                        return acc;
-                                    }, []).map((row, index, arr) => (
-                                        <tr key={index} className="bg-gray-900 text-gray-300">
-                                            {index === 0 || arr[index - 1].category !== row.category ? (
-                                                <td className="p-2 border border-gray-700" rowSpan={arr.filter(r => r.category === row.category).length}>{row.category}</td>
-                                            ) : null}
-                                            <td className="p-2 border border-gray-700">{row.behavior}</td>
-                                            {row.days.map((status, i) => (
-                                                <td key={i} className="p-2 border border-gray-700 text-center">{status}</td>
-                                            ))}
-                                        </tr>
-                                    ))}
+                                    {Object.entries(
+                                        filteredCharts.reduce((acc, chart) => {
+                                            chart.behaviors.forEach((behavior) => {
+                                                if (!acc[behavior.category]) {
+                                                    acc[behavior.category] = [];
+                                                }
+                                                let existingRow = acc[behavior.category].find(row => row.behavior === behavior.behavior);
+                                                if (!existingRow) {
+                                                    existingRow = {
+                                                        behavior: behavior.behavior,
+                                                        days: Array(31).fill(""),
+                                                    };
+                                                    acc[behavior.category].push(existingRow);
+                                                }
+                                                existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
+                                            });
+                                            return acc;
+                                        }, {})
+                                    ).map(([category, behaviors], categoryIndex) =>
+                                        behaviors.map((row, behaviorIndex) => (
+                                            <tr key={`${categoryIndex}-${behaviorIndex}`} className="bg-gray-900 text-gray-300">
+                                                {behaviorIndex === 0 && (
+                                                    <td className="p-2 border border-gray-700 text-center font-bold" rowSpan={behaviors.length}>
+                                                        {category}
+                                                    </td>
+                                                )}
+                                                <td className="p-2 border border-gray-700">{row.behavior}</td>
+                                                {row.days.map((status, i) => (
+                                                    <td key={i} className="p-2 border border-gray-700 text-center">{status}</td>
+                                                ))}
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>
