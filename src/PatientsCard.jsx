@@ -76,7 +76,7 @@ const PatientCard = ({ patient }) => {
       <div className="w-full bg-gray-700 p-4 rounded-lg text-sm space-y-2">
         <div>
           
-          <p className="text-blue-300 text-right">
+          <p className="text-blue-300">
             <span className="text-gray-400 font-semibold">Diagnosis:</span>
             {patient.diagnosis}
           </p>
