@@ -9,9 +9,7 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     chart.behaviors.map((behavior) => behavior.status)
   );
-  const [behaviorsDescription, setBehaviorsDescription] = useState(
-    chart.behaviorsDescription
-  );
+  const [behaviorsDescription, setBehaviorsDescription] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date(chart.dateTaken));
   const [loading, setLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
