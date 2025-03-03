@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { fetchBranches } from "../services/fetchBranches";
 import { fetchFacilities } from "../services/fetchFacilities";
 import { errorHandler } from "../services/errorHandler";
+import { updateData } from "../services/updatedata";
+
+const URL = "https://patient-care-server.onrender.com/api/v1/branches"
 
 const isValidAddress = (address) => {
   return /\d{1,5}\s\w+(\s\w+)*,\s\w+,\s[A-Z]{2}\s\d{5}/.test(address);
@@ -20,14 +23,19 @@ const Branches = () => {
   const [editingBranch, setEditingBranch] = useState(null);
   const [editedBranchName, setEditedBranchName] = useState("");
   const [editedBranchAddress, setEditedBranchAddress] = useState("");
+  const [loading, setLoading] = useState(false);
   const pageSize = 10;
 
   useEffect(() => {
     fetchFacilities(pageNumber, pageSize).then((data) => setFacilities(data.responseObject || []));
   }, [pageNumber]);
 
-  useEffect(() => {
+  const getBranches =()=>{
     fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
+  }
+
+  useEffect(() => {
+    getBranches()
   }, [pageNumber]);
 
   const handleEditClick = (branch) => {
@@ -36,8 +44,9 @@ const Branches = () => {
     setEditedBranchAddress(branch.branchAddress);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updatedFields = { branchId: editingBranch.branchId }; 
+
   
     if (editedBranchName !== editingBranch.branchName) {
       updatedFields.branchName = editedBranchName;
@@ -48,12 +57,31 @@ const Branches = () => {
     }
   
     if (Object.keys(updatedFields).length > 1) { 
-      console.log("Updated Fields:", updatedFields);
+      setLoading(true);
+      const updateURL = `${URL}/${updatedFields.branchId}`;
+
+      const { branchId, ...payload } = updatedFields; 
+      try {
+        const response = updateData(updateURL, payload);
+        if (!response.ok){
+          setErrors(errorHandler(response?.responseObject?.errors));
+          setTimeout(() => setErrors([]));
+        } else{
+          setMessage("Data updated successfully")
+          setTimeout(() => getBranches(), 7000);
+          setTimeout(() => setMessage(""), 7000);
+        }
+        
+      } catch (error) {
+        setErrors(["An error occurred. Please try again."]);
+        setTimeout(() => setErrors([]));
+      } finally{
+        setLoading(false);
+      }
     } else {
-      console.log("No changes made.");
+      setErrors(["No changes made."]);
+      setTimeout(() => setErrors([]));
     }
-  
-    setEditingBranch(null);
   };
   
 
@@ -84,9 +112,11 @@ const Branches = () => {
       } else {
         let errorString = result?.responseObject?.errors;
         setErrors(errorHandler(errorString));
+        setTimeout(() => setErrors([]));
       }
     } catch (error) {
       setErrors(["An error occurred. Please try again."]);
+      setTimeout(() => setErrors([]));
     } finally {
       setIsSubmitting(false);
       setTimeout(() => setErrors([]), 5000);
