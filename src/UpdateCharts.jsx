@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import BehaviorDescriptions from "./BehaviorDescription"; // Assuming this component is imported
 
 const UpdateCharts = ({ chart, handleGetCharts }) => {
   const [behaviors, setBehaviors] = useState(chart.behaviors);
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     chart.behaviors.map((behavior) => behavior.status)
   );
-  const [behaviorsDescription, setBehaviorsDescription] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date(chart.dateTaken));
   const [loading, setLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -17,7 +15,6 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
   useEffect(() => {
     setBehaviors(chart.behaviors);
     setBehaviorStatuses(chart.behaviors.map((behavior) => behavior.status));
-    setBehaviorsDescription(chart.behaviorsDescription);
   }, [chart]);
 
   const handleStatusChange = (index, value) => {
@@ -32,13 +29,6 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
     );
   };
 
-  const handleChangeBehaviorDescription = (index, value) => {
-    setBehaviorsDescription((prevDescriptions) => {
-      const updatedDescriptions = [...prevDescriptions];
-      updatedDescriptions[index].response = value;
-      return updatedDescriptions;
-    });
-  };
 
   const handleSubmit = () => {
     setLoadingSubmit(true);
@@ -50,10 +40,6 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
         ...behavior,
         status: behaviorStatuses[index], // Ensure all behaviors remain in the payload
       })),
-      behaviorsDescription: behaviorsDescription.filter(
-        (description, index) =>
-          description.response !== chart.behaviorsDescription[index].response
-      ), // Only include updated descriptions
     };
 
     console.log("Updated Chart Data:", updatedData);
@@ -120,14 +106,6 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
                 ))}
               </tbody>
             </table>
-          </div>
-
-          {/* Behaviors Description Table */}
-          <div className="mt-4">
-            <BehaviorDescriptions
-              behaviorDescription={behaviorsDescription}
-              handleChangeBehaviorDescription={handleChangeBehaviorDescription}
-            />
           </div>
 
           {/* Submit Button */}
