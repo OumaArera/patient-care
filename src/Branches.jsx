@@ -241,7 +241,9 @@ const Branches = () => {
             />
 
             <div className="flex justify-between mt-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onClick={handleSave}>Submit</button>
+              <button 
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" 
+                onClick={handleSave}>{loading ? "Saving..." : "Save Changes"}</button>
               <button 
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600" 
                 onClick={closeBranchModal}>Cancel</button>
