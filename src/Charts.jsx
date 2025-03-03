@@ -111,7 +111,7 @@ const Charts = () => {
                   {last20Days.map((date) => {
                     const chart = charts.find((c) => {
                       const chartDate = new Date(c.dateTaken);
-                      chartDate.setDate(chartDate.getDate() - 1); // Backdate by 1 day
+                      chartDate.setDate(chartDate.getDate() - 1);
                       return chartDate.toISOString().split("T")[0] === date;
                     });
                     return (
