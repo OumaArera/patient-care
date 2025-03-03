@@ -245,7 +245,7 @@ const Branches = () => {
                 ))}
               </div>
             )}
-          {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
+            {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
 
             <div className="flex justify-between mt-4">
               <button 

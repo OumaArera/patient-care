@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import { updateData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
+
+const URL = "https://patient-care-server.onrender.com/api/v1/patients"
 
 const PatientCard = ({ patient }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedPatient, setEditedPatient] = useState({ ...patient });
   const [removeResident, setRemoveResident] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState([]);
+  const [message, setMessage] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,7 +22,7 @@ const PatientCard = ({ patient }) => {
     setRemoveResident(!removeResident);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const updatedData = { patientId: patient.patientId };
   
     Object.keys(editedPatient).forEach((key) => {
@@ -25,11 +32,28 @@ const PatientCard = ({ patient }) => {
     });
   
     if (removeResident) {
-      updatedData.active = true;
+      updatedData.active = false;
     }
-  
-    console.log("Payload", updatedData);
-    // Send updatedData to API
+    setLoading(true);
+    const updateURL = `${URL}/${updatedData.patientId}`;
+    console.log("Updated Data: ", updatedData);
+
+    try {
+      const response = await updateData(updateURL, updatedData);
+      
+      if (response?.error) {
+        setErrors(errorHandler(response?.error));
+        setTimeout(() => setErrors([]), 5000);
+      } else {
+        setMessage("Data updated successfully");
+        setTimeout(() => setMessage(""), 7000);
+      }
+    } catch (error) {
+      setErrors(["An error occurred. Please try again."]);
+      setTimeout(() => setErrors([]), 5000);
+    } finally {
+      setLoading(false);
+    }
   };
   
   const closeResidentModal = () => {
@@ -182,13 +206,20 @@ const PatientCard = ({ patient }) => {
                   />
                   <span className="text-red-500 font-bold">Remove Resident</span>
                 </label>
-
+                {errors.length > 0 && (
+                  <div className="mb-4 p-3 rounded">
+                    {errors.map((error, index) => (
+                      <p key={index} className="text-sm text-red-600">{error}</p>
+                    ))}
+                  </div>
+                )}
+                {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
                 <div className="flex justify-between mt-4">
                   <button 
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                     onClick={handleSubmit}
                   >
-                    Save Changes
+                    {loading? "Updating..." : "Save Changes"}
                   </button>
                   <button 
                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
