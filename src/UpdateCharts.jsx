@@ -39,7 +39,7 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
     };
 
     console.log("Updated Chart Data:", updatedData);
-    handleGetCharts();
+    handleGetCharts(chart.patientId);
 
     setTimeout(() => {
       setLoadingSubmit(false);

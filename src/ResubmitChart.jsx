@@ -5,7 +5,6 @@ import DatePicker from "react-datepicker";
 import dayjs from "dayjs";
 import { errorHandler } from "../services/errorHandler";
 import "react-datepicker/dist/react-datepicker.css";
-import VitalsComponent from "./VitalsComponent";
 import BehaviorDescriptions from "./BehaviorDescription";
 import { fetchChartData } from "../services/fetchChartData";
 
@@ -20,13 +19,6 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     behaviors.map(() => null) 
   );
-  // const [vitals, setVitals] = useState([
-  //   {status: true, response: '', vitalsType: 'Blood Pressure'},
-  //   {status: true, response: '', vitalsType: 'Pulse'},
-  //   {status: true, response: '', vitalsType: 'Temperature'},
-  //   {status: true, response: '', vitalsType: 'Oxygen Saturation'},
-  //   {status: true, response: '', vitalsType: 'Pain'},
-  // ])
   const [behaviorsDescription, setBehaviorsDescription] = useState([
     {"status": true, "response": "", "descriptionType": "Date"},
     {"status": true, "response": "", "descriptionType": "Outcome"},
@@ -53,15 +45,6 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
   }, []);
   
 
-  // const handleVitalsChange = (index, value) => {
-  //   setVitals((prevVitals) => {
-  //     const updatedVitals = [...prevVitals];
-  //     updatedVitals[index].response = value;
-  //     return updatedVitals;
-  //   });
-  // };
-  
-
   const handleChangeBehaviorDescription = (index, value) => {
     setBehaviorsDescription((prevDescriptions) => {
       const updatedDescriptions = [...prevDescriptions];
@@ -86,12 +69,6 @@ const ResubmitChart = ({ patient, handleGetCharts }) => {
   const handleSubmit = async () => {
     setLoadingSubmit(true);
     setErrors([]);
-  
-    // if (vitals.some(vital => vital.vitalsType !== "Pain" && !vital.response)) {
-    //   setErrors(["All vitals except Pain must be provided."]);
-    //   setLoadingSubmit(false);
-    //   return;
-    // }
     const time = dayjs(selectedDate).format("YYYY-MM-DD HH:mm:ss");
     const payload = {
       patient: patient.patientId,
