@@ -45,45 +45,44 @@ const Branches = () => {
   };
 
   const handleSave = async () => {
-    const updatedFields = { branchId: editingBranch.branchId }; 
-
+    const updatedFields = {}; // No branchId here
   
     if (editedBranchName !== editingBranch.branchName) {
-      updatedFields.branchName = editedBranchName;
+        updatedFields.branchName = editedBranchName;
     }
-  
-    if (editedBranchAddress !== editingBranch.branchAddress) {
-      updatedFields.branchAddress = editedBranchAddress;
-    }
-  
-    if (Object.keys(updatedFields).length > 1) { 
-      setLoading(true);
-      const updateURL = `${URL}/${updatedFields.branchId}`;
 
-      const { branchId, ...payload } = updatedFields; 
-      try {
-        console.log("Data: ", payload);
-        const response = await updateData(updateURL, payload);
-        if (response?.error){
-          setErrors(errorHandler(response?.error));
-          setTimeout(() => setErrors([]));
-        } else{
-          setMessage("Data updated successfully")
-          setTimeout(() => getBranches(), 7000);
-          setTimeout(() => setMessage(""), 7000);
+    if (editedBranchAddress !== editingBranch.branchAddress) {
+        updatedFields.branchAddress = editedBranchAddress;
+    }
+
+    if (Object.keys(updatedFields).length > 0) { 
+        setLoading(true);
+        const updateURL = `${URL}/${editingBranch.branchId}`;
+
+        try {
+            console.log("Data Sent: ", updatedFields); // Debugging log
+            const response = await updateData(updateURL, updatedFields);
+            
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setTimeout(() => getBranches(), 7000);
+                setTimeout(() => setMessage(""), 7000);
+            }
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setLoading(false);
         }
-        
-      } catch (error) {
-        setErrors(["An error occurred. Please try again."]);
-        setTimeout(() => setErrors([]));
-      } finally{
-        setLoading(false);
-      }
     } else {
-      setErrors(["No changes made."]);
-      setTimeout(() => setErrors([]));
+        setErrors(["No changes made."]);
+        setTimeout(() => setErrors([]), 5000);
     }
   };
+
   
 
   const handleSubmit = async (e) => {
