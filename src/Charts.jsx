@@ -145,7 +145,8 @@ const Charts = () => {
                             <button 
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() =>{
-                                setShow(true)
+                                setShow(true);
+                                setShowEdits(false);
                               }}
                             >
                             Chart
@@ -154,8 +155,9 @@ const Charts = () => {
                             <button 
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() =>{
-                                setSelectedChart(chart)
-                                setShowEdits(true)
+                                setSelectedChart(chart);
+                                setShowEdits(true);
+                                setShow(false);
                               }}
                             >
                             Edit
