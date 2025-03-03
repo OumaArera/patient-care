@@ -11,6 +11,9 @@ const Facilities = () => {
   const [message, setMessage] = useState("");
   const [showAddressExample, setShowAddressExample] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [editingFacility, setEditingFacility] = useState(null); // Track facility being edited
+  const [editedFacilityName, setEditedFacilityName] = useState("");
+  const [editedFacilityAddress, setEditedFacilityAddress] = useState("");
   const pageSize = 10;
 
   useEffect(() => {
@@ -22,6 +25,12 @@ const Facilities = () => {
     if (data && data.successful) {
       setFacilities(data.responseObject);
     }
+  };
+
+  const handleUpdateClick = (facility) => {
+    setEditingFacility(facility);
+    setEditedFacilityName(facility.facilityName);
+    setEditedFacilityAddress(facility.facilityAddress);
   };
 
   const isValidFacilityName = (name) => {
@@ -71,6 +80,25 @@ const Facilities = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSave = async () => {
+    if (!editedFacilityName || !editedFacilityAddress) {
+      setMessage("Facility name and address cannot be empty.");
+      return;
+    }
+
+    const payload ={
+      facilityId: editingFacility.facilityId,
+      facilityName: editedFacilityName,
+      facilityAddress: editedFacilityAddress,
+    }
+
+    console.log("Updated Facility:", payload);
+
+    // Close the modal after updating
+    // setEditingFacility(null);
+    setMessage("Facility updated successfully!");
   };
 
   return (
@@ -135,6 +163,12 @@ const Facilities = () => {
             <div key={facility.facilityId} className="border p-4 rounded-lg shadow-md bg-gray-800 text-white">
               <h3 className="font-semibold text-blue-300">{facility.facilityName}</h3>
               <p className="text-gray-400">{facility.facilityAddress}</p>
+              <button
+                onClick={() => handleUpdateClick(facility)}
+                className="bg-blue-500 text-white px-4 py-2 mt-2 rounded hover:bg-blue-600"
+              >
+                Update
+              </button>
             </div>
           ))
         ) : (
@@ -158,6 +192,50 @@ const Facilities = () => {
           Next
         </button>
       </div>
+      {editingFacility && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+          onClick={() => setEditingFacility(null)}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold text-blue-400 mb-4">Edit Facility</h3>
+            <label className="block text-gray-300 font-semibold mb-1">Facility Name</label>
+            <input
+              type="text"
+              value={editedFacilityName}
+              onChange={(e) => setEditedFacilityName(e.target.value)}
+              className="border p-2 w-full rounded bg-gray-700 text-white"
+            />
+
+            <label className="block text-gray-300 font-semibold mb-1 mt-3">Facility Address</label>
+            <input
+              type="text"
+              value={editedFacilityAddress}
+              onChange={(e) => setEditedFacilityAddress(e.target.value)}
+              className="border p-2 w-full rounded bg-gray-700 text-white"
+            />
+
+            <div className="flex justify-between mt-4">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                onClick={handleSave}
+              >
+                Save Changes
+              </button>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                onClick={() => setEditingFacility(null)}
+              >
+                Cancel
+              </button>
+            </div>
+            {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
