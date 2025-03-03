@@ -33,8 +33,8 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
                 setTimeout(() => setErrors([]), 5000);
             } else {
                 setMessage("Data updated successfully");
-                setTimeout(() => fetchVitals(vital.patientId), 7000);
-                setTimeout(() => setMessage(""), 7000);
+                setTimeout(() => fetchVitals(vital.patientId), 5000);
+                setTimeout(() => setMessage(""), 5000);
             }
             
         } catch (error) {
