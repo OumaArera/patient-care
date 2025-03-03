@@ -47,12 +47,19 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
 
     const updatedData = {
       chartId: chart.chartId,
-      behaviors: behaviors.filter((behavior, index) => behavior.status !== chart.behaviors[index].status),
-      behaviorsDescription: behaviorsDescription.filter((description, index) => description.response !== chart.behaviorsDescription[index].response)
+      categories: chart.categories, // Including categories in the payload
+      behaviors: behaviors.map((behavior, index) => ({
+        ...behavior,
+        status: behaviorStatuses[index], // Ensure all behaviors remain in the payload
+      })),
+      behaviorsDescription: behaviorsDescription.filter(
+        (description, index) =>
+          description.response !== chart.behaviorsDescription[index].response
+      ), // Only include updated descriptions
     };
 
     console.log("Updated Chart Data:", updatedData);
-    handleGetCharts()
+    handleGetCharts();
 
     // Simulate a submit request (e.g., to a server)
     setTimeout(() => {
@@ -130,7 +137,7 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
             <button
               onClick={handleSubmit}
               className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-                loadingSubmit || behaviorStatuses.includes("") 
+                loadingSubmit || behaviorStatuses.includes("")
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-blue-500 hover:bg-blue-600 text-white"
               }`}
