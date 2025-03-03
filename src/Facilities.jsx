@@ -87,19 +87,35 @@ const Facilities = () => {
       setMessage("Facility name and address cannot be empty.");
       return;
     }
-
-    const payload ={
-      facilityId: editingFacility.facilityId,
-      facilityName: editedFacilityName,
-      facilityAddress: editedFacilityAddress,
+  
+    // Check which fields have changed
+    const updatedFields = {};
+    if (editedFacilityName !== editingFacility.facilityName) {
+      updatedFields.facilityName = editedFacilityName;
     }
-
-    console.log("Updated Facility:", payload);
-
+    if (editedFacilityAddress !== editingFacility.facilityAddress) {
+      updatedFields.facilityAddress = editedFacilityAddress;
+    }
+  
+    // If no changes were made, return an error
+    if (Object.keys(updatedFields).length === 0) {
+      setMessage("No changes were made.");
+      return;
+    }
+  
+    // Construct payload with changed fields and facilityId
+    const payload = {
+      facilityId: editingFacility.facilityId,
+      ...updatedFields,
+    };
+  
+    console.log("Updated Facility Payload:", payload);
+  
     // Close the modal after updating
     // setEditingFacility(null);
     setMessage("Facility updated successfully!");
   };
+  
 
   const closeFacilityModal = () => {
     setEditingFacility(null);
