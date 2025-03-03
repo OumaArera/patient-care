@@ -77,25 +77,25 @@ const PatientCard = ({ patient, getPatients }) => {
         <div>
           
           <p className="text-blue-300">
-            <span className="text-gray-400 font-semibold">Diagnosis:</span>
+            <span className="text-gray-400 font-semibold">Diagnosis: </span>
             {patient.diagnosis}
           </p>
         </div>
         <div>
           <p className="text-blue-300">
-            <span className="text-gray-400 font-semibold">Physician:</span>
+            <span className="text-gray-400 font-semibold">Physician: </span>
             {patient.physicianName}
             </p>
         </div>
         <div>
           <p className="text-blue-300">
-            <span className="text-gray-400 font-semibold">PCP/Doctor:</span>
+            <span className="text-gray-400 font-semibold">PCP/Doctor: </span>
             {patient.pcpOrDoctor}
             </p>
         </div>
         <div>
           <p className="text-blue-300">
-            <span className="text-gray-400 font-semibold">Branch:</span>
+            <span className="text-gray-400 font-semibold">Branch: </span>
             {patient.branchName}
           </p>
         </div>
