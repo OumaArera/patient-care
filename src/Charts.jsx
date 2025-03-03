@@ -55,7 +55,7 @@ const Charts = () => {
 
   const last20Days = [...Array(31)].map((_, i) => {
     const d = new Date();
-    d.setDate(d.getDate() - i - 1); 
+    d.setDate(d.getDate() - i + 1); 
     return d.toISOString().split("T")[0];
   });
 
