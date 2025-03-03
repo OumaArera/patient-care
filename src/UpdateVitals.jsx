@@ -1,22 +1,50 @@
 import React, { useState } from "react";
+import { updateData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
+
+const URL = "https://patient-care-server.onrender.com/api/v1/vitals"
 
 const UpdateVitals = ({ vital, fetchVitals }) => {
-  const [updatedVitals, setUpdatedVitals] = useState({});
+    const [updatedVitals, setUpdatedVitals] = useState({});
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
+    const [loading, setLoading] = useState(false);
 
   const handleChange = (field, value) => {
     setUpdatedVitals((prev) => ({ ...prev, [field]: value }));
   };
 
   const validateBloodPressure = (value) => {
-    const regex = /^([2-9]\d{1,2})\/(\d{2,3})$/; // Ensure both numbers are > 1
+    const regex = /^([2-9]\d{1,2})\/(\d{2,3})$/; 
     return regex.test(value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit =async () => {
     if (Object.keys(updatedVitals).length > 0) {
       const payload = { vitalId: vital.vitalId, ...updatedVitals };
       console.log("Updated Payload:", payload);
-      fetchVitals(vital.patientId);
+
+      const updatedUrl = `${URL}/${payload.vitalId}`
+      
+        try {
+            const response = await updateData(updatedUrl, payload);
+                
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setTimeout(() => fetchVitals(vital.patientId), 7000);
+                setTimeout(() => setMessage(""), 7000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setLoading(false);
+        }
+      
     }
   };
 
@@ -76,6 +104,14 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
             onChange={(e) => handleChange("pain", e.target.value)}
           ></textarea>
         </div>
+        {errors.length > 0 && (
+            <div className="mb-4 p-3 rounded">
+                {errors.map((error, index) => (
+                <p key={index} className="text-sm text-red-600">{error}</p>
+                ))}
+            </div>
+            )}
+        {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
         <button
           onClick={handleSubmit}
           className={`px-6 py-3 rounded-lg flex items-center justify-center w-full mt-4
@@ -83,7 +119,7 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
           `}
           disabled={Object.keys(updatedVitals).length === 0}
         >
-          Submit Updates
+          {loading ? "Updating..." : "Save Changes"}
         </button>
       </div>
     </div>
