@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const UpdateCharts = ({ chart, handleGetCharts }) => {
@@ -8,7 +7,6 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     chart.behaviors.map((behavior) => behavior.status)
   );
-  const [selectedDate, setSelectedDate] = useState(new Date(chart.dateTaken));
   const [loading, setLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
@@ -35,10 +33,9 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
 
     const updatedData = {
       chartId: chart.chartId,
-      categories: chart.categories, // Including categories in the payload
       behaviors: behaviors.map((behavior, index) => ({
         ...behavior,
-        status: behaviorStatuses[index], // Ensure all behaviors remain in the payload
+        status: behaviorStatuses[index],
       })),
     };
 
@@ -64,17 +61,6 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
           <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">
             Update Chart for {chart.patientName}
           </h2>
-
-          <div className="mb-4 text-center">
-            <label className="block text-lg text-blue-400">Select Date & Time:</label>
-            <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-              showTimeSelect
-              dateFormat="MMMM d, yyyy h:mm aa"
-              className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full text-center"
-            />
-          </div>
 
           {/* Behaviors Table */}
           <div className="bg-gray-900 p-4 rounded-lg">
