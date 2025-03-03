@@ -60,7 +60,8 @@ const Charts = () => {
   });
 
   const editChart = (chart) =>{
-    console.log("Selected Charts: ", chart);
+    setSelectedChart(chart)
+    console.log("Selected Charts: ", selectedChart);
   }
   
 
