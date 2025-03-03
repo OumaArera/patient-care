@@ -22,8 +22,7 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
   const handleSubmit =async () => {
     if (Object.keys(updatedVitals).length > 0) {
       const payload = { vitalId: vital.vitalId, ...updatedVitals };
-      console.log("Updated Payload:", payload);
-
+      setLoading(true)
       const updatedUrl = `${URL}/${payload.vitalId}`
       
         try {
