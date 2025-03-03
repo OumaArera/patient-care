@@ -100,16 +100,6 @@ const ChartCard = ({ chart }) => {
                     </tr>
                   </tbody>
                 </table>
-              </div>
-                {/* Vitals Section */}
-              <h3 className="text-lg font-semibold mt-6 mb-2 text-gray-800">Vitals</h3>
-              <div className="grid grid-cols-2 gap-4">
-                {chart.vitals.map((vital, index) => (
-                  <div key={index} className="bg-gray-100 p-3 rounded-md">
-                    <p className="font-semibold text-gray-700">{vital.vitalsType}</p>
-                    <p className="text-gray-900">{vital.response || "Not Provided"}</p>
-                  </div>
-                ))}
               </div>   
             </div>
           </div>

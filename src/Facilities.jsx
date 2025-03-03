@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { fetchFacilities } from "../services/fetchFacilities";
 import { errorHandler } from "../services/errorHandler";
 import { updateData } from "../services/updatedata";
-import { Loader } from "lucide-react";
 
 const URL = "https://patient-care-server.onrender.com/api/v1/facilities"
 
