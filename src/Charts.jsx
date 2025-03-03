@@ -55,7 +55,7 @@ const Charts = () => {
 
   const last20Days = [...Array(31)].map((_, i) => {
     const d = new Date();
-    d.setDate(d.getDate() - i + 1); 
+    d.setDate(d.getDate() - i - 1); 
     return d.toISOString().split("T")[0];
   });
 
@@ -112,7 +112,7 @@ const Charts = () => {
                     const chart = charts.find((c) => c.dateTaken.startsWith(date));
                     return (
                       <tr key={date} className="bg-gray-900 text-gray-300">
-                        <td className="p-2 border border-gray-700">{new Date(date).toISOString().split("T")[0]}</td>
+                        <td className="p-2 border border-gray-700">{date}</td>
                         <td className="p-2 border border-gray-700">
                           {chart ? chart.patientName : "Missing"}
                         </td>
