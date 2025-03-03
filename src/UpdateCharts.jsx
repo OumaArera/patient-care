@@ -39,7 +39,7 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
     };
 
     console.log("Updated Chart Data:", updatedData);
-    handleGetCharts(chart.patientId);
+    handleGetCharts();
 
     setTimeout(() => {
       setLoadingSubmit(false);
@@ -47,14 +47,18 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
     }, 2000);
   };
 
-  // Group behaviors by category
-  const groupedBehaviors = behaviors.reduce((acc, behavior, index) => {
-    if (!acc[behavior.category]) {
-      acc[behavior.category] = [];
-    }
-    acc[behavior.category].push({ ...behavior, index });
-    return acc;
-  }, {});
+  // Function to merge behaviors by category
+  const groupBehaviorsByCategory = (behaviors) => {
+    return behaviors.reduce((acc, behavior) => {
+      if (!acc[behavior.category]) {
+        acc[behavior.category] = [];
+      }
+      acc[behavior.category].push(behavior);
+      return acc;
+    }, {});
+  };
+
+  const groupedBehaviors = groupBehaviorsByCategory(behaviors);
 
   return (
     <div className="p-6 bg-gray-900 text-white">
@@ -80,21 +84,24 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(groupedBehaviors).map(([category, behaviors]) => (
-                  <React.Fragment key={category}>
-                    <tr className="bg-gray-700 text-white">
-                      <td className="p-3 border border-gray-700 font-bold" colSpan="3">
-                        {category}
-                      </td>
-                    </tr>
-                    {behaviors.map(({ behavior, status, index }) => (
-                      <tr key={index} className="border border-gray-700">
-                        <td className="p-3 border border-gray-700"></td>
-                        <td className="p-3 border border-gray-700">{behavior}</td>
+                {Object.entries(groupedBehaviors).map(([category, behaviorList]) =>
+                  behaviorList.map((behavior, index) => {
+                    const originalIndex = behaviors.findIndex((b) => b === behavior);
+                    return (
+                      <tr key={behavior.id} className="border border-gray-700">
+                        {index === 0 && (
+                          <td
+                            className="p-3 border border-gray-700 font-bold"
+                            rowSpan={behaviorList.length}
+                          >
+                            {category}
+                          </td>
+                        )}
+                        <td className="p-3 border border-gray-700">{behavior.behavior}</td>
                         <td className="p-3 border border-gray-700">
                           <select
-                            value={behaviorStatuses[index] || ""}
-                            onChange={(e) => handleStatusChange(index, e.target.value)}
+                            value={behaviorStatuses[originalIndex] || ""}
+                            onChange={(e) => handleStatusChange(originalIndex, e.target.value)}
                             className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                             required
                           >
@@ -104,9 +111,9 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
                           </select>
                         </td>
                       </tr>
-                    ))}
-                  </React.Fragment>
-                ))}
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
