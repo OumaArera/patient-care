@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { Loader } from "lucide-react";
 import { generateVitalsPDFReport } from "../services/generateVitals";
 import ResubmitVitals from "./ResubmitVitals";
+import UpdateVitals from "./UpdateVitals";
 
 const Vitals = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -16,6 +17,8 @@ const Vitals = () => {
   const [month, setMonth] = useState((new Date().getMonth() + 1).toString().padStart(2, "0"));
   const [currentPage, setCurrentPage] = useState(1);
   const [showVitals, setShowVitals] = useState(false);
+  const [selectedVital, setSelectedVital] = useState(null);
+  const [show, setShow] = useState(false);
   const vitalsPerPage = 10;
 
   const closVitalsModal =()=>{
@@ -70,8 +73,8 @@ const Vitals = () => {
     };
   });
 
-  const handleUpdateVitals =(vitals) =>{
-    console.log("Vitals: ", vitals)
+  const handleUpdateVitals =() =>{
+    setShow(false);
   }
 
   return (
@@ -150,7 +153,10 @@ const Vitals = () => {
             )}
             {selectedPatient && (<button
                 className="mb-4 mt-2 border-blue-500 bg-blue-100 text-blue-600 hover:bg-blue-100 px-4 py-2 rounded"
-                onClick={() => setShowVitals(true)}
+                onClick={() => {
+                  setShowVitals(true);
+                  setShow(false);
+                }}
             >
                 New Vitals
             </button>)}
@@ -183,7 +189,9 @@ const Vitals = () => {
                   <button 
                     className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                     onClick={() =>{
-                      handleUpdateVitals(v);
+                      setSelectedVital(v);
+                      setShow(true);
+                      setShowVitals(false);
                     }}
                   >
                   Edit
@@ -195,7 +203,7 @@ const Vitals = () => {
           </table>
         </>
       )}
-      {showVitals &&(
+      {showVitals && !show &&(
         <div
         className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
         onClick={closVitalsModal}
@@ -209,6 +217,26 @@ const Vitals = () => {
           <button
             className="absolute top-2 right-2 text-white hover:text-gray-400"
             onClick={closVitalsModal}
+          >
+            ✖
+          </button>
+        </div>
+      </div>
+      )}
+      {show && !showVitals && (
+        <div
+        className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+        onClick={handleUpdateVitals}
+    >
+        <div
+        className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+        >
+          
+          <UpdateVitals vital={selectedVital} fetchVitals={fetchVitals} />
+          <button
+            className="absolute top-2 right-2 text-white hover:text-gray-400"
+            onClick={handleUpdateVitals}
           >
             ✖
           </button>
