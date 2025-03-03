@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { fetchFacilities } from "../services/fetchFacilities";
 import { errorHandler } from "../services/errorHandler";
+import { updateData } from "../services/updatedata";
+
+const URL = "https://patient-care-server.onrender.com/api/v1/facilities"
 
 const Facilities = () => {
   const [facilityName, setFacilityName] = useState("");
@@ -14,6 +17,7 @@ const Facilities = () => {
   const [editingFacility, setEditingFacility] = useState(null); // Track facility being edited
   const [editedFacilityName, setEditedFacilityName] = useState("");
   const [editedFacilityAddress, setEditedFacilityAddress] = useState("");
+  const [loading, setLoading] = useState(false);
   const pageSize = 10;
 
   useEffect(() => {
@@ -55,7 +59,7 @@ const Facilities = () => {
 
     try {
       const response = await fetch(
-        "https://patient-care-server.onrender.com/api/v1/facilities",
+        URL ,
         {
           method: "POST",
           headers: {
@@ -99,21 +103,34 @@ const Facilities = () => {
   
     // If no changes were made, return an error
     if (Object.keys(updatedFields).length === 0) {
-      setMessage("No changes were made.");
+      setErrors(["No changes were made."]);
+      setTimeout(() => setErrors([]), 5000);
       return;
     }
-  
-    // Construct payload with changed fields and facilityId
     const payload = {
       facilityId: editingFacility.facilityId,
       ...updatedFields,
     };
-  
     console.log("Updated Facility Payload:", payload);
-  
-    // Close the modal after updating
-    // setEditingFacility(null);
-    setMessage("Facility updated successfully!");
+    setLoading(true);
+    const updateURL = `${URL}/${payload.facilityId}`;
+    try {
+      const response = await updateData(updateURL, payload);
+      
+      if (response?.error) {
+          setErrors(errorHandler(response?.error));
+          setTimeout(() => setErrors([]), 5000);
+      } else {
+          setMessage("Data updated successfully");
+          setTimeout(() => loadFacilities(), 7000);
+          setTimeout(() => setMessage(""), 7000);
+      }
+    } catch (error) {
+        setErrors(["An error occurred. Please try again."]);
+        setTimeout(() => setErrors([]), 5000);
+    } finally {
+        setLoading(false);
+    }
   };
   
 
@@ -237,13 +254,21 @@ const Facilities = () => {
               onChange={(e) => setEditedFacilityAddress(e.target.value)}
               className="border p-2 w-full rounded bg-gray-700 text-white"
             />
+            {errors.length > 0 && (
+              <div className="mb-4 p-3 rounded">
+                {errors.map((error, index) => (
+                  <p key={index} className="text-sm text-red-600">{error}</p>
+                ))}
+              </div>
+            )}
+            {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
 
             <div className="flex justify-between mt-4">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                 onClick={handleSave}
               >
-                Save Changes
+                {loading? "Saving..." : "Save Changes"}
               </button>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
