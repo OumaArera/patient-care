@@ -16,10 +16,22 @@ const PatientCard = ({ patient }) => {
   };
 
   const handleSubmit = () => {
-    const updatedData = { ...editedPatient, status: removeResident ? true : false };
+    const updatedData = { patientId: patient.patientId };
+  
+    Object.keys(editedPatient).forEach((key) => {
+      if (editedPatient[key] !== patient[key]) {
+        updatedData[key] = editedPatient[key];
+      }
+    });
+  
+    if (removeResident) {
+      updatedData.status = true;
+    }
+  
     console.log("Payload", updatedData);
-    // setIsEditing(false);
+    // Send updatedData to API
   };
+  
   const closeResidentModal = () => {
     setIsEditing(false);
   };
