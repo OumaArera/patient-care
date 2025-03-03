@@ -37,7 +37,8 @@ const Patients = () => {
   const displayedPatients = patients.slice(startIndex, endIndex);
 
   // Fetch patients when pageNumber or pageSize changes
-  useEffect(() => {
+  
+  const getPatients =() =>{
     setLoading(true);
     fetchPatients(pageNumber, pageSize)
       .then((data) => {
@@ -48,6 +49,9 @@ const Patients = () => {
         setError("Failed to fetch patients.");
         setLoading(false);
       });
+  }
+  useEffect(() => {
+    getPatients()
   }, [pageNumber, pageSize]);
 
   // Fetch branches only once
@@ -199,7 +203,7 @@ const Patients = () => {
         <div className="mt-6 grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {displayedPatients.length > 0 ? (
             displayedPatients.map((patient) => (
-              <PatientCard key={patient.patientId} patient={patient} />
+              <PatientCard key={patient.patientId} patient={patient} getPatients={getPatients} />
             ))
           ) : (
             <p className="text-gray-400">No residents found.</p>

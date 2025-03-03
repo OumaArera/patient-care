@@ -5,7 +5,7 @@ import { errorHandler } from "../services/errorHandler";
 
 const URL = "https://patient-care-server.onrender.com/api/v1/patients"
 
-const PatientCard = ({ patient }) => {
+const PatientCard = ({ patient, getPatients }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedPatient, setEditedPatient] = useState({ ...patient });
   const [removeResident, setRemoveResident] = useState(false);
@@ -36,7 +36,6 @@ const PatientCard = ({ patient }) => {
     }
     setLoading(true);
     const updateURL = `${URL}/${updatedData.patientId}`;
-    console.log("Updated Data: ", updatedData);
 
     try {
       const response = await updateData(updateURL, updatedData);
@@ -47,6 +46,7 @@ const PatientCard = ({ patient }) => {
       } else {
         setMessage("Data updated successfully");
         setTimeout(() => setMessage(""), 7000);
+        getPatients()
       }
     } catch (error) {
       setErrors(["An error occurred. Please try again."]);
