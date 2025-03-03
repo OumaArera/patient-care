@@ -64,8 +64,8 @@ const Branches = () => {
       try {
         console.log("Data: ", payload);
         const response = await updateData(updateURL, payload);
-        if (!response.ok){
-          setErrors(errorHandler(response?.errors));
+        if (response?.error){
+          setErrors(errorHandler(response?.error));
           setTimeout(() => setErrors([]));
         } else{
           setMessage("Data updated successfully")
