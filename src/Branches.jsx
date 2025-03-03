@@ -37,9 +37,25 @@ const Branches = () => {
   };
 
   const handleSave = () => {
-    console.log("Updated Branch:", { editedBranchName, editedBranchAddress });
+    const updatedFields = { branchId: editingBranch.branchId }; 
+  
+    if (editedBranchName !== editingBranch.branchName) {
+      updatedFields.branchName = editedBranchName;
+    }
+  
+    if (editedBranchAddress !== editingBranch.branchAddress) {
+      updatedFields.branchAddress = editedBranchAddress;
+    }
+  
+    if (Object.keys(updatedFields).length > 1) { 
+      console.log("Updated Fields:", updatedFields);
+    } else {
+      console.log("No changes made.");
+    }
+  
     setEditingBranch(null);
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
