@@ -70,6 +70,10 @@ const Vitals = () => {
     };
   });
 
+  const handleUpdateVitals =(vitals) =>{
+    console.log("Vitals: ", vitals)
+  }
+
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Resident Vitals</h2>
@@ -161,6 +165,7 @@ const Vitals = () => {
                 <th className="p-2 border border-gray-700">Pulse</th>
                 <th className="p-2 border border-gray-700">Oxygen Saturation</th>
                 <th className="p-2 border border-gray-700">Pain</th>
+                <th className="p-2 border border-gray-700">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -173,6 +178,16 @@ const Vitals = () => {
                   <td className="p-2 border border-gray-700">{v.oxygenSaturation}%</td>
                   <td className="p-2 border border-gray-700">
                     {["N/A", "NO", "No", "no", "No Pain", "no pain", "No pain", null].includes(v.pain) ? "-" : v.pain}
+                  </td>
+                  <td className="p-2 border border-gray-700">
+                  <button 
+                    className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                    onClick={() =>{
+                      handleUpdateVitals(v);
+                    }}
+                  >
+                  Edit
+                  </button>
                   </td>
                 </tr>
               ))}
