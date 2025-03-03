@@ -59,6 +59,11 @@ const Charts = () => {
     return d.toISOString().split("T")[0];
   });
 
+  const editChart = () =>{
+    console.log("Selected Charts: ", selectedChart);
+  }
+  
+
   return (
     <div className=" bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Resident Charts</h2>
@@ -134,7 +139,7 @@ const Charts = () => {
                           )}
                         </td>
                         <td className="p-2 border border-gray-700">
-                          {!chart &&(
+                          {!chart ?(
                             <button 
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() =>{
@@ -143,7 +148,17 @@ const Charts = () => {
                             >
                             Chart
                             </button>
+                          ):(
+                            <button 
+                              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                              onClick={() =>{
+                                editChart()
+                              }}
+                            >
+                            Edit
+                            </button>
                           )}
+
                           
                         </td>
                       </tr>
