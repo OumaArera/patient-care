@@ -101,6 +101,10 @@ const Facilities = () => {
     setMessage("Facility updated successfully!");
   };
 
+  const closeFacilityModal = () => {
+    setEditingFacility(null);
+  };
+
   return (
     <div className="container mx-auto p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Add New Facility</h2>
@@ -194,8 +198,8 @@ const Facilities = () => {
       </div>
       {editingFacility && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
-          onClick={() => setEditingFacility(null)}
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={closeFacilityModal}
         >
           <div
             className="bg-gray-800 p-6 rounded-lg shadow-lg"
@@ -227,7 +231,7 @@ const Facilities = () => {
               </button>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                onClick={() => setEditingFacility(null)}
+                onClick={closeFacilityModal}
               >
                 Cancel
               </button>

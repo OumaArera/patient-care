@@ -45,7 +45,7 @@ const Branches = () => {
   };
 
   const handleSave = async () => {
-    const updatedFields = {}; // No branchId here
+    const updatedFields = {}; 
   
     if (editedBranchName !== editingBranch.branchName) {
         updatedFields.branchName = editedBranchName;
