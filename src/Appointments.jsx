@@ -111,7 +111,7 @@ const Appointments = () => {
                           </td>
                         ) : null}
                         <td className="border border-gray-700 p-2">
-                          {new Date(new Date(curr.dateTaken + "T00:00:00Z").setDate(new Date(curr.dateTaken + "T00:00:00Z").getDate() - 1))
+                          {new Date(new Date(curr.dateTaken + "T00:00:00Z").setDate(new Date(curr.dateTaken + "T00:00:00Z").getDate() ))
                             .toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "long",
@@ -122,7 +122,7 @@ const Appointments = () => {
                         <td className="border border-gray-700 p-2">{curr.type}</td>
                         <td className="border border-gray-700 p-2">{curr.details || ""}</td>
                         <td className="border border-gray-700 p-2">
-                        {new Date(new Date(curr.nextAppointmentDate + "T00:00:00Z").setDate(new Date(curr.nextAppointmentDate + "T00:00:00Z").getDate() - 1))
+                        {new Date(new Date(curr.nextAppointmentDate + "T00:00:00Z").setDate(new Date(curr.nextAppointmentDate + "T00:00:00Z").getDate() ))
                         .toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "long",
