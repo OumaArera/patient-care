@@ -2,15 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { updateData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
+
+const URL = "https://patient-care-server.onrender.com/api/v1/charts"
 
 const UpdateCharts = ({ chart, handleGetCharts }) => {
   const [behaviors, setBehaviors] = useState(chart.behaviors);
   const [behaviorStatuses, setBehaviorStatuses] = useState(
     chart.behaviors.map((behavior) => behavior.status)
   );
-  const [selectedDate, setSelectedDate] = useState(new Date(chart.dateTaken));
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const date = new Date(chart.dateTaken);
+    date.setDate(date.getDate() - 1);
+    return date;
+  });
+  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   useEffect(() => {
     setBehaviors(chart.behaviors);
@@ -29,8 +38,8 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
     );
   };
 
-  const handleSubmit = () => {
-    setLoadingSubmit(true);
+  const handleSubmit = async () => {
+    setLoading(true);
 
     const updatedData = {
       chartId: chart.chartId,
@@ -40,13 +49,26 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
       })),
     };
 
-    console.log("Updated Chart Data:", updatedData);
-    handleGetCharts(chart.patientId);
+    const updatedUrl = `${URL}/${updatedData.chartId}`
 
-    setTimeout(() => {
-      setLoadingSubmit(false);
-      alert("Chart data updated!");
-    }, 2000);
+    try {
+        const response = await updateData(updatedUrl, updatedData);
+              
+        if (response?.error) {
+            setErrors(errorHandler(response?.error));
+            setTimeout(() => setErrors([]), 5000);
+        } else {
+            setMessage("Data updated successfully");
+            setTimeout(() => handleGetCharts(chart.patientId), 7000);
+            setTimeout(() => setMessage(""), 7000);
+        }
+        
+    } catch (error) {
+        setErrors(["An error occurred. Please try again."]);
+        setTimeout(() => setErrors([]), 5000);
+    } finally {
+        setLoading(false);
+    }
   };
 
   // Function to merge behaviors by category
@@ -123,18 +145,26 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
               </tbody>
             </table>
           </div>
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 rounded">
+                    {errors.map((error, index) => (
+                    <p key={index} className="text-sm text-red-600">{error}</p>
+                    ))}
+                </div>
+                )}
+            {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
 
           <div className="mt-6 text-center">
             <button
               onClick={handleSubmit}
               className={`px-6 py-3 rounded-lg flex items-center justify-center ${
-                loadingSubmit || behaviorStatuses.includes("")
+                loading || behaviorStatuses.includes("")
                   ? "bg-gray-500 cursor-not-allowed"
                   : "bg-blue-500 hover:bg-blue-600 text-white"
               }`}
-              disabled={loadingSubmit || behaviorStatuses.includes("")}
+              disabled={loading || behaviorStatuses.includes("")}
             >
-              {loadingSubmit ? <Loader className="animate-spin mr-2" size={20} /> : "Submit Updates"}
+              {loading ? <Loader className="animate-spin mr-2" size={20} />  : "Submit Updates"}
             </button>
           </div>
         </>
