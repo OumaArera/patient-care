@@ -64,7 +64,7 @@ const Branches = () => {
       try {
         const response = updateData(updateURL, payload);
         if (!response.ok){
-          setErrors(errorHandler(response?.responseObject?.errors));
+          setErrors(errorHandler(response?.errors));
           setTimeout(() => setErrors([]));
         } else{
           setMessage("Data updated successfully")

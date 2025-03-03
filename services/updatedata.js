@@ -13,7 +13,7 @@ export const updateData = async (url, updatedData) => {
         const data = await response.json();
 
         if (!response.ok) {
-            return { error: data?.message || "Failed to update data" };
+            return { error: data?.responseObject?.errors || "Failed to update data" };
         }
 
         return data;
