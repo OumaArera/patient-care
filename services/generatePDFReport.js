@@ -52,7 +52,10 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
                 };
                 acc[behavior.category].push(existingRow);
             }
-            existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "";
+            const behaviorDate = new Date(chart.dateTaken);
+            behaviorDate.setDate(behaviorDate.getDate() - 1);
+            existingRow.days[behaviorDate.getDate() - 1] = behavior.status === "Yes" ? "✔️" : "";
+
         });
         return acc;
     }, {});
@@ -97,7 +100,11 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             <tbody>`;
 
     charts.forEach(chart => {
-        const date = new Date(chart.dateTaken).toLocaleDateString();
+        // const date = new Date(chart.dateTaken).toLocaleDateString();
+        const date = new Date(chart.dateTaken);
+        date.setDate(date.getDate() - 1);
+        const formattedDate = date.toLocaleDateString();
+
         let rowData = {
             Behavior_Description: "",
             Trigger: "",
@@ -114,7 +121,7 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
 
         behaviorDescriptionHTML += `
             <tr>
-                <td style="padding: 8px; border: 1px solid #000;">${date}</td>
+                <td style="padding: 8px; border: 1px solid #000;">${formattedDate}</td>
                 <td style="padding: 8px; border: 1px solid #000;">${rowData.Behavior_Description}</td>
                 <td style="padding: 8px; border: 1px solid #000;">${rowData.Trigger}</td>
                 <td style="padding: 8px; border: 1px solid #000;">${rowData.Care_Giver_Intervention}</td>
