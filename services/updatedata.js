@@ -1,7 +1,5 @@
 export const updateData = async (url, updatedData) => {
     const token = localStorage.getItem("token");
-    console.log("URL: ", url);
-    console.log("Update Data: ", updatedData);
     try {
         const response = await fetch(url, {
             method: "PUT",

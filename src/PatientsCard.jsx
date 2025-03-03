@@ -25,7 +25,7 @@ const PatientCard = ({ patient }) => {
     });
   
     if (removeResident) {
-      updatedData.status = true;
+      updatedData.active = true;
     }
   
     console.log("Payload", updatedData);
