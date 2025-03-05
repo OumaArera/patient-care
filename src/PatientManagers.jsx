@@ -17,8 +17,6 @@ const PatientManager = () => {
     const [edting, setEditing] = useState(false);
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
-    const branch = localStorage.getItem("branch")
-    console.log(`Branch: ${branch}`)
     const fetchData = async () => {
         setLoading(true);
         try {

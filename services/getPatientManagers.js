@@ -15,3 +15,18 @@ export const getpatientManagers = async (careGiver) => {
 
   return response.json();
 };
+
+
+export const fetchPatients = async (brachId) => {
+  const token = localStorage.getItem("token");
+
+  // Construct the base URL
+  let url = `https://patient-care-server.onrender.com/api/v1/patients?branch=${brachId}`;
+
+
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return response.json();
+};

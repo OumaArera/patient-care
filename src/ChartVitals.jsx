@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getpatientManagers } from "../services/getPatientManagers";
+import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { postVitals } from "../services/postVitals";
 import { errorHandler } from "../services/errorHandler";
@@ -20,7 +21,8 @@ const ChartVitals = () => {
     const [message, setMessage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [isTimeAllowed, setIsTimeAllowed] = useState(true);
-
+    const [patients, setPatients] = useState([]);
+    console.log("Patients: ", patients);
     useEffect(() => {
         const checkTime = () => {
             const now = new Date();
@@ -31,6 +33,19 @@ const ChartVitals = () => {
         checkTime();
         const interval = setInterval(checkTime, 60000); 
         return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const branch = localStorage.getItem("branch");
+        console.log("Branc", branch);
+        if (!branch) return;
+        setLoadingPatients(true);
+        fetchPatients(branch)
+            .then((data) => {
+                setPatients(data?.responseObject || []);
+            })
+            .catch(() => {})
+            .finally(() => setLoadingPatients(false));
     }, []);
 
     useEffect(() => {
