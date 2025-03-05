@@ -10,6 +10,8 @@ const Appointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [selectedResident, setSelectedResident] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const branchNames = [...new Set(residents.map((r) => r.branchName))];
   const appointmentsPerPage = 10;
 
   const indexOfLastAppointment = currentPage * appointmentsPerPage;
@@ -57,20 +59,38 @@ const Appointments = () => {
             <p className="text-gray-400">Loading residents...</p>
           </div>
         ) : (
+          <div className="flex flex-col space-y-3">
+          {/* Branch selection */}
+          <select
+            className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            onChange={(e) => setSelectedBranch(e.target.value)}
+            value={selectedBranch}
+          >
+            <option value="">All Branches</option>
+            {branchNames.map((branch, index) => (
+              <option key={index} value={branch}>
+                {branch}
+              </option>
+            ))}
+          </select>
+
+          {/* Resident selection */}
           <select
             className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
             onChange={handleResidentChange}
             value={selectedResident || ""}
           >
             <option value="">Select a Resident</option>
-            {[...residents]
+            {residents
+              .filter((r) => !selectedBranch || r.branchName === selectedBranch)
               .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
-              .map((p) => (
-                  <option key={p.patientId} value={p.patientId}>
-                      {p.firstName} {p.lastName}
-                  </option>
+              .map((r) => (
+                <option key={r.patientId} value={r.patientId}>
+                  {r.firstName} {r.lastName}
+                </option>
               ))}
           </select>
+        </div>
         )}
       </div>
 
