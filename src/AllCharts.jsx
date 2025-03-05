@@ -14,6 +14,7 @@ const AllCharts = () => {
     const [loadingCharts, setLoadingCharts] = useState(false);
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedMonth, setSelectedMonth] = useState("");
+    const [selectedBranch, setSelectedBranch] = useState("");
 
     useEffect(() => {
         setLoadingPatients(true);
