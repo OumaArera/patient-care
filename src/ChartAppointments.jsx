@@ -12,7 +12,6 @@ const ChartAppointments = () => {
 
   useEffect(() => {
     const branch = localStorage.getItem("branch");
-    console.log("Branc", branch);
     if (!branch) return;
     setLoadingPatients(true);
     fetchPatients(branch)

@@ -21,7 +21,7 @@ const ChartVitals = () => {
     const [loading, setLoading] = useState(false);
     const [isTimeAllowed, setIsTimeAllowed] = useState(true);
     const [patients, setPatients] = useState([]);
-    
+
     useEffect(() => {
         const checkTime = () => {
             const now = new Date();
@@ -40,7 +40,6 @@ const ChartVitals = () => {
 
     useEffect(() => {
         const branch = localStorage.getItem("branch");
-        console.log("Branc", branch);
         if (!branch) return;
         setLoadingPatients(true);
         fetchPatients(branch)

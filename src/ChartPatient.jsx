@@ -28,14 +28,13 @@ const ChartPatient = () => {
     setSelectedPatientId(patientId);
     const branch = localStorage.getItem("branch");
     try {
-      const [chartsResponse, chartsDataResponse, patientData] = await Promise.all([
+      const [chartsResponse, chartsDataResponse] = await Promise.all([
         getCharts(patientId),
         fetchChartData(),
         fetchPatients(branch),
       ]);
       setCharts(chartsResponse?.responseObject || []);
       setChartData(chartsDataResponse?.responseObject || []);
-      setPatients(patientData?.responseObject || []);
     } catch (error) {
       console.error("Error fetching charts:", error);
     } finally {
@@ -45,6 +44,20 @@ const ChartPatient = () => {
   
 
   const patientsPerPage = 300;
+
+  useEffect(() => {
+      const branch = localStorage.getItem("branch");
+      console.log("Branch", branch);
+      if (!branch) return;
+      setLoading(true);
+      fetchPatients(branch)
+        .then((data) => {
+            setPatients(data?.responseObject || []);
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }, []);
+
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
