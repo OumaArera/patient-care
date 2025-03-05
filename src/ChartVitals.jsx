@@ -28,7 +28,6 @@ const ChartVitals = () => {
             const hours = now.getHours();
             const minutes = now.getMinutes();
             setIsTimeAllowed(
-                hours === 18 ||
                 hours === 8 || 
                 (hours === 9 && minutes < 60
 
