@@ -78,8 +78,11 @@ const PatientManager = () => {
                 setTimeout(() => setErrors([]), 5000);
             } else {
                 setMessage("Data updated successfully");
+                setSelectedBranch(null);
+                setSelectedCareGiver(null);
                 setTimeout(() => fetchData(), 5000);
                 setTimeout(() => setMessage(""), 5000);
+                console.log(`Token: ${localStorage.getItem("branch")}`)
             }
             
         } catch (error) {
