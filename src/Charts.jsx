@@ -16,6 +16,7 @@ const Charts = () => {
   const [selectedChart, setSelectedChart] = useState(null);
   const [show, setShow] = useState(false);
   const [showEdits, setShowEdits] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState("");
 
 
   useEffect(() => {
@@ -77,6 +78,21 @@ const Charts = () => {
         </div>
       ) : (
         <>
+          <label className="block mb-2 text-lg">Select Branch:</label>
+          <select
+            onChange={(e) => setSelectedBranch(e.target.value)}
+            value={selectedBranch}
+            className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+          >
+            <option value="">All Branches</option>
+            {[...new Set(patients.map((p) => p.branchName))].map((branch) => (
+              <option key={branch} value={branch}>
+                {branch}
+              </option>
+            ))}
+          </select>
+          <br />
+
           <label className="block mb-2 text-lg">Select Resident:</label>
           <select
             onChange={handleSelectPatient}
@@ -84,12 +100,15 @@ const Charts = () => {
             className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
           >
             <option value="">Select Resident</option>
-            {[...patients]
-              .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+            {patients
+              .filter((p) => !selectedBranch || p.branchName === selectedBranch)
+              .sort((a, b) =>
+                `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`)
+              )
               .map((p) => (
-                  <option key={p.patientId} value={p.patientId}>
-                      {p.firstName} {p.lastName}
-                  </option>
+                <option key={p.patientId} value={p.patientId}>
+                  {p.firstName} {p.lastName}
+                </option>
               ))}
           </select>
           <br />
