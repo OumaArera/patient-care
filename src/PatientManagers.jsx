@@ -19,12 +19,12 @@ const PatientManager = () => {
                     fetchPatients(),
                     getCareGivers()
                 ]);
-                
+
                 const patientsList = patientsData.responseObject || [];
                 const careGiversList = careGiversData.responseObject || [];
                 setPatients(patientsList);
                 setCareGivers(careGiversList);
-                
+
                 // Group by branchName
                 const grouped = {};
                 careGiversList.forEach(cg => {
@@ -33,14 +33,14 @@ const PatientManager = () => {
                     }
                     grouped[cg.branchName].caregivers.push(cg);
                 });
-                
+
                 patientsList.forEach(p => {
                     if (!grouped[p.branchName]) {
                         grouped[p.branchName] = { caregivers: [], patients: [] };
                     }
                     grouped[p.branchName].patients.push(p);
                 });
-                
+
                 setGroupedData(grouped);
             } catch (error) {
                 console.error("Error fetching data", error);
@@ -60,43 +60,12 @@ const PatientManager = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h1 className="text-2xl font-bold mb-4">Resident Manager</h1>
-            {loading && <Loader className="animate-spin" />}
-            {!loading && (
-                <div className="overflow-x-auto">
-                    <table className="min-w-full border border-gray-600">
-                        <thead>
-                            <tr className="bg-gray-700">
-                                <th className="border p-2">Branch</th>
-                                <th className="border p-2">Caregivers</th>
-                                <th className="border p-2">Residents</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Object.entries(groupedData).map(([branch, data], index) => (
-                                <tr key={branch} className="border border-gray-600">
-                                    <td className="border p-2" rowSpan={Math.max(data.caregivers.length, data.patients.length) || 1}>{branch}</td>
-                                    <td className="border p-2">
-                                        {data.caregivers.map(cg => (
-                                            <div key={cg.userId}>{cg.fullName}</div>
-                                        ))}
-                                    </td>
-                                    <td className="border p-2">
-                                        {data.patients.map(p => (
-                                            <div key={p.patientId}>{p.firstName} {p.lastName}</div>
-                                        ))}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
 
-            <div className="mt-4">
-                {/* Branch Selection */}
+            {/* Move Select Options & Button Above the Table */}
+            <div className="mb-4">
                 <label className="block mb-2">Select a Branch:</label>
-                <select 
-                    className="p-2 bg-gray-700 rounded w-full" 
+                <select
+                    className="p-2 bg-gray-700 rounded w-full"
                     onChange={(e) => setSelectedBranch(e.target.value)}
                 >
                     <option value="">-- Choose a Branch --</option>
@@ -105,12 +74,11 @@ const PatientManager = () => {
                     ))}
                 </select>
             </div>
-            
-            <div className="mt-4">
-                {/* Caregiver Selection */}
+
+            <div className="mb-4">
                 <label className="block mb-2">Select a Caregiver:</label>
-                <select 
-                    className="p-2 bg-gray-700 rounded w-full" 
+                <select
+                    className="p-2 bg-gray-700 rounded w-full"
                     onChange={(e) => setSelectedCareGiver(e.target.value)}
                 >
                     <option value="">-- Choose a Caregiver --</option>
@@ -122,12 +90,48 @@ const PatientManager = () => {
                 </select>
             </div>
 
-            <button 
-                onClick={handleLogSelection} 
-                className="mt-4 bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
+            <button
+                onClick={handleLogSelection}
+                className="mb-4 bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
             >
                 Log Selection
             </button>
+
+            {loading && <Loader className="animate-spin" />}
+
+            {!loading && (
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-600">
+                        <thead>
+                            <tr className="bg-gray-700">
+                                <th className="border p-2">Branch</th>
+                                <th className="border p-2">Caregivers</th>
+                                <th className="border p-2">Residents</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.entries(groupedData).map(([branch, data]) => {
+                                const maxRows = Math.max(data.caregivers.length, data.patients.length) || 1;
+                                return (
+                                    [...Array(maxRows)].map((_, rowIndex) => (
+                                        <tr key={`${branch}-${rowIndex}`} className="border border-gray-600">
+                                            {rowIndex === 0 && (
+                                                <td className="border p-2" rowSpan={maxRows}>{branch}</td>
+                                            )}
+                                            <td className="border p-2">
+                                                {data.caregivers[rowIndex] ? data.caregivers[rowIndex].fullName : ""}
+                                            </td>
+                                            <td className="border p-2">
+                                                {data.patients[rowIndex] ? `${data.patients[rowIndex].firstName} ${data.patients[rowIndex].lastName}` : ""}
+                                            </td>
+                                        </tr>
+                                    ))
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 };
