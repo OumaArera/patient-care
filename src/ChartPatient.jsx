@@ -9,14 +9,12 @@ import NewCharts from "./NewCharts";
 
 
 const ChartPatient = () => {
-  const [patientManagers, setPatientManagers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [loadingCharts, setLoadingCharts] = useState(false);
   const [chartData, setChartData] = useState([]);
-  const [charts, setCharts] = useState([]);
   const [showNewCharts, setShowNewCharts] = useState(false);
   const overlayRef = useRef(null);
   const [patients, setPatients] = useState([]);
@@ -33,7 +31,6 @@ const ChartPatient = () => {
         fetchChartData(),
         fetchPatients(branch),
       ]);
-      setCharts(chartsResponse?.responseObject || []);
       setChartData(chartsDataResponse?.responseObject || []);
     } catch (error) {
       console.error("Error fetching charts:", error);
@@ -60,18 +57,6 @@ const ChartPatient = () => {
 
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-    setLoading(true);
-    getpatientManagers(userId)
-      .then((data) => {
-        setPatientManagers(data?.responseObject || []);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
       if (overlayRef.current && !overlayRef.current.contains(event.target)) {
         setShowNewCharts(false);
@@ -87,7 +72,6 @@ const ChartPatient = () => {
 
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
-  const currentPatients = patientManagers.slice(indexOfFirstPatient, indexOfLastPatient);
 
   const closChartModal =()=>{
     setShowNewCharts(false)
