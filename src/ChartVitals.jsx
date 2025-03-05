@@ -15,7 +15,6 @@ const ChartVitals = () => {
         patientId: null,
     });
     const [loadingPatients, setLoadingPatients] = useState(false);
-    const [patientManagers, setPatientManagers] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [errors, setErrors] = useState([]);
     const [message, setMessage] = useState(null);
@@ -28,7 +27,12 @@ const ChartVitals = () => {
             const now = new Date();
             const hours = now.getHours();
             const minutes = now.getMinutes();
-            setIsTimeAllowed(hours === 8 || (hours === 9 && minutes < 60));
+            setIsTimeAllowed(
+                hours === 18 ||
+                hours === 8 || 
+                (hours === 9 && minutes < 60
+
+                ));
         };
         checkTime();
         const interval = setInterval(checkTime, 60000); 
@@ -184,7 +188,7 @@ const ChartVitals = () => {
                                 <button
                                     type="submit"
                                     className={`px-4 py-2 rounded ${isTimeAllowed ? "bg-blue-600" : "bg-gray-500 cursor-not-allowed"}`}
-                                    disabled={loading}
+                                    disabled={!isTimeAllowed || loading}
                                 >
                                     {loading ? "Submitting..." : "Submit"}
                                 </button>
