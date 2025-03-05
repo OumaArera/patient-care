@@ -13,6 +13,7 @@ const Updates = () => {
     const [selectedYear, setSelectedYear] = useState("");
     const [selectedMonth, setSelectedMonth] = useState("");
     const [showResubmitUpdate, setShowResubmitUpdate] = useState(false);
+    const [selectedBranch, setSelectedBranch] = useState("");
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -72,20 +73,38 @@ const Updates = () => {
                         <p className="text-gray-400">Loading residents...</p>
                     </div>
                 ) : (
-                    <select
-                        className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
-                        onChange={handlePatientChange}
-                        value={selectedPatient || ""}
-                    >
-                        <option value="">Select a Resident</option>
-                        {[...patients]
-                            .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
-                            .map((p) => (
-                                <option key={p.patientId} value={p.patientId}>
-                                    {p.firstName} {p.lastName}
+                    <div className="mb-4 flex flex-col md:flex-row gap-4">
+                        {/* Branch Selection */}
+                        <select
+                            className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                            onChange={(e) => setSelectedBranch(e.target.value)}
+                            value={selectedBranch}
+                        >
+                            <option value="">All Branches</option>
+                            {[...new Set(patients.map((p) => p.branchName))].map((branch) => (
+                                <option key={branch} value={branch}>
+                                    {branch}
                                 </option>
                             ))}
-                    </select>
+                        </select>
+
+                        {/* Resident Selection */}
+                        <select
+                            className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                            onChange={handlePatientChange}
+                            value={selectedPatient || ""}
+                        >
+                            <option value="">Select a Resident</option>
+                            {[...patients]
+                                .filter((p) => !selectedBranch || p.branchName === selectedBranch)
+                                .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+                                .map((p) => (
+                                    <option key={p.patientId} value={p.patientId}>
+                                        {p.firstName} {p.lastName}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
                 )}
 
                 {selectedPatient && (
