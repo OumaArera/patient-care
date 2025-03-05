@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { getpatientManagers } from "../services/getPatientManagers";
 import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
@@ -7,7 +6,6 @@ import Update from "./Update";
 
 const ChartUpdate = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
-  const [patientManagers, setPatientManagers] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [showUpdates, setShowUpdates] = useState(false);
   const [patients, setPatients] = useState([]);
@@ -19,18 +17,6 @@ const ChartUpdate = () => {
     fetchPatients(branch)
       .then((data) => {
           setPatients(data?.responseObject || []);
-      })
-      .catch(() => {})
-      .finally(() => setLoadingPatients(false));
-  }, []);
-
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-    setLoadingPatients(true);
-    getpatientManagers(userId)
-      .then((data) => {
-        setPatientManagers(data?.responseObject || []);
       })
       .catch(() => {})
       .finally(() => setLoadingPatients(false));
@@ -55,7 +41,7 @@ const ChartUpdate = () => {
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-4">
-          {patients.map(({ patient }) => (
+          {patients.map((patient) => (
             <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left">
               <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
               <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
@@ -67,7 +53,7 @@ const ChartUpdate = () => {
                 <button
                   className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
                   onClick={() => {
-                    handleUpdateClick(patient.patientId)
+                    handleUpdateClick(patient.patientId);
                     setShowUpdates(true);
                   }}
                 >
@@ -76,6 +62,7 @@ const ChartUpdate = () => {
               </div>
             </div>
           ))}
+
         </div>
       )}
 
