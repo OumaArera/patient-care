@@ -71,7 +71,7 @@ const SuperUserDashboard = () => {
         <img src={logo1} alt="Logo 1" className="h-16 object-contain" />
         <img src={logo2} alt="Logo 2" className="h-16 object-contain" />
       </div>
-        <h1 className="text-xl font-bold text-blue-500 mb-6">Workflow</h1>
+        <h1 className="text-xl font-bold text-blue-500 mb-2">Workflow</h1>
 
         {/* Sidebar Buttons */}
         <button className={`p-3 flex items-center gap-2 ${activeTab === "dashboard" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("dashboard")}>
