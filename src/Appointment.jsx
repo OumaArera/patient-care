@@ -52,41 +52,50 @@ const Appointment = ({ patientId }) => {
 
 
   const validateAndSubmit = async () => {
-    if (!dateTaken || !nextAppointmentDate || !type) {
-        setErrors(["Please fill in all required fields."]);
-      return;
-    }
-    if (new Date(nextAppointmentDate) <= new Date(dateTaken)) {
-        setErrors(["Next appointment date must be later than the selected date."]);
-      return;
-    }
-    setLoading(true);
+    let validationErrors = [];
 
+    if (!dateTaken || !type) {
+      validationErrors.push("Please fill in all required fields.");
+    }
+
+    if (nextAppointmentDate) {
+      if (new Date(nextAppointmentDate) <= new Date(dateTaken)) {
+        validationErrors.push("Next appointment date must be later than the selected date.");
+      }
+    }
+
+    if (validationErrors.length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setLoading(true);
     const payload = {
       patient: patientId,
       dateTaken,
-      nextAppointmentDate,
       type,
+      ...(nextAppointmentDate && { nextAppointmentDate }),
       ...(details && { details }),
     };
+
     try {
-        const response = await postAppointments(payload);
-        if (response?.error){
-            setErrors(errorHandler(response.error));
-            setTimeout(() => setErrors([]), 5000);
-        }else{
-            setMessage(["Appointment marked successfully."]);
-            fetchAppointments();
-            setDateTaken("");
-            setDetails("");
-            setNextAppointmentDate("");
-            setTimeout(() => setMessage(""), 30000);
-        }
-    } catch (error) {
-        setErrors([`Errors: ${error}`]);
+      const response = await postAppointments(payload);
+      if (response?.error) {
+        setErrors(errorHandler(response.error));
         setTimeout(() => setErrors([]), 5000);
-    } finally{
-        setLoading(false);
+      } else {
+        setMessage("Appointment marked successfully.");
+        fetchAppointments();
+        setDateTaken("");
+        setDetails("");
+        setNextAppointmentDate("");
+        setTimeout(() => setMessage(""), 30000);
+      }
+    } catch (error) {
+      setErrors([`Errors: ${error}`]);
+      setTimeout(() => setErrors([]), 5000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,7 +113,7 @@ const Appointment = ({ patientId }) => {
           className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
         />
   
-        <label className="block mb-2">Next Appointment Date:</label>
+        <label className="block mb-2">Next Appointment Date (Optional):</label>
         <input
           type="date"
           value={nextAppointmentDate}
@@ -146,7 +155,7 @@ const Appointment = ({ patientId }) => {
         <button
           onClick={validateAndSubmit}
           className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition disabled:bg-gray-500"
-          disabled={!dateTaken || !nextAppointmentDate || !type}
+          disabled={!dateTaken || !type}
         >
           {loading ? "Submitting..." : "Submit"}
         </button>
@@ -201,13 +210,14 @@ const Appointment = ({ patientId }) => {
                         <td className="border border-gray-700 p-2">{curr.type}</td>
                         <td className="border border-gray-700 p-2">{curr.details || ""}</td>
                         <td className="border border-gray-700 p-2">
-                        {new Date(new Date(curr.nextAppointmentDate + "T00:00:00Z").setDate(new Date(curr.nextAppointmentDate + "T00:00:00Z").getDate() ))
-                          .toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            timeZone: "UTC",
-                          })}
+                        {curr.nextAppointmentDate ?
+                          new Date(new Date(curr.nextAppointmentDate + "T00:00:00Z").setDate(new Date(curr.nextAppointmentDate + "T00:00:00Z").getDate() ))
+                            .toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              timeZone: "UTC",
+                            }): "No appointment scheduled"}
                         </td>
                       </tr>
                     );
