@@ -9,32 +9,34 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
 
     const captureAsImage = async (htmlContent) => {
         const container = document.createElement("div");
-        container.style.padding = "20px";
+        container.style.padding = "15px";
         container.style.fontFamily = "Arial, sans-serif";
         container.style.color = "#000";
         container.innerHTML = htmlContent;
         document.body.appendChild(container);
-        const canvas = await html2canvas(container, { scale: 2 });
+        
+        const canvas = await html2canvas(container, { scale: 1.5 }); // Reduced scale for smaller image size
         document.body.removeChild(container);
-        return canvas.toDataURL("image/png");
+        
+        return canvas.toDataURL("image/jpeg", 0.7); // Convert to JPEG with 70% quality to reduce size
     };
 
     // First Table: Behavior Log
     let behaviorLogHTML = `
-        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
-            ${facilityName} _ ${branchName}
+        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+            ${facilityName} - ${branchName}
         </div>
-        <div style="font-size: 16px; margin-bottom: 15px;">
-            <strong>Year:</strong> ${selectedYear} &nbsp;&nbsp;&nbsp;
-            <strong>Month:</strong> ${selectedMonth} &nbsp;&nbsp;&nbsp;
+        <div style="font-size: 14px; margin-bottom: 10px;">
+            <strong>Year:</strong> ${selectedYear} &nbsp;&nbsp;
+            <strong>Month:</strong> ${selectedMonth} &nbsp;&nbsp;
             <strong>Resident Name:</strong> ${patientName}
         </div>
-        <table border="1" style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
+        <table border="1" style="width: 100%; border-collapse: collapse; font-size: 12px;">
             <thead>
-                <tr style="background: #f0f0f0; text-align: center; font-size: 14px; font-weight: bold;">
-                    <th style="padding: 8px; border: 1px solid #000;">Category</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Log</th>
-                    ${Array.from({ length: 31 }, (_, i) => `<th style="padding: 8px; border: 1px solid #000;">${i + 1}</th>`).join("")}
+                <tr style="background: #f0f0f0; text-align: center; font-size: 12px; font-weight: bold;">
+                    <th style="padding: 6px; border: 1px solid #000;">Category</th>
+                    <th style="padding: 6px; border: 1px solid #000;">Log</th>
+                    ${Array.from({ length: 31 }, (_, i) => `<th style="padding: 6px; border: 1px solid #000;">${i + 1}</th>`).join("")}
                 </tr>
             </thead>
             <tbody>`;
@@ -52,10 +54,11 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
                 };
                 acc[behavior.category].push(existingRow);
             }
-            const behaviorDate = new Date(chart.dateTaken);
-            behaviorDate.setDate(behaviorDate.getDate() - 1);
-            existingRow.days[behaviorDate.getDate() - 1] = behavior.status === "Yes" ? "✔️" : "";
 
+            // Normalize date to UTC to avoid missing entries due to time differences
+            const behaviorDate = new Date(chart.dateTaken);
+            const utcDate = new Date(behaviorDate.getUTCFullYear(), behaviorDate.getUTCMonth(), behaviorDate.getUTCDate());
+            existingRow.days[utcDate.getDate() - 1] = behavior.status === "Yes" ? "✔️" : "";
         });
         return acc;
     }, {});
@@ -65,13 +68,13 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             behaviorLogHTML += `<tr>`;
             if (index === 0) {
                 behaviorLogHTML += `
-                    <td style="padding: 8px; border: 1px solid #000; text-align: center;" rowspan="${behaviors.length}">
+                    <td style="padding: 6px; border: 1px solid #000; text-align: center;" rowspan="${behaviors.length}">
                         ${category}
                     </td>`;
             }
-            behaviorLogHTML += `<td style="padding: 8px; border: 1px solid #000; text-align: left;">${row.behavior}</td>`;
+            behaviorLogHTML += `<td style="padding: 6px; border: 1px solid #000; text-align: left;">${row.behavior}</td>`;
             row.days.forEach(status => {
-                behaviorLogHTML += `<td style="padding: 8px; border: 1px solid #000; text-align: center;">${status}</td>`;
+                behaviorLogHTML += `<td style="padding: 6px; border: 1px solid #000; text-align: center;">${status}</td>`;
             });
             behaviorLogHTML += `</tr>`;
         });
@@ -80,30 +83,29 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     behaviorLogHTML += `</tbody></table>`;
 
     const firstPageImage = await captureAsImage(behaviorLogHTML);
-    pdf.addImage(firstPageImage, "PNG", 10, 10, 190, 0);
+    pdf.addImage(firstPageImage, "JPEG", 10, 10, 190, 0); // Use JPEG for lower size
     pdf.addPage();
 
     // Second Table: Behavior Description
     let behaviorDescriptionHTML = `
-        <h3 style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px;">Behavior Description</h3>
-        <table border="1" style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
+        <h3 style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 15px;">Behavior Description</h3>
+        <table border="1" style="width: 100%; border-collapse: collapse; font-size: 12px;">
             <thead>
-                <tr style="background: #f0f0f0; text-align: center; font-size: 14px; font-weight: bold;">
-                    <th style="padding: 8px; border: 1px solid #000;">Date</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Behavior Description</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Trigger</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Care Giver Intervention</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Reported Provider And Careteam</th>
-                    <th style="padding: 8px; border: 1px solid #000;">Outcome</th>
+                <tr style="background: #f0f0f0; text-align: center; font-size: 12px; font-weight: bold;">
+                    <th style="padding: 6px; border: 1px solid #000;">Date</th>
+                    <th style="padding: 6px; border: 1px solid #000;">Behavior Description</th>
+                    <th style="padding: 6px; border: 1px solid #000;">Trigger</th>
+                    <th style="padding: 6px; border: 1px solid #000;">Care Giver Intervention</th>
+                    <th style="padding: 6px; border: 1px solid #000;">Reported Provider And Careteam</th>
+                    <th style="padding: 6px; border: 1px solid #000;">Outcome</th>
                 </tr>
             </thead>
             <tbody>`;
 
     charts.forEach(chart => {
-        // const date = new Date(chart.dateTaken).toLocaleDateString();
-        const date = new Date(chart.dateTaken);
-        date.setDate(date.getDate() - 1);
-        const formattedDate = date.toLocaleDateString();
+        const chartDate = new Date(chart.dateTaken);
+        const utcDate = new Date(chartDate.getUTCFullYear(), chartDate.getUTCMonth(), chartDate.getUTCDate());
+        const formattedDate = utcDate.toISOString().split("T")[0];
 
         let rowData = {
             Behavior_Description: "",
@@ -121,23 +123,23 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
 
         behaviorDescriptionHTML += `
             <tr>
-                <td style="padding: 8px; border: 1px solid #000;">${formattedDate}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${rowData.Behavior_Description}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${rowData.Trigger}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${rowData.Care_Giver_Intervention}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${rowData.Reported_Provider_And_Careteam}</td>
-                <td style="padding: 8px; border: 1px solid #000;">${rowData.Outcome}</td>
+                <td style="padding: 6px; border: 1px solid #000;">${formattedDate}</td>
+                <td style="padding: 6px; border: 1px solid #000;">${rowData.Behavior_Description}</td>
+                <td style="padding: 6px; border: 1px solid #000;">${rowData.Trigger}</td>
+                <td style="padding: 6px; border: 1px solid #000;">${rowData.Care_Giver_Intervention}</td>
+                <td style="padding: 6px; border: 1px solid #000;">${rowData.Reported_Provider_And_Careteam}</td>
+                <td style="padding: 6px; border: 1px solid #000;">${rowData.Outcome}</td>
             </tr>`;
     });
 
     behaviorDescriptionHTML += `</tbody></table>
-    <div style="margin-top: 30px; font-size: 20px; text-align: left;">
+    <div style="margin-top: 20px; font-size: 16px; text-align: left;">
         <p>Caregiver 1: ................................................... Sign: ......................</p>
         <br />
         <p>Caregiver 2: ................................................... Sign: ......................</p>
     </div>`;
 
     const secondPageImage = await captureAsImage(behaviorDescriptionHTML);
-    pdf.addImage(secondPageImage, "PNG", 10, 10, 190, 0);
+    pdf.addImage(secondPageImage, "JPEG", 10, 10, 190, 0); // Use JPEG format to reduce size
     pdf.save(`Behavior_${patientName}${branchName}_Log${facilityName}_${selectedYear}_${selectedMonth}.pdf`);
 };
