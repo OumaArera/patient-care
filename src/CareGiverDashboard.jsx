@@ -12,6 +12,8 @@ import LandingPage from "./LandingPage";
 import ChartAppointments from "./ChartAppointments";
 import ChartUpdate from "./ChartUpdates";
 import ChartVitals from "./ChartVitals";
+import logo1 from "./assets/1ST EDMONDS_LOGO.png";
+import logo2 from './assets/BSC-LOGO.png';
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -48,6 +50,10 @@ const CareGiverDashboard = () => {
     <div className="flex min-h-screen bg-black text-white">
       {/* Sidebar */}
       <div className="bg-gray-900 p-5 flex flex-col">
+        <div className="flex justify-evenly items-start space-x-4">
+          <img src={logo1} alt="Logo 1" className="h-24 object-contain" />
+          <img src={logo2} alt="Logo 2" className="h-24 object-contain" />
+        </div>
         <h1 className="text-xl font-bold text-blue-500 mb-6">Workflow</h1>
 
         {/* Sidebar Buttons */}
