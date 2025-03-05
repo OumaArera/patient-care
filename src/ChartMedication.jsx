@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { getpatientManagers } from "../services/getPatientManagers";
 import { getMedications } from "../services/getMedications";
+import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
 import MedAdmin from "./MedAdmin";
 
 const ChartMedication = () => {
-  const [patientManagers, setPatientManagers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingMedications, setLoadingMedications] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [medications, setMedications] = useState([]);
   const [show, setShow] = useState(false);
+  const [patients, setPatients] = useState([]);
+
+
+  useEffect(() => {
+      const branch = localStorage.getItem("branch");
+      if (!branch) return;
+      setLoading(true);
+      fetchPatients(branch)
+        .then((data) => {
+            setPatients(data?.responseObject || []);
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }, []);
 
   const fetchAllMedicationData = async (patientId) => {
     
@@ -30,18 +43,6 @@ const ChartMedication = () => {
     }
   };
 
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-    setLoading(true);
-    getpatientManagers(userId)
-      .then((data) => {
-        setPatientManagers(data?.responseObject || []);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
 
   const closeMedicationModal = () => {
     setShow(false);
@@ -57,7 +58,7 @@ const ChartMedication = () => {
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-4">
-          {patientManagers.map(({ patient }) => (
+          {patients.map((patient) => (
             <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left">
               <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
               <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
@@ -75,8 +76,7 @@ const ChartMedication = () => {
                 ) : medications.length > 0 && selectedPatientId === patient.patientId ? (
                   <button
                     className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                    onClick={() => setShow(true)
-                    }
+                    onClick={() => setShow(true)}
                   >
                     View Medications
                   </button>
@@ -91,6 +91,7 @@ const ChartMedication = () => {
               </div>
             </div>
           ))}
+
         </div>
       )}
 
@@ -103,14 +104,6 @@ const ChartMedication = () => {
         className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
         >
-      {/* <div
-        className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4"
-        onClick={closeMedicationModal}
-      >
-        <div
-          className="bg-gray-800 p-6 rounded-lg shadow-lg max-h-[90vh] overflow-auto w-full max-w-lg mt-16"
-          onClick={(e) => e.stopPropagation()}
-        > */}
           <MedAdmin meds={medications} selectedPatient={selectedPatientId} />
           <button
             className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
