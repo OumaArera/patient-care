@@ -1,4 +1,4 @@
-export const fetchBranches = async (pageNumber, pageSize) => {
+export const fetchBranches = async (pageNumber=1, pageSize=100) => {
     const token = localStorage.getItem("token");
     if (!token) return { responseObject: [] };
   

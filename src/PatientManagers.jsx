@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCareGivers } from "../services/getCareGivers";
+import { fetchBranches } from "../services/fetchBranches";
 import { Loader } from "lucide-react";
 
 const PatientManager = () => {
     const [loading, setLoading] = useState(false);
-    const [patients, setPatients] = useState([]);
+    const [branches, setBranches] = useState([]);
     const [careGivers, setCareGivers] = useState([]);
     const [groupedData, setGroupedData] = useState({});
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
@@ -15,17 +16,23 @@ const PatientManager = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const [patientsData, careGiversData] = await Promise.all([
+                const [patientsData, careGiversData, branchesData] = await Promise.all([
                     fetchPatients(),
-                    getCareGivers()
+                    getCareGivers(),
+                    fetchBranches()
                 ]);
 
                 const patientsList = patientsData.responseObject || [];
                 const careGiversList = careGiversData.responseObject || [];
-                setPatients(patientsList);
+                const branchesList = branchesData.responseObject || [];
+
+                // Sort caregivers alphabetically
+                careGiversList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+
+                setBranches(branchesList);
                 setCareGivers(careGiversList);
 
-                // Group by branchName
+                // Group patients and caregivers by branchName
                 const grouped = {};
                 careGiversList.forEach(cg => {
                     if (!grouped[cg.branchName]) {
@@ -52,16 +59,16 @@ const PatientManager = () => {
         fetchData();
     }, []);
 
-    const handleLogSelection = () => {
-        console.log("Selected Caregiver:", selectedCareGiver);
-        console.log("Selected Branch:", selectedBranch);
+    const handleAssign = () => {
+        console.log("Selected Caregiver ID:", selectedCareGiver);
+        console.log("Selected Branch ID:", selectedBranch);
     };
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h1 className="text-2xl font-bold mb-4">Resident Manager</h1>
 
-            {/* Move Select Options & Button Above the Table */}
+            {/* Branch Selection */}
             <div className="mb-4">
                 <label className="block mb-2">Select a Branch:</label>
                 <select
@@ -69,12 +76,15 @@ const PatientManager = () => {
                     onChange={(e) => setSelectedBranch(e.target.value)}
                 >
                     <option value="">-- Choose a Branch --</option>
-                    {Object.keys(groupedData).map(branch => (
-                        <option key={branch} value={branch}>{branch}</option>
+                    {branches.map(branch => (
+                        <option key={branch.branchId} value={branch.branchId}>
+                            {branch.branchName}
+                        </option>
                     ))}
                 </select>
             </div>
 
+            {/* Caregiver Selection */}
             <div className="mb-4">
                 <label className="block mb-2">Select a Caregiver:</label>
                 <select
@@ -82,19 +92,19 @@ const PatientManager = () => {
                     onChange={(e) => setSelectedCareGiver(e.target.value)}
                 >
                     <option value="">-- Choose a Caregiver --</option>
-                    {careGivers
-                        .filter(cg => !selectedBranch || cg.branchName === selectedBranch)
-                        .map(cg => (
-                            <option key={cg.userId} value={cg.userId}>{cg.fullName}</option>
-                        ))}
+                    {careGivers.map(cg => (
+                        <option key={cg.userId} value={cg.userId}>{cg.fullName}</option>
+                    ))}
                 </select>
             </div>
 
+            {/* Assign Button */}
             <button
-                onClick={handleLogSelection}
+                onClick={handleAssign}
                 className="mb-4 bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
+                disabled={!selectedCareGiver || !selectedBranch}
             >
-                Log Selection
+                Assign
             </button>
 
             {loading && <Loader className="animate-spin" />}
