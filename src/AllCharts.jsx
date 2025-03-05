@@ -186,7 +186,7 @@ const AllCharts = () => {
                                                     };
                                                     acc[behavior.category].push(existingRow);
                                                 }
-                                                const chartDate = new Date(chart.dateTaken);
+                                                const chartDate = new Date(chart.dateTaken -1);
                                                 const utcYear = chartDate.getUTCFullYear();
                                                 const utcMonth = chartDate.getUTCMonth();
                                                 const utcDay = chartDate.getUTCDate();

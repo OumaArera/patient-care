@@ -1,133 +1,133 @@
 import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCareGivers } from "../services/getCareGivers";
-import { postPatientManager } from "../services/postPatientManagers";
-import { getpatientManagers } from "../services/getPatientManagers";
-import ManagePatient from "./ManagePatients";
 import { Loader } from "lucide-react";
 
-
 const PatientManager = () => {
-    const [loadingPatients, setLoadingPatients] = useState(false);
-    const [loadingCareGivers, setLoadingCareGivers] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [patients, setPatients] = useState([]);
     const [careGivers, setCareGivers] = useState([]);
-    const [errors, setErrors] = useState(null);
-    const [submitting, setSubmitting] = useState(false);
-    const [message, setMessage] = useState(null);
-    const [selectedPatient, setSelectedPatient] = useState(null);
+    const [groupedData, setGroupedData] = useState({});
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
-    const [residents, setResidents] = useState(null);
-
-    const fetchData = async () => {
-        setLoadingPatients(true);
-        setLoadingCareGivers(true);
-        setErrors(null);
-
-        try {
-            const [patientManagersData, patientsData, careGiversData] = await Promise.all([
-                getpatientManagers(),
-                fetchPatients(),
-                getCareGivers()
-            ]);
-            setResidents(Array.isArray(patientManagersData.responseObject) ? patientManagersData.responseObject : []);
-            setPatients(Array.isArray(patientsData.responseObject) ? patientsData.responseObject : []);
-            setCareGivers(Array.isArray(careGiversData.responseObject) ? careGiversData.responseObject : []);
-            
-        } catch (error) {
-            setErrors("Failed to fetch data.");
-        } finally {
-            setLoadingPatients(false);
-            setLoadingCareGivers(false);
-        }
-    };
+    const [selectedBranch, setSelectedBranch] = useState(null);
 
     useEffect(() => {
-        fetchData(); 
-    }, []);
-    
-
-
-    const handleSubmit = async () => {
-        if (!selectedPatient || !selectedCareGiver) return;
-        setSubmitting(true);
-        setErrors(null);
-        const payload = { patient: selectedPatient.patientId, careGiver: selectedCareGiver.userId };
-        try {
-            const response = await postPatientManager(payload);
-            if (response?.error) {
-                setErrors(response?.error);
-                setTimeout(() => setErrors(null), 5000);
-            } else {
-                fetchData();
-                setMessage("Resident assigned successfully.");
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const [patientsData, careGiversData] = await Promise.all([
+                    fetchPatients(),
+                    getCareGivers()
+                ]);
+                
+                const patientsList = patientsData.responseObject || [];
+                const careGiversList = careGiversData.responseObject || [];
+                setPatients(patientsList);
+                setCareGivers(careGiversList);
+                
+                // Group by branchName
+                const grouped = {};
+                careGiversList.forEach(cg => {
+                    if (!grouped[cg.branchName]) {
+                        grouped[cg.branchName] = { caregivers: [], patients: [] };
+                    }
+                    grouped[cg.branchName].caregivers.push(cg);
+                });
+                
+                patientsList.forEach(p => {
+                    if (!grouped[p.branchName]) {
+                        grouped[p.branchName] = { caregivers: [], patients: [] };
+                    }
+                    grouped[p.branchName].patients.push(p);
+                });
+                
+                setGroupedData(grouped);
+            } catch (error) {
+                console.error("Error fetching data", error);
+            } finally {
+                setLoading(false);
             }
-        } catch (err) {
-            setErrors("Something went wrong. Please try again.");
-            setTimeout(() => setErrors(null), 5000);
-        } finally {
-            setSubmitting(false);
-        }
+        };
+
+        fetchData();
+    }, []);
+
+    const handleLogSelection = () => {
+        console.log("Selected Caregiver:", selectedCareGiver);
+        console.log("Selected Branch:", selectedBranch);
     };
 
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h1 className="text-2xl font-bold mb-4">Resident Manager</h1>
-            {errors && <p className="text-red-500">{errors}</p>}
-            {message && <p className="text-green-500">{message}</p>}
-
-            {/* Patient Selection */}
-            <div className="mb-4">
-                <label className="block mb-2">Select a Resident:</label>
-                {loadingPatients ? <Loader className="animate-spin" /> : (
-                    <select 
-                        className="p-2 bg-gray-700 rounded w-full" 
-                        onChange={(e) => setSelectedPatient(patients.find(p => p.patientId === Number(e.target.value)))}
-                    >
-                        <option value="">-- Choose a Resident --</option>
-                        {[...patients]
-                            .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
-                            .map((p) => (
-                                <option key={p.patientId} value={p.patientId}>
-                                    {p.firstName} {p.lastName}
-                                </option>
+            {loading && <Loader className="animate-spin" />}
+            {!loading && (
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-600">
+                        <thead>
+                            <tr className="bg-gray-700">
+                                <th className="border p-2">Branch</th>
+                                <th className="border p-2">Caregivers</th>
+                                <th className="border p-2">Residents</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.entries(groupedData).map(([branch, data], index) => (
+                                <tr key={branch} className="border border-gray-600">
+                                    <td className="border p-2" rowSpan={Math.max(data.caregivers.length, data.patients.length) || 1}>{branch}</td>
+                                    <td className="border p-2">
+                                        {data.caregivers.map(cg => (
+                                            <div key={cg.userId}>{cg.fullName}</div>
+                                        ))}
+                                    </td>
+                                    <td className="border p-2">
+                                        {data.patients.map(p => (
+                                            <div key={p.patientId}>{p.firstName} {p.lastName}</div>
+                                        ))}
+                                    </td>
+                                </tr>
                             ))}
-                    </select>
-                )}
-            </div>
-
-            {/* Caregiver Selection */}
-            <div className="mb-4">
-                <label className="block mb-2">Select a Caregiver:</label>
-                {loadingCareGivers ? <Loader className="animate-spin" /> : (
-                    <select 
-                        className="p-2 bg-gray-700 rounded w-full" 
-                        onChange={(e) => setSelectedCareGiver(careGivers.find(cg => cg.userId === Number(e.target.value)))}
-                    >
-                        <option value="">-- Choose a Caregiver --</option>
-                        {[...careGivers]
-                            .sort((a, b) => a.fullName.localeCompare(b.fullName)) // Sorting caregivers alphabetically
-                            .map(cg => (
-                                <option key={cg.userId} value={cg.userId}>{cg.fullName}</option>
-                            ))}
-                    </select>
-                )}
-            </div>
-
-            {/* Submit Button */}
-            <button 
-                onClick={handleSubmit} 
-                disabled={submitting} 
-                className="bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
-            >
-                {submitting ? "Submitting..." : "Submit"}
-            </button>
-
-            {residents && (
-                <div className="mt-6"> {/* Add margin-top for spacing */}
-                    <ManagePatient patientManagers={residents} fetchData={fetchData} />
+                        </tbody>
+                    </table>
                 </div>
             )}
+
+            <div className="mt-4">
+                {/* Branch Selection */}
+                <label className="block mb-2">Select a Branch:</label>
+                <select 
+                    className="p-2 bg-gray-700 rounded w-full" 
+                    onChange={(e) => setSelectedBranch(e.target.value)}
+                >
+                    <option value="">-- Choose a Branch --</option>
+                    {Object.keys(groupedData).map(branch => (
+                        <option key={branch} value={branch}>{branch}</option>
+                    ))}
+                </select>
+            </div>
+            
+            <div className="mt-4">
+                {/* Caregiver Selection */}
+                <label className="block mb-2">Select a Caregiver:</label>
+                <select 
+                    className="p-2 bg-gray-700 rounded w-full" 
+                    onChange={(e) => setSelectedCareGiver(e.target.value)}
+                >
+                    <option value="">-- Choose a Caregiver --</option>
+                    {careGivers
+                        .filter(cg => !selectedBranch || cg.branchName === selectedBranch)
+                        .map(cg => (
+                            <option key={cg.userId} value={cg.userId}>{cg.fullName}</option>
+                        ))}
+                </select>
+            </div>
+
+            <button 
+                onClick={handleLogSelection} 
+                className="mt-4 bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
+            >
+                Log Selection
+            </button>
         </div>
     );
 };
