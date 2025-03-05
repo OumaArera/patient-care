@@ -31,14 +31,14 @@ const PatientManager = () => {
                     if (!grouped[cg.branchName]) {
                         grouped[cg.branchName] = { caregivers: [], patients: [] };
                     }
-                    grouped[cg.branchName].caregivers.push(cg);
+                    grouped[cg.branchName].caregivers.push(cg.fullName);
                 });
 
                 patientsList.forEach(p => {
                     if (!grouped[p.branchName]) {
                         grouped[p.branchName] = { caregivers: [], patients: [] };
                     }
-                    grouped[p.branchName].patients.push(p);
+                    grouped[p.branchName].patients.push(`${p.firstName} ${p.lastName}`);
                 });
 
                 setGroupedData(grouped);
@@ -110,24 +110,29 @@ const PatientManager = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {Object.entries(groupedData).map(([branch, data]) => {
-                                const maxRows = Math.max(data.caregivers.length, data.patients.length) || 1;
-                                return (
-                                    [...Array(maxRows)].map((_, rowIndex) => (
-                                        <tr key={`${branch}-${rowIndex}`} className="border border-gray-600">
-                                            {rowIndex === 0 && (
-                                                <td className="border p-2" rowSpan={maxRows}>{branch}</td>
-                                            )}
-                                            <td className="border p-2">
-                                                {data.caregivers[rowIndex] ? data.caregivers[rowIndex].fullName : ""}
-                                            </td>
-                                            <td className="border p-2">
-                                                {data.patients[rowIndex] ? `${data.patients[rowIndex].firstName} ${data.patients[rowIndex].lastName}` : ""}
-                                            </td>
-                                        </tr>
-                                    ))
-                                );
-                            })}
+                            {Object.entries(groupedData).map(([branch, data]) => (
+                                <tr key={branch} className="border border-gray-600">
+                                    <td className="border p-2">{branch}</td>
+                                    <td className="border p-2">
+                                        {data.caregivers.length > 0 ? (
+                                            data.caregivers.map((cg, index) => (
+                                                <div key={index}>{cg}</div>
+                                            ))
+                                        ) : (
+                                            <span className="text-gray-400">No caregivers</span>
+                                        )}
+                                    </td>
+                                    <td className="border p-2">
+                                        {data.patients.length > 0 ? (
+                                            data.patients.map((p, index) => (
+                                                <div key={index}>{p}</div>
+                                            ))
+                                        ) : (
+                                            <span className="text-gray-400">No residents</span>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
