@@ -17,8 +17,8 @@ const PatientManager = () => {
     const [edting, setEditing] = useState(false);
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
-
-    
+    const branch = localStorage.getItem("branch")
+    console.log(`Branch: ${branch}`)
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -82,7 +82,7 @@ const PatientManager = () => {
                 setSelectedCareGiver(null);
                 setTimeout(() => fetchData(), 5000);
                 setTimeout(() => setMessage(""), 5000);
-                console.log(`Token: ${localStorage.getItem("branch")}`)
+                
             }
             
         } catch (error) {
@@ -150,7 +150,7 @@ const PatientManager = () => {
                     <table className="min-w-full border border-gray-600">
                         <thead>
                             <tr className="bg-gray-700">
-                                <th className="border p-2">Branch</th>
+                                <th className="border p-2 w-1/4">Branch</th>
                                 <th className="border p-2">Caregivers</th>
                                 <th className="border p-2">Residents</th>
                             </tr>
