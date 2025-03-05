@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCareGivers } from "../services/getCareGivers";
 import { fetchBranches } from "../services/fetchBranches";
+import { updateData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
+const URL = "https://patient-care-server.onrender.com/api/v1/users"
 
 const PatientManager = () => {
     const [loading, setLoading] = useState(false);
@@ -11,57 +14,80 @@ const PatientManager = () => {
     const [groupedData, setGroupedData] = useState({});
     const [selectedCareGiver, setSelectedCareGiver] = useState(null);
     const [selectedBranch, setSelectedBranch] = useState(null);
+    const [edting, setEditing] = useState(false);
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
+
+    
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const [patientsData, careGiversData, branchesData] = await Promise.all([
+                fetchPatients(),
+                getCareGivers(),
+                fetchBranches()
+            ]);
+
+            const patientsList = patientsData.responseObject || [];
+            const careGiversList = careGiversData.responseObject || [];
+            const branchesList = branchesData.responseObject || [];
+
+            // Sort caregivers alphabetically
+            careGiversList.sort((a, b) => a.fullName.localeCompare(b.fullName));
+
+            setBranches(branchesList);
+            setCareGivers(careGiversList);
+
+            // Group patients and caregivers by branchName
+            const grouped = {};
+            careGiversList.forEach(cg => {
+                if (!grouped[cg.branchName]) {
+                    grouped[cg.branchName] = { caregivers: [], patients: [] };
+                }
+                grouped[cg.branchName].caregivers.push(cg.fullName);
+            });
+
+            patientsList.forEach(p => {
+                if (!grouped[p.branchName]) {
+                    grouped[p.branchName] = { caregivers: [], patients: [] };
+                }
+                grouped[p.branchName].patients.push(`${p.firstName} ${p.lastName}`);
+            });
+
+            setGroupedData(grouped);
+        } catch (error) {
+            console.error("Error fetching data", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const [patientsData, careGiversData, branchesData] = await Promise.all([
-                    fetchPatients(),
-                    getCareGivers(),
-                    fetchBranches()
-                ]);
-
-                const patientsList = patientsData.responseObject || [];
-                const careGiversList = careGiversData.responseObject || [];
-                const branchesList = branchesData.responseObject || [];
-
-                // Sort caregivers alphabetically
-                careGiversList.sort((a, b) => a.fullName.localeCompare(b.fullName));
-
-                setBranches(branchesList);
-                setCareGivers(careGiversList);
-
-                // Group patients and caregivers by branchName
-                const grouped = {};
-                careGiversList.forEach(cg => {
-                    if (!grouped[cg.branchName]) {
-                        grouped[cg.branchName] = { caregivers: [], patients: [] };
-                    }
-                    grouped[cg.branchName].caregivers.push(cg.fullName);
-                });
-
-                patientsList.forEach(p => {
-                    if (!grouped[p.branchName]) {
-                        grouped[p.branchName] = { caregivers: [], patients: [] };
-                    }
-                    grouped[p.branchName].patients.push(`${p.firstName} ${p.lastName}`);
-                });
-
-                setGroupedData(grouped);
-            } catch (error) {
-                console.error("Error fetching data", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchData();
     }, []);
 
-    const handleAssign = () => {
-        console.log("Selected Caregiver ID:", selectedCareGiver);
-        console.log("Selected Branch ID:", selectedBranch);
+    const handleAssign = async () => {
+        if (!selectedBranch || !selectedCareGiver) return;
+        setEditing(true);
+        const updatedURL = `${URL}/${selectedCareGiver}`;
+        try {
+            const response = await updateData(updatedURL, {branch: selectedBranch});
+                    
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setTimeout(() => fetchData(), 5000);
+                setTimeout(() => setMessage(""), 5000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setEditing(false);
+        }
     };
 
     return (
@@ -97,14 +123,21 @@ const PatientManager = () => {
                     ))}
                 </select>
             </div>
-
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 rounded">
+                    {errors.map((error, index) => (
+                    <p key={index} className="text-sm text-red-600">{error}</p>
+                    ))}
+                </div>
+                )}
+            {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
             {/* Assign Button */}
             <button
                 onClick={handleAssign}
                 className="mb-4 bg-blue-500 px-4 py-2 rounded disabled:opacity-50"
                 disabled={!selectedCareGiver || !selectedBranch}
             >
-                Assign
+                {edting ? "Submitting...." : "Assign"}
             </button>
 
             {loading && <Loader className="animate-spin" />}
