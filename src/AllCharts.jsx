@@ -66,7 +66,7 @@ const AllCharts = () => {
         if (selectedYear && selectedMonth) {
             const filtered = charts.filter(chart => {
                 const date = new Date(chart.dateTaken);
-                date.setDate(date.getDate() - 1); // Subtract 1 day
+                date.setDate(date.getDate());
                 return date.getFullYear() === parseInt(selectedYear) && date.getMonth() + 1 === parseInt(selectedMonth);
             });
             setFilteredCharts(filtered);
@@ -83,6 +83,7 @@ const AllCharts = () => {
                     <p className="text-gray-400">Loading residents...</p>
                 </div>
             )}
+
 
             {/* Branch Selection Dropdown */}
             <label className="font-semibold">Select Branch: </label>
@@ -186,9 +187,9 @@ const AllCharts = () => {
                                                     acc[behavior.category].push(existingRow);
                                                 }
                                                 const chartDate = new Date(chart.dateTaken);
-                                                chartDate.setDate(chartDate.getDate() - 1); // Reduce the date by 1 day
+                                                chartDate.setDate(chartDate.getDate()); // Reduce the date by 1 day
 
-                                                existingRow.days[chartDate.getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
+                                                existingRow.days[chartDate.getDate()] = behavior.status === "Yes" ? "✔️" : "❌";
                                                 // existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
                                             });
                                             return acc;
