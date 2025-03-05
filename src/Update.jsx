@@ -11,6 +11,7 @@ const Update = ({ patientId }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState([]);
+  const [blink, setBlink] = useState(true);
 
   useEffect(() => {
     const today = new Date();
@@ -78,6 +79,16 @@ const Update = ({ patientId }) => {
     }
   };
 
+  
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBlink((prev) => !prev);
+    }, 2000); // Toggle every 2 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Update Resident Data</h2>
@@ -134,7 +145,7 @@ const Update = ({ patientId }) => {
         </div>
       )}
       {updateType === "weekly" && !date && (
-        <p className="text-red-500 mb-2">
+        <p className={`mb-2 text-red-500 ${blink ? "opacity-100" : "opacity-0"}`}>
           Weekly updates must be submitted on Friday before noon.
         </p>
       )}
