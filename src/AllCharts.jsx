@@ -187,10 +187,8 @@ const AllCharts = () => {
                                                     acc[behavior.category].push(existingRow);
                                                 }
                                                 const chartDate = new Date(chart.dateTaken);
-                                                chartDate.setDate(chartDate.getDate() - 1); 
-
+                                                chartDate = new Date(chartDate.getUTCFullYear(), chartDate.getUTCMonth(), chartDate.getUTCDate());
                                                 existingRow.days[chartDate.getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
-                                                // existingRow.days[new Date(chart.dateTaken).getDate() - 1] = behavior.status === "Yes" ? "✔️" : "❌";
                                             });
                                             return acc;
                                         }, {})
