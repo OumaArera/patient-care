@@ -70,8 +70,8 @@ const Login = () => {
           {/* Left Side - Logo Section */}
           <div className="w-1/2 text-white p-5 flex flex-col justify-center items-center">
             <div className="flex justify-center items-center space-x-4">
-              <img src={logo1} alt="Logo 1" className="h-16 object-contain" />
-              <img src={logo2} alt="Logo 2" className="h-16 object-contain" />
+              <img src={logo1} alt="Logo 1" className="h-24 object-contain" />
+              <img src={logo2} alt="Logo 2" className="h-24 object-contain" />
             </div>
           </div>
           <p className="mt-2 text-gray-300">Login to continue your journey with us.</p>
