@@ -95,22 +95,22 @@ const Charts = () => {
 
           <label className="block mb-2 text-lg">Select Resident:</label>
           <select
-            onChange={handleSelectPatient}
-            value={selectedPatient || ""}
-            className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
-          >
-            <option value="">Select Resident</option>
-            {patients
-              .filter((p) => !selectedBranch || p.branchName === selectedBranch)
-              .sort((a, b) =>
-                `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`)
-              )
-              .map((p) => (
-                <option key={p.patientId} value={p.patientId}>
-                  {p.firstName} {p.lastName}
-                </option>
-              ))}
-          </select>
+              onChange={handleSelectPatient}
+              value={selectedPatient ? selectedPatient.patientId : ""}
+              className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+            >
+              <option value="" disabled>Select Resident</option>
+              {patients
+                .filter((p) => !selectedBranch || p.branchName === selectedBranch)
+                .sort((a, b) =>
+                  `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`)
+                )
+                .map((p) => (
+                  <option key={p.patientId} value={p.patientId}>
+                    {p.firstName} {p.lastName}
+                  </option>
+                ))}
+            </select>
           <br />
         </>
       )}
