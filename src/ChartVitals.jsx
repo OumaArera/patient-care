@@ -54,7 +54,7 @@ const ChartVitals = () => {
         setLoadingPatients(true);
         getpatientManagers(userId)
             .then((data) => {
-                setPatientManagers(data?.responseObject || []);
+                // setPatientManagers(data?.responseObject || []);
             })
             .catch(() => {})
             .finally(() => setLoadingPatients(false));
@@ -120,7 +120,7 @@ const ChartVitals = () => {
                 <div className="flex justify-center items-center h-64">Loading...</div>
             ) : (
                 <div className="grid md:grid-cols-3 gap-4">
-                    {patientManagers.map(({ patient }) => (
+                    {patients.map((patient) => (
                         <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left">
                             <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
                             <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
