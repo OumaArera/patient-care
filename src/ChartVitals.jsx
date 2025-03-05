@@ -21,7 +21,7 @@ const ChartVitals = () => {
     const [loading, setLoading] = useState(false);
     const [isTimeAllowed, setIsTimeAllowed] = useState(true);
     const [patients, setPatients] = useState([]);
-    console.log("Patients: ", patients);
+    
     useEffect(() => {
         const checkTime = () => {
             const now = new Date();
