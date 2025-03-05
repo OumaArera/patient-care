@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { getpatientManagers } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { fetchPatients } from "../services/getPatientManagers";
 import { Loader } from "lucide-react";
@@ -7,7 +6,6 @@ import Appointment from "./Appointment";
 
 const ChartAppointments = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
-  const [patientManagers, setPatientManagers] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [showAppointment, setShowAppointment] = useState(false);
   const [patients, setPatients] = useState([]);
@@ -20,18 +18,6 @@ const ChartAppointments = () => {
     fetchPatients(branch)
       .then((data) => {
           setPatients(data?.responseObject || []);
-      })
-      .catch(() => {})
-      .finally(() => setLoadingPatients(false));
-}, []);
-
-  useEffect(() => {
-    const userId = localStorage.getItem("userId");
-    if (!userId) return;
-    setLoadingPatients(true);
-    getpatientManagers(userId)
-      .then((data) => {
-        setPatientManagers(data?.responseObject || []);
       })
       .catch(() => {})
       .finally(() => setLoadingPatients(false));

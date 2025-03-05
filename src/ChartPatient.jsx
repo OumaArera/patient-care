@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { getpatientManagers } from "../services/getPatientManagers";
 import { getCharts } from "../services/getCharts";
 import { fetchChartData } from "../services/fetchChartData";
+import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
 import NewCharts from "./NewCharts";
@@ -18,17 +19,23 @@ const ChartPatient = () => {
   const [charts, setCharts] = useState([]);
   const [showNewCharts, setShowNewCharts] = useState(false);
   const overlayRef = useRef(null);
+  const [patients, setPatients] = useState([]);
+  
+  
 
   const fetchAllChartData = async (patientId) => {
     setLoadingCharts(true);
     setSelectedPatientId(patientId);
+    const branch = localStorage.getItem("branch");
     try {
-      const [chartsResponse, chartsDataResponse] = await Promise.all([
+      const [chartsResponse, chartsDataResponse, patientData] = await Promise.all([
         getCharts(patientId),
         fetchChartData(),
+        fetchPatients(branch),
       ]);
       setCharts(chartsResponse?.responseObject || []);
       setChartData(chartsDataResponse?.responseObject || []);
+      setPatients(patientData?.responseObject || []);
     } catch (error) {
       console.error("Error fetching charts:", error);
     } finally {
@@ -85,64 +92,63 @@ const ChartPatient = () => {
         <>
           {/* Patient Cards */}
           <div className="grid md:grid-cols-3 gap-4">
-            {currentPatients.map(({ patient }) => (
-              <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left relative">
-                <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
-                <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
-                <p className="text-sm font-bold text-gray-400">DOB: {patient.dateOfBirth}</p>
-                <p className="text-sm font-bold text-gray-400">Diagnosis: {patient.diagnosis}</p>
-                <p className="text-sm font-bold text-gray-400">Allergies: {patient.allergies}</p>
-                <p className="text-sm font-bold text-gray-400">Physician: {patient.physicianName}</p>
-                <p className="text-sm font-bold text-gray-400">Facility: {patient.facilityName}</p>
-                <p className="text-sm font-bold text-gray-400">Branch: {patient.branchName}</p>
-                <p className="text-sm font-bold text-gray-400">Room: {patient.room} | Cart: {patient.cart}</p>
-                <div className="flex justify-between mt-4">
-                  {loadingCharts && selectedPatientId === patient.patientId ? (
-                    <p className="text-sm text-gray-300">Loading charts...</p>
-                  ) : chartData.length > 0 && selectedPatientId === patient.patientId ? (
-                    <button
-                      className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                      onClick={() => setShowNewCharts(true)}
-                    >
-                      View Charts
-                    </button>
-                  ) : (
-                    <button
-                      className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                      onClick={() => {
-                        fetchAllChartData(patient.patientId)
-                        setSelectedPatient(patient)
+          {patients.slice(indexOfFirstPatient, indexOfLastPatient).map((patient) => (
+            <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left relative">
+              <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
+              <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
+              <p className="text-sm font-bold text-gray-400">DOB: {patient.dateOfBirth}</p>
+              <p className="text-sm font-bold text-gray-400">Diagnosis: {patient.diagnosis}</p>
+              <p className="text-sm font-bold text-gray-400">Allergies: {patient.allergies}</p>
+              <p className="text-sm font-bold text-gray-400">Physician: {patient.physicianName}</p>
+              <p className="text-sm font-bold text-gray-400">Facility: {patient.facilityName}</p>
+              <p className="text-sm font-bold text-gray-400">Branch: {patient.branchName}</p>
+              <p className="text-sm font-bold text-gray-400">Room: {patient.room} | Cart: {patient.cart}</p>
+              <div className="flex justify-between mt-4">
+                {loadingCharts && selectedPatientId === patient.patientId ? (
+                  <p className="text-sm text-gray-300">Loading charts...</p>
+                ) : chartData.length > 0 && selectedPatientId === patient.patientId ? (
+                  <button
+                    className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                    onClick={() => setShowNewCharts(true)}
+                  >
+                    View Charts
+                  </button>
+                ) : (
+                  <button
+                    className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                    onClick={() => {
+                      fetchAllChartData(patient.patientId);
+                      setSelectedPatient(patient);
                     }}
-                    >
-                      Charts
-                    </button>
-                  )}
-                </div>
+                  >
+                    Charts
+                  </button>
+                )}
+              </div>
 
-                {/* Overlay for NewCharts */}
-                {showNewCharts && selectedPatient && selectedPatientId === patient.patientId && chartData.length > 0 && (
-                  <div
-                    className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
-                    onClick={closChartModal}
+              {/* Overlay for NewCharts */}
+              {showNewCharts && selectedPatient && selectedPatientId === patient.patientId && chartData.length > 0 && (
+                <div
+                  className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+                  onClick={closChartModal}
                 >
-                    <div
+                  <div
                     className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
                     onClick={(e) => e.stopPropagation()}
+                  >
+                    <NewCharts charts={selectedPatient} chartsData={chartData} />
+                    <button
+                      className="absolute top-2 right-2 text-white hover:text-gray-400"
+                      onClick={closChartModal}
                     >
-                      
-                      <NewCharts charts={selectedPatient} chartsData={chartData} />
-                      <button
-                        className="absolute top-2 right-2 text-white hover:text-gray-400"
-                        onClick={closChartModal}
-                      >
-                        ✖
-                      </button>
-                    </div>
+                      ✖
+                    </button>
                   </div>
-                )}
+                </div>
+              )}
+            </div>
+          ))}
 
-              </div>
-            ))}
           </div>
         </>
       )}
