@@ -66,7 +66,7 @@ const AllCharts = () => {
         if (selectedYear && selectedMonth) {
             const filtered = charts.filter(chart => {
                 const date = new Date(chart.dateTaken);
-                date.setDate(date.getDate());
+                date.setDate(date.getDate() - 1);
                 return date.getFullYear() === parseInt(selectedYear) && date.getMonth() + 1 === parseInt(selectedMonth);
             });
             setFilteredCharts(filtered);
@@ -186,7 +186,7 @@ const AllCharts = () => {
                                                     };
                                                     acc[behavior.category].push(existingRow);
                                                 }
-                                                const chartDate = new Date(chart.dateTaken -1);
+                                                const chartDate = new Date(chart.dateTaken);
                                                 const utcYear = chartDate.getUTCFullYear();
                                                 const utcMonth = chartDate.getUTCMonth();
                                                 const utcDay = chartDate.getUTCDate();
