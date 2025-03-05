@@ -77,15 +77,37 @@ const AllCharts = () => {
         <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">1st EDMONDS</h2>
         <div className="mb-4">
             {loadingPatients && (
-            <div className="flex items-center space-x-2">
-                <Loader className="animate-spin text-gray-400" size={20} />
-                <p className="text-gray-400">Loading residents...</p>
-            </div>)}
-            
-            <label className="font-semibold">Select Resident: </label>
-            <select className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded" onChange={handlePatientChange} value={selectedPatient || ""}>
+                <div className="flex items-center space-x-2">
+                    <Loader className="animate-spin text-gray-400" size={20} />
+                    <p className="text-gray-400">Loading residents...</p>
+                </div>
+            )}
+
+            {/* Branch Selection Dropdown */}
+            <label className="font-semibold">Select Branch: </label>
+            <select
+                className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                value={selectedBranch || ""}
+            >
+                <option value="">-- All Branches --</option>
+                {[...new Set(patients.map((p) => p.branchName))] // Extract unique branch names
+                    .sort()
+                    .map((branch) => (
+                        <option key={branch} value={branch}>{branch}</option>
+                    ))}
+            </select>
+
+            {/* Resident Selection Dropdown */}
+            <label className="font-semibold ml-4">Select Resident: </label>
+            <select
+                className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+                onChange={handlePatientChange}
+                value={selectedPatient || ""}
+            >
                 <option value="">-- Select --</option>
-                {[...patients]
+                {patients
+                    .filter((p) => !selectedBranch || p.branchName === selectedBranch) // Filter by branch
                     .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
                     .map((p) => (
                         <option key={p.patientId} value={p.patientId}>
@@ -94,6 +116,7 @@ const AllCharts = () => {
                     ))}
             </select>
         </div>
+
         {loadingCharts && (
             <div className="flex items-center space-x-2">
                 <Loader className="animate-spin text-gray-400" size={20} />
