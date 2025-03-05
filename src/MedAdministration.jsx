@@ -17,6 +17,9 @@ const MedAdministration = () => {
     const [selectedData, setSelectedData] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [medications, setMedications] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState("");
+
+
     useEffect(() => {
         setLoading(true);
         fetchPatients()
@@ -97,21 +100,36 @@ const MedAdministration = () => {
                         <p className="text-gray-500">Loading...</p>
                     </div>
                 )}
-                <label className="font-semibold">Select Resident: </label>
-                <select
-                    className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
-                    onChange={(e) => fetchMedAdmin(e.target.value)}
-                    value={selectedPatient || ""}
-                >
-                    <option value="">-- Select --</option>
-                    {[...patients]
-                        .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
-                        .map((p) => (
-                            <option key={p.patientId} value={p.patientId}>
-                                {p.firstName} {p.lastName}
-                            </option>
-                        ))}
-                </select>
+                <label className="font-semibold">Select Branch: </label>
+            <select
+                className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                value={selectedBranch || ""}
+            >
+                <option value="">-- All Branches --</option>
+                {[...new Set(patients.map((p) => p.branchName))] // Extract unique branch names
+                    .sort()
+                    .map((branch) => (
+                        <option key={branch} value={branch}>{branch}</option>
+                    ))}
+            </select>
+            {/* Resident Selection Dropdown */}
+            <label className="font-semibold ml-4">Select Resident: </label>
+            <select
+                className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+                onChange={handlePatientChange}
+                value={selectedPatient || ""}
+            >
+                <option value="">-- Select --</option>
+                {patients
+                    .filter((p) => !selectedBranch || p.branchName === selectedBranch) // Filter by branch
+                    .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+                    .map((p) => (
+                        <option key={p.patientId} value={p.patientId}>
+                            {p.firstName} {p.lastName}
+                        </option>
+                    ))}
+            </select>
             </div>
             {medications.length > 0 && (
                 <>
