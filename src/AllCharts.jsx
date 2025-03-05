@@ -192,7 +192,7 @@ const AllCharts = () => {
                                                 const utcDay = chartDate.getUTCDate();
 
                                                 const adjustedDate = new Date(Date.UTC(utcYear, utcMonth, utcDay));
-                                                existingRow.days[adjustedDate.getUTCDate()] = behavior.status === "Yes" ? "✔️" : "❌";
+                                                existingRow.days[adjustedDate.getUTCDate()-2] = behavior.status === "Yes" ? "✔️" : "❌";
                                             });
                                             return acc;
                                         }, {})
