@@ -52,7 +52,7 @@ const ChartAppointments = () => {
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-4">
-          {patients.map(({ patient }) => (
+          {patients.map((patient) => (
             <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left">
               <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
               <h3 className="text-lg font-bold">
@@ -75,6 +75,7 @@ const ChartAppointments = () => {
               </div>
             </div>
           ))}
+
         </div>
       )}
 
