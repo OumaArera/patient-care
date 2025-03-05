@@ -68,12 +68,11 @@ const Login = () => {
         {/* Left Side - Welcome Section */}
         <div className="w-1/2 text-white p-5 flex flex-col justify-center">
           {/* Left Side - Logo Section */}
-          <div className="w-1/2 text-white p-5 flex flex-col justify-center items-center">
             <div className="flex justify-center items-center space-x-4">
               <img src={logo1} alt="Logo 1" className="h-32 object-contain" />
               <img src={logo2} alt="Logo 2" className="h-32 object-contain" />
             </div>
-          </div>
+          <h1 className="text-4xl font-bold">Welcome!</h1>
           <p className="mt-2 text-gray-300">Login to continue your journey with us.</p>
           <button className="mt-4 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">Learn More</button>
         </div>
