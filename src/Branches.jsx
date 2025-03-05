@@ -181,7 +181,7 @@ const Branches = () => {
             value={branchAddress}
             onChange={(e) => setBranchAddress(e.target.value)}
             className={`border p-2 w-full rounded bg-gray-700 text-white ${
-              branchAddress && isValidAddress(branchAddress) ? "border-green-500" : "border-red-500"
+              branchAddress ? "border-green-500" : "border-red-500"
             }`}
             required
           />
