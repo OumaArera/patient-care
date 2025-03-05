@@ -141,13 +141,24 @@ const PatientCard = ({ patient, getPatients }) => {
                     className="w-full p-2 rounded bg-gray-700 text-white"
                   />
                 </label>
-
+                
                 <label className="block">
                   <span className="text-gray-300">Last Name:</span>
                   <input 
                     type="text" 
                     name="lastName" 
                     value={editedPatient.lastName} 
+                    onChange={handleChange}
+                    className="w-full p-2 rounded bg-gray-700 text-white"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="text-gray-300">Date of Birth:</span>
+                  <input 
+                    type="date" 
+                    name="dateOfBirth" 
+                    value={editedPatient.dateOfBirth} 
                     onChange={handleChange}
                     className="w-full p-2 rounded bg-gray-700 text-white"
                   />
