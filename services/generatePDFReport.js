@@ -55,8 +55,8 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             }
 
             const behaviorDate = new Date(chart.dateTaken);
-            const utcDate = new Date(behaviorDate.getUTCFullYear(), behaviorDate.getUTCMonth(), behaviorDate.getUTCDate());
-            const adjustedDay = utcDate.getDate() - 1;
+            behaviorDate.setDate(behaviorDate.getDate() - 1); // Backdating by 1 day
+            const adjustedDay = behaviorDate.getDate() - 1;
             if (adjustedDay >= 0) {
                 existingRow.days[adjustedDay] = behavior.status === "Yes" ? "✔️" : "";
             }
@@ -104,10 +104,8 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
 
     charts.forEach(chart => {
         const chartDate = new Date(chart.dateTaken);
-        const utcDate = new Date(chartDate.getUTCFullYear(), chartDate.getUTCMonth(), chartDate.getUTCDate());
-        const adjustedDate = new Date(utcDate);
-        adjustedDate.setDate(adjustedDate.getDate() - 1);
-        const formattedDate = adjustedDate.toISOString().split("T")[0];
+        chartDate.setDate(chartDate.getDate() - 1); // Backdating by 1 day
+        const formattedDate = chartDate.toISOString().split("T")[0];
 
         let rowData = {
             Behavior_Description: "",
