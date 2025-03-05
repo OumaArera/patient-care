@@ -48,18 +48,6 @@ const ChartVitals = () => {
             .finally(() => setLoadingPatients(false));
     }, []);
 
-    useEffect(() => {
-        const userId = localStorage.getItem("userId");
-        if (!userId) return;
-        setLoadingPatients(true);
-        getpatientManagers(userId)
-            .then((data) => {
-                // setPatientManagers(data?.responseObject || []);
-            })
-            .catch(() => {})
-            .finally(() => setLoadingPatients(false));
-    }, []);
-
     const handleUpdateClick = (patientId) => {
         setFormData((prev) => ({ ...prev, patientId }));
         setShowForm(true);
@@ -196,7 +184,7 @@ const ChartVitals = () => {
                                 <button
                                     type="submit"
                                     className={`px-4 py-2 rounded ${isTimeAllowed ? "bg-blue-600" : "bg-gray-500 cursor-not-allowed"}`}
-                                    disabled={!isTimeAllowed || loading}
+                                    disabled={loading}
                                 >
                                     {loading ? "Submitting..." : "Submit"}
                                 </button>
