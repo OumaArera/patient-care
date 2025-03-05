@@ -23,6 +23,9 @@ const Branches = () => {
   const [editingBranch, setEditingBranch] = useState(null);
   const [editedBranchName, setEditedBranchName] = useState("");
   const [editedBranchAddress, setEditedBranchAddress] = useState("");
+  const [editedPhonenumber, setEditedPhonenumber] = useState("");
+  const [editedFax, setEditedFax] = useState("");
+  const [editedEmail, setEditedEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const pageSize = 10;
 
@@ -42,6 +45,9 @@ const Branches = () => {
     setEditingBranch(branch);
     setEditedBranchName(branch.branchName);
     setEditedBranchAddress(branch.branchAddress);
+    setEditedPhonenumber(branch.phoneNumber);
+    setEditedFax(branch.fax);
+    setEditedEmail(branch.email);
   };
 
   const handleSave = async () => {
@@ -49,6 +55,18 @@ const Branches = () => {
   
     if (editedBranchName !== editingBranch.branchName) {
         updatedFields.branchName = editedBranchName;
+    }
+
+    if (editedPhonenumber !== editingBranch.phoneNumber) {
+      updatedFields.phoneNumber = editedPhonenumber;
+    }
+
+    if (editedFax !== editingBranch.fax) {
+      updatedFields.fax = editedFax;
+    }
+
+    if (editedEmail !== editingBranch.email) {
+      updatedFields.email = editedEmail;
     }
 
     if (editedBranchAddress !== editingBranch.branchAddress) {
@@ -83,7 +101,6 @@ const Branches = () => {
   };
 
   
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isValidAddress(branchAddress)) return;
@@ -197,6 +214,9 @@ const Branches = () => {
               <h3 className="font-semibold text-blue-300">{branch.branchName}</h3>
               <p className="text-gray-400">{branch.branchAddress}</p>
               <p className="text-gray-500">Facility: {branch.facilityName}</p>
+              <p className="text-gray-500">Phone: {branch.phoneNumber}</p>
+              <p className="text-gray-500">Fax: {branch.fax}</p>
+              <p className="text-gray-500">Email: {branch.email}</p>
               <button 
                 onClick={() => handleEditClick(branch)} 
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-3 hover:bg-blue-600"
@@ -236,6 +256,30 @@ const Branches = () => {
               type="text"
               value={editedBranchAddress}
               onChange={(e) => setEditedBranchAddress(e.target.value)}
+              className="border p-2 w-full rounded bg-gray-700 text-white"
+            />
+
+            <label className="block text-gray-300 font-semibold mb-1 mt-3">Branch Phone Number</label>
+            <input
+              type="text"
+              value={editedPhonenumber}
+              onChange={(e) => setEditedPhonenumber(e.target.value)}
+              className="border p-2 w-full rounded bg-gray-700 text-white"
+            />
+
+            <label className="block text-gray-300 font-semibold mb-1 mt-3">Branch Fax</label>
+            <input
+              type="text"
+              value={editedFax}
+              onChange={(e) => setEditedFax(e.target.value)}
+              className="border p-2 w-full rounded bg-gray-700 text-white"
+            />
+
+            <label className="block text-gray-300 font-semibold mb-1 mt-3">Branch Email</label>
+            <input
+              type="email"
+              value={editedEmail}
+              onChange={(e) => setEditedEmail(e.target.value)}
               className="border p-2 w-full rounded bg-gray-700 text-white"
             />
             {errors.length > 0 && (
