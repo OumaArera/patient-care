@@ -15,13 +15,12 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
         container.innerHTML = htmlContent;
         document.body.appendChild(container);
         
-        const canvas = await html2canvas(container, { scale: 1.5 }); // Reduced scale for smaller image size
+        const canvas = await html2canvas(container, { scale: 1.5 });
         document.body.removeChild(container);
         
-        return canvas.toDataURL("image/jpeg", 0.7); // Convert to JPEG with 70% quality to reduce size
+        return canvas.toDataURL("image/jpeg", 0.7);
     };
 
-    // First Table: Behavior Log
     let behaviorLogHTML = `
         <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 15px;">
             ${facilityName} - ${branchName}
@@ -55,10 +54,12 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
                 acc[behavior.category].push(existingRow);
             }
 
-            // Normalize date to UTC to avoid missing entries due to time differences
             const behaviorDate = new Date(chart.dateTaken);
             const utcDate = new Date(behaviorDate.getUTCFullYear(), behaviorDate.getUTCMonth(), behaviorDate.getUTCDate());
-            existingRow.days[utcDate.getDate() - 1] = behavior.status === "Yes" ? "✔️" : "";
+            const adjustedDay = utcDate.getDate() - 1;
+            if (adjustedDay >= 0) {
+                existingRow.days[adjustedDay] = behavior.status === "Yes" ? "✔️" : "";
+            }
         });
         return acc;
     }, {});
@@ -83,10 +84,9 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     behaviorLogHTML += `</tbody></table>`;
 
     const firstPageImage = await captureAsImage(behaviorLogHTML);
-    pdf.addImage(firstPageImage, "JPEG", 10, 10, 190, 0); // Use JPEG for lower size
+    pdf.addImage(firstPageImage, "JPEG", 10, 10, 190, 0);
     pdf.addPage();
 
-    // Second Table: Behavior Description
     let behaviorDescriptionHTML = `
         <h3 style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 15px;">Behavior Description</h3>
         <table border="1" style="width: 100%; border-collapse: collapse; font-size: 12px;">
@@ -105,7 +105,9 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
     charts.forEach(chart => {
         const chartDate = new Date(chart.dateTaken);
         const utcDate = new Date(chartDate.getUTCFullYear(), chartDate.getUTCMonth(), chartDate.getUTCDate());
-        const formattedDate = utcDate.toISOString().split("T")[0];
+        const adjustedDate = new Date(utcDate);
+        adjustedDate.setDate(adjustedDate.getDate() - 1);
+        const formattedDate = adjustedDate.toISOString().split("T")[0];
 
         let rowData = {
             Behavior_Description: "",
@@ -132,14 +134,8 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             </tr>`;
     });
 
-    behaviorDescriptionHTML += `</tbody></table>
-    <div style="margin-top: 20px; font-size: 16px; text-align: left;">
-        <p>Caregiver 1: ................................................... Sign: ......................</p>
-        <br />
-        <p>Caregiver 2: ................................................... Sign: ......................</p>
-    </div>`;
-
+    behaviorDescriptionHTML += `</tbody></table>`;
     const secondPageImage = await captureAsImage(behaviorDescriptionHTML);
-    pdf.addImage(secondPageImage, "JPEG", 10, 10, 190, 0); // Use JPEG format to reduce size
-    pdf.save(`Behavior_${patientName}${branchName}_Log${facilityName}_${selectedYear}_${selectedMonth}.pdf`);
+    pdf.addImage(secondPageImage, "JPEG", 10, 10, 190, 0);
+    pdf.save(`Behavior_${patientName}_${selectedYear}_${selectedMonth}.pdf`);
 };
