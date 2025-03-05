@@ -67,9 +67,9 @@ const SuperUserDashboard = () => {
     <div className="flex min-h-screen bg-black text-white">
       {/* Sidebar */}
       <div className="w-64 bg-gray-900 p-5 flex flex-col">
-      <div className="flex justify-center items-center space-x-4">
-        <img src={logo1} alt="Logo 1" className="h-16 object-contain" />
-        <img src={logo2} alt="Logo 2" className="h-16 object-contain" />
+      <div className="flex justify-evenly items-start space-x-4">
+        <img src={logo1} alt="Logo 1" className="h-24 object-contain" />
+        <img src={logo2} alt="Logo 2" className="h-24 object-contain" />
       </div>
         <h1 className="text-xl font-bold text-blue-500 mb-2">Workflow</h1>
 
