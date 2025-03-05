@@ -24,7 +24,6 @@ const LandingPage = () => {
     image: images[indexRef.current],
     message: caregivingMessages[Math.floor(Math.random() * caregivingMessages.length)],
   });
-  const [fitToScreen, setFitToScreen] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -47,7 +46,7 @@ const LandingPage = () => {
 
   return (
     <div
-      className="relative w-full h-screen flex flex-col items-center justify-center transition-all duration-1000"
+      className="relative w-full h-screen flex items-end justify-center transition-all duration-1000"
       style={{
         backgroundImage: `url(${content.image})`,
         backgroundSize: "contain", // Ensures full image is visible without cropping
@@ -55,10 +54,10 @@ const LandingPage = () => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Dark overlay for better text visibility */}
-      <div className="absolute inset-0 bg-opacity-50 transition-opacity duration-1000"></div>
+      {/* Dark Gradient Overlay at Bottom */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-1000"></div>
 
-      {/* Animated text */}
+      {/* Animated Text Container */}
       <AnimatePresence mode="wait">
         <motion.div
           key={content.message}
@@ -66,21 +65,13 @@ const LandingPage = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 1 }}
-          className="relative z-10 bg-opacity-90 p-8 rounded-2xl shadow-xl max-w-3xl text-center"
+          className="relative z-10 mb-12 bg-black/60 p-6 rounded-xl shadow-lg max-w-4xl text-center"
         >
-          <p className="text-2xl md:text-3xl font-bold text-gray-900 leading-relaxed">
+          <p className="text-2xl md:text-3xl font-bold text-white leading-relaxed drop-shadow-lg">
             {content.message}
           </p>
         </motion.div>
       </AnimatePresence>
-
-      {/* Toggle Fit Mode Button */}
-      <button
-        onClick={() => setFitToScreen(!fitToScreen)}
-        className="absolute bottom-5 right-5 z-20 bg-blue-600 text-white py-2 px-4 rounded-lg text-sm hover:bg-blue-500 transition"
-      >
-        Toggle Fit Mode ({fitToScreen ? "Cover" : "Contain"})
-      </button>
     </div>
   );
 };
