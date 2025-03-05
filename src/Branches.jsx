@@ -13,6 +13,9 @@ const isValidAddress = (address) => {
 const Branches = () => {
   const [branchName, setBranchName] = useState("");
   const [branchAddress, setBranchAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [fax, setFax] = useState("");
+  const [email, setEmail] = useState("")
   const [facilityId, setFacilityId] = useState("");
   const [facilities, setFacilities] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -111,17 +114,29 @@ const Branches = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
+    const payload = {
+      branchName, 
+      branchAddress,
+      facility: facilityId,
+      phoneNumber,
+      fax,
+      email
+    }
+
     try {
       const response = await fetch("https://patient-care-server.onrender.com/api/v1/branches", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ branchName, branchAddress, facility: facilityId }),
+        body: JSON.stringify(payload),
       });
       const result = await response.json();
 
       if (response.ok) {
         setBranchName("");
         setBranchAddress("");
+        setPhoneNumber("");
+        setFax("");
+        setEmail("");
         setMessage("Branch added successfully!");
         setErrors([]);
         fetchBranches(pageNumber, pageSize).then((data) => setBranches(data.responseObject || []));
@@ -171,6 +186,40 @@ const Branches = () => {
             required
           />
         </div>
+        <div className="mb-4">
+          <label className="block text-gray-300 font-semibold mb-1">Branch Phone Number</label>
+          <input
+            type="text"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="Phone Number e.g 425-895-2641"
+            className="border p-2 w-full rounded bg-gray-700 text-white"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-300 font-semibold mb-1">Branch Fax</label>
+          <input
+            type="text"
+            value={fax}
+            onChange={(e) => setFax(e.target.value)}
+            placeholder="Fax: e.g 425-892-7391"
+            className="border p-2 w-full rounded bg-gray-700 text-white"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-300 font-semibold mb-1">Branch Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="example@example.com"
+            className="border p-2 w-full rounded bg-gray-700 text-white"
+            required
+          />
+        </div>
+        
 
         <div className="mb-4">
           <label className="block text-gray-300 font-semibold mb-1">Facility</label>
@@ -212,7 +261,7 @@ const Branches = () => {
           branches.map((branch) => (
             <div key={branch.branchId} className="border p-4 rounded-lg shadow-md bg-gray-800 text-white">
               <h3 className="font-semibold text-blue-300">{branch.branchName}</h3>
-              <p className="text-gray-400">{branch.branchAddress}</p>
+              <p className="text-gray-400">Address:{branch.branchAddress}</p>
               <p className="text-gray-500">Facility: {branch.facilityName}</p>
               <p className="text-gray-500">Phone: {branch.phoneNumber}</p>
               <p className="text-gray-500">Fax: {branch.fax}</p>
