@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getpatientManagers } from "../services/getPatientManagers";
+import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
 import Update from "./Update";
@@ -9,6 +10,19 @@ const ChartUpdate = () => {
   const [patientManagers, setPatientManagers] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [showUpdates, setShowUpdates] = useState(false);
+  const [patients, setPatients] = useState([]);
+
+  useEffect(() => {
+    const branch = localStorage.getItem("branch");
+    if (!branch) return;
+    setLoadingPatients(true);
+    fetchPatients(branch)
+      .then((data) => {
+          setPatients(data?.responseObject || []);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingPatients(false));
+  }, []);
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
@@ -41,7 +55,7 @@ const ChartUpdate = () => {
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-4">
-          {patientManagers.map(({ patient }) => (
+          {patients.map(({ patient }) => (
             <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left">
               <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
               <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>

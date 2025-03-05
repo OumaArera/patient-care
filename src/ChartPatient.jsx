@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { getpatientManagers } from "../services/getPatientManagers";
 import { getCharts } from "../services/getCharts";
 import { fetchChartData } from "../services/fetchChartData";
 import { fetchPatients } from "../services/getPatientManagers";
@@ -44,7 +43,6 @@ const ChartPatient = () => {
 
   useEffect(() => {
       const branch = localStorage.getItem("branch");
-      console.log("Branch", branch);
       if (!branch) return;
       setLoading(true);
       fetchPatients(branch)
