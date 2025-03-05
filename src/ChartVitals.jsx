@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { getpatientManagers } from "../services/getPatientManagers";
 import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { postVitals } from "../services/postVitals";
 import { errorHandler } from "../services/errorHandler";
+import { Loader } from "lucide-react";
 
 const ChartVitals = () => {
     const [formData, setFormData] = useState({
@@ -109,7 +109,11 @@ const ChartVitals = () => {
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold mb-4 text-center">Chart Vitals</h2>
             {loadingPatients ? (
-                <div className="flex justify-center items-center h-64">Loading...</div>
+                <>
+                    <Loader className="animate-spin text-blue-400" size={24} />
+                    <div className="flex justify-center items-center h-64">Loading Residents...</div>
+                </>
+               
             ) : (
                 <div className="grid md:grid-cols-3 gap-4">
                     {patients.map((patient) => (
