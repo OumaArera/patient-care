@@ -19,6 +19,8 @@ const Vitals = () => {
   const [showVitals, setShowVitals] = useState(false);
   const [selectedVital, setSelectedVital] = useState(null);
   const [show, setShow] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState("");
+  const branchNames = [...new Set(patients.map((p) => p.branchName))];
   const vitalsPerPage = 10;
 
   const closVitalsModal =()=>{
@@ -88,20 +90,36 @@ const Vitals = () => {
                 <p className="text-gray-400">Loading residents...</p>
             </div>
         ) : (
+            <>
             <select
-                className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
-                onChange={handlePatientChange}
-                value={selectedPatient || ""}
+              className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+              onChange={(e) => setSelectedBranch(e.target.value)}
+              value={selectedBranch}
             >
-                <option value="">Select a Resident</option>
-                {[...patients]
-                    .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
-                    .map((p) => (
-                        <option key={p.patientId} value={p.patientId}>
-                            {p.firstName} {p.lastName}
-                        </option>
-                    ))}
+              <option value="">All Branches</option>
+              {branchNames.map((branch, index) => (
+                <option key={index} value={branch}>
+                  {branch}
+                </option>
+              ))}
             </select>
+
+            <select
+              className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+              onChange={handlePatientChange}
+              value={selectedPatient || ""}
+            >
+              <option value="">Select a Resident</option>
+              {[...patients]
+                .filter((p) => !selectedBranch || p.branchName === selectedBranch)
+                .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
+                .map((p) => (
+                  <option key={p.patientId} value={p.patientId}>
+                    {p.firstName} {p.lastName}
+                  </option>
+                ))}
+            </select>
+            </>
         )}
         <select className="p-2 bg-gray-800 text-white border border-gray-700 rounded" onChange={(e) => setYear(e.target.value)} value={year}>
           {[...Array(10)].map((_, i) => (
