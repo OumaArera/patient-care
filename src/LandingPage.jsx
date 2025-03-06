@@ -89,17 +89,18 @@ const LandingPage = () => {
       <div className="relative z-10 mb-12 flex space-x-4">
         <button
           onClick={() => openPDF(firstPDF)}
-          className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300"
+          className="px-4 py-2 bg-blue-300 hover:bg-blue-400 text-white font-medium rounded-md shadow-md transition-all duration-200"
         >
           View Edmonds Brochure
         </button>
         <button
           onClick={() => openPDF(secondPDF)}
-          className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300"
+          className="px-4 py-2 bg-green-300 hover:bg-green-400 text-white font-medium rounded-md shadow-md transition-all duration-200"
         >
           View Bothell Brochure
         </button>
       </div>
+
     </div>
   );
 };
