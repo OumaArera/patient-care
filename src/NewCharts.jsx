@@ -30,7 +30,7 @@ const NewCharts = ({ charts, chartsData }) => {
   const [lateSubmission, setLateSubmission] = useState([]);
     
     useEffect(() => {
-      const careGiver = localStorage.getItem("userId");a
+      const careGiver = localStorage.getItem("userId");
       const type = "charts";
   
       if (!charts.patientId || !careGiver) return;
