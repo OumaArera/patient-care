@@ -157,12 +157,14 @@ const Login = () => {
     <p className="text-gray-400 text-sm mt-2">
       © 2025 1ST EDMONDS AFH LLC & BOTHELL SERENITY CORP
     </p>
-    <NavLink 
-      to="/developer" 
-      className="text-gray-500 hover:text-gray-700 text-sm transition duration-200"
+    <a 
+      href="https://ouma-portforlio.vercel.app/" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="text-blue-500 hover:text-blue-700 text-md font-medium transition duration-200 underline"
     >
       Developed & Maintained by John Ouma
-    </NavLink>
+    </a>
   </div>
 </div>
 
