@@ -26,10 +26,10 @@ const LateSubmission = ({ patient, type }) => {
         }
         
         const payload = {
-            patient,
+            patient: patient.patientId,
             type,
-            careGiverId: selectedCareGiver,
-            startTime,
+            careGiver: selectedCareGiver,
+            start: startTime,
             duration: parseInt(duration),
         };
 
