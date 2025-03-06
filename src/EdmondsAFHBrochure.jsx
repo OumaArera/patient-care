@@ -15,7 +15,7 @@ const EdmondsAFHBrochure = () => {
       <div className="p-8">
         {/* Company Profile */}
         <section className="mb-12 bg-white p-8 rounded-lg shadow-md border-l-4 border-teal-700">
-          <h2 className="text-3xl font-semibold text-teal-800 mb-4 pb-2 border-b border-teal-200">Company Profile</h2>
+          <h2 className="text-3xl font-semibold text-teal-800 mb-4 pb-2 border-b border-teal-200 text-center">Company Profile</h2>
           <p className="text-gray-700 leading-relaxed">
             1st Edmonds AFH is a dedicated home healthcare service provider
             committed to delivering personalized care services that promote client
@@ -91,7 +91,7 @@ const EdmondsAFHBrochure = () => {
 
         {/* Core Values */}
         <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-teal-800 mb-6">Our Core Values</h2>
+          <h2 className="text-3xl font-semibold text-teal-800 mb-6 text-center">Our Core Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { title: "Integrity", desc: "Doing the right thing, in the right way, at all times. Being the model for compliance, discipline, accountability, and quality." },
@@ -109,7 +109,7 @@ const EdmondsAFHBrochure = () => {
 
         {/* Branches */}
         <section className="mb-12 bg-gray-50 p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-semibold text-teal-800 mb-6">Our Branches</h2>
+          <h2 className="text-3xl font-semibold text-teal-800 mb-6 text-center">Our Branches</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { name: "1st Edmonds AFH", address: "22416 80th Ave, Edmonds, 98026", phone: "425-521-1070", fax: "425-491-7499", email: "1stedmondafh@gmail.com" },
