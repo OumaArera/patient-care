@@ -1,18 +1,39 @@
 import React from 'react';
 import bohel from './assets/bothel_ceo.jpg';
+import secondPDF from "./assets/BOTHELL_SERENITY_CORP _BROCHURE.pdf";
+import logo from './assets/BSC-LOGO.png';
 
 const BothellSerenityBrochure = () => {
   return (
     <div className="max-w-6xl mx-auto bg-white text-gray-800">
       {/* Header Section */}
-      <div className="bg-teal-700 text-white py-10 px-8">
-        <header className="mb-6 text-center">
-          <h1 className="text-4xl font-bold tracking-wide">BOTHELL SERENITY CORP</h1>
-          <p className="text-lg text-teal-100 italic mt-2">Providing Care with Passion</p>
+      <div className="bg-white border-b-4 border-teal-700 py-6 px-8 shadow-md">
+        <header className="flex flex-col md:flex-row items-center justify-center gap-4">
+          <div className="flex-shrink-0">
+            <img src={logo} alt="1ST Edmonds Logo" className="h-20 object-contain" />
+          </div>
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl font-bold tracking-wide text-teal-800">BOTHELL SERENITY CORP</h1>
+            <p className="text-lg text-teal-600 italic mt-1">Providing Care with Passion</p>
+          </div>
         </header>
       </div>
 
       <div className="p-8">
+        {/* PDF Download Button */}
+        <div className="mb-8 flex justify-center">
+          <a 
+            href={secondPDF} 
+            download
+            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg flex items-center transition duration-300 shadow-md"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+            </svg>
+            Download Our Brochure
+          </a>
+        </div>
+
         {/* Company Profile */}
         <section className="mb-12 bg-white p-8 rounded-lg shadow-md border-l-4 border-teal-700">
           <h2 className="text-3xl font-semibold text-teal-800 mb-4 pb-2 border-b border-teal-200 text-center">Company Profile</h2>
