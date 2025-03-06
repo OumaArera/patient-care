@@ -15,7 +15,7 @@ const BothellSerenityBrochure = () => {
       <div className="p-8">
         {/* Company Profile */}
         <section className="mb-12 bg-white p-8 rounded-lg shadow-md border-l-4 border-teal-700">
-          <h2 className="text-3xl font-semibold text-teal-800 mb-4 pb-2 border-b border-teal-200">Company Profile</h2>
+          <h2 className="text-3xl font-semibold text-teal-800 mb-4 pb-2 border-b border-teal-200 text-center">Company Profile</h2>
           <p className="text-gray-700 leading-relaxed">
             Bothell Serenity Corp stands as a premier provider of home health care
             services dedicated to enhancing the quality of life for clients while
@@ -86,7 +86,7 @@ const BothellSerenityBrochure = () => {
 
         {/* Core Values */}
         <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-teal-800 mb-6">Our Core Values</h2>
+          <h2 className="text-3xl font-semibold text-teal-800 text-center mb-6">Our Core Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { title: "Integrity", desc: "Doing the right thing, in the right way, at all times. Being the model for compliance, discipline, accountability, and quality." },
@@ -104,7 +104,7 @@ const BothellSerenityBrochure = () => {
 
         {/* Branches */}
         <section className="mb-12 bg-gray-50 p-8 rounded-lg shadow-md">
-          <h2 className="text-3xl font-semibold text-teal-800 mb-6">Our Branches</h2>
+          <h2 className="text-3xl font-semibold text-teal-800 text-center mb-6">Our Branches</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
               { name: "Bothell Serenity AFH", address: "3411 174th PI SE, Bothell, 98012", phone: "425-895-2641", fax: "425-892-7391", email: "serenityadultfamilyhome@gmail.com" },
