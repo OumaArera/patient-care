@@ -27,7 +27,7 @@ const LateSubmission = ({ patient, type }) => {
     }, []);
 
     const handleSubmit = async () => {
-        if (!selectedCareGiver || !startTime || !duration || reason) {
+        if (!selectedCareGiver || !startTime || !duration || !reason) {
             alert("Please fill all fields before submitting.");
             return;
         }
@@ -127,6 +127,7 @@ const LateSubmission = ({ patient, type }) => {
                         placeholder="Enter reason here..."
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
+                        required
                     ></textarea>
                     {errors.length > 0 && (
                         <div className="mb-4 p-3 rounded">
