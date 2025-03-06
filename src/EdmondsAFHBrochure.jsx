@@ -7,14 +7,14 @@ const EdmondsAFHBrochure = () => {
   return (
     <div className="max-w-6xl mx-auto bg-white text-gray-800">
       {/* Header Section with Logo */}
-      <div className="bg-teal-700 text-white py-10 px-8">
-        <header className="flex flex-col md:flex-row items-center justify-center md:justify-between mb-6">
-          <div className="mb-4 md:mb-0">
-            <img src={logo} alt="1ST Edmonds Logo" className="h-24 object-contain" />
+      <div className="bg-white border-b-4 border-teal-700 py-6 px-8 shadow-md">
+        <header className="flex flex-col md:flex-row items-center justify-center gap-4">
+          <div className="flex-shrink-0">
+            <img src={logo} alt="1ST Edmonds Logo" className="h-20 object-contain" />
           </div>
-          <div className="text-center md:text-right">
-            <h1 className="text-4xl font-bold tracking-wide">1ST EDMONDS AFH LLC</h1>
-            <p className="text-lg text-teal-100 italic mt-2">Providing Care with Passion</p>
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl font-bold tracking-wide text-teal-800">1ST EDMONDS AFH LLC</h1>
+            <p className="text-lg text-teal-600 italic mt-1">Providing Care with Passion</p>
           </div>
         </header>
       </div>
