@@ -47,11 +47,15 @@ const LateSubmission = ({ patient, type }) => {
             const response = await createData(URL, payload);
                 
             if (response?.error) {
-            setErrors(errorHandler(response?.error));
-            setTimeout(() => setErrors([]), 5000);
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
             } else {
-            setMessage("Data created successfully");
-            setTimeout(() => setMessage(""), 5000);
+                setSelectedCareGiver("");
+                setStartTime("");
+                setDuration("");
+                setReason("");
+                setMessage("Data created successfully");
+                setTimeout(() => setMessage(""), 5000);
             }
             
         } catch (error) {
