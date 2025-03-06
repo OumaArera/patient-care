@@ -1,7 +1,7 @@
 import React from 'react';
 import secondPDF from "./assets/BOTHELL_SERENITY_CORP _BROCHURE.pdf";
 import logo from './assets/BSC-LOGO.png';
-import bothelCEO from './bothel_ceo.jpg';
+import bothelCEO from './assets/bothel_ceo.png';
 
 const BothellSerenityBrochure = () => {
   return (

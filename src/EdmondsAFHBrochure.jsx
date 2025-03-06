@@ -1,5 +1,4 @@
 import React from 'react';
-import bohel from './assets/bothel_ceo.jpg';
 import logo from "./assets/1ST EDMONDS_LOGO.png";
 import edmondsCEO from './assets/edmonds_ceo.png';
 import firstPDF from "./assets/1ST_EDMONDS AFH LLC _BROCHURE.pdf";
