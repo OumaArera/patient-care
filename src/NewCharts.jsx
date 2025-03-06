@@ -46,7 +46,7 @@ const NewCharts = ({ charts, chartsData }) => {
               setLateSubmission(data.responseObject || []);
           })
           .catch(() => {}); 
-    }, [selectedPatientId]);
+    }, [charts.patientId]);
 
 
   const groupBehaviorsByCategory = (behaviors) => {
