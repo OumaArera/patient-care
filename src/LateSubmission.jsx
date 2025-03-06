@@ -78,12 +78,23 @@ const LateSubmission = ({ patient, type }) => {
                         onChange={(e) => setSelectedCareGiver(e.target.value)}
                     >
                         <option value="">Choose a caregiver</option>
-                        {careGivers.map((careGiver) => (
-                            <option key={careGiver.userId} value={careGiver.userId.toString()}>
-                                {careGiver.fullName} - {careGiver.branchName}
-                            </option>
+                        {Object.entries(
+                            careGivers.reduce((acc, careGiver) => {
+                                acc[careGiver.branchName] = acc[careGiver.branchName] || [];
+                                acc[careGiver.branchName].push(careGiver);
+                                return acc;
+                            }, {})
+                        ).map(([branchName, caregivers]) => (
+                            <optgroup key={branchName} label={branchName}>
+                                {caregivers.map((careGiver) => (
+                                    <option key={careGiver.userId} value={careGiver.userId.toString()}>
+                                        {careGiver.fullName}
+                                    </option>
+                                ))}
+                            </optgroup>
                         ))}
                     </select>
+
                     
                     {/* Start Time Input */}
                     <label className="block mt-4 mb-2 text-blue-300 font-medium">Start Time</label>
