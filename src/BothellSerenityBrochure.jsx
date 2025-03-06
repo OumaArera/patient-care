@@ -2,6 +2,7 @@ import React from 'react';
 import bohel from './assets/bothel_ceo.jpg';
 import secondPDF from "./assets/BOTHELL_SERENITY_CORP _BROCHURE.pdf";
 import logo from './assets/BSC-LOGO.png';
+import bothelCEO from './bothel_ceo.jpg';
 
 const BothellSerenityBrochure = () => {
   return (
@@ -72,7 +73,14 @@ const BothellSerenityBrochure = () => {
         {/* CEO Message */}
         <section className="relative mb-12 bg-cover bg-center rounded-lg shadow-md overflow-hidden">
           <div className="relative">
-            <img src={bohel} alt="CEO" className="w-full h-64 md:h-80 object-cover" />
+            <div className="md:w-2/5 relative">
+              <img 
+                src={bothelCEO} 
+                alt="Abdoullie Lowe, CEO" 
+                className="w-full h-full object-cover object-center"
+                style={{ minHeight: "300px" }}
+              />
+            </div>
             <div className="absolute inset-0 bg-teal-900 bg-opacity-75"></div>
             <div className="absolute inset-0 flex flex-col justify-center items-center p-6 text-center">
               <h2 className="text-3xl font-bold text-white mb-4">Message from the CEO</h2>
