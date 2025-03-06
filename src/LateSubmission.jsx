@@ -37,20 +37,20 @@ const LateSubmission = ({ patient, type }) => {
     };
 
     return (
-        <div className="max-w-md mx-auto p-6 shadow-lg rounded-2xl bg-white border border-gray-300">
-            <h2 className="text-xl font-semibold text-center mb-4">Late Submission</h2>
+        <div className="max-w-md mx-auto p-6 shadow-lg rounded-2xl bg-white border border-gray-200">
+            <h2 className="text-2xl font-semibold text-center text-black mb-6">Late Submission</h2>
             
             {loading ? (
                 <div className="flex flex-col items-center justify-center">
-                    <Loader className="animate-spin text-gray-500" />
+                    <Loader className="animate-spin text-gray-700" />
                     <p className="mt-2 text-gray-600">Loading caregivers...</p>
                 </div>
             ) : (
                 <>
                     {/* Caregiver Selection */}
-                    <label className="block mb-2 text-gray-700">Select Caregiver</label>
+                    <label className="block mb-2 text-black font-medium">Select Caregiver</label>
                     <select 
-                        className="w-full p-2 border rounded-md" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         onChange={(e) => setSelectedCareGiver(e.target.value)}
                     >
                         <option value="">Choose a caregiver</option>
@@ -62,18 +62,18 @@ const LateSubmission = ({ patient, type }) => {
                     </select>
                     
                     {/* Start Time Input */}
-                    <label className="block mt-4 mb-2 text-gray-700">Start Time</label>
+                    <label className="block mt-4 mb-2 text-black font-medium">Start Time</label>
                     <input
                         type="datetime-local"
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
                     />
                     
                     {/* Duration Selection */}
-                    <label className="block mt-4 mb-2 text-gray-700">Duration</label>
+                    <label className="block mt-4 mb-2 text-black font-medium">Duration</label>
                     <select 
-                        className="w-full p-2 border rounded-md" 
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         onChange={(e) => setDuration(e.target.value)}
                     >
                         <option value="">Select duration</option>
@@ -86,7 +86,7 @@ const LateSubmission = ({ patient, type }) => {
                     
                     {/* Submit Button */}
                     <button 
-                        className="w-full mt-6 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        className="w-full mt-6 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
                         onClick={handleSubmit}
                     >
                         Submit
