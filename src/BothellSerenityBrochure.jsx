@@ -80,13 +80,15 @@ const BothellSerenityBrochure = () => {
                 style={{ minHeight: "300px" }}
               />
             </div>
-            <div className="absolute inset-0 bg-teal-900 bg-opacity-75"></div>
-            <div className="absolute inset-0 flex flex-col justify-center items-center p-6 text-center">
-              <h2 className="text-3xl font-bold text-white mb-4">Message from the CEO</h2>
-              <p className="text-xl italic text-white">
-                "We love what we do. We love Healthcare, and helping our clients is our hallmark. We aim to make that passion evident in every aspect of our work."
+            {/* Message Side */}
+            <div className="md:w-3/5 bg-teal-700 p-8 flex flex-col justify-center">
+              <h2 className="text-3xl font-bold text-white mb-6 border-b border-teal-500 pb-3">Message from the CEO</h2>
+              <p className="text-xl italic text-white mb-6 leading-relaxed">
+              "We love what we do. We love Healthcare, and helping our clients is our hallmark. We aim to make that passion evident in every aspect of our work."
               </p>
-              <div className="mt-4 text-teal-100 font-semibold text-lg">Haddy Saho, CEO & Provider</div>
+              <div className="text-teal-100 font-semibold text-lg self-end">
+                — Haddy Saho, CEO & Provider
+              </div>
             </div>
           </div>
         </section>
