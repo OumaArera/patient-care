@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { errorHandler } from '../services/errorHandler';
@@ -141,6 +142,20 @@ const Login = () => {
             <span className="text-gray-400">⚫</span>
             <span className="text-gray-400">⚪</span>
           </div>
+        </div>
+        <div className="flex justify-center gap-6 mt-6">
+          <NavLink 
+            to="/bothel" 
+            className="text-blue-400 hover:text-blue-600 transition duration-200"
+          >
+            Bothel Brochure
+          </NavLink>
+          <NavLink 
+            to="/edmonds" 
+            className="text-blue-400 hover:text-blue-600 transition duration-200"
+          >
+            Edmonds Brochure
+          </NavLink>
         </div>
       </div>
     </div>

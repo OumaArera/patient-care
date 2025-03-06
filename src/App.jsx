@@ -8,6 +8,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import CreateUser from "./CreateUser";
 import ManageUser from "./ManageUser";
 import Users from "./Users";
+import BothellSerenityBrochure from "./BothellSerenityBrochure";
+import EdmondsAFHBrochure from "./EdmondsAFHBrochure";
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -31,6 +33,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/bothel" element={<BothellSerenityBrochure />} />
+        <Route path="/edmonds" element={<EdmondsAFHBrochure />} />
 
         {/* Redirect to home (Login) if user reloads without a role */}
         <Route path="*" element={userRole ? <Navigate to={`/${userRole}`} /> : <Navigate to="/" />} />
