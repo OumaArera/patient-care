@@ -70,12 +70,12 @@ const BothellSerenityBrochure = () => {
         </section>
 
         {/* CEO Message */}
-        <section className="relative mb-12 bg-cover bg-center rounded-lg shadow-md overflow-hidden">
-          <div className="relative">
+        <section className="mb-12 bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="flex flex-col md:flex-row">
             <div className="md:w-2/5 relative">
               <img 
                 src={bothelCEO} 
-                alt="Abdoullie Lowe, CEO" 
+                alt="Haddy Saho, CEO" 
                 className="w-full h-full object-cover object-center"
                 style={{ minHeight: "300px" }}
               />
