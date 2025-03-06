@@ -143,7 +143,8 @@ const Login = () => {
             <span className="text-gray-400">⚪</span>
           </div>
         </div>
-        <div className="flex justify-center gap-6 mt-6">
+      </div>
+      <div className="flex justify-center gap-6 mt-6">
           <NavLink 
             to="/bothel" 
             className="text-blue-400 hover:text-blue-600 transition duration-200"
@@ -157,7 +158,6 @@ const Login = () => {
             Edmonds Brochure
           </NavLink>
         </div>
-      </div>
     </div>
   );
 };
