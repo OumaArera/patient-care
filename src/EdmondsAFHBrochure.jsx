@@ -1,18 +1,39 @@
 import React from 'react';
 import bohel from './assets/bothel_ceo.jpg';
+import logo from "./assets/1ST EDMONDS_LOGO.png";
+import firstPDF from "./assets/1ST_EDMONDS AFH LLC _BROCHURE.pdf";
 
 const EdmondsAFHBrochure = () => {
   return (
     <div className="max-w-6xl mx-auto bg-white text-gray-800">
-      {/* Header Section */}
+      {/* Header Section with Logo */}
       <div className="bg-teal-700 text-white py-10 px-8">
-        <header className="mb-6 text-center">
-          <h1 className="text-4xl font-bold tracking-wide">1ST EDMONDS AFH LLC</h1>
-          <p className="text-lg text-teal-100 italic mt-2">Providing Care with Passion</p>
+        <header className="flex flex-col md:flex-row items-center justify-center md:justify-between mb-6">
+          <div className="mb-4 md:mb-0">
+            <img src={logo} alt="1ST Edmonds Logo" className="h-24 object-contain" />
+          </div>
+          <div className="text-center md:text-right">
+            <h1 className="text-4xl font-bold tracking-wide">1ST EDMONDS AFH LLC</h1>
+            <p className="text-lg text-teal-100 italic mt-2">Providing Care with Passion</p>
+          </div>
         </header>
       </div>
 
       <div className="p-8">
+        {/* PDF Download Button */}
+        <div className="mb-8 flex justify-center">
+          <a 
+            href={firstPDF} 
+            download
+            className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-6 rounded-lg flex items-center transition duration-300 shadow-md"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+            </svg>
+            Download Our Brochure
+          </a>
+        </div>
+
         {/* Company Profile */}
         <section className="mb-12 bg-white p-8 rounded-lg shadow-md border-l-4 border-teal-700">
           <h2 className="text-3xl font-semibold text-teal-800 mb-4 pb-2 border-b border-teal-200 text-center">Company Profile</h2>
@@ -130,7 +151,10 @@ const EdmondsAFHBrochure = () => {
 
       {/* Footer */}
       <footer className="bg-teal-700 text-white py-6 px-8 text-center">
-        <p>© 2025 1st Edmonds AFH LLC. All rights reserved.</p>
+        <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
+          <img src={logo} alt="1ST Edmonds Logo" className="h-16 object-contain mb-4 md:mb-0" />
+          <p>© 2025 1st Edmonds AFH LLC. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
