@@ -33,7 +33,7 @@ const NewCharts = ({ charts, chartsData }) => {
       const careGiver = localStorage.getItem("userId");a
       const type = "charts";
   
-      if (!selectedPatientId || !careGiver) return;
+      if (!charts.patientId || !careGiver) return;
   
       const queryParams = new URLSearchParams({
         patient: charts.patientId,
