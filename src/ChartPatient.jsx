@@ -6,7 +6,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
 import NewCharts from "./NewCharts";
 
-
 const ChartPatient = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,7 +16,6 @@ const ChartPatient = () => {
   const [showNewCharts, setShowNewCharts] = useState(false);
   const overlayRef = useRef(null);
   const [patients, setPatients] = useState([]);
-  
   
 
   const fetchAllChartData = async (patientId) => {
@@ -82,6 +80,7 @@ const ChartPatient = () => {
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader className="animate-spin" size={32} />
+          <p>Loading charts...</p>
         </div>
       ) : (
         <>

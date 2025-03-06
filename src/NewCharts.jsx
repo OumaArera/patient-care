@@ -3,8 +3,10 @@ import { postCharts } from "../services/postCharts";
 import { Loader } from "lucide-react";
 import dayjs from "dayjs";
 import { errorHandler } from "../services/errorHandler";
+import { getData } from "../services/updatedata";
 import "react-datepicker/dist/react-datepicker.css";
 import BehaviorDescriptions from "./BehaviorDescription";
+const URL = "https://patient-care-server.onrender.com/api/v1/late-submissions"
 
 const NewCharts = ({ charts, chartsData }) => {
   const chart = chartsData[0];
@@ -25,6 +27,28 @@ const NewCharts = ({ charts, chartsData }) => {
     {"status": true, "response": "", "descriptionType": "Care_Giver_Intervention"},
     {"status": true, "response": "", "descriptionType": "Reported_Provider_And_Careteam"}
   ]);
+  const [lateSubmission, setLateSubmission] = useState([]);
+    
+    useEffect(() => {
+      const careGiver = localStorage.getItem("userId");a
+      const type = "charts";
+  
+      if (!selectedPatientId || !careGiver) return;
+  
+      const queryParams = new URLSearchParams({
+        patient: selectedPatientId,
+        careGiver,
+        type,
+      }).toString();
+  
+      getData(`${URL}?${queryParams}`)
+          .then((data) => {
+              setLateSubmission(data.responseObject || []);
+          })
+          .catch(() => {}); 
+    }, [selectedPatientId]);
+
+
   const groupBehaviorsByCategory = (behaviors) => {
     return behaviors.reduce((acc, behavior) => {
       if (!acc[behavior.category]) {
@@ -59,12 +83,24 @@ const NewCharts = ({ charts, chartsData }) => {
     );
   };
   
-
   const isWithinAllowedTime = () => {
     const now = new Date();
     const hours = now.getHours();
-    return (hours === 19 || hours === 20 || (hours === 21 && minutes <= 59));
+    const minutes = now.getMinutes();
+  
+    // Default allowed submission window: 7:00 PM - 9:59 PM
+    const withinDefaultTime = (hours === 19 || hours === 20 || (hours === 21 && minutes <= 59));
+  
+    // Check late submissions
+    const withinLateSubmission = lateSubmission.some((entry) => {
+      const startTime = new Date(entry.start);
+      const endTime = new Date(startTime.getTime() + entry.duration * 60000); // Convert minutes to milliseconds
+      return now >= startTime && now <= endTime;
+    });
+  
+    return withinDefaultTime || withinLateSubmission;
   };
+  
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
