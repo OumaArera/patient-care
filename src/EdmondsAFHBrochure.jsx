@@ -1,6 +1,7 @@
 import React from 'react';
 import bohel from './assets/bothel_ceo.jpg';
 import logo from "./assets/1ST EDMONDS_LOGO.png";
+import edmondsCEO from './assets/edmonds_ceo.png';
 import firstPDF from "./assets/1ST_EDMONDS AFH LLC _BROCHURE.pdf";
 
 const EdmondsAFHBrochure = () => {
@@ -69,20 +70,28 @@ const EdmondsAFHBrochure = () => {
         </section>
 
         {/* CEO Message */}
-        <section className="relative mb-12 bg-cover bg-center rounded-lg shadow-md overflow-hidden">
-          <div className="relative">
-            <img src={bohel} alt="CEO" className="w-full h-64 md:h-80 object-cover" />
-            <div className="absolute inset-0 bg-teal-900 bg-opacity-75"></div>
-            <div className="absolute inset-0 flex flex-col justify-center items-center p-6 text-center">
-              <h2 className="text-3xl font-bold text-white mb-4">Message from the CEO</h2>
-              <p className="text-xl italic text-white">
-                "Our clients feelings and needs
-                are important and we take into
-                consideration every step of the
-                way to make sure we understand
-                how best to serve them".
+        {/* CEO Message */}
+        <section className="mb-12 bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="flex flex-col md:flex-row">
+            {/* CEO Image Side */}
+            <div className="md:w-2/5 relative">
+              <img 
+                src={edmondsCEO} 
+                alt="Abdoullie Lowe, CEO" 
+                className="w-full h-full object-cover object-center"
+                style={{ minHeight: "300px" }}
+              />
+            </div>
+            
+            {/* Message Side */}
+            <div className="md:w-3/5 bg-teal-700 p-8 flex flex-col justify-center">
+              <h2 className="text-3xl font-bold text-white mb-6 border-b border-teal-500 pb-3">Message from the CEO</h2>
+              <p className="text-xl italic text-white mb-6 leading-relaxed">
+                "Our clients feelings and needs are important and we take into consideration every step of the way to make sure we understand how best to serve them."
               </p>
-              <div className="mt-4 text-teal-100 font-semibold text-lg">Abdoullie Lowe, CEO & Provider</div>
+              <div className="text-teal-100 font-semibold text-lg self-end">
+                — Abdoullie Lowe, CEO & Provider
+              </div>
             </div>
           </div>
         </section>
