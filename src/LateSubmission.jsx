@@ -24,12 +24,14 @@ const LateSubmission = ({ patient, type }) => {
             alert("Please fill all fields before submitting.");
             return;
         }
+        const localDate = new Date(startTime);
+        const utcDate = localDate.toISOString();
         
         const payload = {
             patient: patient.patientId,
             type,
             careGiver: selectedCareGiver,
-            start: startTime,
+            start: utcDate,
             duration: parseInt(duration),
         };
 
