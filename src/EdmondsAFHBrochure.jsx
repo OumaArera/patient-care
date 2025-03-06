@@ -8,7 +8,7 @@ const EdmondsAFHBrochure = () => {
       <div className="bg-teal-700 text-white py-10 px-8">
         <header className="mb-6 text-center">
           <h1 className="text-4xl font-bold tracking-wide">1ST EDMONDS AFH LLC</h1>
-          <p className="text-lg text-teal-100 mt-2">Providing Care with Passion</p>
+          <p className="text-lg text-teal-100 italic mt-2">Providing Care with Passion</p>
         </header>
       </div>
 
