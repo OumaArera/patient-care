@@ -137,18 +137,31 @@ const Login = () => {
   </div>
 
   {/* Brochure Links at the Bottom */}
-  <div className="absolute bottom-6 flex gap-8">
+  <div className="absolute bottom-6 flex flex-col items-center gap-2">
+    <div className="flex gap-8">
+      <NavLink 
+        to="/bothel" 
+        className="text-blue-400 hover:text-blue-600 transition duration-200 text-lg font-medium"
+      >
+        Bothel Brochure
+      </NavLink>
+      <NavLink 
+        to="/edmonds" 
+        className="text-blue-400 hover:text-blue-600 transition duration-200 text-lg font-medium"
+      >
+        Edmonds Brochure
+      </NavLink>
+    </div>
+
+    {/* Copyright & Developer Link */}
+    <p className="text-gray-400 text-sm mt-2">
+      © 2025 1ST EDMONDS AFH LLC & BOTHELL SERENITY CORP
+    </p>
     <NavLink 
-      to="/bothel" 
-      className="text-blue-400 hover:text-blue-600 transition duration-200 text-lg font-medium"
+      to="/developer" 
+      className="text-gray-500 hover:text-gray-700 text-sm transition duration-200"
     >
-      Bothel Brochure
-    </NavLink>
-    <NavLink 
-      to="/edmonds" 
-      className="text-blue-400 hover:text-blue-600 transition duration-200 text-lg font-medium"
-    >
-      Edmonds Brochure
+      Developed & Maintained by John Ouma
     </NavLink>
   </div>
 </div>
