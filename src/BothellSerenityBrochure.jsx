@@ -13,9 +13,31 @@ const BothellSerenityBrochure = () => {
       <section className="mb-12 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-3xl font-semibold text-green-800 mb-4">Company Profile</h2>
         <p className="text-gray-700">
-          Bothell Serenity Corp is a premier provider of home health care services dedicated to enhancing the quality of life for clients
-          while preserving their independence and dignity. Our highly trained and skilled staff ensure that each individual receives compassionate,
-          personalized care in the comfort of their home.
+          Bothell Serenity Corp stands as a premier provider of home health care
+          services dedicated to enhancing the quality of life for clients while
+          preserving their independence and dignity. This is founded on the
+          fundamental belief that every individual deserves compassionate,
+          personalized care in the comfort of their own home, our organization has
+          established itself as a beacon of excellence in the healthcare industry.
+        </p>
+        <p>
+          At the heart of our operations is our unwavering commitment to providing
+          exceptional care through a highly trained, skilled staff specifically selected
+          to meet each client's unique needs. We recognize that effective home
+          health care extends beyond medical assistance-it encompasses
+          emotional support, respect for personal autonomy, and the cultivation of
+          an environment where clients can thrive.
+        </p>
+        <p>
+          Our vision guides us toward becoming the most trusted name in home
+          health care, delivering services with genuine passion while ensuring each
+          client maintains their independence. This aspiration shapes every
+          decision we make and every interaction we have.
+        </p>
+        <p>
+          Our balanced approach of professional expertise and genuine human
+          connection continues to transform the home health care experience for
+          our clients.
         </p>
       </section>
 
@@ -26,6 +48,26 @@ const BothellSerenityBrochure = () => {
           "We love what we do. We love Healthcare, and helping our clients is our hallmark. We aim to make that passion evident in every aspect of our work."
         </p>
         <div className="mt-4 font-bold">Haddy Saho, CEO & Provider</div>
+      </section>
+      
+      <section className="mb-12 text-center">
+        <h2 className="text-3xl font-semibold text-teal-800 mb-6">Our Mission & Vision</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-teal-50 p-6 rounded-lg">
+            <h3 className="text-xl font-medium text-teal-700 mb-2">Our Mission</h3>
+            <p className="text-gray-700">
+              To provide exceptional care with compassion, respect, and dignity by providing appropriate training and skills
+              for our staff that fit our client's needs.
+            </p>
+          </div>
+          <div className="bg-teal-50 p-6 rounded-lg">
+            <h3 className="text-xl font-medium text-teal-700 mb-2">Our Vision</h3>
+            <p className="text-gray-700">
+              To become the most trusted home health care service provider by providing care with passion and ensuring
+              independence for every client.
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* Core Values */}
