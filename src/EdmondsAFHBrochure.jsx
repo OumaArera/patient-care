@@ -1,208 +1,136 @@
 import React from 'react';
+import bohel from './assets/bothel_ceo.jpg';
 
 const EdmondsAFHBrochure = () => {
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-blue-50">
+    <div className="max-w-6xl mx-auto bg-white text-gray-800">
       {/* Header Section */}
-      <header className="mb-8">
-        <div className="bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center mb-4 md:mb-0">
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
-              <span className="text-2xl font-bold text-white">1E</span>
-            </div>
-            <div className="ml-4">
-              <h1 className="text-2xl md:text-3xl font-bold text-blue-800">1st Edmonds AFH LLC</h1>
-              <p className="text-blue-600 italic">Adult Family Home Care</p>
-            </div>
-          </div>
-          <div className="bg-blue-100 px-4 py-2 rounded-md text-blue-800 text-center">
-            <p className="font-semibold">Licensed by Washington State</p>
-          </div>
-        </div>
-      </header>
+      <div className="bg-teal-700 text-white py-10 px-8">
+        <header className="mb-6 text-center">
+          <h1 className="text-4xl font-bold tracking-wide">1ST EDMONDS AFH LLC</h1>
+          <p className="text-lg text-teal-100 mt-2">Providing Care with Passion</p>
+        </header>
+      </div>
 
-      {/* Hero Section */}
-      <section className="mb-8">
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="h-64 bg-blue-200 flex items-center justify-center">
-            <p className="text-xl md:text-2xl text-center text-blue-800 px-6 font-semibold">
-              Compassionate Care in a Home-Like Environment
-            </p>
-          </div>
-          <div className="p-6">
-            <p className="text-gray-700 leading-relaxed">
-              At 1st Edmonds AFH LLC, we provide personalized care services for seniors in a comfortable, 
-              family-style setting. Our experienced caregivers are dedicated to enhancing the quality of life 
-              for each resident while maintaining their dignity and independence.
-            </p>
-          </div>
-        </div>
-      </section>
+      <div className="p-8">
+        {/* Company Profile */}
+        <section className="mb-12 bg-white p-8 rounded-lg shadow-md border-l-4 border-teal-700">
+          <h2 className="text-3xl font-semibold text-teal-800 mb-4 pb-2 border-b border-teal-200">Company Profile</h2>
+          <p className="text-gray-700 leading-relaxed">
+            1st Edmonds AFH is a dedicated home healthcare service provider
+            committed to delivering personalized care services that promote client
+            independence and dignity. We have established ourselves as a
+            compassionate care provider that prioritizes the unique needs of each
+            individual client.
+          </p>
+          <br />
+          <p className="text-gray-700 leading-relaxed">
+            At 1st Edmonds AFH, we understand that every client has different needs,
+            abilities, and preferences. Our care-giving philosophy centers around
+            tailoring our services to fit these individual requirements, rather than
+            offering one-size-fits-all solutions. This client-centered approach is
+            reflected in our commitment to providing appropriate training and skills
+            development for our staff members.
+          </p>
+          <br />
+          <p className="text-gray-700 leading-relaxed">
+            Our vision guides us toward becoming the most trusted name in home
+            health care, delivering services with genuine passion while ensuring each
+            client maintains their independence. This aspiration shapes every
+            decision we make and every interaction we have.
+          </p>
+          <br />
+          <p className="text-gray-700 leading-relaxed">
+            Our balanced approach of professional expertise and genuine human
+            connection continues to transform the home health care experience for
+            our clients.
+          </p>
+        </section>
 
-      {/* Our Services Section */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-blue-800 mb-4">Our Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-              <span className="text-blue-600 text-xl">💊</span>
+        {/* CEO Message */}
+        <section className="relative mb-12 bg-cover bg-center rounded-lg shadow-md overflow-hidden">
+          <div className="relative">
+            <img src={bohel} alt="CEO" className="w-full h-64 md:h-80 object-cover" />
+            <div className="absolute inset-0 bg-teal-900 bg-opacity-75"></div>
+            <div className="absolute inset-0 flex flex-col justify-center items-center p-6 text-center">
+              <h2 className="text-3xl font-bold text-white mb-4">Message from the CEO</h2>
+              <p className="text-xl italic text-white">
+                "Our clients feelings and needs
+                are important and we take into
+                consideration every step of the
+                way to make sure we understand
+                how best to serve them".
+              </p>
+              <div className="mt-4 text-teal-100 font-semibold text-lg">Abdoullie Lowe, CEO & Provider</div>
             </div>
-            <h3 className="text-xl font-semibold text-blue-700 mb-2">Medication Management</h3>
-            <p className="text-gray-600">
-              Our trained staff ensures that all medications are administered correctly and on schedule, 
-              with proper documentation and monitoring of effects.
-            </p>
           </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-              <span className="text-blue-600 text-xl">🍽️</span>
-            </div>
-            <h3 className="text-xl font-semibold text-blue-700 mb-2">Nutritious Meals</h3>
-            <p className="text-gray-600">
-              We provide home-cooked, balanced meals that accommodate dietary restrictions and preferences 
-              while promoting good nutrition and health.
-            </p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-              <span className="text-blue-600 text-xl">🚿</span>
-            </div>
-            <h3 className="text-xl font-semibold text-blue-700 mb-2">Personal Care Assistance</h3>
-            <p className="text-gray-600">
-              We assist with activities of daily living including bathing, dressing, grooming, and mobility 
-              support, tailored to each resident's abilities and needs.
-            </p>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-              <span className="text-blue-600 text-xl">🎯</span>
-            </div>
-            <h3 className="text-xl font-semibold text-blue-700 mb-2">Activities & Engagement</h3>
-            <p className="text-gray-600">
-              We offer social activities, cognitive stimulation, and recreational opportunities designed 
-              to enhance mental well-being and prevent isolation.
-            </p>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Our Facility Section */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-blue-800 mb-4">Our Facility</h2>
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            <div className="p-6">
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <span className="text-blue-600 mr-2">✓</span>
-                  <span>Wheelchair accessible throughout</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-blue-600 mr-2">✓</span>
-                  <span>Private and semi-private rooms</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-blue-600 mr-2">✓</span>
-                  <span>Emergency response system</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-blue-600 mr-2">✓</span>
-                  <span>Homelike common areas</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-blue-600 mr-2">✓</span>
-                  <span>Secured outdoor garden space</span>
-                </li>
-              </ul>
+        {/* Our Mission & Vision */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-semibold text-teal-800 mb-6 text-center">Our Mission & Vision</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-teal-700">
+              <h3 className="text-2xl font-medium text-teal-700 mb-3">Our Mission</h3>
+              <p className="text-gray-700 leading-relaxed">
+                To provide exceptional care with compassion, respect,
+                and dignity by providing appropriate training and skills
+                for our staff that fit our client's needs.
+              </p>
             </div>
-            <div className="bg-blue-200 h-48 md:h-auto flex items-center justify-center p-6">
-              <p className="text-blue-800 text-center font-medium">
-                Our home is designed with safety, comfort, and accessibility in mind.
+            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-teal-700">
+              <h3 className="text-2xl font-medium text-teal-700 mb-3">Our Vision</h3>
+              <p className="text-gray-700 leading-relaxed">
+                To become the most trusted home health care
+                service provider by providing care with passion and
+                ensuring independence for every client.
               </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Testimonial Section */}
-      <section className="mb-8">
-        <div className="bg-blue-600 text-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold mb-4">What Families Say About Us</h2>
-          <div className="bg-blue-700 rounded-lg p-5 mb-4">
-            <p className="italic mb-3">
-              "The staff at 1st Edmonds AFH has been exceptional in caring for my mother. 
-              They treat her with respect and genuine affection, and the home-like setting 
-              has made her transition much easier than we expected."
-            </p>
-            <p className="font-semibold text-right">— Mary T., Daughter of Resident</p>
-          </div>
-          <div className="bg-blue-700 rounded-lg p-5">
-            <p className="italic mb-3">
-              "We visited many facilities before choosing 1st Edmonds AFH. The personalized 
-              attention, cleanliness, and warm atmosphere stood out immediately. Our father 
-              has thrived under their care."
-            </p>
-            <p className="font-semibold text-right">— James W., Son of Resident</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-bold text-blue-800 mb-4">Contact Us</h2>
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            <div className="p-6">
-              <p className="mb-4">We welcome your inquiries and would be happy to schedule a tour of our facility.</p>
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <span className="text-blue-600 mr-3">📍</span>
-                  <p>123 Care Avenue, Edmonds, WA 98020</p>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-blue-600 mr-3">📞</span>
-                  <p>(425) 555-1234</p>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-blue-600 mr-3">✉️</span>
-                  <p>care@1stedmondsafh.com</p>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-blue-600 mr-3">⏰</span>
-                  <p>Tours available daily: 10am - 4pm</p>
-                </div>
+        {/* Core Values */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-semibold text-teal-800 mb-6">Our Core Values</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { title: "Integrity", desc: "Doing the right thing, in the right way, at all times. Being the model for compliance, discipline, accountability, and quality." },
+              { title: "Excellence", desc: "Creating an environment of teamwork and participation through continuous performance improvement and open communication." },
+              { title: "Respect", desc: "We respect the aspirations and commitments of our clients and seek to comprehend and advance their priorities and abilities." },
+              { title: "Compassion", desc: "The heart of everything we do for our clients, combining professionalism with genuine care." }
+            ].map((value, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-600">
+                <h3 className="text-xl font-medium text-teal-700">{value.title}</h3>
+                <p className="text-gray-600 mt-2">{value.desc}</p>
               </div>
-            </div>
-            <div className="p-6 bg-blue-50">
-              <form className="space-y-4">
-                <div>
-                  <label className="block text-blue-800 mb-1">Name</label>
-                  <input type="text" className="w-full p-2 border border-blue-200 rounded" />
-                </div>
-                <div>
-                  <label className="block text-blue-800 mb-1">Phone</label>
-                  <input type="tel" className="w-full p-2 border border-blue-200 rounded" />
-                </div>
-                <div>
-                  <label className="block text-blue-800 mb-1">Message</label>
-                  <textarea rows="3" className="w-full p-2 border border-blue-200 rounded"></textarea>
-                </div>
-                <button className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700">
-                  Request Information
-                </button>
-              </form>
-            </div>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Branches */}
+        <section className="mb-12 bg-gray-50 p-8 rounded-lg shadow-md">
+          <h2 className="text-3xl font-semibold text-teal-800 mb-6">Our Branches</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[
+              { name: "1st Edmonds AFH", address: "22416 80th Ave, Edmonds, 98026", phone: "425-521-1070", fax: "425-491-7499", email: "1stedmondafh@gmail.com" },
+              { name: "1st Edmond - Filbert Rd AFH", address: "20124 Filbert Road House", phone: "425-286-6679", fax: "425-892-7391", email: "williamserenity4@gmail.com" },
+              { name: "1st Edmond - Best Care Harbour Pointe- Mukilteo", address: "10820 53rd Ave W, Mukilteo WA, 98275", phone: "425-531-4916", fax: "425-491-7499", email: "bestcareharbourpointeafh@gmail.com" },
+            ].map((branch, index) => (
+              <div key={index} className="bg-white p-6 rounded-lg shadow-md border-b-2 border-teal-500">
+                <h3 className="text-xl font-medium text-teal-700 mb-2">{branch.name}</h3>
+                <p className="text-gray-600 mb-1">{branch.address}</p>
+                <p className="text-gray-600 mb-1">📞 {branch.phone}</p>
+                <p className="text-gray-600 mb-1">📠 {branch.fax}</p>
+                <p className="text-gray-600">✉️ {branch.email}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* Footer */}
-      <footer className="text-center text-blue-800 border-t border-blue-200 pt-6">
+      <footer className="bg-teal-700 text-white py-6 px-8 text-center">
         <p>© 2025 1st Edmonds AFH LLC. All rights reserved.</p>
-        <p className="mt-2 text-sm">License #AFH-12345 | Washington State Department of Social and Health Services</p>
       </footer>
     </div>
   );
