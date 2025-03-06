@@ -14,6 +14,7 @@ const LateSubmission = ({ patient, type }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
+    const [reason, setReason] = useState("");
     
     useEffect(() => {
         setLoading(true);
@@ -26,7 +27,7 @@ const LateSubmission = ({ patient, type }) => {
     }, []);
 
     const handleSubmit = async () => {
-        if (!selectedCareGiver || !startTime || !duration) {
+        if (!selectedCareGiver || !startTime || !duration || reason) {
             alert("Please fill all fields before submitting.");
             return;
         }
@@ -40,6 +41,7 @@ const LateSubmission = ({ patient, type }) => {
             careGiver: selectedCareGiver,
             start: utcDate,
             duration: parseFloat(duration),
+            reasonForLateSubmission: reason
         };
         try {
             const response = await createData(URL, payload);
@@ -118,6 +120,14 @@ const LateSubmission = ({ patient, type }) => {
                         <option value="120">2 hours</option>
                         <option value="180">3 hours</option>
                     </select>
+                    <label className="block mt-4 mb-2 text-blue-300 font-medium">Reason for Late Submission</label>
+                    <textarea
+                        className="w-full p-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        rows="3"
+                        placeholder="Enter reason here..."
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
+                    ></textarea>
                     {errors.length > 0 && (
                         <div className="mb-4 p-3 rounded">
                             {errors.map((error, index) => (
