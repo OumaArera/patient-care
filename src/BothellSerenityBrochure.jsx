@@ -1,5 +1,4 @@
 import React from 'react';
-import bohel from './assets/bothel_ceo.jpg';
 import secondPDF from "./assets/BOTHELL_SERENITY_CORP _BROCHURE.pdf";
 import logo from './assets/BSC-LOGO.png';
 import bothelCEO from './bothel_ceo.jpg';
