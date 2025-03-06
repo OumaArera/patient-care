@@ -36,7 +36,7 @@ const NewCharts = ({ charts, chartsData }) => {
       if (!selectedPatientId || !careGiver) return;
   
       const queryParams = new URLSearchParams({
-        patient: selectedPatientId,
+        patient: charts.patientId,
         careGiver,
         type,
       }).toString();
