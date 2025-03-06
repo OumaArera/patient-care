@@ -17,6 +17,9 @@ const PatientManager = () => {
     const [edting, setEditing] = useState(false);
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
+
+
+    
     const fetchData = async () => {
         setLoading(true);
         try {

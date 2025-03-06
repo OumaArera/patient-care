@@ -5,6 +5,7 @@ import ChartCard from "./ChartCard";
 import { Loader } from "lucide-react";
 import ResubmitChart from "./ResubmitChart";
 import UpdateCharts from "./UpdateCharts";
+import LateSubmission from "./LateSubmission";
 
 const Charts = () => {
   const [patients, setPatients] = useState([]);
@@ -17,6 +18,8 @@ const Charts = () => {
   const [show, setShow] = useState(false);
   const [showEdits, setShowEdits] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("");
+  const [allowLate, setAllowLate] = useState(false);
+  const type = "charts";
 
 
   useEffect(() => {
@@ -64,6 +67,10 @@ const Charts = () => {
 
   const editChart = () =>{
     setShowEdits(false);
+  }
+
+  const lateSubmission = () =>{
+    setAllowLate(false);
   }
   
 
@@ -147,15 +154,26 @@ const Charts = () => {
                           {chart ? chart.patientName : "Missing"}
                         </td>
                         <td className="p-2 border border-gray-700">
-                          {chart && (
+                          {chart? (
                             <button
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() => {
                                 setShowChartCard(true);
+                                setAllowLate(false);
                                 setSelectedChart(chart);
                               }}
                             >
                               View
+                            </button>
+                          ):(
+                            <button
+                              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                              onClick={() => {
+                                setAllowLate(true);
+                                setShowChartCard(false);
+                              }}
+                            >
+                              Approve Late
                             </button>
                           )}
                         </td>
@@ -194,7 +212,7 @@ const Charts = () => {
           )}
         </>
       )}
-      {showChartCard && selectedChart && (
+      {showChartCard && selectedChart && !allowLate && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
           onClick={closePastChartsModal}
@@ -246,6 +264,26 @@ const Charts = () => {
             <button
               className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
               onClick={editChart}
+            >
+              ✖
+            </button>
+          </div>
+        </div>
+      )}
+
+    {allowLate && !showChartCard && (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={lateSubmission}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <LateSubmission patient={selectedPatient} type={type} />
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={lateSubmission}
             >
               ✖
             </button>

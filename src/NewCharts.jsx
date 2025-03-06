@@ -11,6 +11,7 @@ const NewCharts = ({ charts, chartsData }) => {
 
   const [behaviors, setBehaviors] = useState(chart.behaviors);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [blink, setBlink] = useState(true);
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState(null);
   const [behaviorStatuses, setBehaviorStatuses] = useState(
@@ -91,6 +92,14 @@ const NewCharts = ({ charts, chartsData }) => {
     }
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBlink((prev) => !prev);
+    }, 1000); // Toggle every 2 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   return (
     <div className="p-6 bg-gray-900 text-white">
@@ -156,7 +165,7 @@ const NewCharts = ({ charts, chartsData }) => {
       {/* Submit Button */}
       <div className="mt-6 text-center">
       {!isWithinAllowedTime() && (
-        <p className="text-red-600 mb-2">
+        <p className={`mb-2 text-red-500 ${blink ? "opacity-100" : "opacity-0"}`}>
           Chart entry must be done between 7:00 PM and 9:59 PM.
         </p>
       )}

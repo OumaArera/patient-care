@@ -21,6 +21,7 @@ const ChartVitals = () => {
     const [loading, setLoading] = useState(false);
     const [isTimeAllowed, setIsTimeAllowed] = useState(true);
     const [patients, setPatients] = useState([]);
+    const [blink, setBlink] = useState(true);
 
     useEffect(() => {
         const checkTime = () => {
@@ -103,6 +104,14 @@ const ChartVitals = () => {
         setShowForm(false);
       };
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+          setBlink((prev) => !prev);
+        }, 1000); // Toggle every 2 seconds
+    
+        return () => clearInterval(interval);
+      }, []);
+
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold mb-4 text-center">Chart Vitals</h2>
@@ -175,7 +184,7 @@ const ChartVitals = () => {
                                 </div>
                             )}
                             {!isTimeAllowed && (
-                                <p className="text-red-600 mb-2">
+                                <p className={`mb-2 text-red-500 ${blink ? "opacity-100" : "opacity-0"}`}>
                                 Vitals entries should be done from 8.00 AM to 9.59 AM
                                 </p>
                             )}

@@ -79,12 +79,10 @@ const Update = ({ patientId }) => {
     }
   };
 
-  
-
   useEffect(() => {
     const interval = setInterval(() => {
       setBlink((prev) => !prev);
-    }, 2000); // Toggle every 2 seconds
+    }, 1000); // Toggle every 2 seconds
 
     return () => clearInterval(interval);
   }, []);
