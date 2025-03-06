@@ -25,24 +25,24 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
       setLoading(true)
       const updatedUrl = `${URL}/${payload.vitalId}`
       
-        try {
-            const response = await updateData(updatedUrl, payload);
-                
-            if (response?.error) {
-                setErrors(errorHandler(response?.error));
-                setTimeout(() => setErrors([]), 5000);
-            } else {
-                setMessage("Data updated successfully");
-                setTimeout(() => fetchVitals(vital.patientId), 5000);
-                setTimeout(() => setMessage(""), 5000);
-            }
+      try {
+        const response = await updateData(updatedUrl, payload);
             
-        } catch (error) {
-            setErrors(["An error occurred. Please try again."]);
-            setTimeout(() => setErrors([]), 5000);
-        } finally {
-            setLoading(false);
+        if (response?.error) {
+          setErrors(errorHandler(response?.error));
+          setTimeout(() => setErrors([]), 5000);
+        } else {
+          setMessage("Data updated successfully");
+          setTimeout(() => fetchVitals(vital.patientId), 5000);
+          setTimeout(() => setMessage(""), 5000);
         }
+          
+      } catch (error) {
+        setErrors(["An error occurred. Please try again."]);
+        setTimeout(() => setErrors([]), 5000);
+      } finally {
+        setLoading(false);
+      }
       
     }
   };
@@ -104,12 +104,12 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
           ></textarea>
         </div>
         {errors.length > 0 && (
-            <div className="mb-4 p-3 rounded">
-                {errors.map((error, index) => (
-                <p key={index} className="text-sm text-red-600">{error}</p>
-                ))}
-            </div>
-            )}
+          <div className="mb-4 p-3 rounded">
+            {errors.map((error, index) => (
+            <p key={index} className="text-sm text-red-600">{error}</p>
+            ))}
+          </div>
+          )}
         {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
         <button
           onClick={handleSubmit}

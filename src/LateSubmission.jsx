@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getCareGivers } from "../services/getCareGivers";
 import { Loader } from "lucide-react";
+import { createData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
+const URL = "https://patient-care-server.onrender.com/api/v1/late-submissions";
 
 const LateSubmission = ({ patient, type }) => {
     const [careGivers, setCareGivers] = useState([]);
@@ -8,6 +11,9 @@ const LateSubmission = ({ patient, type }) => {
     const [startTime, setStartTime] = useState("");
     const [duration, setDuration] = useState("");
     const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
     
     useEffect(() => {
         setLoading(true);
@@ -19,11 +25,12 @@ const LateSubmission = ({ patient, type }) => {
             .finally(() => setLoading(false));
     }, []);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!selectedCareGiver || !startTime || !duration) {
             alert("Please fill all fields before submitting.");
             return;
         }
+        setIsSubmitting(true);
         const localDate = new Date(startTime);
         const utcDate = localDate.toISOString();
         
@@ -32,10 +39,25 @@ const LateSubmission = ({ patient, type }) => {
             type,
             careGiver: selectedCareGiver,
             start: utcDate,
-            duration: parseInt(duration),
+            duration: parseFloat(duration),
         };
-
-        console.log("Submitting Late Submission Data:", payload);
+        try {
+            const response = await createData(URL, payload);
+                
+            if (response?.error) {
+            setErrors(errorHandler(response?.error));
+            setTimeout(() => setErrors([]), 5000);
+            } else {
+            setMessage("Data created successfully");
+            setTimeout(() => setMessage(""), 5000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -85,13 +107,21 @@ const LateSubmission = ({ patient, type }) => {
                         <option value="120">2 hours</option>
                         <option value="180">3 hours</option>
                     </select>
+                    {errors.length > 0 && (
+                        <div className="mb-4 p-3 rounded">
+                            {errors.map((error, index) => (
+                            <p key={index} className="text-sm text-red-600">{error}</p>
+                            ))}
+                        </div>
+                    )}
+                    {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
                     
                     {/* Submit Button */}
                     <button 
                         className="w-full mt-6 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
                         onClick={handleSubmit}
                     >
-                        Submit
+                        {isSubmitting ? "Submitting" : "Submit"}
                     </button>
                 </>
             )}
