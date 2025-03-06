@@ -2,90 +2,77 @@ import React from 'react';
 
 const BothellSerenityBrochure = () => {
   return (
-    <div className="max-w-6xl mx-auto p-8 bg-gradient-to-b from-blue-50 to-green-50 min-h-screen">
+    <div className="max-w-6xl mx-auto p-8 bg-gradient-to-b from-blue-50 to-green-50 text-gray-800">
       {/* Header Section */}
-      <header className="mb-10">
-        <div className="flex justify-between items-center mb-8 border-b pb-4 border-gray-300">
-          <div className="flex items-center">
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-md">
-              <span className="text-2xl font-bold text-white">BS</span>
-            </div>
-            <h1 className="text-3xl font-bold ml-4 text-blue-800">Bothell Serenity Corp</h1>
-          </div>
-          <nav>
-            <ul className="flex space-x-6">
-              <li><a href="#about" className="text-gray-700 hover:text-blue-600 transition">About</a></li>
-              <li><a href="#services" className="text-gray-700 hover:text-blue-600 transition">Services</a></li>
-              <li><a href="#contact" className="text-gray-700 hover:text-blue-600 transition">Contact</a></li>
-            </ul>
-          </nav>
-        </div>
-        <div className="h-72 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center shadow-lg">
-          <p className="text-3xl text-white font-semibold px-12 text-center">
-            Creating peaceful environments for mindful living
-          </p>
-        </div>
+      <header className="mb-10 text-center">
+        <div className="text-4xl font-bold text-blue-800">Bothell Serenity Corp</div>
+        <p className="text-lg text-gray-600">Enhancing Lives with Compassionate Care</p>
       </header>
 
-      {/* About Section */}
-      <section id="about" className="mb-12">
-        <h2 className="text-3xl font-bold text-blue-800 mb-6">About Us</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
-            <h3 className="text-xl font-medium text-blue-700 mb-2">Our Mission</h3>
-            <p className="text-gray-700 leading-relaxed">
-              At Bothell Serenity Corp, we're dedicated to creating spaces that promote peace, 
-              wellness, and mindfulness through design that integrates nature with modern aesthetics.
-            </p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
-            <h3 className="text-xl font-medium text-green-700 mb-2">Our Vision</h3>
-            <p className="text-gray-700 leading-relaxed">
-              We strive to make every space a sanctuary of mental and physical wellbeing, 
-              transforming how people experience their surroundings with sustainable design.
-            </p>
-          </div>
-        </div>
+      {/* Company Profile */}
+      <section className="mb-12 bg-white p-6 rounded-lg shadow-lg">
+        <h2 className="text-3xl font-semibold text-green-800 mb-4">Company Profile</h2>
+        <p className="text-gray-700">
+          Bothell Serenity Corp is a premier provider of home health care services dedicated to enhancing the quality of life for clients
+          while preserving their independence and dignity. Our highly trained and skilled staff ensure that each individual receives compassionate,
+          personalized care in the comfort of their home.
+        </p>
       </section>
 
-      {/* Services Section */}
-      <section id="services" className="mb-12">
-        <h2 className="text-3xl font-bold text-blue-800 mb-6">Our Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* CEO Message */}
+      <section className="relative mb-12 bg-blue-700 text-white p-10 rounded-lg shadow-lg text-center">
+        <h2 className="text-3xl font-semibold mb-4">Message from the CEO</h2>
+        <p className="text-lg italic">
+          "We love what we do. We love Healthcare, and helping our clients is our hallmark. We aim to make that passion evident in every aspect of our work."
+        </p>
+        <div className="mt-4 font-bold">Haddy Saho, CEO & Provider</div>
+      </section>
+
+      {/* Core Values */}
+      <section className="mb-12">
+        <h2 className="text-3xl font-semibold text-green-800 mb-4">Our Core Values</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { title: "Wellness Design", description: "Spaces designed to enhance mental and physical wellbeing.", color: "blue" },
-            { title: "Meditation Areas", description: "Custom-designed spaces for mindfulness and relaxation.", color: "green" },
-            { title: "Biophilic Integration", description: "Bringing nature into everyday spaces for harmony.", color: "teal" }
-          ].map((service, index) => (
-            <div key={index} className={`bg-white p-6 rounded-lg shadow-lg border-t-4 border-${service.color}-500 hover:shadow-xl transition`}> 
-              <h3 className={`text-lg font-medium text-${service.color}-700 mb-2`}>{service.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{service.description}</p>
+            { title: "Integrity", desc: "Doing the right thing, in the right way, at all times. Being the model for compliance, discipline, accountability, and quality." },
+            { title: "Excellence", desc: "Creating an environment of teamwork and participation through continuous performance improvement and open communication." },
+            { title: "Respect", desc: "We respect the aspirations and commitments of our clients and seek to comprehend and advance their priorities and abilities." },
+            { title: "Compassion", desc: "The heart of everything we do for our clients, combining professionalism with genuine care." }
+          ].map((value, index) => (
+            <div key={index} className="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-600">
+              <h3 className="text-xl font-medium text-green-700">{value.title}</h3>
+              <p className="text-gray-700 mt-2">{value.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="bg-gradient-to-r from-blue-600 to-green-600 text-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold mb-4">Contact Us</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <p className="mb-4">Let's create a serene space together. Reach out to us today.</p>
-            <ul className="space-y-3">
-              <li className="flex items-center"><span className="mr-2">📍</span> 123 Tranquility Lane, Bothell, WA 98011</li>
-              <li className="flex items-center"><span className="mr-2">📞</span> (425) 555-0123</li>
-              <li className="flex items-center"><span className="mr-2">✉️</span> info@bothellserenity.com</li>
-            </ul>
-          </div>
-          <div>
-            <form className="space-y-4">
-              <input type="text" placeholder="Your Name" className="w-full p-3 rounded bg-white text-gray-800" />
-              <input type="email" placeholder="Your Email" className="w-full p-3 rounded bg-white text-gray-800" />
-              <textarea placeholder="Your Message" rows="3" className="w-full p-3 rounded bg-white text-gray-800"></textarea>
-              <button className="w-full py-3 bg-white text-blue-800 font-bold rounded hover:bg-gray-100 transition">Send Message</button>
-            </form>
-          </div>
+      {/* Branches */}
+      <section className="mb-12 bg-white p-6 rounded-lg shadow-lg">
+        <h2 className="text-3xl font-semibold text-blue-800 mb-4">Our Branches</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          {[
+            { name: "Bothell Serenity AFH", address: "3411 174th PI SE, Bothell, 98012", phone: "425-895-2641", fax: "425-892-7391", email: "serenityadultfamilyhome@gmail.com" },
+            { name: "Serenity Everett AFH", address: "1507 128th St SW, Everett, 98204", phone: "425-521-0504", fax: "425-491-7499", email: "serenityeverettafh1507@gmail.com" },
+            { name: "Lynnwood Serenity AFH", address: "322 151st PI SE, Lynnwood, 98087", phone: "425-532-2090", fax: "360-939-8003", email: "serenitylynnwoodafh@gmail.com" },
+            { name: "Canyon Park Serenity AFH", address: "20710 13th Dr SE, Bothell WA, 98012", phone: "425-521-0320", fax: "360-939-8003", email: "serenityatcanyonpark@gmail.com" },
+          ].map((branch, index) => (
+            <div key={index} className="p-6 rounded-lg shadow-md border-l-4 border-blue-600">
+              <h3 className="text-xl font-medium text-blue-700">{branch.name}</h3>
+              <p className="text-gray-700">{branch.address}</p>
+              <p className="text-gray-700">📞 {branch.phone}</p>
+              <p className="text-gray-700">📠 {branch.fax}</p>
+              <p className="text-gray-700">✉️ {branch.email}</p>
+            </div>
+          ))}
         </div>
+      </section>
+
+      {/* Contact Information */}
+      <section className="text-center bg-green-700 text-white p-6 rounded-lg">
+        <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
+        <p>Provider: Haddy Saho</p>
+        <p>📞 425-346-9231</p>
+        <p>✉️ hadsalo@hotmail.com</p>
       </section>
 
       {/* Footer */}
