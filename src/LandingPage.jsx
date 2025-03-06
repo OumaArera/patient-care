@@ -5,8 +5,9 @@ import image2 from "./assets/image2.jpg";
 import image3 from "./assets/image3.jpg";
 import image4 from "./assets/image4.jpg";
 import image5 from "./assets/image5.jpg";
-// import image6 from "./assets/image6.jpg";
-import image6 from './assets/test1.png';
+import image6 from "./assets/image6.jpg";
+import secondPDF from "./assets/BOTHELL_SERENITY_CORP _BROCHURE.pdf";
+import firstPDF from "./assets/1ST_EDMONDS AFH LLC _BROCHURE.pdf";
 
 const caregivingMessages = [
   "Mission: We are dedicated to providing exceptional care with compassion, respect, and dignity by providing appropriate training and skills for our staff that fit our client's needs.",
@@ -23,7 +24,10 @@ const LandingPage = () => {
   const indexRef = useRef(Math.floor(Math.random() * images.length));
   const [content, setContent] = useState({
     image: images[indexRef.current],
-    message: caregivingMessages[Math.floor(Math.random() * caregivingMessages.length)],
+    message:
+      caregivingMessages[
+        Math.floor(Math.random() * caregivingMessages.length)
+      ],
   });
 
   useEffect(() => {
@@ -37,7 +41,10 @@ const LandingPage = () => {
       img.onload = () => {
         setContent({
           image: nextImage,
-          message: caregivingMessages[Math.floor(Math.random() * caregivingMessages.length)],
+          message:
+            caregivingMessages[
+              Math.floor(Math.random() * caregivingMessages.length)
+            ],
         });
       };
     }, 15000); // Change every 15 seconds for smoother experience
@@ -45,12 +52,16 @@ const LandingPage = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const openPDF = (pdfFile) => {
+    window.open(pdfFile, "_blank");
+  };
+
   return (
     <div
-      className="relative w-full h-screen flex items-end justify-center transition-all duration-1000"
+      className="relative w-full h-screen flex flex-col items-center justify-end transition-all duration-1000"
       style={{
         backgroundImage: `url(${content.image})`,
-        backgroundSize: "contain", // Ensures full image is visible without cropping
+        backgroundSize: "contain",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
@@ -66,13 +77,29 @@ const LandingPage = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 1 }}
-          className="relative z-10 mb-12 bg-black/60 p-6 rounded-xl shadow-lg max-w-4xl text-center"
+          className="relative z-10 mb-6 bg-black/60 p-6 rounded-xl shadow-lg max-w-4xl text-center"
         >
           <p className="text-2xl md:text-3xl font-bold text-white leading-relaxed drop-shadow-lg">
             {content.message}
           </p>
         </motion.div>
       </AnimatePresence>
+
+      {/* PDF Buttons */}
+      <div className="relative z-10 mb-12 flex space-x-4">
+        <button
+          onClick={() => openPDF(firstPDF)}
+          className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300"
+        >
+          View Edmonds Brochure
+        </button>
+        <button
+          onClick={() => openPDF(secondPDF)}
+          className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-300"
+        >
+          View Bothell Brochure
+        </button>
+      </div>
     </div>
   );
 };
