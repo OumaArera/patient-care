@@ -197,7 +197,7 @@ const ChartVitals = () => {
                                     CHART ENTRY RESTRICTED
                                 </p>
                                 <p className="text-lg md:text-xl text-red-800 mt-2 font-medium">
-                                    Vitals entries should be done from <span className="underline font-bold">8:00 AM</span> and <span className="underline font-bold">9:59 AM</span>.
+                                    Vitals entries should be done from <span className="underline font-bold">8:00 AM</span> to <span className="underline font-bold">9:59 AM</span>.
                                 </p>
                                 </div>
                             )}
