@@ -199,7 +199,7 @@ const Vitals = () => {
                   <td className="p-2 border border-gray-700">{new Date(v.dateTaken).toLocaleDateString()}</td>
                   <td className="p-2 border border-gray-700">{v.bloodPressure}</td>
                   <td className="p-2 border border-gray-700">{v.temperature}°F</td>
-                  <td className="p-2 border border-gray-700">{v.pulse}bpm</td>
+                  <td className="p-2 border border-gray-700">{v.pulse}</td>
                   <td className="p-2 border border-gray-700">{v.oxygenSaturation}%</td>
                   <td className="p-2 border border-gray-700">
                     {["N/A", "NO", "No", "no", "No Pain", "no pain", "No pain", null].includes(v.pain) ? "-" : v.pain}
