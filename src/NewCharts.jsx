@@ -150,7 +150,7 @@ const NewCharts = ({ charts, chartsData }) => {
         <div className="mb-4">
           {lateSubmission.map((entry) => {
             const startTime = new Date(entry.start);
-            const endTime = new Date(startTime.getTime() + entry.duration * 60000); // Convert minutes to milliseconds
+            const endTime = new Date(startTime.getTime() + entry.duration * 60000); 
 
             return (
               <label key={entry.start}>
