@@ -153,15 +153,13 @@ const Vitals = () => {
             <LineChart
               data={chartData}
               margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
-              style={{ backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }} // Light background
+              style={{ backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />  {/* Lighter grid lines */}
+              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" /> 
               <XAxis dataKey="date" stroke="#333" />
               <YAxis domain={[0, 200]} tickCount={21} stroke="#333" />
               <Tooltip wrapperStyle={{ backgroundColor: "#fff", border: "1px solid #ddd" }} />
               <Legend />
-
-              {/* Improved Line Colors & Thickness */}
               <Line type="monotone" dataKey="systolic" stroke="#4B0082" strokeWidth={3} name="Systolic" />
               <Line type="monotone" dataKey="diastolic" stroke="#008000" strokeWidth={3} name="Diastolic" />
               <Line type="monotone" dataKey="temperature" stroke="#FFA500" strokeWidth={3} name="Temperature" />
