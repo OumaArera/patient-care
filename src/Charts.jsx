@@ -156,7 +156,7 @@ const Charts = () => {
                         </td>
                         <td className="p-2 border border-gray-700">{chart ? chart.reasonEdited : ""}</td>
                         <td className="p-2 border border-gray-700">
-                          {chart? (
+                          {chart ? (
                             <button
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() => {
@@ -167,7 +167,7 @@ const Charts = () => {
                             >
                               View
                             </button>
-                          ):(
+                          ) : new Date(date) < new Date().setHours(0, 0, 0, 0) ? ( 
                             <button
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() => {
@@ -177,6 +177,8 @@ const Charts = () => {
                             >
                               Approve Late
                             </button>
+                          ) : (
+                            "Pending" 
                           )}
                         </td>
                         <td className="p-2 border border-gray-700">
