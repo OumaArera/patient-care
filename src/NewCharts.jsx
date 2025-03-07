@@ -231,9 +231,17 @@ const NewCharts = ({ charts, chartsData }) => {
       {/* Submit Button */}
       <div className="mt-6 text-center">
       {!isWithinAllowedTime() && (
-        <p className={`mb-2 text-red-500 ${blink ? "opacity-100" : "opacity-0"}`}>
-          Chart entry must be done between 7:00 PM and 9:59 PM.
-        </p>
+        <div className="mt-2 mb-4 bg-red-100 border-l-4 border-red-500 p-4 rounded shadow-md">
+          <p className={`text-xl md:text-2xl font-bold text-red-600 ${blink ? "opacity-100" : "opacity-0"} transition-opacity duration-500 flex items-center`}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mr-3 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            CHART ENTRY RESTRICTED
+          </p>
+          <p className="text-lg md:text-xl text-red-800 mt-2 font-medium">
+            Entries are only permitted between <span className="underline font-bold">7:00 PM</span> and <span className="underline font-bold">9:59 PM</span>.
+          </p>
+        </div>
       )}
       <button
         onClick={handleSubmit}
