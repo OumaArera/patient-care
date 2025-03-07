@@ -109,7 +109,7 @@ const NewCharts = ({ charts, chartsData }) => {
     setLoadingSubmit(true);
     setErrors([]);
     const time = isWithinAllowedTime() && lateSubmission.length > 0
-      ? dayjs(selectedDate).format("YYYY-MM-DD HH:mm:ss")
+      ? dayjs(selectedDate).add(1, "day").format("YYYY-MM-DD HH:mm:ss")
       : dayjs().format("YYYY-MM-DD HH:mm:ss");
     const payload = {
       patient: charts.patientId,
