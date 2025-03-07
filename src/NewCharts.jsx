@@ -174,21 +174,20 @@ const NewCharts = ({ charts, chartsData }) => {
             maxTime={dayjs().set("hour", 20).set("minute", 59).toDate()}
             className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
           />
-          <div className="p-6 bg-gray-900 text-white">
-            {lateSubmission.length > 0 && isWithinAllowedTime() && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-white mb-2">
-                  Reason for Late Submission (Required):
-                </label>
-                <textarea
-                  value={reasonFilledLate}
-                  onChange={(e) => setReasonFilledLate(e.target.value)}
-                  className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
-                  required
-                />
-              </div>
-            )}
-          </div>
+          {lateSubmission.length > 0 && isWithinAllowedTime() && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-white mb-2">
+                Reason for Late Submission (Required):
+              </label>
+              <textarea
+                value={reasonFilledLate}
+                onChange={(e) => setReasonFilledLate(e.target.value)}
+                placeholder="Enter reason here..."
+                className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                required
+              />
+            </div>
+          )}
         </div>
       )}
 
