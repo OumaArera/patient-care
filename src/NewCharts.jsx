@@ -159,7 +159,7 @@ const NewCharts = ({ charts, chartsData }) => {
             Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
           </label>
           <DatePicker
-            selected={selectedDate}
+            selected={selectedDate || dayjs().set("hour", 19).set("minute", 15).toDate()} // 
             onChange={(date) => setSelectedDate(date)}
             showTimeSelect
             timeFormat="HH:mm"
@@ -167,6 +167,16 @@ const NewCharts = ({ charts, chartsData }) => {
             dateFormat="yyyy-MM-dd HH:mm:ss"
             minTime={dayjs().set("hour", 19).set("minute", 0).toDate()}
             maxTime={dayjs().set("hour", 20).set("minute", 59).toDate()}
+            includeTimes={[
+              dayjs().set("hour", 19).set("minute", 0).toDate(),
+              dayjs().set("hour", 19).set("minute", 15).toDate(),
+              dayjs().set("hour", 19).set("minute", 30).toDate(),
+              dayjs().set("hour", 19).set("minute", 45).toDate(),
+              dayjs().set("hour", 20).set("minute", 0).toDate(),
+              dayjs().set("hour", 20).set("minute", 15).toDate(),
+              dayjs().set("hour", 20).set("minute", 30).toDate(),
+              dayjs().set("hour", 20).set("minute", 45).toDate(),
+            ]}
             className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
           />
         </div>
