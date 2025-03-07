@@ -168,6 +168,8 @@ const NewCharts = ({ charts, chartsData }) => {
             timeFormat="HH:mm"
             timeIntervals={15}
             dateFormat="yyyy-MM-dd HH:mm:ss"
+            minTime={dayjs().set("hour", 19).set("minute", 0).toDate()}
+            maxTime={dayjs().set("hour", 20).set("minute", 59).toDate()}
             className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
           />
         </div>
