@@ -4,11 +4,13 @@ import { errorHandler } from "../services/errorHandler";
 
 const URL = "https://patient-care-server.onrender.com/api/v1/vitals"
 
+
 const UpdateVitals = ({ vital, fetchVitals }) => {
     const [updatedVitals, setUpdatedVitals] = useState({});
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [reasonEdited, setReasonEdited] = useState("");
 
   const handleChange = (field, value) => {
     setUpdatedVitals((prev) => ({ ...prev, [field]: value }));
@@ -21,7 +23,7 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
 
   const handleSubmit =async () => {
     if (Object.keys(updatedVitals).length > 0) {
-      const payload = { vitalId: vital.vitalId, ...updatedVitals };
+      const payload = { vitalId: vital.vitalId, ...updatedVitals, ...reasonEdited, };
       setLoading(true)
       const updatedUrl = `${URL}/${payload.vitalId}`
       
@@ -33,6 +35,7 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
           setTimeout(() => setErrors([]), 5000);
         } else {
           setMessage("Data updated successfully");
+          setReasonEdited("");
           setTimeout(() => fetchVitals(vital.patientId), 5000);
           setTimeout(() => setMessage(""), 5000);
         }
@@ -103,6 +106,16 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
             onChange={(e) => handleChange("pain", e.target.value)}
           ></textarea>
         </div>
+        <div className="mb-4">
+          <label className="block text-lg text-blue-400">Reason for Editing:</label>
+          <textarea
+            value={reasonEdited}
+            onChange={(e) => setReasonEdited(e.target.value)}
+            className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+            placeholder="Enter reason for editing..."
+            required
+          />
+          </div>
         {errors.length > 0 && (
           <div className="mb-4 p-3 rounded">
             {errors.map((error, index) => (
@@ -114,9 +127,9 @@ const UpdateVitals = ({ vital, fetchVitals }) => {
         <button
           onClick={handleSubmit}
           className={`px-6 py-3 rounded-lg flex items-center justify-center w-full mt-4
-            ${Object.keys(updatedVitals).length === 0 ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"}
+            ${Object.keys(updatedVitals).length === 0 || !reasonEdited ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"}
           `}
-          disabled={Object.keys(updatedVitals).length === 0}
+          disabled={Object.keys(updatedVitals).length === 0 || !reasonEdited}
         >
           {loading ? "Updating..." : "Save Changes"}
         </button>
