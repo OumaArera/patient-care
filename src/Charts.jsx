@@ -154,7 +154,7 @@ const Charts = () => {
                         <td className="p-2 border border-gray-700">
                           {chart ? chart.patientName : "Missing"}
                         </td>
-                        <td className="p-2 border border-gray-700">{chart.reasonEdited || ""}</td>
+                        <td className="p-2 border border-gray-700">{chart ? chart.reasonEdited : ""}</td>
                         <td className="p-2 border border-gray-700">
                           {chart? (
                             <button
