@@ -65,7 +65,9 @@ const Vitals = () => {
   const currentVitals = filteredVitals.slice(indexOfFirstVital, indexOfLastVital);
   const totalPages = Math.ceil(filteredVitals.length / vitalsPerPage);
 
-  const chartData = filteredVitals.map((v) => {
+  const chartData = [...filteredVitals]
+  .sort((a, b) => new Date(a.dateTaken) - new Date(b.dateTaken))
+  .map((v) => {
     const [systolic, diastolic] = v.bloodPressure.split("/").map(Number);
     return {
       date: new Date(v.dateTaken).toLocaleDateString("en-US"),
@@ -160,7 +162,6 @@ const Vitals = () => {
             <Line type="monotone" dataKey="pulse" stroke="#ff7300" name="Pulse" />
             <Line type="monotone" dataKey="oxygenSaturation" stroke="#00C49F" name="Oxygen Saturation" />
             </LineChart>
-
           </ResponsiveContainer>
           <div className="flex justify-center space-x-4 mt-4">
             {vitals.length > 0 && (
