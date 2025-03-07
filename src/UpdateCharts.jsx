@@ -20,6 +20,7 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [reasonEdited, setReasonEdited] = useState("");
 
   useEffect(() => {
     setBehaviors(chart.behaviors);
@@ -47,6 +48,7 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
         ...behavior,
         status: behaviorStatuses[index],
       })),
+      reasonEdited,
     };
 
     const updatedUrl = `${URL}/${updatedData.chartId}`
@@ -59,6 +61,7 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
             setTimeout(() => setErrors([]), 5000);
         } else {
             setMessage("Data updated successfully");
+            setReasonEdited("");
             setTimeout(() => handleGetCharts(chart.patientId), 7000);
             setTimeout(() => setMessage(""), 7000);
         }
@@ -144,6 +147,16 @@ const UpdateCharts = ({ chart, handleGetCharts }) => {
                 )}
               </tbody>
             </table>
+          </div>
+          <div className="mb-4">
+            <label className="block text-lg text-blue-400">Reason for Editing:</label>
+            <textarea
+              value={reasonEdited}
+              onChange={(e) => setReasonEdited(e.target.value)}
+              className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+              placeholder="Enter reason for editing..."
+              required
+            />
           </div>
             {errors.length > 0 && (
                 <div className="mb-4 p-3 rounded">
