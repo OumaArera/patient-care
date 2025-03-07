@@ -53,10 +53,12 @@ const Vitals = () => {
     fetchVitals(patientId);
   };
 
-  const filteredVitals = vitals.filter((v) => {
-    const date = new Date(v.dateTaken);
-    return date.getFullYear() === Number(year) && (date.getMonth() + 1) === Number(month);
-  });
+  const filteredVitals = vitals
+    .filter((v) => {
+      const date = new Date(v.dateTaken);
+      return date.getFullYear() === Number(year) && date.getMonth() + 1 === Number(month);
+    })
+    .sort((a, b) => new Date(b.dateTaken) - new Date(a.dateTaken));
 
   const indexOfLastVital = currentPage * vitalsPerPage;
   const indexOfFirstVital = indexOfLastVital - vitalsPerPage;
