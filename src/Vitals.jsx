@@ -150,19 +150,26 @@ const Vitals = () => {
       ) : (
         <>
           <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis domain={[0, 200]} tickCount={21} />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="systolic" stroke="#8884d8" name="Systolic" />
-            <Line type="monotone" dataKey="diastolic" stroke="#82ca9d" name="Diastolic" />
-            <Line type="monotone" dataKey="temperature" stroke="#ffc658" name="Temperature" />
-            <Line type="monotone" dataKey="pulse" stroke="#ff7300" name="Pulse" />
-            <Line type="monotone" dataKey="oxygenSaturation" stroke="#00C49F" name="Oxygen Saturation" />
+            <LineChart
+              data={chartData}
+              margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+              style={{ backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }} // Light background
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />  {/* Lighter grid lines */}
+              <XAxis dataKey="date" stroke="#333" />
+              <YAxis domain={[0, 200]} tickCount={21} stroke="#333" />
+              <Tooltip wrapperStyle={{ backgroundColor: "#fff", border: "1px solid #ddd" }} />
+              <Legend />
+
+              {/* Improved Line Colors & Thickness */}
+              <Line type="monotone" dataKey="systolic" stroke="#4B0082" strokeWidth={3} name="Systolic" />
+              <Line type="monotone" dataKey="diastolic" stroke="#008000" strokeWidth={3} name="Diastolic" />
+              <Line type="monotone" dataKey="temperature" stroke="#FFA500" strokeWidth={3} name="Temperature" />
+              <Line type="monotone" dataKey="pulse" stroke="#DC143C" strokeWidth={3} name="Pulse" />
+              <Line type="monotone" dataKey="oxygenSaturation" stroke="#007FFF" strokeWidth={3} name="Oxygen Saturation" />
             </LineChart>
           </ResponsiveContainer>
+
           <div className="flex justify-center space-x-4 mt-4">
             {vitals.length > 0 && (
                 <button 
