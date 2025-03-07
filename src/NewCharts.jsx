@@ -150,43 +150,45 @@ const NewCharts = ({ charts, chartsData }) => {
       
       {lateSubmission.length > 0 && isWithinAllowedTime() && (
         <>
-        <div className="mb-4">
+          <div className="mb-4">
           {lateSubmission.map((entry) => {
             const startTime = new Date(entry.start);
             const endTime = new Date(startTime.getTime() + entry.duration * 60000); 
 
             return (
-              <label className="mb-2 text-red-600" key={entry.start}>
-                Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
-              </label>
+              <div key={entry.start} className="mb-2"> {/* Wrap each message in a div */}
+                <label className="text-red-600">
+                  Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
+                </label>
+              </div>
             );
           })}
-          <br />
+            <br />
+            <label className="block text-sm font-medium text-white mb-2">
+              Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
+            </label>
+            <DatePicker
+              selected={selectedDate || dayjs().set("hour", 19).set("minute", 15).toDate()} // 
+              onChange={(date) => setSelectedDate(date)}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              dateFormat="yyyy-MM-dd HH:mm:ss"
+              minTime={dayjs().set("hour", 19).set("minute", 0).toDate()}
+              maxTime={dayjs().set("hour", 20).set("minute", 59).toDate()}
+              className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+            />
+          </div>
+          <div className="mb-4">
           <label className="block text-sm font-medium text-white mb-2">
-            Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
+            Reason for Late Submission (Required):
           </label>
-          <DatePicker
-            selected={selectedDate || dayjs().set("hour", 19).set("minute", 15).toDate()} // 
-            onChange={(date) => setSelectedDate(date)}
-            showTimeSelect
-            timeFormat="HH:mm"
-            timeIntervals={15}
-            dateFormat="yyyy-MM-dd HH:mm:ss"
-            minTime={dayjs().set("hour", 19).set("minute", 0).toDate()}
-            maxTime={dayjs().set("hour", 20).set("minute", 59).toDate()}
-            className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
-          />
-        </div>
-        <div className="mb-4">
-        <label className="block text-sm font-medium text-white mb-2">
-          Reason for Late Submission (Required):
-        </label>
-        <textarea
-          value={reasonFilledLate}
-          onChange={(e) => setReasonFilledLate(e.target.value)}
-          placeholder="Enter reason here..."
-          className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
-          required
+          <textarea
+            value={reasonFilledLate}
+            onChange={(e) => setReasonFilledLate(e.target.value)}
+            placeholder="Enter reason here..."
+            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            required
         />
       </div>
       </>
