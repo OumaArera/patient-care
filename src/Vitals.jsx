@@ -21,7 +21,7 @@ const Vitals = () => {
   const [show, setShow] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("");
   const branchNames = [...new Set(patients.map((p) => p.branchName))];
-  const vitalsPerPage = 10;
+  const vitalsPerPage = 3;
 
   const closVitalsModal =()=>{
     setShowVitals(false)
@@ -263,6 +263,23 @@ const Vitals = () => {
         </div>
       </div>
       )}
+      <div className="flex justify-center mt-4 space-x-2">
+        <button
+          className={`px-4 py-2 rounded ${currentPage === 1 ? "bg-gray-600" : "bg-blue-500 hover:bg-blue-700"} text-white`}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <span className="px-4 py-2 text-white bg-gray-800 rounded">Page {currentPage} of {totalPages}</span>
+        <button
+          className={`px-4 py-2 rounded ${currentPage === totalPages ? "bg-gray-600" : "bg-blue-500 hover:bg-blue-700"} text-white`}
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
