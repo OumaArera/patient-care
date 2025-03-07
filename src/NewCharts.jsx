@@ -147,7 +147,9 @@ const NewCharts = ({ charts, chartsData }) => {
     <div className="p-6 bg-gray-900 text-white">
       <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {charts?.firstName} {charts?.lastName
       }</h2>
+      
       {lateSubmission.length > 0 && isWithinAllowedTime() && (
+        <>
         <div className="mb-4">
           {lateSubmission.map((entry) => {
             const startTime = new Date(entry.start);
@@ -175,20 +177,19 @@ const NewCharts = ({ charts, chartsData }) => {
             className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
           />
         </div>
-      )}
-      {lateSubmission.length > 0 && isWithinAllowedTime() && (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-white mb-2">
-            Reason for Late Submission (Required):
-          </label>
-          <textarea
-            value={reasonFilledLate}
-            onChange={(e) => setReasonFilledLate(e.target.value)}
-            placeholder="Enter reason here..."
-            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
-            required
-          />
-        </div>
+        <label className="block text-sm font-medium text-white mb-2">
+          Reason for Late Submission (Required):
+        </label>
+        <textarea
+          value={reasonFilledLate}
+          onChange={(e) => setReasonFilledLate(e.target.value)}
+          placeholder="Enter reason here..."
+          className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+          required
+        />
+      </div>
+      </>
       )}
 
       {/* Behaviors Table */}
