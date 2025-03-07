@@ -153,100 +153,18 @@ const Vitals = () => {
             <LineChart
               data={chartData}
               margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
-              style={{ 
-                backgroundColor: "#f8fafc", 
-                padding: "16px", 
-                borderRadius: "12px",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.05)"
-              }}
+              style={{ backgroundColor: "#f5f5f5", padding: "10px", borderRadius: "10px" }}
             >
-              <defs>
-                <linearGradient id="chartBackground" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f1f5f9" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#f8fafc" stopOpacity={0.2}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" opacity={0.6} />
-              <XAxis 
-                dataKey="date" 
-                stroke="#64748b" 
-                tick={{ fill: "#475569", fontSize: 12 }}
-                axisLine={{ stroke: "#cbd5e1" }}
-              />
-              <YAxis 
-                domain={[0, 200]} 
-                tickCount={11} 
-                stroke="#64748b" 
-                tick={{ fill: "#475569", fontSize: 12 }}
-                axisLine={{ stroke: "#cbd5e1" }}
-              />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: "#fff", 
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "6px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
-                }} 
-                labelStyle={{ fontWeight: "bold", color: "#334155" }}
-              />
-              <Legend 
-                verticalAlign="top" 
-                height={36} 
-                iconSize={12}
-                wrapperStyle={{ fontSize: "12px", paddingTop: "8px" }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="systolic" 
-                stroke="#6d28d9" 
-                strokeWidth={2.5} 
-                dot={{ stroke: "#6d28d9", strokeWidth: 2, r: 4 }}
-                activeDot={{ stroke: "#6d28d9", strokeWidth: 2, r: 6 }}
-                name="Systolic" 
-              />
-              <Line 
-                type="monotone" 
-                dataKey="diastolic" 
-                stroke="#16a34a" 
-                strokeWidth={2.5} 
-                dot={{ stroke: "#16a34a", strokeWidth: 2, r: 4 }}
-                activeDot={{ stroke: "#16a34a", strokeWidth: 2, r: 6 }}
-                name="Diastolic" 
-              />
-              <Line 
-                type="monotone" 
-                dataKey="temperature" 
-                stroke="#ea580c" 
-                strokeWidth={2.5} 
-                dot={{ stroke: "#ea580c", strokeWidth: 2, r: 4 }}
-                activeDot={{ stroke: "#ea580c", strokeWidth: 2, r: 6 }}
-                name="Temperature" 
-              />
-              <Line 
-                type="monotone" 
-                dataKey="pulse" 
-                stroke="#dc2626" 
-                strokeWidth={2.5} 
-                dot={{ stroke: "#dc2626", strokeWidth: 2, r: 4 }}
-                activeDot={{ stroke: "#dc2626", strokeWidth: 2, r: 6 }}
-                name="Pulse" 
-              />
-              <Line 
-                type="monotone" 
-                dataKey="oxygenSaturation" 
-                stroke="#0284c7" 
-                strokeWidth={2.5} 
-                dot={{ stroke: "#0284c7", strokeWidth: 2, r: 4 }}
-                activeDot={{ stroke: "#0284c7", strokeWidth: 2, r: 6 }}
-                name="Oxygen Saturation" 
-              />
-              <rect 
-                x="0" 
-                y="0" 
-                width="100%" 
-                height="100%" 
-                fill="url(#chartBackground)"
-              />
+              <CartesianGrid strokeDasharray="3 3" stroke="#ccc" /> 
+              <XAxis dataKey="date" stroke="#333" />
+              <YAxis domain={[0, 200]} tickCount={21} stroke="#333" />
+              <Tooltip wrapperStyle={{ backgroundColor: "#fff", border: "1px solid #ddd" }} />
+              <Legend />
+              <Line type="monotone" dataKey="systolic" stroke="#4B0082" strokeWidth={3} name="Systolic" />
+              <Line type="monotone" dataKey="diastolic" stroke="#008000" strokeWidth={3} name="Diastolic" />
+              <Line type="monotone" dataKey="temperature" stroke="#FFA500" strokeWidth={3} name="Temperature" />
+              <Line type="monotone" dataKey="pulse" stroke="#DC143C" strokeWidth={3} name="Pulse" />
+              <Line type="monotone" dataKey="oxygenSaturation" stroke="#007FFF" strokeWidth={3} name="Oxygen Saturation" />
             </LineChart>
           </ResponsiveContainer>
 
