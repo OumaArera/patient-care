@@ -5,8 +5,10 @@ import dayjs from "dayjs";
 import { errorHandler } from "../services/errorHandler";
 import { getData } from "../services/updatedata";
 import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 import BehaviorDescriptions from "./BehaviorDescription";
 const URL = "https://patient-care-server.onrender.com/api/v1/late-submissions"
+
 
 const NewCharts = ({ charts, chartsData }) => {
   const chart = chartsData[0];
@@ -28,6 +30,7 @@ const NewCharts = ({ charts, chartsData }) => {
     {"status": true, "response": "", "descriptionType": "Reported_Provider_And_Careteam"}
   ]);
   const [lateSubmission, setLateSubmission] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
     
     useEffect(() => {
       const careGiver = localStorage.getItem("userId");
@@ -94,7 +97,7 @@ const NewCharts = ({ charts, chartsData }) => {
     // Check late submissions
     const withinLateSubmission = lateSubmission.some((entry) => {
       const startTime = new Date(entry.start);
-      const endTime = new Date(startTime.getTime() + entry.duration * 60000); // Convert minutes to milliseconds
+      const endTime = new Date(startTime.getTime() + entry.duration * 60000); 
       return now >= startTime && now <= endTime;
     });
   
@@ -105,7 +108,9 @@ const NewCharts = ({ charts, chartsData }) => {
   const handleSubmit = async () => {
     setLoadingSubmit(true);
     setErrors([]);
-    const time = dayjs().format("YYYY-MM-DD HH:mm:ss")
+    const time = isWithinAllowedTime() && lateSubmission.length > 0
+      ? dayjs(selectedDate).format("YYYY-MM-DD HH:mm:ss")
+      : dayjs().format("YYYY-MM-DD HH:mm:ss");
     const payload = {
       patient: charts.patientId,
       behaviors,
@@ -141,6 +146,32 @@ const NewCharts = ({ charts, chartsData }) => {
     <div className="p-6 bg-gray-900 text-white">
       <h2 className="text-2xl font-bold mb-4 text-blue-400 text-center">Charts for {charts?.firstName} {charts?.lastName
       }</h2>
+      {lateSubmission.length > 0 && isWithinAllowedTime() && (
+        <div className="mb-4">
+          {lateSubmission.map((entry) => {
+            const startTime = new Date(entry.start);
+            const endTime = new Date(startTime.getTime() + entry.duration * 60000); // Convert minutes to milliseconds
+
+            return (
+              <label key={entry.start}>
+                Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
+              </label>
+            );
+          })}
+          <label className="block text-sm font-medium text-white mb-2">
+            Select Date & Time for Late Submission:
+          </label>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            showTimeSelect
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            dateFormat="yyyy-MM-dd HH:mm:ss"
+            className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
+          />
+        </div>
+      )}
 
       {/* Behaviors Table */}
       <div className="bg-gray-900 p-4 rounded-lg">
