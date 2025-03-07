@@ -151,18 +151,24 @@ const NewCharts = ({ charts, chartsData }) => {
       {lateSubmission.length > 0 && isWithinAllowedTime() && (
         <>
           <div className="mb-4">
-          {lateSubmission.map((entry) => {
-            const startTime = new Date(entry.start);
-            const endTime = new Date(startTime.getTime() + entry.duration * 60000); 
-
-            return (
-              <div key={entry.start} className="mb-2"> {/* Wrap each message in a div */}
-                <label className="text-red-600">
-                  Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
-                </label>
-              </div>
-            );
-          })}
+            {lateSubmission
+              .filter((entry) => {
+                const now = new Date();
+                const startTime = new Date(entry.start);
+                const endTime = new Date(startTime.getTime() + entry.duration * 60000);
+                return now >= startTime && now <= endTime; // Only include the active time slot
+              })
+              .map((entry) => {
+                const startTime = new Date(entry.start);
+                const endTime = new Date(startTime.getTime() + entry.duration * 60000);
+                return (
+                  <div key={entry.start} className="mb-2">
+                    <label className="text-red-600">
+                      Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
+                    </label>
+                  </div>
+                );
+              })}
             <br />
             <label className="block text-sm font-medium text-white mb-2">
               Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
