@@ -153,13 +153,16 @@ const NewCharts = ({ charts, chartsData }) => {
             const endTime = new Date(startTime.getTime() + entry.duration * 60000); 
 
             return (
-              <label key={entry.start}>
-                Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
-              </label>
+              <>
+                <label className="text-red-600" key={entry.start}>
+                  Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
+                </label>
+                <br />
+              </>
             );
           })}
           <label className="block text-sm font-medium text-white mb-2">
-            Select Date & Time for Late Submission:
+            Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
           </label>
           <DatePicker
             selected={selectedDate}
