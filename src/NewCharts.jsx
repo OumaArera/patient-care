@@ -51,7 +51,6 @@ const NewCharts = ({ charts, chartsData }) => {
           .catch(() => {}); 
     }, [charts.patientId]);
 
-
   const groupBehaviorsByCategory = (behaviors) => {
     return behaviors.reduce((acc, behavior) => {
       if (!acc[behavior.category]) {
@@ -64,8 +63,6 @@ const NewCharts = ({ charts, chartsData }) => {
   
   const groupedBehaviors = groupBehaviorsByCategory(chart.behaviors);
   
-  
-
   const handleChangeBehaviorDescription = (index, value) => {
     setBehaviorsDescription((prevDescriptions) => {
       const updatedDescriptions = [...prevDescriptions];
@@ -104,7 +101,6 @@ const NewCharts = ({ charts, chartsData }) => {
     return withinDefaultTime || withinLateSubmission;
   };
   
-
   const handleSubmit = async () => {
     setLoadingSubmit(true);
     setErrors([]);
@@ -136,7 +132,7 @@ const NewCharts = ({ charts, chartsData }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setBlink((prev) => !prev);
-    }, 1000); // Toggle every 2 seconds
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
