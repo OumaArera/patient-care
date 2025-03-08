@@ -3,6 +3,7 @@ import { fetchPatients } from "../services/fetchPatients";
 import { getUpdates } from "../services/getUpdates";
 import { Loader } from "lucide-react";
 import ResubmitUpdate from "./ResubmitUpdate";
+import LateSubmission from "./LateSubmission";
 
 const Updates = () => {
     const [loadingPatients, setLoadingPatients] = useState(false);
@@ -14,6 +15,8 @@ const Updates = () => {
     const [selectedMonth, setSelectedMonth] = useState("");
     const [showResubmitUpdate, setShowResubmitUpdate] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState("");
+    const [allowLate, setAllowLate] = useState(false);
+    const type = "updates";
 
     useEffect(() => {
         setLoadingPatients(true);
@@ -55,6 +58,10 @@ const Updates = () => {
         setShowResubmitUpdate(false);
         setSelectedPatient(null);
     };
+
+    const lateSubmission = () =>{
+        setAllowLate(false);
+    }
     
 
     // Count occurrences of each patientName
@@ -188,7 +195,10 @@ const Updates = () => {
                                     <td className="border border-gray-700 p-2">
                                         <button
                                             className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                                            onClick={() => {console.log("Hello, World!")}}
+                                            onClick={() => {
+                                                console.log("Hello, World!")
+                                                setAllowLate(true)
+                                            }}
                                             >
                                             Allow
                                         </button>
@@ -226,6 +236,25 @@ const Updates = () => {
                     </div>
                 </div>
             )}
+            {allowLate &&  (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={lateSubmission}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <LateSubmission patient={selectedPatient} type={type} />
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={lateSubmission}
+            >
+              ✖
+            </button>
+          </div>
+        </div>
+      )}
         </div>
     );
 };
