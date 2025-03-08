@@ -80,11 +80,13 @@ const PendingCharts = ({ patient }) => {
     <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Pending Charts</h2>
       <>
-      {loading && charts.length === 0 ? (
+      {loading ? (
         <div className="flex items-center space-x-2 text-gray-600">
           <Loader className="animate-spin" size={20} />
           <p>Loading charts...</p>
         </div>
+      ) : charts.length === 0 ? (
+        <p className="text-gray-600">No pending charts available.</p>
       ) : (
         charts.map((chart) => (
           <div key={chart.chartId} className="border border-gray-300 rounded-lg p-4 my-4 bg-white shadow">
