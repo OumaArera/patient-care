@@ -86,27 +86,29 @@ const Charts = () => {
           <p className="text-gray-400">Loading residents...</p>
         </div>
       ) : (
-        <div className="flex items-center justify-center">
-          <label className="block mb-2 text-lg">Select Branch:</label>
-          <select
-            onChange={(e) => setSelectedBranch(e.target.value)}
-            value={selectedBranch}
-            className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
-          >
-            <option value="">All Branches</option>
-            {[...new Set(patients.map((p) => p.branchName))].map((branch) => (
-              <option key={branch} value={branch}>
-                {branch}
-              </option>
-            ))}
-          </select>
-          <br />
+        <div className="flex flex-col items-center justify-center p-4 gap-4">
+          <div className="w-full max-w-md">
+            <label className="block mb-2 text-lg">Select Branch:</label>
+            <select
+              onChange={(e) => setSelectedBranch(e.target.value)}
+              value={selectedBranch}
+              className="border px-4 py-2 w-full bg-gray-700 text-white rounded"
+            >
+              <option value="">All Branches</option>
+              {[...new Set(patients.map((p) => p.branchName))].map((branch) => (
+                <option key={branch} value={branch}>
+                  {branch}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <label className="block mb-2 text-lg">Select Resident:</label>
-          <select
+          <div className="w-full max-w-md">
+            <label className="block mb-2 text-lg">Select Resident:</label>
+            <select
               onChange={handleSelectPatient}
               value={selectedPatient ? selectedPatient.patientId : ""}
-              className="border px-4 py-2 ml-2 bg-gray-700 text-white rounded"
+              className="border px-4 py-2 w-full bg-gray-700 text-white rounded"
             >
               <option value="" disabled>Select Resident</option>
               {patients
@@ -120,8 +122,9 @@ const Charts = () => {
                   </option>
                 ))}
             </select>
-          <br />
+          </div>
         </div>
+
       )}
 
       {selectedPatient && (
