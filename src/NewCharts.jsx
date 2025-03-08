@@ -163,6 +163,7 @@ const NewCharts = ({ charts, chartsData }) => {
                 const endTime = new Date(startTime.getTime() + entry.duration * 60000);
                 return (
                   <div key={entry.start} className="mb-2">
+                    <p className="text-red-600">{entry.reasonForLateSubmission}</p>
                     <label className="text-red-600">
                       Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
                     </label>
