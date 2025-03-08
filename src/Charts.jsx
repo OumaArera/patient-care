@@ -63,10 +63,9 @@ const Charts = () => {
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const last20Days = [];
 
-  for (let d = new Date(firstDayOfMonth); d <= currentDate; d.setDate(d.getDate() + 1)) {
+  for (let d = new Date(currentDate); d >= firstDayOfMonth; d.setDate(d.getDate() - 1)) {
     last20Days.push(d.toISOString().split("T")[0]);
   }
-
 
   const editChart = () =>{
     setShowEdits(false);
