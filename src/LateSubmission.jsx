@@ -36,7 +36,7 @@ const LateSubmission = ({ patient, type }) => {
         const utcDate = localDate.toISOString();
         
         const payload = {
-            patient: patient.patientId,
+            patient: patient.patientId ? patient.patientId : patient ,
             type,
             careGiver: selectedCareGiver,
             start: utcDate,

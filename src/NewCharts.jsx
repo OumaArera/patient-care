@@ -94,10 +94,12 @@ const NewCharts = ({ charts, chartsData }) => {
   
     // Check late submissions
     const withinLateSubmission = lateSubmission.some((entry) => {
+      if (entry.type !== "charts") return false;
+
       const startTime = new Date(entry.start);
-      const endTime = new Date(startTime.getTime() + entry.duration * 60000); 
+      const endTime = new Date(startTime.getTime() + entry.duration * 60000);
       return now >= startTime && now <= endTime;
-    });
+  });
   
     return withinDefaultTime || withinLateSubmission;
   };
