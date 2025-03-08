@@ -138,8 +138,8 @@ const Charts = () => {
                   <tr className="bg-gray-700">
                     <th className="p-3 border border-gray-600">Date</th>
                     <th className="p-3 border border-gray-600">Resident</th>
-                    <th className="p-3 border border-gray-600">Reason Edited</th>
-                    <th className="p-3 border border-gray-600">Reason Filled Late</th>
+                    <th className="p-3 border border-gray-600 w-48">Reason Edited</th>
+                    <th className="p-3 border border-gray-600 w-48">Reason Filled Late</th>
                     <th className="p-3 border border-gray-600">View</th>
                     <th className="p-3 border border-gray-600">Action</th>
                   </tr>
