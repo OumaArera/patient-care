@@ -79,7 +79,7 @@ const PendingCharts = ({ patient }) => {
   return (
     <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Pending Charts</h2>
-      {loading ? (
+      {loading && charts.length === 0 ? (
         <div className="flex items-center space-x-2 text-gray-600">
           <Loader className="animate-spin" size={20} />
           <p>Loading charts...</p>
