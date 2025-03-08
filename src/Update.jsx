@@ -20,7 +20,7 @@ const Update = ({ patientId }) => {
   const [lateSubmission, setLateSubmission] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [reasonFilledLate, setReasonFilledLate] = useState("");
-  console.log("Late Data: ", lateSubmission);
+  
   useEffect(() => {
         const careGiver = localStorage.getItem("userId");
         const type = "updates";
@@ -67,7 +67,7 @@ const Update = ({ patientId }) => {
         } else {
           setDate("");
         }
-      
+        console.log("Late Data: ", lateSubmission);
         console.log("Date Updated:", date);
       }, [updateType, lateSubmission]);
       
