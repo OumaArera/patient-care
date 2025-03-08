@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { getCharts } from "../services/getCharts";
+import { updateData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
+
+const URL = "https://patient-care-server.onrender.com/api/v1/charts";
 
 const PendingCharts = ({ patient }) => {
   const [charts, setCharts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [expandedChart, setExpandedChart] = useState(null);
   const [editedData, setEditedData] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState([]);
 
-  useEffect(() => {
+  
+  const fetchCharts = () =>{
     setLoading(true);
     getCharts(patient)
       .then((data) => {
@@ -20,6 +28,9 @@ const PendingCharts = ({ patient }) => {
         setCharts([]);
         setLoading(false);
       });
+  }
+  useEffect(() => {
+    fetchCharts()
   }, [patient]);
   
   
@@ -65,7 +76,8 @@ const PendingCharts = ({ patient }) => {
     }));
   };
 
-  const handleSubmit = (chartId) => {
+  const handleSubmit = async (chartId) => {
+    setIsSubmitting(true);
     const { behaviors, behaviorsDescription } = editedData[chartId];
     const payload = {
       chartId,
@@ -73,7 +85,26 @@ const PendingCharts = ({ patient }) => {
       behaviors,
       behaviorsDescription,
     }
-    console.log("Submitting Updated Data:", payload);
+    const updatedUrl = `${URL}/${chartId}`;
+    try {
+        const response = await updateData(updatedUrl, payload);
+              
+        if (response?.error) {
+            setErrors(errorHandler(response?.error));
+            setTimeout(() => setErrors([]), 5000);
+        } else {
+            setMessage("Data updated successfully");
+            setReasonEdited("");
+            setTimeout(() => fetchCharts(), 5000);
+            setTimeout(() => setMessage(""), 5000);
+        }
+        
+    } catch (error) {
+        setErrors(["An error occurred. Please try again."]);
+        setTimeout(() => setErrors([]), 5000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -158,13 +189,20 @@ const PendingCharts = ({ patient }) => {
                     </li>
                   ))}
                 </ul>
-
+                {errors.length > 0 && (
+                  <div className="mb-4 p-3 rounded">
+                      {errors.map((error, index) => (
+                      <p key={index} className="text-sm text-red-600">{error}</p>
+                      ))}
+                  </div>
+                  )}
+                {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
                 {chart.status === "declined" && (
                   <button
                     onClick={() => handleSubmit(chart.chartId)}
                     className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                   >
-                    Submit Updates
+                    {isSubmitting? "Submitting..." : "Submit"}
                   </button>
                 )}
               </div>
