@@ -127,6 +127,7 @@ const ChartPatient = () => {
                 <button
                   className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                   onClick={() => {
+                    console.log("Hello, World!")
                     setShowCharts(true);
                   }}
                 >
