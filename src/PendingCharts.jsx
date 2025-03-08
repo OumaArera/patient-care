@@ -67,12 +67,13 @@ const PendingCharts = ({ patient }) => {
 
   const handleSubmit = (chartId) => {
     const { behaviors, behaviorsDescription } = editedData[chartId];
-    console.log("Submitting Updated Data:", {
+    const payload = {
       chartId,
       status: "pending",
       behaviors,
       behaviorsDescription,
-    });
+    }
+    console.log("Submitting Updated Data:", payload);
   };
 
   return (
