@@ -9,19 +9,19 @@ const PendingCharts = ({ patient }) => {
   const [editedData, setEditedData] = useState({});
 
   useEffect(() => {
-    setLoading(true); 
+    setLoading(true);
     getCharts(patient)
       .then((data) => {
         const filteredCharts = data?.responseObject?.filter(chart => chart.status !== "approved") || [];
         setCharts(filteredCharts);
+        setLoading(false);
       })
       .catch(() => {
         setCharts([]);
-      })
-      .finally(() => {
         setLoading(false);
       });
   }, [patient]);
+  
   
 
   const toggleExpand = (chartId) => {
