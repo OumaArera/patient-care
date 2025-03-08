@@ -175,8 +175,8 @@ const Updates = () => {
                             <th className="border border-gray-700 p-2">Type of Update</th>
                             <th className="border border-gray-700 p-2">Weight</th>
                             <th className="border border-gray-700 p-2">Weight Deviation</th>
-                            <th className="border border-gray-700 p-2">Reason Edited</th>
-                            <th className="border border-gray-700 p-2">Reason Filled Late</th>
+                            <th className="border border-gray-700 p-2 w-48">Reason Edited</th>
+                            <th className="border border-gray-700 p-2 w-48">Reason Filled Late</th>
                         </tr>
                     </thead>
                     <tbody>
