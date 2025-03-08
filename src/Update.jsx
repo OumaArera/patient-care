@@ -35,11 +35,11 @@ const Update = ({ patientId }) => {
     }).toString();
 
     getData(`${URL}?${queryParams}`)
-        .then((data) => {
-            setLateSubmission(data.responseObject || []);
-        })
-        .catch(() => {})
-        .finally(() => setLoadingLate(false))
+      .then((data) => {
+          setLateSubmission(data.responseObject || []);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingLate(false))
   }, [patientId]);
 
   useEffect(() => {
@@ -48,35 +48,42 @@ const Update = ({ patientId }) => {
     const dateOfMonth = today.getDate();
     const hour = today.getHours();
     let isValid = false;
+    let selectedDate = ""; // Default empty
+    let lateSubmissionEntry = null; // Track the first valid late submission
 
+    // Check for valid weekly or monthly update time
     if (updateType === "weekly") {
-        isValid = day === 5 && hour < 12;
+      isValid = day === 5 && hour >= 8 && hour < 12;
     } else if (updateType === "monthly") {
-        isValid = [1, 2, 3].includes(dateOfMonth);
+      isValid = [1, 2, 3].includes(dateOfMonth);
     }
 
-    let selectedDate = ""; // Default empty
+    // Check for valid late submission
+    for (let entry of lateSubmission) {
+      const startTime = new Date(entry.start).getTime();
+      const endTime = startTime + entry.duration * 60000; // Convert duration (minutes) to milliseconds
+      const now = new Date().getTime();
 
-    const withinLateSubmission = lateSubmission.some((entry) => {
-        const startTime = new Date(entry.start).getTime();
-        const endTime = startTime + entry.duration * 60000;
-        const now = new Date().getTime();
+      if (now >= startTime && now <= endTime) {
+        selectedDate = new Date(endTime).toISOString().split("T")[0];
+        lateSubmissionEntry = entry; // Store the first valid late submission
+        break; // Stop after the first valid entry
+      }
+    }
 
-        if (now >= startTime && now <= endTime) {
-            selectedDate = new Date(endTime).toISOString().split("T")[0]; // Set endTime as date
-            return true;
-        }
-        return false;
-    });
-
-    if (isValid || withinLateSubmission) {
+    if (isValid || lateSubmissionEntry) {
         setDate(selectedDate || today.toISOString().split("T")[0]);
+        if (lateSubmissionEntry) {
+            // Logic to allow user to pick a date and provide a reason
+          console.log("Late Submission Allowed:", lateSubmissionEntry);
+        }
     } else {
         setDate("");
     }
 
     console.log("Late Data: ", lateSubmission);
   }, [updateType, lateSubmission]);
+
 
       
       
