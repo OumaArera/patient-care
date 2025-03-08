@@ -48,8 +48,8 @@ const Update = ({ patientId }) => {
     const dateOfMonth = today.getDate();
     const hour = today.getHours();
     let isValid = false;
-    let selectedDate = ""; // Default empty
-    let lateSubmissionEntry = null; // Track the first valid late submission
+    let selectedDate = "";
+    let lateSubmissionEntry = null;
 
     // Check for valid weekly or monthly update time
     if (updateType === "weekly") {
@@ -74,20 +74,11 @@ const Update = ({ patientId }) => {
     if (isValid || lateSubmissionEntry) {
         setDate(selectedDate || today.toISOString().split("T")[0]);
         if (lateSubmissionEntry) {
-            // Logic to allow user to pick a date and provide a reason
-          console.log("Late Submission Allowed:", lateSubmissionEntry);
         }
     } else {
         setDate("");
     }
-
-    console.log("Selected Date: ", selectedDate);
   }, [updateType, lateSubmission]);
-
-
-      
-      
-  
 
   const handleWeightChange = (e) => {
     setWeight(e.target.value);
@@ -174,7 +165,7 @@ const Update = ({ patientId }) => {
                 const now = new Date();
                 const startTime = new Date(entry.start);
                 const endTime = new Date(startTime.getTime() + entry.duration * 60000);
-                return now >= startTime && now <= endTime; // Only include the active time slot
+                return now >= startTime && now <= endTime; 
               })
               .map((entry) => {
                 const startTime = new Date(entry.start);
