@@ -59,11 +59,14 @@ const Charts = () => {
     setShow(false);
   };
 
-  const last20Days = [...Array(31)].map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    return d.toISOString().split("T")[0];
-  });
+  const currentDate = new Date();
+  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  const last20Days = [];
+
+  for (let d = new Date(firstDayOfMonth); d <= currentDate; d.setDate(d.getDate() + 1)) {
+    last20Days.push(d.toISOString().split("T")[0]);
+  }
+
 
   const editChart = () =>{
     setShowEdits(false);
