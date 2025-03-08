@@ -50,16 +50,15 @@ const Update = ({ patientId }) => {
         let isValid = false;
       
         if (updateType === "weekly") {
-          isValid = day === 5 && hour < 12; // Friday before noon
+          isValid = day === 5 && hour < 12;
         } else if (updateType === "monthly") {
-          isValid = [1, 2, 3].includes(dateOfMonth); // 1st - 3rd of the month
+          isValid = [1, 2, 3].includes(dateOfMonth);
         }
       
-        // Check late submission condition
         const withinLateSubmission = lateSubmission.some((entry) => {
-          const startTime = new Date(entry.start).getTime(); 
+          const startTime = new Date(entry.start).getTime();
           const endTime = startTime + entry.duration * 60000;
-          const now = new Date().getTime(); 
+          const now = new Date().getTime();
           return now >= startTime && now <= endTime;
         });
       
@@ -68,7 +67,10 @@ const Update = ({ patientId }) => {
         } else {
           setDate("");
         }
+      
+        console.log("Date Updated:", date);
       }, [updateType, lateSubmission]);
+      
       
   
 
