@@ -59,10 +59,13 @@ const PendingCharts = ({ patient }) => {
   const handleDescriptionChange = (chartId, index, value) => {
     setEditedData((prevData) => {
       const updatedChart = { ...prevData[chartId] };
-      updatedChart.behaviorsDescription[index].response = value;
+      updatedChart.behaviorsDescription = updatedChart.behaviorsDescription.map((desc, i) => 
+        i === index ? { ...desc, response: value } : desc
+      );
       return { ...prevData, [chartId]: updatedChart };
     });
   };
+  
 
   const enableEditing = (chart) => {
     setEditedData((prevData) => ({
@@ -182,14 +185,14 @@ const PendingCharts = ({ patient }) => {
                         desc.descriptionType === "Date" ? (
                           <input
                             type="date"
-                            value={desc.response}
+                            value={editedData[chart.chartId]?.behaviorsDescription[index]?.response || ""}
                             onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
                             className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
                           />
                         ) : (
                           <input
                             type="text"
-                            value={desc.response}
+                            value={editedData[chart.chartId]?.behaviorsDescription[index]?.response || ""}
                             onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
                             className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
                           />
