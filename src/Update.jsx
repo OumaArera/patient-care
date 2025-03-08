@@ -22,54 +22,62 @@ const Update = ({ patientId }) => {
   const [reasonFilledLate, setReasonFilledLate] = useState("");
   
   useEffect(() => {
-        const careGiver = localStorage.getItem("userId");
-        const type = "updates";
-    
-        if (!patientId || !careGiver) return;
-        setLoadingLate(true);
-    
-        const queryParams = new URLSearchParams({
-          patient: patientId,
-          careGiver,
-          type,
-        }).toString();
-    
-        getData(`${URL}?${queryParams}`)
-            .then((data) => {
-                setLateSubmission(data.responseObject || []);
-            })
-            .catch(() => {})
-            .finally(() => setLoadingLate(false))
-      }, [patientId]);
+    const careGiver = localStorage.getItem("userId");
+    const type = "updates";
 
-      useEffect(() => {
-        const today = new Date();
-        const day = today.getDay();
-        const dateOfMonth = today.getDate();
-        const hour = today.getHours();
-        let isValid = false;
-      
-        if (updateType === "weekly") {
-          isValid = day === 5 && hour < 12;
-        } else if (updateType === "monthly") {
-          isValid = [1, 2, 3].includes(dateOfMonth);
+    if (!patientId || !careGiver) return;
+    setLoadingLate(true);
+
+    const queryParams = new URLSearchParams({
+      patient: patientId,
+      careGiver,
+      type,
+    }).toString();
+
+    getData(`${URL}?${queryParams}`)
+        .then((data) => {
+            setLateSubmission(data.responseObject || []);
+        })
+        .catch(() => {})
+        .finally(() => setLoadingLate(false))
+  }, [patientId]);
+
+  useEffect(() => {
+    const today = new Date();
+    const day = today.getDay();
+    const dateOfMonth = today.getDate();
+    const hour = today.getHours();
+    let isValid = false;
+
+    if (updateType === "weekly") {
+        isValid = day === 5 && hour < 12;
+    } else if (updateType === "monthly") {
+        isValid = [1, 2, 3].includes(dateOfMonth);
+    }
+
+    let selectedDate = ""; // Default empty
+
+    const withinLateSubmission = lateSubmission.some((entry) => {
+        const startTime = new Date(entry.start).getTime();
+        const endTime = startTime + entry.duration * 60000;
+        const now = new Date().getTime();
+
+        if (now >= startTime && now <= endTime) {
+            selectedDate = new Date(endTime).toISOString().split("T")[0]; // Set endTime as date
+            return true;
         }
-      
-        const withinLateSubmission = lateSubmission.some((entry) => {
-          const startTime = new Date(entry.start).getTime();
-          const endTime = startTime + entry.duration * 60000;
-          const now = new Date().getTime();
-          return now >= startTime && now <= endTime;
-        });
-      
-        if (isValid || withinLateSubmission) {
-          setDate(today.toISOString().split("T")[0]);
-        } else {
-          setDate("");
-        }
-        console.log("Late Data: ", lateSubmission);
-        console.log("Date Updated:", date);
-      }, [updateType, lateSubmission]);
+        return false;
+    });
+
+    if (isValid || withinLateSubmission) {
+        setDate(selectedDate || today.toISOString().split("T")[0]);
+    } else {
+        setDate("");
+    }
+
+    console.log("Late Data: ", lateSubmission);
+  }, [updateType, lateSubmission]);
+
       
       
   
