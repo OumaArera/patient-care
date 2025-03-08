@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { postUpdates } from "../services/postUpdates";
 import { errorHandler } from "../services/errorHandler";
+import { getData } from "../services/updatedata";
+import CustomDatePicker from "./CustomDatePicker";
+const URL = "https://patient-care-server.onrender.com/api/v1/late-submissions"
 
 const Update = ({ patientId }) => {
   const [updateType, setUpdateType] = useState("weekly");
@@ -12,29 +15,56 @@ const Update = ({ patientId }) => {
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState([]);
   const [blink, setBlink] = useState(true);
+  const [lateSubmission, setLateSubmission] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [reasonFilledLate, setReasonFilledLate] = useState("");
 
   useEffect(() => {
-    const today = new Date();
-    const day = today.getDay();
-    const dateOfMonth = today.getDate();
-    const hour = today.getHours();
-  
-    if (updateType === "weekly") {
-      if (
-        day === 5 && hour < 12 
-      ) {
-        setDate(today.toISOString().split("T")[0]);
-      } else {
-        setDate("");
-      }
-    } else if (updateType === "monthly") {
-      if ([1, 2, 3].includes(dateOfMonth)) {
-        setDate(today.toISOString().split("T")[0]);
-      } else {
-        setDate("");
-      }
-    }
-  }, [updateType]);
+        const careGiver = localStorage.getItem("userId");
+        const type = "updates";
+    
+        if (!charts.patientId || !careGiver) return;
+    
+        const queryParams = new URLSearchParams({
+          patient: patientId,
+          careGiver,
+          type,
+        }).toString();
+    
+        getData(`${URL}?${queryParams}`)
+            .then((data) => {
+                setLateSubmission(data.responseObject || []);
+            })
+            .catch(() => {}); 
+      }, [patientId]);
+
+      useEffect(() => {
+        const today = new Date();
+        const day = today.getDay();
+        const dateOfMonth = today.getDate();
+        const hour = today.getHours();
+        let isValid = false;
+      
+        if (updateType === "weekly") {
+          isValid = day === 5 && hour < 12; // Friday before noon
+        } else if (updateType === "monthly") {
+          isValid = [1, 2, 3].includes(dateOfMonth); // 1st - 3rd of the month
+        }
+      
+        // Check late submission condition
+        const withinLateSubmission = lateSubmission.some((entry) => {
+          const startTime = new Date(entry.start);
+          const endTime = new Date(startTime.getTime() + entry.duration * 60000);
+          return today >= startTime && today <= endTime;
+        });
+      
+        if (isValid || withinLateSubmission) {
+          setDate(today.toISOString().split("T")[0]);
+        } else {
+          setDate("");
+        }
+      }, [updateType, lateSubmission]);
+      
   
 
   const handleWeightChange = (e) => {
@@ -54,8 +84,9 @@ const Update = ({ patientId }) => {
     const data = {
       patient: patientId,
       type: updateType,
-      dateTaken: date,
+      dateTaken: lateSubmission.length > 0 && date ? selectedDate.toISOString().split("T")[0] : date,
       notes,
+      reasonFilledLate,
       ...(updateType === "monthly" && weight ? { weight: weight } : {}),
     };
     try {
@@ -109,6 +140,51 @@ const Update = ({ patientId }) => {
         disabled
       />
       {error && <p className="text-red-500 mb-2">{error}</p>}
+      {lateSubmission.length > 0 && date && (
+        <>
+          <div className="mb-4">
+            {lateSubmission
+              .filter((entry) => {
+                const now = new Date();
+                const startTime = new Date(entry.start);
+                const endTime = new Date(startTime.getTime() + entry.duration * 60000);
+                return now >= startTime && now <= endTime; // Only include the active time slot
+              })
+              .map((entry) => {
+                const startTime = new Date(entry.start);
+                const endTime = new Date(startTime.getTime() + entry.duration * 60000);
+                return (
+                  <div key={entry.start} className="mb-2">
+                    <label className="text-red-600">
+                      Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
+                    </label>
+                  </div>
+                );
+              })}
+            <br />
+            <label className="block text-sm font-medium text-white mb-2">
+              Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
+            </label>
+            <CustomDatePicker 
+              updateType={updateType} 
+              selectedDate={selectedDate} 
+              setSelectedDate={setSelectedDate} 
+            />
+          </div>
+          <div className="mb-4">
+          <label className="block text-sm font-medium text-white mb-2">
+            Reason for Late Submission (Required):
+          </label>
+          <textarea
+            value={reasonFilledLate}
+            onChange={(e) => setReasonFilledLate(e.target.value)}
+            placeholder="Enter reason here..."
+            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            required
+        />
+      </div>
+      </>
+      )}
 
       <label className="block mb-2">Notes:</label>
       <textarea
@@ -143,15 +219,31 @@ const Update = ({ patientId }) => {
         </div>
       )}
       {updateType === "weekly" && !date && (
-        <p className={`mb-2 text-red-500 ${blink ? "opacity-100" : "opacity-0"}`}>
-          Weekly updates must be submitted on Friday before noon.
-        </p>
+        <div className="mt-2 mb-4 bg-red-100 border-l-4 border-red-500 p-4 rounded shadow-md">
+          <p className={`text-xl md:text-2xl font-bold text-red-600 ${blink ? "opacity-100" : "opacity-0"} transition-opacity duration-500 flex items-center`}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mr-3 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            CHART ENTRY RESTRICTED
+          </p>
+          <p className="text-lg md:text-xl text-red-800 mt-2 font-medium">
+          Weekly updates must be submitted on <span className="underline font-bold">Friday before noon</span>.
+          </p>
+        </div>
       )}
 
       {updateType === "monthly" && !date && (
-        <p className="text-red-500 mb-2">
-          The monthly updates must be done from date 1, to date 3 of the month.
-        </p>
+        <div className="mt-2 mb-4 bg-red-100 border-l-4 border-red-500 p-4 rounded shadow-md">
+          <p className={`text-xl md:text-2xl font-bold text-red-600 ${blink ? "opacity-100" : "opacity-0"} transition-opacity duration-500 flex items-center`}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mr-3 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            CHART ENTRY RESTRICTED
+          </p>
+          <p className="text-lg md:text-xl text-red-800 mt-2 font-medium">
+          The monthly updates must be done from <span className="underline font-bold">date 1</span> to <span className="underline font-bold">date 3 of the month</span>.
+          </p>
+        </div>
       )}
 
       <button

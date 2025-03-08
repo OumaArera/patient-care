@@ -147,7 +147,7 @@ const LateSubmission = ({ patient, type }) => {
                         className="w-full mt-6 p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
                         onClick={handleSubmit}
                     >
-                        {isSubmitting ? "Submitting" : "Submit"}
+                        {isSubmitting ? "Submitting..." : "Submit"}
                     </button>
                 </>
             )}
