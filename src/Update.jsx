@@ -23,7 +23,7 @@ const Update = ({ patientId }) => {
         const careGiver = localStorage.getItem("userId");
         const type = "updates";
     
-        if (!charts.patientId || !careGiver) return;
+        if (!patientId || !careGiver) return;
     
         const queryParams = new URLSearchParams({
           patient: patientId,
