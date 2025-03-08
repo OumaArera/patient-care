@@ -20,7 +20,6 @@ const PendingCharts = ({ patient }) => {
     setLoadingCharts(true);
     getCharts(patient)
       .then((data) => {
-        
         const filteredCharts = data?.responseObject?.filter(chart => chart.status !== "approved") || [];
         setCharts(filteredCharts);
         setLoadingCharts(false);
@@ -31,11 +30,7 @@ const PendingCharts = ({ patient }) => {
       });
   }
   useEffect(() => {
-    let mounted = true;
-    fetchCharts();
-    return () => {
-      mounted = false;
-    };
+    fetchCharts()
   }, [patient]);
   
   
