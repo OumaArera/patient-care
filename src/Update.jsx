@@ -57,7 +57,7 @@ const Update = ({ patientId }) => {
       
         // Check late submission condition
         const withinLateSubmission = lateSubmission.some((entry) => {
-          const startTime = new Date(entry.start).getTime(); // Convert to timestamp
+          const startTime = new Date(entry.start).getTime(); 
           const endTime = startTime + entry.duration * 60000;
           const now = new Date().getTime(); 
           return now >= startTime && now <= endTime;
