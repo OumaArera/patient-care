@@ -169,8 +169,8 @@ const PendingCharts = ({ patient }) => {
                       "Behavior_Description",
                       "Trigger",
                       "Care_Giver_Intervention",
-                      "Reported_Provider",
-                      "Care_Team",
+                      "Reported_Provider_And_Careteam",
+                      "Outcome",
                     ];
                     return order.indexOf(a.descriptionType) - order.indexOf(b.descriptionType);
                   }).map((desc, index) => (
