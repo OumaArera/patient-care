@@ -60,13 +60,9 @@ const Update = ({ patientId }) => {
 
     // Check for valid late submission
     for (let entry of lateSubmission) {
-      console.log("Entry: ", entry);
       const startTime = new Date(entry.start).getTime();
-      console.log("Start: ", startTime)
       const endTime = startTime + entry.duration * 60000;
-      console.log("End: ", endTime);
       const now = new Date().getTime();
-      console.log("Now: ", now);
 
       if (now >= startTime && now <= endTime) {
         selectedDate = new Date(endTime).toISOString().split("T")[0];
