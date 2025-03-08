@@ -196,7 +196,6 @@ const Updates = () => {
                                         <button
                                             className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                                             onClick={() => {
-                                                console.log("Hello, World!")
                                                 setAllowLate(true)
                                             }}
                                             >
@@ -206,7 +205,7 @@ const Updates = () => {
                                     <td className="border border-gray-700 p-2">    
                                         <button
                                             className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                                            onClick={() => {console.log("Hello, World!")}}
+                                            onClick={() => {console.log("Hello, World!", update)}}
                                             >
                                             Edit
                                         </button></td>
