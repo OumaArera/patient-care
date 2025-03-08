@@ -163,26 +163,37 @@ const PendingCharts = ({ patient }) => {
 
                 <h4 className="font-semibold text-gray-700 mt-3">Behavior Descriptions</h4>
                 <ul>
-                  {(editedData[chart.chartId] || chart).behaviorsDescription.map((desc, index) => (
+                  {([...((editedData[chart.chartId] || chart).behaviorsDescription)]).sort((a, b) => {
+                    const order = [
+                      "Date",
+                      "Behavior_Description",
+                      "Trigger",
+                      "Care_Giver_Intervention",
+                      "Reported_Provider",
+                      "Care_Team",
+                    ];
+                    return order.indexOf(a.descriptionType) - order.indexOf(b.descriptionType);
+                  }).map((desc, index) => (
                     <li key={index} className="flex flex-col my-2">
-                      <label className="text-gray-600 font-medium">{desc.descriptionType}</label>
+                      <label className="text-gray-600 font-medium">
+                        {desc.descriptionType.replace(/_/g, " ")}
+                      </label>
                       {chart.status === "declined" ? (
                         desc.descriptionType === "Date" ? (
                           <input
-                          type="date"
-                          value={desc.response}
-                          onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
-                          className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
-                        />
-                        ):(
+                            type="date"
+                            value={desc.response}
+                            onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
+                            className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
+                          />
+                        ) : (
                           <input
-                          type="text"
-                          value={desc.response}
-                          onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
-                          className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
-                        />
+                            type="text"
+                            value={desc.response}
+                            onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
+                            className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
+                          />
                         )
-                        
                       ) : (
                         <p className="text-gray-600">{desc.response || "N/A"}</p>
                       )}
