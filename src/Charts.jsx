@@ -86,7 +86,7 @@ const Charts = () => {
           <p className="text-gray-400">Loading residents...</p>
         </div>
       ) : (
-        <>
+        <div className="items-center">
           <label className="block mb-2 text-lg">Select Branch:</label>
           <select
             onChange={(e) => setSelectedBranch(e.target.value)}
@@ -121,7 +121,7 @@ const Charts = () => {
                 ))}
             </select>
           <br />
-        </>
+        </div>
       )}
 
       {selectedPatient && (
