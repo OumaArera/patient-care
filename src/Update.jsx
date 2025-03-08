@@ -57,9 +57,10 @@ const Update = ({ patientId }) => {
       
         // Check late submission condition
         const withinLateSubmission = lateSubmission.some((entry) => {
-          const startTime = new Date(entry.start);
-          const endTime = new Date(startTime.getTime() + entry.duration * 60000);
-          return today >= startTime && today <= endTime;
+          const startTime = new Date(entry.start).getTime(); // Convert to timestamp
+          const endTime = startTime + entry.duration * 60000;
+          const now = new Date().getTime(); 
+          return now >= startTime && now <= endTime;
         });
       
         if (isValid || withinLateSubmission) {
