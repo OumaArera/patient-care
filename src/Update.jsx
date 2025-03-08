@@ -60,14 +60,18 @@ const Update = ({ patientId }) => {
 
     // Check for valid late submission
     for (let entry of lateSubmission) {
+      console.log("Entry: ", entry);
       const startTime = new Date(entry.start).getTime();
-      const endTime = startTime + entry.duration * 60000; // Convert duration (minutes) to milliseconds
+      console.log("Start: ", startTime)
+      const endTime = startTime + entry.duration * 60000;
+      console.log("End: ", endTime);
       const now = new Date().getTime();
+      console.log("Now: ", now);
 
       if (now >= startTime && now <= endTime) {
         selectedDate = new Date(endTime).toISOString().split("T")[0];
-        lateSubmissionEntry = entry; // Store the first valid late submission
-        break; // Stop after the first valid entry
+        lateSubmissionEntry = entry;
+        break;
       }
     }
 
