@@ -79,6 +79,7 @@ const PendingCharts = ({ patient }) => {
   return (
     <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Pending Charts</h2>
+      <>
       {loading && charts.length === 0 ? (
         <div className="flex items-center space-x-2 text-gray-600">
           <Loader className="animate-spin" size={20} />
@@ -133,12 +134,22 @@ const PendingCharts = ({ patient }) => {
                     <li key={index} className="flex flex-col my-2">
                       <label className="text-gray-600 font-medium">{desc.descriptionType}</label>
                       {chart.status === "declined" ? (
-                        <input
+                        desc.descriptionType === "Date" ? (
+                          <input
                           type="date"
                           value={desc.response}
                           onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
                           className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
                         />
+                        ):(
+                          <input
+                          type="text"
+                          value={desc.response}
+                          onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
+                          className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
+                        />
+                        )
+                        
                       ) : (
                         <p className="text-gray-600">{desc.response || "N/A"}</p>
                       )}
@@ -159,6 +170,7 @@ const PendingCharts = ({ patient }) => {
           </div>
         ))
       )}
+      </>
     </div>
   );
 };
