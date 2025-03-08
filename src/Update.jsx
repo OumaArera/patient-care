@@ -81,7 +81,7 @@ const Update = ({ patientId }) => {
         setDate("");
     }
 
-    console.log("Late Data: ", lateSubmission);
+    console.log("Selected Date: ", selectedDate);
   }, [updateType, lateSubmission]);
 
 
