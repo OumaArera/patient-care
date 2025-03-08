@@ -115,24 +115,26 @@ const Updates = () => {
                 )}
 
                 {selectedPatient && (
+                    <>
                     <button
                         className="p-2 bg-blue-600 text-white rounded"
                         onClick={() => setShowResubmitUpdate(true)}
                     >
                         New Update
                     </button>
+                    <button
+                        className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+                        onClick={() => {
+                            setAllowLate(true)
+                        }}
+                        >
+                        Allow
+                    </button>
+                </>
                 )}
 
                 {patients.length > 0 && (
                     <>
-                        <button
-                            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                            onClick={() => {
-                                setAllowLate(true)
-                            }}
-                            >
-                            Allow
-                        </button>
                         <select
                             className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
                             onChange={(e) => setSelectedYear(e.target.value)}

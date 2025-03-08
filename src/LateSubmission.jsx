@@ -123,6 +123,7 @@ const LateSubmission = ({ patient, type }) => {
                         <option value="60">1 hour</option>
                         <option value="120">2 hours</option>
                         <option value="180">3 hours</option>
+                        <option value="2160">36 hours(temporary)</option>
                     </select>
                     <label className="block mt-4 mb-2 text-blue-300 font-medium">Reason for Late Submission</label>
                     <textarea
