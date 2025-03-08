@@ -5,6 +5,7 @@ import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
 import NewCharts from "./NewCharts";
+import PendingCharts from "./PendingCharts";
 
 const ChartPatient = () => {
   const [loading, setLoading] = useState(false);
@@ -16,6 +17,7 @@ const ChartPatient = () => {
   const [showNewCharts, setShowNewCharts] = useState(false);
   const overlayRef = useRef(null);
   const [patients, setPatients] = useState([]);
+  const [showCharts, setShowCharts] = useState(false);
   
 
   const fetchAllChartData = async (patientId) => {
@@ -73,6 +75,10 @@ const ChartPatient = () => {
     setShowNewCharts(false)
   }
 
+  const closePendingCharts = () =>{
+    setShowCharts(false);
+  }
+
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Residents</h2>
@@ -118,6 +124,14 @@ const ChartPatient = () => {
                     Charts
                   </button>
                 )}
+                <button
+                  className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                  onClick={() => {
+                    setShowCharts(true);
+                  }}
+                >
+                  Pending Charts
+                </button>
               </div>
 
               {/* Overlay for NewCharts */}
@@ -134,6 +148,25 @@ const ChartPatient = () => {
                     <button
                       className="absolute top-2 right-2 text-white hover:text-gray-400"
                       onClick={closChartModal}
+                    >
+                      ✖
+                    </button>
+                  </div>
+                </div>
+              )}
+              {showCharts && selectedPatientId &&(
+                <div
+                  className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+                  onClick={closePendingCharts}
+                >
+                  <div
+                    className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <PendingCharts patient={selectedPatientId} />
+                    <button
+                      className="absolute top-2 right-2 text-white hover:text-gray-400"
+                      onClick={closePendingCharts}
                     >
                       ✖
                     </button>
