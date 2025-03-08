@@ -3,6 +3,7 @@ import { postUpdates } from "../services/postUpdates";
 import { errorHandler } from "../services/errorHandler";
 import { getData } from "../services/updatedata";
 import CustomDatePicker from "./CustomDatePicker";
+import { Loader } from "lucide-react";
 const URL = "https://patient-care-server.onrender.com/api/v1/late-submissions"
 
 const Update = ({ patientId }) => {
@@ -12,6 +13,7 @@ const Update = ({ patientId }) => {
   const [weight, setWeight] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingLate, setLoadingLate] = useState(false);
   const [errors, setErrors] = useState([]);
   const [message, setMessage] = useState([]);
   const [blink, setBlink] = useState(true);
@@ -24,6 +26,7 @@ const Update = ({ patientId }) => {
         const type = "updates";
     
         if (!patientId || !careGiver) return;
+        setLoadingLate(true);
     
         const queryParams = new URLSearchParams({
           patient: patientId,
@@ -35,7 +38,8 @@ const Update = ({ patientId }) => {
             .then((data) => {
                 setLateSubmission(data.responseObject || []);
             })
-            .catch(() => {}); 
+            .catch(() => {})
+            .finally(() => setLoadingLate(false))
       }, [patientId]);
 
       useEffect(() => {
@@ -120,8 +124,12 @@ const Update = ({ patientId }) => {
 
   return (
     <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Update Resident Data</h2>
-
+      <h2 className="text-2xl font-bold mb-4">Provide Updates</h2>
+      {loadingLate && (
+        <div className="flex justify-center items-center h-64">
+          <Loader className="animate-spin" size={32} />
+        </div>
+      )}
       <label className="block mb-2">Select Update Type:</label>
       <select
         value={updateType}
