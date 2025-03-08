@@ -9,15 +9,20 @@ const PendingCharts = ({ patient }) => {
   const [editedData, setEditedData] = useState({});
 
   useEffect(() => {
+    setLoading(true); 
     getCharts(patient)
       .then((data) => {
-        setLoading(false);
         const filteredCharts = data?.responseObject?.filter(chart => chart.status !== "approved") || [];
         setCharts(filteredCharts);
       })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .catch(() => {
+        setCharts([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [patient]);
+  
 
   const toggleExpand = (chartId) => {
     if (expandedChart === chartId) {
@@ -52,7 +57,7 @@ const PendingCharts = ({ patient }) => {
     setEditedData((prevData) => ({
       ...prevData,
       [chart.chartId]: {
-        ...chart,
+        chartId: chart.chartId,
         status: "pending",
         behaviors: chart.behaviors.map((b) => ({ ...b })),
         behaviorsDescription: chart.behaviorsDescription.map((bd) => ({ ...bd })),
@@ -61,7 +66,13 @@ const PendingCharts = ({ patient }) => {
   };
 
   const handleSubmit = (chartId) => {
-    console.log("Submitting Updated Data:", editedData[chartId]);
+    const { behaviors, behaviorsDescription } = editedData[chartId];
+    console.log("Submitting Updated Data:", {
+      chartId,
+      status: "pending",
+      behaviors,
+      behaviorsDescription,
+    });
   };
 
   return (
@@ -122,7 +133,7 @@ const PendingCharts = ({ patient }) => {
                       <label className="text-gray-600 font-medium">{desc.descriptionType}</label>
                       {chart.status === "declined" ? (
                         <input
-                          type="text"
+                          type="date"
                           value={desc.response}
                           onChange={(e) => handleDescriptionChange(chart.chartId, index, e.target.value)}
                           className="border p-2 rounded mt-1 bg-white text-gray-800 focus:ring-2 focus:ring-blue-300"
