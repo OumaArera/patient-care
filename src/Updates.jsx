@@ -166,7 +166,7 @@ const Updates = () => {
                             <th className="border border-gray-700 p-2">Weight</th>
                             <th className="border border-gray-700 p-2">Weight Deviation</th>
                             <th className="border border-gray-700 p-2">Allow Late  Submission</th>
-                            <th className="border border-gray-700 p-2">Edit</th>
+                            {/* <th className="border border-gray-700 p-2">Edit</th> */}
                         </tr>
                     </thead>
                     <tbody>
@@ -202,13 +202,13 @@ const Updates = () => {
                                             Allow
                                         </button>
                                     </td>
-                                    <td className="border border-gray-700 p-2">    
+                                    {/* <td className="border border-gray-700 p-2">    
                                         <button
                                             className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                                             onClick={() => {console.log("Hello, World!", update)}}
                                             >
                                             Edit
-                                        </button></td>
+                                        </button></td> */}
                                 </tr>
                             );
                         })}
