@@ -107,12 +107,23 @@ const ChartPatient = () => {
                 {loadingCharts && selectedPatientId === patient.patientId ? (
                   <p className="text-sm text-gray-300">Loading charts...</p>
                 ) : chartData.length > 0 && selectedPatientId === patient.patientId ? (
+                  <>
                   <button
                     className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
                     onClick={() => setShowNewCharts(true)}
                   >
                     View Charts
                   </button>
+                  <button
+                    className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
+                    onClick={() => {
+                      console.log("Hello, World!")
+                      setShowCharts(true);
+                    }}
+                  >
+                    Pending Charts
+                  </button>
+                </>
                 ) : (
                   <button
                     className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
@@ -124,15 +135,7 @@ const ChartPatient = () => {
                     Charts
                   </button>
                 )}
-                <button
-                  className="px-4 py-2 border border-blue-500 text-blue-600 rounded-md hover:bg-blue-100"
-                  onClick={() => {
-                    console.log("Hello, World!")
-                    setShowCharts(true);
-                  }}
-                >
-                  Pending Charts
-                </button>
+                
               </div>
 
               {/* Overlay for NewCharts */}
