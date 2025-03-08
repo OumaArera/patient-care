@@ -8,7 +8,7 @@ const URL = "https://patient-care-server.onrender.com/api/v1/charts";
 
 const PendingCharts = ({ patient }) => {
   const [charts, setCharts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingCharts, setLoadingCharts] = useState(false);
   const [expandedChart, setExpandedChart] = useState(null);
   const [editedData, setEditedData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,16 +17,17 @@ const PendingCharts = ({ patient }) => {
 
   
   const fetchCharts = () =>{
-    setLoading(true);
+    setLoadingCharts(true);
     getCharts(patient)
       .then((data) => {
+        setLoadingCharts(false);
         const filteredCharts = data?.responseObject?.filter(chart => chart.status !== "approved") || [];
         setCharts(filteredCharts);
-        setLoading(false);
+        
       })
       .catch(() => {
         setCharts([]);
-        setLoading(false);
+        setLoadingCharts(false);
       });
   }
   useEffect(() => {
@@ -111,7 +112,7 @@ const PendingCharts = ({ patient }) => {
     <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Pending Charts</h2>
       <>
-      {loading ? (
+      {loadingCharts ? (
         <div className="flex items-center space-x-2 text-gray-600">
           <Loader className="animate-spin" size={20} />
           <p>Loading charts...</p>
