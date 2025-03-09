@@ -84,7 +84,7 @@ const PendingCharts = ({ patient }) => {
     const { behaviors, behaviorsDescription } = editedData[chartId];
     const payload = {
       chartId,
-      status: "pending",
+      status: "updated",
       behaviors,
       behaviorsDescription,
     }
