@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { errorHandler } from "../services/errorHandler";
 import { updateData } from "../services/updatedata";
-const URL = "https://patient-care-server.onrender.com/api/v1/charts";
+const URL = "https://patient-care-server.onrender.com/api/v1/vitals";
 
 const ReviewVitals = ({ vital, handleVitals }) => {
     const [status, setStatus] = useState("");
