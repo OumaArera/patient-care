@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getVitals } from "../services/getVitals";
+import { getData } from "../services/updatedata";
 import { updateData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
@@ -20,7 +21,7 @@ const PendingVitals = ({ patient }) => {
         setLoading(true);
         getVitals(patient)
             .then((data) => {
-                const filteredVitals = data?.responseObject?.filter(vital => vital.status !== "approved") || [];
+                const filteredVitals = data?.filter(vital => vital.status !== "approved") || [];
                 setVitals(filteredVitals);
                 setLoading(false);
             })
