@@ -144,7 +144,7 @@ const ChartVitals = () => {
                             <p className="text-sm font-bold text-gray-400">DOB: {new Date(patient.dateOfBirth).toLocaleDateString("en-US")}</p>
                             <p className="text-sm font-bold text-gray-400">Diagnosis: {patient.diagnosis}</p>
                             <p className="text-sm font-bold text-gray-400">Physician: {patient.physicianName}</p>
-                            <div className="flex justify-center mt-4">
+                            <div className="flex justify-center space-x-4 mt-4">
                                 <button
                                     className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
                                     onClick={() => handleUpdateClick(patient.patientId)}
