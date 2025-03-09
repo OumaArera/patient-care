@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getVitals } from "../services/getVitals";
-import { getData } from "../services/updatedata";
 import { updateData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
@@ -17,7 +16,8 @@ const PendingVitals = ({ patient }) => {
     const [errors, setErrors] = useState([]); 
     console.log("Patient: ", patient);
 
-    useEffect(() => {
+    
+    const fetchVitals =()=>{
         setLoading(true);
         getVitals(patient)
             .then((data) => {
@@ -29,6 +29,9 @@ const PendingVitals = ({ patient }) => {
                 setVitals([]);
                 setLoading(false);
             });
+    }
+    useEffect(() => {
+        fetchVitals()
     }, [patient]);
 
     const toggleDetails = (vitalId) => {
@@ -45,16 +48,34 @@ const PendingVitals = ({ patient }) => {
         }));
     };
 
-    const handleSubmit = (vitalId) => {
+    const handleSubmit = async (vitalId) => {
         const updatedVital = editedData[vitalId];
         if (!updatedVital) return;
 
         const payload = {
             ...updatedVital,
-            vitalId,
             status: "updated"
         };
-        
+        const updatedUrl = `${URL}/${vitalId}`;
+        try {
+            const response = await updateData(updatedUrl, payload);
+                
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setTimeout(() => fetchVitals(), 5000);
+                setTimeout(() => setMessage(""), 5000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setIsSubmitting(false);
+        }
+    
         console.log("Submitting: ", payload);
     };
 
@@ -104,12 +125,19 @@ const PendingVitals = ({ patient }) => {
                                         
                                         <label className="block mt-2">Pain:</label>
                                         <textarea className="w-full p-2 bg-gray-700 text-white rounded" defaultValue={vital.pain} onChange={(e) => handleInputChange(vital.vitalId, "pain", e.target.value)} />
-                                        
+                                        {errors.length > 0 && (
+                                            <div className="mb-4 p-3 rounded">
+                                                {errors.map((error, index) => (
+                                                <p key={index} className="text-sm text-red-600">{error}</p>
+                                                ))}
+                                            </div>
+                                        )}
+                                        {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
                                         <button
                                             className="mt-3 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
                                             onClick={() => handleSubmit(vital.vitalId)}
                                         >
-                                            Submit
+                                            {isSubmitting ? "Submitting..." : "Submit"}
                                         </button>
                                     </div>
                                 )}
