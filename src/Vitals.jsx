@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getVitals } from "../services/getVitals";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { Loader } from "lucide-react";
+import { Loader, MoreVertical } from "lucide-react";
 import { generateVitalsPDFReport } from "../services/generateVitals";
 import ResubmitVitals from "./ResubmitVitals";
 import UpdateVitals from "./UpdateVitals";
+import ReviewVitals from "./ReviewVitals";
 
 const Vitals = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -21,6 +22,8 @@ const Vitals = () => {
   const [show, setShow] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("");
   const branchNames = [...new Set(patients.map((p) => p.branchName))];
+  const [showOptions, setShowOptions] = useState(false);
+  const [showReview, setShowReview] = useState(false);
   const vitalsPerPage = 10;
 
   const closVitalsModal =()=>{
@@ -82,6 +85,10 @@ const Vitals = () => {
   const handleUpdateVitals =() =>{
     setShow(false);
   }
+
+  const handleReviewVitals = () => {
+    setShowReview(false);
+  };
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -219,16 +226,15 @@ const Vitals = () => {
                   <td className="p-2 border border-gray-700">{v.reasonEdited || ""}</td>
                   <td className="p-2 border border-gray-700">{v.status}</td>
                   <td className="p-2 border border-gray-700">
-                  <button 
-                    className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                    onClick={() =>{
-                      setSelectedVital(v);
-                      setShow(true);
-                      setShowVitals(false);
-                    }}
-                  >
-                  Edit
-                  </button>
+                    <button
+                      className="text-white hover:text-gray-400"
+                      onClick={() => {
+                        setSelectedVital(v);
+                        setShowOptions(true);
+                      }}
+                    >
+                      <MoreVertical size={20} />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -252,6 +258,55 @@ const Vitals = () => {
             </button>
           </div>
         </>
+      )}
+      {showReview && selectedVital && (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={handleReviewVitals}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ReviewVitals vital={selectedVital} handleVitals={fetchVitals} />
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={handleReviewVitals}
+            >
+              ✖
+            </button>
+          </div>
+        </div>
+      )}
+      {showOptions && (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={() => setShowOptions(false)}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[40vw] max-h-[50vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+              onClick={() =>{
+                setShow(true);
+                setShowVitals(false);
+              }}
+            >
+            Edit Vitals
+            </button>
+            <button
+              className="bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={() => {
+                setShowReview(true);
+                setShowOptions(false);
+              }}
+            >
+              Review Vitals
+            </button>
+          </div>
+        </div>
       )}
       {showVitals && !show &&(
         <div
