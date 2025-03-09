@@ -127,7 +127,7 @@ const ChartVitals = () => {
                         <div key={patient.patientId} className="bg-gray-800 p-4 rounded-lg shadow-lg text-left">
                             <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
                             <h3 className="text-lg font-bold">{patient.firstName} {patient.lastName}</h3>
-                            <p className="text-sm font-bold text-gray-400">DOB: {patient.dateOfBirth}</p>
+                            <p className="text-sm font-bold text-gray-400">DOB: {new Date(patient.dateOfBirth).toLocaleDateString("en-US")}</p>
                             <p className="text-sm font-bold text-gray-400">Diagnosis: {patient.diagnosis}</p>
                             <p className="text-sm font-bold text-gray-400">Physician: {patient.physicianName}</p>
                             <div className="flex justify-center mt-4">

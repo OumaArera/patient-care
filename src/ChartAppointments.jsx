@@ -43,7 +43,7 @@ const ChartAppointments = () => {
               <h3 className="text-lg font-bold">
                 {patient.firstName} {patient.lastName}
               </h3>
-              <p className="text-sm font-bold text-gray-400">DOB: {patient.dateOfBirth}</p>
+              <p className="text-sm font-bold text-gray-400">DOB: {new Date(patient.dateOfBirth).toLocaleDateString("en-US")}</p>
               <p className="text-sm font-bold text-gray-400">Diagnosis: {patient.diagnosis}</p>
               <p className="text-sm font-bold text-gray-400">Physician: {patient.physicianName}</p>
 

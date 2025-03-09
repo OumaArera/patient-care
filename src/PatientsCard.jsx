@@ -70,7 +70,7 @@ const PatientCard = ({ patient, getPatients }) => {
 
       <div className="text-center">
         <h3 className="font-bold text-xl text-blue-400">{patient.firstName} {patient.middleNames} {patient.lastName}</h3>
-        <p className="text-gray-400 text-sm">DOB: {patient.dateOfBirth}</p>
+        <p className="text-gray-400 text-sm">DOB: {new Date(patient.dateOfBirth).toLocaleDateString("en-US")}</p>
       </div>
 
       <div className="w-full bg-gray-700 p-4 rounded-lg text-sm space-y-2">
