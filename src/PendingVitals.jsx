@@ -14,6 +14,7 @@ const PendingVitals = ({ patient }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]); 
+    console.log("Patient: ", patient);
 
     useEffect(() => {
         setLoading(true);
