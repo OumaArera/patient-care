@@ -52,6 +52,7 @@ const PendingVitals = ({ patient }) => {
         const payload = {
             ...updatedVital,
             vitalId,
+            status: "updated"
         };
         
         console.log("Submitting: ", payload);
