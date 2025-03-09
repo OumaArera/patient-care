@@ -17,7 +17,7 @@ const ReviewVitals = ({ vital, handleVitals }) => {
     return (
         <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
             <h2 className="text-lg font-bold mb-4">Review Vitals</h2>
-            <p><strong>Patient:</strong> {vital.patientName}</p>
+            <p><strong>Resident:</strong> {vital.patientName}</p>
             <p><strong>Blood Pressure:</strong> {vital.bloodPressure}</p>
             <p><strong>Temperature:</strong> {vital.temperature}</p>
             <p><strong>Pulse:</strong> {vital.pulse}</p>

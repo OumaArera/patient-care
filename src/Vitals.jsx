@@ -207,7 +207,7 @@ const Vitals = () => {
                 <th className="p-2 border border-gray-700">Pulse</th>
                 <th className="p-2 border border-gray-700">Oxygen Saturation</th>
                 <th className="p-2 border border-gray-700">Pain</th>
-                <th className="p-2 border border-gray-700">Reason Edited</th>
+                <th className="p-2 border border-gray-700">Reason Declined</th>
                 <th className="p-2 border border-gray-700">Vital Status</th>
                 <th className="p-2 border border-gray-700">Action</th>
               </tr>
@@ -223,7 +223,7 @@ const Vitals = () => {
                   <td className="p-2 border border-gray-700">
                     {["N/A", "NO", "No", "no", "No Pain", "no pain", "No pain", null].includes(v.pain) ? "-" : v.pain}
                   </td>
-                  <td className="p-2 border border-gray-700">{v.reasonEdited || ""}</td>
+                  <td className="p-2 border border-gray-700">{v.declineReason || ""}</td>
                   <td className="p-2 border border-gray-700">{v.status}</td>
                   <td className="p-2 border border-gray-700">
                     <button
