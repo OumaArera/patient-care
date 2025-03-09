@@ -72,7 +72,7 @@ const PendingVitals = ({ patient }) => {
             {loading ? <Loader className="animate-spin" /> : (
                 vitals.length > 0 ? vitals.map(vital => (
                     <div key={vital.vitalId} className="mb-4 p-4 bg-gray-800 rounded-lg">
-                        <p><strong>Patient:</strong> {vital.patientName}</p>
+                        <p><strong></strong> {vital.patientName}</p>
                         <p className={getStatusColor(vital.status)}><strong>Status:</strong> {vital.status}</p>
                         <button
                             className="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
