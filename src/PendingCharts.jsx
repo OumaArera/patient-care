@@ -90,17 +90,17 @@ const PendingCharts = ({ patient }) => {
     }
     const updatedUrl = `${URL}/${chartId}`;
     try {
-        const response = await updateData(updatedUrl, payload);
-              
-        if (response?.error) {
-            setErrors(errorHandler(response?.error));
-            setTimeout(() => setErrors([]), 5000);
-        } else {
-            setMessage("Data updated successfully");
-            setReasonEdited("");
-            // setTimeout(() => fetchCharts(), 5000);
-            setTimeout(() => setMessage(""), 5000);
-        }
+      const response = await updateData(updatedUrl, payload);
+            
+      if (response?.error) {
+        setErrors(errorHandler(response?.error));
+        setTimeout(() => setErrors([]), 5000);
+      } else {
+        setMessage("Data updated successfully");
+        setReasonEdited("");
+        // setTimeout(() => fetchCharts(), 5000);
+        setTimeout(() => setMessage(""), 5000);
+      }
         
     } catch (error) {
         setErrors(["An error occurred. Please try again."]);
