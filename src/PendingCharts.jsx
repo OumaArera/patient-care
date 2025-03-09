@@ -97,8 +97,7 @@ const PendingCharts = ({ patient }) => {
         setTimeout(() => setErrors([]), 5000);
       } else {
         setMessage("Data updated successfully");
-        setReasonEdited("");
-        // setTimeout(() => fetchCharts(), 5000);
+        setTimeout(() => fetchCharts(), 5000);
         setTimeout(() => setMessage(""), 5000);
       }
         
