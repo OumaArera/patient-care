@@ -43,6 +43,7 @@ const ReviewVitals = ({ vital, handleVitals }) => {
                         type="text"
                         className="w-full p-2 mt-1 bg-gray-700 text-white rounded"
                         value={declineReason}
+                        placeholder="Typereason for decline..."
                         onChange={(e) => setDeclineReason(e.target.value)}
                     />
                 </div>
