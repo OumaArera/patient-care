@@ -4,6 +4,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { postVitals } from "../services/postVitals";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
+import PendingVitals from "./PendingVitals";
 
 const ChartVitals = () => {
     const [formData, setFormData] = useState({
@@ -22,6 +23,8 @@ const ChartVitals = () => {
     const [isTimeAllowed, setIsTimeAllowed] = useState(true);
     const [patients, setPatients] = useState([]);
     const [blink, setBlink] = useState(true);
+    const [patientId, setPatientId] = useState(null);
+    const [showVitals, setShowVitals] = useState(false);
 
     useEffect(() => {
         const checkTime = () => {
@@ -54,7 +57,14 @@ const ChartVitals = () => {
     const handleUpdateClick = (patientId) => {
         setFormData((prev) => ({ ...prev, patientId }));
         setShowForm(true);
+        setShowVitals(false);
     };
+
+    const handleReviewVitals = (patientId) =>{
+        setPatientId(patientId);
+        setShowVitals(true);
+        setShowForm(false);
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -102,7 +112,11 @@ const ChartVitals = () => {
 
     const closeVitalsModal = () => {
         setShowForm(false);
-      };
+    };
+
+    const closeVitalsReviewModal = () => {
+        setShowVitals(false);
+    };
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -135,7 +149,13 @@ const ChartVitals = () => {
                                     className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
                                     onClick={() => handleUpdateClick(patient.patientId)}
                                 >
-                                    Vitals
+                                    New Vitals
+                                </button>
+                                <button
+                                    className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
+                                    onClick={() => handleReviewVitals(patient.patientId)}
+                                >
+                                    Pending Vitals
                                 </button>
                             </div>
                         </div>
@@ -143,7 +163,7 @@ const ChartVitals = () => {
                 </div>
             )}
 
-            {showForm && (
+            {showForm && !showVitals && (
                 <div
                     className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
                     onClick={closeVitalsModal}
@@ -220,6 +240,25 @@ const ChartVitals = () => {
                         </form>
                     </div>
                 </div>
+            )}
+            {showVitals && patientId && !showForm &&(
+            <div
+                className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+                onClick={closeVitalsReviewModal}
+            >
+                <div
+                className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+                >
+                <PendingVitals patient={patientId} />
+                <button
+                    className="absolute top-2 right-2 text-white hover:text-gray-400"
+                    onClick={closeVitalsReviewModal}
+                >
+                    ✖
+                </button>
+                </div>
+            </div>
             )}
         </div>
     );
