@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const ReviewChart = ({ chart, fetchCharts }) => {
+const ReviewChart = ({ chart, handleGetCharts }) => {
   const [status, setStatus] = useState("");
 
   const handleSubmit = () => {
@@ -9,7 +9,7 @@ const ReviewChart = ({ chart, fetchCharts }) => {
       chartId: chart.chartId,
     };
     console.log("Submitting: ", payload);
-    fetchCharts(chart.patientId)
+    handleGetCharts(chart.patientId)
   };
 
   return (
