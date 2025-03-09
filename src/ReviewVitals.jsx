@@ -1,17 +1,43 @@
 import React, { useState } from "react";
+import { errorHandler } from "../services/errorHandler";
+import { updateData } from "../services/updatedata";
+const URL = "https://patient-care-server.onrender.com/api/v1/charts";
 
 const ReviewVitals = ({ vital, handleVitals }) => {
     const [status, setStatus] = useState("");
     const [declineReason, setDeclineReason] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        setIsSubmitting(true);
         const payload = {
             vitalId: vital.vitalId,
             status,
             declineReason: status === "declined" ? declineReason : null,
         };
-        console.log("Submitting Payload:", payload);
-        handleVitals(vital.patientId);
+        const updatedUrl = `${URL}/${vital.vitalId}`;
+        try {
+            setIsSubmitting(true);
+            const response = await updateData(updatedUrl, payload);
+                
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setDeclineReason("");
+                setTimeout(() => handleVitals(vital.patientId), 5000);
+                setTimeout(() => setMessage(""), 5000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -48,13 +74,20 @@ const ReviewVitals = ({ vital, handleVitals }) => {
                     />
                 </div>
             )}
-
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 rounded">
+                    {errors.map((error, index) => (
+                        <p key={index} className="text-sm text-red-600">{error}</p>
+                    ))}
+                </div>
+            )}
+            {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
             <button
                 className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
                 onClick={handleSubmit}
                 disabled={!status || (status === "declined" && !declineReason)}
             >
-                Submit
+                {isSubmitting ? "Submitting...": "Submit"}
             </button>
         </div>
     );
