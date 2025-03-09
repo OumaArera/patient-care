@@ -288,7 +288,8 @@ const Vitals = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <button 
-              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+              // className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+              className="mb-4 bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600"
               onClick={() =>{
                 setShow(true);
                 setShowVitals(false);

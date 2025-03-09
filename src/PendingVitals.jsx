@@ -51,7 +51,7 @@ const PendingVitals = ({ patient }) => {
     const handleSubmit = async (vitalId) => {
         const updatedVital = editedData[vitalId];
         if (!updatedVital) return;
-
+        setIsSubmitting(true);
         const payload = {
             ...updatedVital,
             status: "updated"
