@@ -6,6 +6,7 @@ import { Loader, MoreVertical } from "lucide-react";
 import ResubmitChart from "./ResubmitChart";
 import UpdateCharts from "./UpdateCharts";
 import LateSubmission from "./LateSubmission";
+import ReviewChart from "./ReviewChart";
 
 const Charts = () => {
   const [patients, setPatients] = useState([]);
@@ -20,11 +21,11 @@ const Charts = () => {
   const [selectedBranch, setSelectedBranch] = useState("");
   const [allowLate, setAllowLate] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [showReview, setShowReview] = useState(false);
   const type = "charts";
 
   const handleReviewChart = () => {
-    console.log("Reviewing Chart: ", selectedChart);
-    setShowOptions(false);
+    setShowReview(false);
   };
 
   useEffect(() => {
@@ -247,13 +248,17 @@ const Charts = () => {
             </button>
             <button
               className="bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
-              onClick={handleReviewChart}
+              onClick={() => {
+                setShowReview(true);
+                setShowOptions(false);
+              }}
             >
               Review Chart
             </button>
           </div>
         </div>
       )}
+      
       {showChartCard && selectedChart && !allowLate && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
@@ -286,6 +291,25 @@ const Charts = () => {
             <button
               className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
               onClick={closeChartModal}
+            >
+              ✖
+            </button>
+          </div>
+        </div>
+      )}
+      {showReview && selectedChart && (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={handleReviewChart}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ReviewChart chart={selectedChart} handleGetCharts={fetchCharts} />
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={handleReviewChart}
             >
               ✖
             </button>
