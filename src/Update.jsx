@@ -148,14 +148,6 @@ const Update = ({ patientId }) => {
         <option value="weekly">Weekly</option>
         <option value="monthly">Monthly</option>
       </select>
-
-      <label className="block mb-2">Date:</label>
-      <input
-        type="text"
-        value={date || "Not Available"}
-        className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
-        disabled
-      />
       {error && <p className="text-red-500 mb-2">{error}</p>}
       {lateSubmission.length > 0 && date && (
         <>

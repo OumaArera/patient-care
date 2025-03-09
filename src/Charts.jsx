@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { getCharts } from "../services/getCharts";
 import ChartCard from "./ChartCard";
-import { Loader } from "lucide-react";
+import { Loader, MoreVertical } from "lucide-react";
 import ResubmitChart from "./ResubmitChart";
 import UpdateCharts from "./UpdateCharts";
 import LateSubmission from "./LateSubmission";
@@ -19,6 +19,7 @@ const Charts = () => {
   const [showEdits, setShowEdits] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [allowLate, setAllowLate] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const type = "charts";
 
 
@@ -200,15 +201,14 @@ const Charts = () => {
                             Chart
                             </button>
                           ):(
-                            <button 
-                              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                              onClick={() =>{
+                            <button
+                              className="text-white hover:text-gray-400"
+                              onClick={() => {
                                 setSelectedChart(chart);
-                                setShowEdits(true);
-                                setShow(false);
+                                setShowOptions(true);
                               }}
                             >
-                            Edit
+                              <MoreVertical size={20} />
                             </button>
                           )}
 
@@ -222,6 +222,33 @@ const Charts = () => {
             </div>
           )}
         </>
+      )}
+      {showOptions && (
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={() => setShowOptions(false)}
+        >
+          <div
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[40vw] max-h-[50vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="mb-4 bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600"
+              onClick={() => {
+                setShowEdits(true);
+                setShowOptions(false);
+              }}
+            >
+              Edit Chart
+            </button>
+            <button
+              className="bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={handleReviewChart}
+            >
+              Review Chart
+            </button>
+          </div>
+        </div>
       )}
       {showChartCard && selectedChart && !allowLate && (
         <div

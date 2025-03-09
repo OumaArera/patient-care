@@ -172,7 +172,7 @@ const NewCharts = ({ charts, chartsData }) => {
               })}
             <br />
             <label className="block text-sm font-medium text-white mb-2">
-              Select Date & Time (from 7.00 AM - 11:59AM) for Late Submission:
+              Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
             </label>
             <DatePicker
               selected={selectedDate || dayjs().set("hour", 19).set("minute", 15).toDate()} // 
