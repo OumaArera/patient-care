@@ -22,6 +22,10 @@ const Charts = () => {
   const [showOptions, setShowOptions] = useState(false);
   const type = "charts";
 
+  const handleReviewChart = () => {
+    console.log("Reviewing Chart: ", selectedChart);
+    setShowOptions(false);
+  };
 
   useEffect(() => {
     setLoadingPatients(true);
@@ -142,6 +146,7 @@ const Charts = () => {
                   <tr className="bg-gray-700">
                     <th className="p-3 border border-gray-600">Date</th>
                     <th className="p-3 border border-gray-600">Resident</th>
+                    <th className="p-3 border border-gray-600 w-48">Chart Status</th>
                     <th className="p-3 border border-gray-600 w-48">Reason Edited</th>
                     <th className="p-3 border border-gray-600 w-48">Reason Filled Late</th>
                     <th className="p-3 border border-gray-600">View</th>
@@ -161,6 +166,7 @@ const Charts = () => {
                         <td className="p-2 border border-gray-700">
                           {chart ? chart.patientName : "Missing"}
                         </td>
+                        <td className="p-2 border border-gray-700">{chart ? chart.status : null}</td>
                         <td className="p-2 border border-gray-700">{chart ? chart.reasonEdited : "-"}</td>
                         <td className="p-2 border border-gray-700">{chart ? chart.reasonFilledLate : "-"}</td>
                         <td className="p-2 border border-gray-700">
