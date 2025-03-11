@@ -76,7 +76,7 @@ const PendingUpdates = ({ patient }) => {
                                     onChange={(e) => handleEditChange(update.updateId, e.target.value)}
                                 />
                             ) : (
-                                <p className="bg-gray-100 p-2 rounded">{update.notes}</p>
+                                <p className="p-2 rounded">{update.notes}</p>
                             )}
                             {update.status === "declined" && (
                                 <button
