@@ -7,6 +7,8 @@ import { getData } from "../services/updatedata";
 import { Loader } from "lucide-react";
 import PendingVitals from "./PendingVitals";
 import CustomDatePicker from "./CustomDatePicker";
+import DatePicker from "react-datepicker";
+import dayjs from "dayjs";
 
 const URL = "https://patient-care-server.onrender.com/api/v1/late-submissions";
 
@@ -241,10 +243,19 @@ const ChartVitals = () => {
                                     <label className="block text-sm font-medium text-white mb-2">
                                     Select Date & Time (from 8.00 AM - 9:59AM) for Late Submission:
                                     </label>
-                                    <CustomDatePicker 
-                                    updateType={updateType} 
-                                    selectedDate={selectedDate} 
-                                    setSelectedDate={setSelectedDate} 
+                                    <DatePicker
+                                        selected={selectedDate}
+                                        onChange={(date) => setSelectedDate(date)}
+                                        showTimeSelect
+                                        timeFormat="HH:mm"
+                                        timeIntervals={15}
+                                        dateFormat="yyyy-MM-dd HH:mm:ss"
+                                        minTime={dayjs().set("hour", 8).set("minute", 0).toDate()}
+                                        // maxTime={updateType === "weekly" 
+                                        // ? dayjs().set("hour", 11).set("minute", 59).toDate()
+                                        // : dayjs().set("hour", 19).set("minute", 59).toDate()}
+                                        filterDate={isValidDate}
+                                        className="p-2 bg-gray-800 text-white border border-gray-700 rounded w-full"
                                     />
                                 </div>
                                 <div className="mb-4">
