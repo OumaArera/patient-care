@@ -120,6 +120,7 @@ const ChartVitals = () => {
             pain: formData.pain || "N/A",
             patient: formData.patientId,
             dateTaken: new Date().toISOString(),
+            reasonFilledLate
         };
         try {
             const response = await postVitals(payload);
