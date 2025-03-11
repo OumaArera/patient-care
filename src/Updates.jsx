@@ -231,24 +231,24 @@ const Updates = () => {
                 </div>
             )}
             {allowLate &&  (
-        <div
-          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
-          onClick={lateSubmission}
-        >
-          <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <LateSubmission patient={selectedPatient} type={type} />
-            <button
-              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
-              onClick={lateSubmission}
-            >
-              ✖
-            </button>
-          </div>
-        </div>
-      )}
+                <div
+                className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+                onClick={lateSubmission}
+                >
+                <div
+                    className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <LateSubmission patient={selectedPatient} type={type} />
+                    <button
+                    className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+                    onClick={lateSubmission}
+                    >
+                    ✖
+                    </button>
+                </div>
+                </div>
+            )}
         </div>
     );
 };

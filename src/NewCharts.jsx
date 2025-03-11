@@ -102,6 +102,7 @@ const NewCharts = ({ charts, chartsData }) => {
     return withinDefaultTime || withinLateSubmission;
   };
   
+  
   const handleSubmit = async () => {
     setLoadingSubmit(true);
     setErrors([]);

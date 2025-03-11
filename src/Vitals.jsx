@@ -7,6 +7,7 @@ import { generateVitalsPDFReport } from "../services/generateVitals";
 import ResubmitVitals from "./ResubmitVitals";
 import UpdateVitals from "./UpdateVitals";
 import ReviewVitals from "./ReviewVitals";
+import LateSubmission from "./LateSubmission";
 
 const Vitals = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -24,7 +25,10 @@ const Vitals = () => {
   const branchNames = [...new Set(patients.map((p) => p.branchName))];
   const [showOptions, setShowOptions] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [allowLate, setAllowLate] = useState(false);
   const vitalsPerPage = 10;
+  const type = "vital";
+
 
   const closVitalsModal =()=>{
     setShowVitals(false)
@@ -90,6 +94,10 @@ const Vitals = () => {
     setShowReview(false);
   };
 
+  const lateSubmission = () =>{
+    setAllowLate(false);
+}
+
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4 text-blue-400">Resident Vitals</h2>
@@ -130,6 +138,14 @@ const Vitals = () => {
                   </option>
                 ))}
             </select>
+            <button
+              className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+              onClick={() => {
+                  setAllowLate(true)
+              }}
+              >
+              Allow
+          </button>
             </>
         )}
         <select className="p-2 bg-gray-800 text-white border border-gray-700 rounded" onChange={(e) => setYear(e.target.value)} value={year}>
@@ -258,6 +274,25 @@ const Vitals = () => {
             </button>
           </div>
         </>
+      )}
+      {allowLate &&  (
+          <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+          onClick={lateSubmission}
+          >
+          <div
+              className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+          >
+              <LateSubmission patient={selectedPatient} type={type} />
+              <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+              onClick={lateSubmission}
+              >
+              ✖
+              </button>
+          </div>
+          </div>
       )}
       {showReview && selectedVital && (
         <div
