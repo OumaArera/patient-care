@@ -52,21 +52,25 @@ const ChartVitals = () => {
           .finally(() => setLoadingLate(false))
       }, [patientId]);
 
-    useEffect(() => {
-        const checkTime = () => {
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            setIsTimeAllowed(
-                hours === 8 || 
-                (hours === 9 && minutes < 60
-
-                ));
-        };
-        checkTime();
-        const interval = setInterval(checkTime, 60000); 
-        return () => clearInterval(interval);
-    }, []);
+      useEffect(() => {
+        const now = new Date();
+        const hour = now.getHours();
+        
+        // Check if current time is between 8:00 AM - 9:59 AM
+        let isValid = hour >= 8 && hour < 10;
+    
+        // Check if any late submission period is valid
+        if (!isValid && lateSubmission.length) {
+            isValid = lateSubmission.some((entry) => {
+                const startTime = new Date(entry.start);
+                const endTime = new Date(startTime.getTime() + entry.duration * 60000);
+                return now >= startTime && now <= endTime;
+            });
+        }
+    
+        setIsTimeAllowed(isValid);
+    }, [lateSubmission]);
+    
 
     useEffect(() => {
         const branch = localStorage.getItem("branch");
@@ -147,7 +151,7 @@ const ChartVitals = () => {
     useEffect(() => {
         const interval = setInterval(() => {
           setBlink((prev) => !prev);
-        }, 1000); // Toggle every 2 seconds
+        }, 1000); 
     
         return () => clearInterval(interval);
       }, []);
@@ -205,7 +209,7 @@ const ChartVitals = () => {
                     >
                         <h2 className="text-xl font-bold mb-4">Enter Vitals</h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                        {lateSubmission.length > 0 && date && (
+                        {lateSubmission.length > 0 && isTimeAllowed && (
                             <>
                                 <div className="mb-4">
                                     {lateSubmission
@@ -229,7 +233,7 @@ const ChartVitals = () => {
                                     })}
                                     <br />
                                     <label className="block text-sm font-medium text-white mb-2">
-                                    Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
+                                    Select Date & Time (from 8.00 AM - 9:59AM) for Late Submission:
                                     </label>
                                     <CustomDatePicker 
                                     updateType={updateType} 
