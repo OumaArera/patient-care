@@ -46,6 +46,7 @@ const ChartVitals = () => {
     
         getData(`${URL}?${queryParams}`)
           .then((data) => {
+            console.log("Data: ", data.responseObject || [])
               setLateSubmission(data.responseObject || []);
           })
           .catch(() => {})
@@ -162,6 +163,7 @@ const ChartVitals = () => {
             {loadingLate && (
                 <div className="flex justify-center items-center h-64">
                     <Loader className="animate-spin" size={32} />
+                    <p>Loading...</p>
                 </div>
             )}
             {loadingPatients ? (
