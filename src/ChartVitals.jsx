@@ -108,6 +108,17 @@ const ChartVitals = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const getFormattedDate = (selectedDate) => {
+        if (!selectedDate) {
+            return new Date().toISOString();
+        }
+        
+        const date = new Date(selectedDate);
+        date.setHours(8, 0, 0, 0); 
+        return date.toISOString();
+    };
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData) return
@@ -119,7 +130,7 @@ const ChartVitals = () => {
             oxygenSaturation: parseInt(formData.oxygenSaturation, 10),
             pain: formData.pain || "N/A",
             patient: formData.patientId,
-            dateTaken: new Date().toISOString(),
+            dateTaken: getFormattedDate(selectedDate),
             reasonFilledLate
         };
         try {
