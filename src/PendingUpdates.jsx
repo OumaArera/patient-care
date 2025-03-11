@@ -65,7 +65,7 @@ const PendingUpdates = ({ patient }) => {
                 <div className="space-y-4">
                     {updates.map((update) => (
                         <div key={update.updateId} className="border p-4 rounded-md shadow">
-                            <p><strong>Patient:</strong> {update.patientName}</p>
+                            <p><strong>Resident:</strong> {update.patientName}</p>
                             <p><strong>Type:</strong> {update.type}</p>
                             <p><strong>Branch:</strong> {update.branchName}</p>
                             <p><strong>Notes:</strong></p>
@@ -76,7 +76,7 @@ const PendingUpdates = ({ patient }) => {
                                     onChange={(e) => handleEditChange(update.updateId, e.target.value)}
                                 />
                             ) : (
-                                <p className="p-2 rounded">{update.notes}</p>
+                                <p className="bg-gray-100 text-black p-2 rounded">{update.notes}</p>
                             )}
                             {update.status === "declined" && (
                                 <button
