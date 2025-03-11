@@ -88,6 +88,7 @@ const ChartVitals = () => {
     }, []);
 
     const handleUpdateClick = (patientId) => {
+        setPatientId(patientId);
         setFormData((prev) => ({ ...prev, patientId }));
         setShowForm(true);
         setShowVitals(false);
