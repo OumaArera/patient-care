@@ -3,12 +3,15 @@ import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { Loader } from "lucide-react";
 import Update from "./Update";
+import PendingUpdates from "./PendingUpdates";
 
 const ChartUpdate = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [showUpdates, setShowUpdates] = useState(false);
   const [patients, setPatients] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const branch = localStorage.getItem("branch");
@@ -29,6 +32,16 @@ const ChartUpdate = () => {
   const closeUpdateModal = () => {
     setShowUpdates(false);
     setSelectedPatientId(null);
+  };
+
+  const handleReviewUpdates = (patientId) =>{
+    setSelectedPatient(patientId);
+    setShow(true);
+    setShowUpdates(false);
+}
+
+  const closeUpdatesReviewModal = () => {
+    setShow(false);
   };
 
 
@@ -57,7 +70,13 @@ const ChartUpdate = () => {
                     setShowUpdates(true);
                   }}
                 >
-                  Updates
+                  New Updates
+                </button>
+                <button
+                  className="px-4 py-2 border border-green-500 text-green-600 rounded-md hover:bg-green-100"
+                  onClick={() => handleReviewUpdates(patient.patientId)}
+                >
+                    Pending Updates
                 </button>
               </div>
             </div>
@@ -85,7 +104,26 @@ const ChartUpdate = () => {
         </div>
       </div>
     )}
-      
+    {show && selectedPatient && !showUpdates &&(
+      <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+          onClick={closeUpdatesReviewModal}
+      >
+          <div
+          className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+          >
+          <PendingUpdates patient={selectedPatient} />
+          <button
+              className="absolute top-2 right-2 text-white hover:text-gray-400"
+              onClick={closeUpdatesReviewModal}
+          >
+              ✖
+          </button>
+          </div>
+      </div>
+      )}
+
     </div>
   );
 };
