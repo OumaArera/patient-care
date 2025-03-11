@@ -21,6 +21,7 @@ const Update = ({ patientId }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [reasonFilledLate, setReasonFilledLate] = useState("");
   
+  
   useEffect(() => {
     const careGiver = localStorage.getItem("userId");
     const type = "updates";

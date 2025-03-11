@@ -91,7 +91,7 @@ const NewCharts = ({ charts, chartsData }) => {
   
     // Default allowed submission window: 7:00 PM - 9:59 PM
     const withinDefaultTime = (hours === 19 || hours === 20 || (hours === 21 && minutes <= 59));
-  
+    console.log("Late: ", lateSubmission);
     // Check late submissions
     const withinLateSubmission = lateSubmission.some((entry) => {
       const startTime = new Date(entry.start);

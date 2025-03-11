@@ -3,6 +3,7 @@ import { fetchPatients } from "../services/getPatientManagers";
 import { FaUserCircle } from "react-icons/fa";
 import { postVitals } from "../services/postVitals";
 import { errorHandler } from "../services/errorHandler";
+import { getData } from "../services/updatedata";
 import { Loader } from "lucide-react";
 import PendingVitals from "./PendingVitals";
 
@@ -25,6 +26,31 @@ const ChartVitals = () => {
     const [blink, setBlink] = useState(true);
     const [patientId, setPatientId] = useState(null);
     const [showVitals, setShowVitals] = useState(false);
+    const [lateSubmission, setLateSubmission] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [reasonFilledLate, setReasonFilledLate] = useState("");
+    const [loadingLate, setLoadingLate] = useState(false);
+
+    useEffect(() => {
+        const careGiver = localStorage.getItem("userId");
+        const type = "vital";
+    
+        if (!patientId || !careGiver) return;
+        setLoadingLate(true);
+    
+        const queryParams = new URLSearchParams({
+          patient: patientId,
+          careGiver,
+          type,
+        }).toString();
+    
+        getData(`${URL}?${queryParams}`)
+          .then((data) => {
+              setLateSubmission(data.responseObject || []);
+          })
+          .catch(() => {})
+          .finally(() => setLoadingLate(false))
+      }, [patientId]);
 
     useEffect(() => {
         const checkTime = () => {
@@ -129,6 +155,11 @@ const ChartVitals = () => {
     return (
         <div className="p-6 bg-gray-900 text-white min-h-screen">
             <h2 className="text-2xl font-bold mb-4 text-center">Chart Vitals</h2>
+            {loadingLate && (
+                <div className="flex justify-center items-center h-64">
+                    <Loader className="animate-spin" size={32} />
+                </div>
+            )}
             {loadingPatients ? (
                 <>
                     <Loader className="animate-spin text-blue-400" size={24} />
@@ -174,6 +205,53 @@ const ChartVitals = () => {
                     >
                         <h2 className="text-xl font-bold mb-4">Enter Vitals</h2>
                         <form onSubmit={handleSubmit} className="space-y-4">
+                        {lateSubmission.length > 0 && date && (
+                            <>
+                                <div className="mb-4">
+                                    {lateSubmission
+                                    .filter((entry) => {
+                                        const now = new Date();
+                                        const startTime = new Date(entry.start);
+                                        const endTime = new Date(startTime.getTime() + entry.duration * 60000);
+                                        return now >= startTime && now <= endTime; 
+                                    })
+                                    .map((entry) => {
+                                        const startTime = new Date(entry.start);
+                                        const endTime = new Date(startTime.getTime() + entry.duration * 60000);
+                                        return (
+                                        <div key={entry.start} className="mb-2">
+                                            <p className="text-red-600">{entry.reasonForLateSubmission}</p>
+                                            <label className="text-red-600">
+                                            Submission starts at {startTime.toLocaleString()} and will end by {endTime.toLocaleString()}
+                                            </label>
+                                        </div>
+                                        );
+                                    })}
+                                    <br />
+                                    <label className="block text-sm font-medium text-white mb-2">
+                                    Select Date & Time (from 7.00 PM - 8:59PM) for Late Submission:
+                                    </label>
+                                    <CustomDatePicker 
+                                    updateType={updateType} 
+                                    selectedDate={selectedDate} 
+                                    setSelectedDate={setSelectedDate} 
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                <label className="block text-sm font-medium text-white mb-2">
+                                    Reason for Late Submission (Required):
+                                </label>
+                                <textarea
+                                    value={reasonFilledLate}
+                                    onChange={(e) => setReasonFilledLate(e.target.value)}
+                                    placeholder="Enter reason here..."
+                                    className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                                    required
+                                />
+                            </div>
+                            </>
+                            )}
+
                             <input type="hidden" name="patientId" value={formData.patientId} />
                             <div>
                                 <label className="block text-gray-300">Blood Pressure (e.g. 120/80)</label>
