@@ -44,7 +44,6 @@ const PendingUpdates = ({ patient }) => {
             notes: updatedNote,
             status: "updated"
         };
-        console.log("Payload: ", payload);
         const updatedUrl = `${URL}/${updateId}`;
         try {
             const response = await updateData(updatedUrl, payload);
@@ -81,12 +80,16 @@ const PendingUpdates = ({ patient }) => {
                             <p><strong>Type:</strong> {update.type}</p>
                             <p><strong>Branch:</strong> {update.branchName}</p>
                             <p><strong>Notes:</strong></p>
+                            
                             {update.status === "declined" ? (
-                                <textarea
-                                    className="w-full border p-2 rounded"
-                                    value={editedNotes[update.updateId] || update.notes}
-                                    onChange={(e) => handleEditChange(update.updateId, e.target.value)}
-                                />
+                                <>
+                                    <p className="text-red-600"><strong>Decline Reason:</strong>{update.declineReason}</p>
+                                    <textarea
+                                        className="w-full border p-2 rounded"
+                                        value={editedNotes[update.updateId] || update.notes}
+                                        onChange={(e) => handleEditChange(update.updateId, e.target.value)}
+                                    />
+                                </>
                             ) : (
                                 <p className="bg-gray-100 text-black p-2 rounded">{update.notes}</p>
                             )}
