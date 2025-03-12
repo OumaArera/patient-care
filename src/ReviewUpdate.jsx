@@ -4,7 +4,7 @@ import { errorHandler } from "../services/errorHandler";
 
 const URL = "https://patient-care-server.onrender.com/api/v1/updates";
 
-const ReviewUpdate = ({ update }) => {
+const ReviewUpdate = ({ update, fetchUpdates }) => {
     const [status, setStatus] = useState("");
     const [declineReason, setDeclineReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,7 +31,7 @@ const ReviewUpdate = ({ update }) => {
             } else {
                 setMessage("Data updated successfully");
                 setDeclineReason("");
-                setTimeout(() => handleGetCharts(chart.patientId), 5000);
+                setTimeout(() => fetchUpdates(update.patientId), 5000);
                 setTimeout(() => setMessage(""), 5000);
             }
             
