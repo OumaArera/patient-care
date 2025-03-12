@@ -18,7 +18,6 @@ const ReviewUpdate = ({ update, fetchUpdates }) => {
             status,
             declineReason: status === "declined" ? declineReason : null,
         }
-        console.log(payload);
 
         const updatedUrl = `${URL}/${update.updateId}`;
         try {

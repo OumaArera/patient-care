@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { errorHandler } from '../services/errorHandler';
+import { createData } from '../services/updatedata';
 
 const USERS_URL = 'https://patient-care-server.onrender.com/api/v1/users';
 
@@ -47,29 +48,20 @@ const CreateUser = () => {
     setSuccessMessage(null);
 
     try {
-      console.log("Payload: ", formData)
-      // const response = await fetch(USERS_URL, {
-      //   method: 'POST',
-      //   headers: { 
-      //       'Content-Type': 'application/json',
-      //       Authorization: `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
-
-      // const data = await response.json();
-      // if (data.successful) {
-      //   setSuccessMessage('User successfully created!');
-      //   setFormData({
-      //     email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver',
-      //     dateOfBirth: '', maritalStatus: 'single', position: 'caregiver', credential: '', dateEmployed: '', supervisor: '', provider: ''
-      //   });
-      // } else {
-      //   setErrors(errorHandler(data?.responseObject?.errors));
-      //   setTimeout(() => setErrors([]), 10000);
-      // }
+      const response = await createData(USERS_URL, formData)
+      if (response?.error) {
+        setErrors(errorHandler(data?.responseObject?.errors));
+        setTimeout(() => setErrors([]), 10000);
+      } else {
+        setSuccessMessage('User successfully created!');
+        setFormData({
+          email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver',
+          dateOfBirth: '', maritalStatus: 'single', position: 'caregiver', credential: '', dateEmployed: '', supervisor: '', provider: ''
+        });
+      }
     } catch (err) {
       setErrors(['An error occurred while processing your request.']);
+      setTimeout(() => setErrors([]), 10000);
     } finally {
       setLoading(false);
     }
