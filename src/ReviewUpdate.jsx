@@ -23,7 +23,7 @@ const ReviewUpdate = ({ update }) => {
             
             <label className="block mt-2 font-medium">Status:</label>
             <select
-                className="w-full p-2 border rounded"
+                className="w-full bg-gray-900 text-white p-2 border rounded"
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
             >
@@ -34,10 +34,11 @@ const ReviewUpdate = ({ update }) => {
 
             {status === "declined" && (
                 <div className="mt-2">
-                    <label className="block font-medium">Reason for Decline:</label>
+                    <label className="block font-medium">Reason for Decline(Required):</label>
                     <textarea
                         className="w-full p-2 border rounded"
                         rows="3"
+                        placeholder="Enter reason for declining..."
                         value={declineReason}
                         onChange={(e) => setDeclineReason(e.target.value)}
                     ></textarea>
