@@ -4,6 +4,7 @@ import { getUpdates } from "../services/getUpdates";
 import { Loader } from "lucide-react";
 import ResubmitUpdate from "./ResubmitUpdate";
 import LateSubmission from "./LateSubmission";
+import ReviewUpdate from "./ReviewUpdate";
 
 const Updates = () => {
     const [loadingPatients, setLoadingPatients] = useState(false);
@@ -16,6 +17,8 @@ const Updates = () => {
     const [showResubmitUpdate, setShowResubmitUpdate] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState("");
     const [allowLate, setAllowLate] = useState(false);
+    const [showReview, setShowReview] = useState(false);
+    const [selectedUpdate, setSelectedUpdate] = useState(null);
     const type = "updates";
 
     useEffect(() => {
@@ -61,6 +64,10 @@ const Updates = () => {
 
     const lateSubmission = () =>{
         setAllowLate(false);
+    }
+
+    const reviewUpdate = () =>{
+        setShowReview(false);
     }
     
 
@@ -174,6 +181,7 @@ const Updates = () => {
                             <th className="border border-gray-700 p-2">Weight Deviation</th>
                             <th className="border border-gray-700 p-2 w-48">Update Status</th>
                             <th className="border border-gray-700 p-2 w-48">Reason Filled Late</th>
+                            <th className="p-2 border border-gray-700">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -198,6 +206,17 @@ const Updates = () => {
                                     <td className="border border-gray-700 p-2">{update.weightDeviation? update.weightDeviation : ""}</td>
                                     <td className="border border-gray-700 p-2">{update.status? update.status : "-"}</td>
                                     <td className="border border-gray-700 p-2">{update.reasonFilledLate? update.reasonFilledLate : "-"}</td>
+                                    <td className="border border-gray-700 p-2">
+                                    <button
+                                        className="bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+                                        onClick={() => {
+                                            setSelectedUpdate(update);
+                                            setShowReview(true);
+                                        }}
+                                        >
+                                        Review Vitals
+                                        </button>
+                                    </td>
                                 </tr>
                             );
                         })}
@@ -237,6 +256,25 @@ const Updates = () => {
                     <button
                     className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
                     onClick={lateSubmission}
+                    >
+                    ✖
+                    </button>
+                </div>
+                </div>
+            )}
+            {showReview &&  (
+                <div
+                className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
+                onClick={reviewUpdate}
+                >
+                <div
+                    className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[80vw] max-h-[80vh] overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <ReviewUpdate update={selectedUpdate} />
+                    <button
+                    className="mt-4 bg-gray-500 text-white px-4 py-2 rounded w-full hover:bg-gray-600"
+                    onClick={reviewUpdate}
                     >
                     ✖
                     </button>
