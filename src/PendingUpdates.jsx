@@ -4,6 +4,8 @@ import { updateData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
 
+const URL = "https://patient-care-server.onrender.com/api/v1/updates";
+
 const PendingUpdates = ({ patient }) => {
     const [updates, setUpdates] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -33,26 +35,35 @@ const PendingUpdates = ({ patient }) => {
         setEditedNotes((prev) => ({ ...prev, [updateId]: value }));
     };
 
-    const handleUpdate = (updateId) => {
+    const handleUpdate =async (updateId) => {
         const updatedNote = editedNotes[updateId];
         if (!updatedNote) return;
-
+        setIsSubmitting(true);
         const payload = {
             updateId,
             notes: updatedNote,
             status: "updated"
         };
         console.log("Payload: ", payload);
-        // setIsSubmitting(true);
-        // updateData(payload)
-        //     .then(() => {
-        //         setMessage("Update successful.");
-        //         fetchUpdates();
-        //     })
-        //     .catch((err) => {
-        //         setErrors(errorHandler(err));
-        //     })
-        //     .finally(() => setIsSubmitting(false));
+        const updatedUrl = `${URL}/${updateId}`;
+        try {
+            const response = await updateData(updatedUrl, payload);
+                
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setTimeout(() => fetchUpdates(), 5000);
+                setTimeout(() => setMessage(""), 5000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -85,7 +96,7 @@ const PendingUpdates = ({ patient }) => {
                                     onClick={() => handleUpdate(update.updateId)}
                                     disabled={isSubmitting}
                                 >
-                                    {isSubmitting ? "Updating..." : "Submit Update"}
+                                    {isSubmitting ? "Updating..." : "Submit"}
                                 </button>
                             )}
                         </div>

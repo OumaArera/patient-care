@@ -74,8 +74,6 @@ const PendingVitals = ({ patient }) => {
         } finally {
             setIsSubmitting(false);
         }
-    
-        console.log("Submitting: ", payload);
     };
 
     const getStatusColor = (status) => {
