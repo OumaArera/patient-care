@@ -14,26 +14,19 @@ const CreateUser = () => {
     phoneNumber: '',
     sex: 'male',
     role: 'care giver',
+    dateOfBirth: '',
+    maritalStatus: 'single',
+    position: 'caregiver',
+    credential: '',
+    dateEmployed: '',
+    supervisor: '',
+    provider: '',
   });
-
-  const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
-  const [defaultCountry, setDefaultCountry] = useState('us');
   const [token, setToken] = useState("");
 
-  useEffect(() => {
-    // Fetch user's country based on IP
-    fetch('https://ip-api.com/json/')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.countryCode) {
-          setDefaultCountry(data.countryCode.toLowerCase());
-        }
-      })
-      .catch(() => setDefaultCountry('us'));
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -46,15 +39,11 @@ const CreateUser = () => {
     setFormData((prev) => ({ ...prev, [name]: name === 'email' ? value.toLowerCase() : value }));
   };
 
-  const handlePhoneChange = (value) => {
-    setFormData((prev) => ({ ...prev, phoneNumber: `+${value}` }));
-  };
 
   const handleSubmit = async (e) => {
     if (!token) return
     e.preventDefault();
     setLoading(true);
-    setError(null);
     setSuccessMessage(null);
 
     try {
@@ -70,14 +59,16 @@ const CreateUser = () => {
       const data = await response.json();
       if (data.successful) {
         setSuccessMessage('User successfully created!');
-        setFormData({ email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver' });
+        setFormData({
+          email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver',
+          dateOfBirth: '', maritalStatus: 'single', position: 'caregiver', credential: '', dateEmployed: '', supervisor: '', provider: ''
+        });
       } else {
-        console.log("Error: ", data.responseObject.errors);
-        setErrors(data?.responseObject?.errors);
+        setErrors(errorHandler(data?.responseObject?.errors));
         setTimeout(() => setErrors([]), 10000);
       }
     } catch (err) {
-      setError('An error occurred while processing your request.');
+      setErrors(['An error occurred while processing your request.']);
     } finally {
       setLoading(false);
     }
@@ -135,36 +126,63 @@ const CreateUser = () => {
             />
 
           </div>
+          <label className="block text-gray-300 mb-1">Date of Birth</label>
+          <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required className="input" />
+          <label className="block text-gray-300 mb-1">Select Marital Status</label>
+          <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} required className="input">
+            <option value="single">Single</option>
+            <option value="married">Married</option>
+            <option value="divorced">Divorced</option>
+            <option value="widowed">Widowed</option>
+          </select>
+          <label className="block text-gray-300 mb-1">Select the position</label>
+          <select name="position" value={formData.position} onChange={handleChange} required className="input">
+            <option value="caregiver">Caregiver</option>
+            <option value="manager">Manager</option>
+            <option value="consultant">Consultant</option>
+            <option value="coordinator">Coordinator</option>
+            <option value="CEO">CEO</option>
+          </select>
+          <label className="block text-gray-300 mb-1">State the Credentials</label>
+          <input type="text" name="credential" placeholder="Credential" value={formData.credential} onChange={handleChange} required className="input" />
+          <label className="block text-gray-300 mb-1">Date Employed</label>
+          <input type="date" name="dateEmployed" value={formData.dateEmployed} onChange={handleChange} required className="input" />
+          <label className="block text-gray-300 mb-1">Name of Supervisor</label>
+          <input type="text" name="supervisor" placeholder="Supervisor" value={formData.supervisor} onChange={handleChange} required className="input" />
+          <label className="block text-gray-300 mb-1">Name of Provider</label>
+          <input type="text" name="provider" placeholder="Provider" value={formData.provider} onChange={handleChange} required className="input" />
+          
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div>
-              <label className="block text-gray-300 mb-1">Sex</label>
-              <select name="sex" value={formData.sex} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+          <div>
+            <label className="block text-gray-300 mb-1">Sex</label>
+            <select name="sex" value={formData.sex} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
 
-            <div>
-              <label className="block text-gray-300 mb-1">Role</label>
-              <select name="role" value={formData.role} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
-                <option value="">Select Role</option>
-                <option value="care giver">Care Giver</option>
-                <option value="superuser">Superuser</option>
-              </select>
-            </div>
+          <div>
+            <label className="block text-gray-300 mb-1">Role</label>
+            <select name="role" value={formData.role} onChange={handleChange} className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white">
+              <option value="">Select Role</option>
+              <option value="care giver">Care Giver</option>
+              <option value="superuser">Superuser</option>
+            </select>
+          </div>
           </div>
           {errors.length > 0 && (
             <div className="mb-4 p-3 rounded">
-              <p className="text-sm text-red-600">{errors}</p>
+                {errors.map((error, index) => (
+                    <p key={index} className="text-sm text-red-600">{error}</p>
+                ))}
             </div>
-          )}
-          {error && <p className="text-red-400 mt-2 text-center">{error}</p>}
+            )}
           {successMessage && <p className="text-green-400 mt-2 text-center">{successMessage}</p>}
 
           <button type="submit" className="w-full p-3 mt-6 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200 shadow-lg" disabled={loading}>
-            {loading ? 'Creating User...' : 'Create User'}
+            {loading ? 'Submitting...' : 'Create User'}
           </button>
         </form>
       </div>
