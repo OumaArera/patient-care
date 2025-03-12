@@ -1,18 +1,46 @@
 import { useState } from "react";
 import { updateData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
 
 const URL = "https://patient-care-server.onrender.com/api/v1/updates";
 
 const ReviewUpdate = ({ update }) => {
     const [status, setStatus] = useState("");
     const [declineReason, setDeclineReason] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
 
-    const handleSubmit = () => {
-        console.log({
+    const handleSubmit =async () => {
+        setIsSubmitting(true);
+        const payload ={
             updateId: update.updateId,
             status,
-            declineReason: status === "declined" ? declineReason : undefined,
-        });
+            declineReason: status === "declined" ? declineReason : null,
+        }
+        console.log(payload);
+
+        const updatedUrl = `${URL}/${update.updateId}`;
+        try {
+            setIsSubmitting(true);
+            const response = await updateData(updatedUrl, payload);
+                
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setDeclineReason("");
+                setTimeout(() => handleGetCharts(chart.patientId), 5000);
+                setTimeout(() => setMessage(""), 5000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -45,11 +73,22 @@ const ReviewUpdate = ({ update }) => {
                 </div>
             )}
 
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 rounded">
+                    {errors.map((error, index) => (
+                        <p key={index} className="text-sm text-red-600">{error}</p>
+                    ))}
+                </div>
+            )}
+
+            {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
+            
             <button
-                className="mt-4 w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
                 onClick={handleSubmit}
+                disabled={!status || (status === "declined" && !declineReason.trim())}
             >
-                Submit
+                {isSubmitting ? "Submitting..." : "Submit"}
             </button>
         </div>
     );
