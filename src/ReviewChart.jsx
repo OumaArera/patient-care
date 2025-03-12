@@ -49,7 +49,7 @@ const ReviewChart = ({ chart, handleGetCharts }) => {
     return (
         <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg max-w-md mx-auto">
             <h2 className="text-lg font-bold mb-4">Review Chart</h2>
-            <p><strong>Patient:</strong> {chart.patientName}</p>
+            <p><strong>Resident:</strong> {chart.patientName}</p>
             <p><strong>Caregiver:</strong> {chart.careGiver}</p>
             <p><strong>Branch:</strong> {chart.branchName}</p>
             <p><strong>Status:</strong> {chart.status}</p>

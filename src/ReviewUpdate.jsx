@@ -18,7 +18,7 @@ const ReviewUpdate = ({ update }) => {
     return (
         <div className="p-4 border rounded-lg shadow-md w-96">
             <h2 className="text-lg font-semibold">Review Update</h2>
-            <p><strong>Patient:</strong> {update.patientName}</p>
+            <p><strong>Resident:</strong> {update.patientName}</p>
             <p><strong>Notes:</strong> {update.notes}</p>
             
             <label className="block mt-2 font-medium">Status:</label>
