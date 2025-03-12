@@ -47,26 +47,27 @@ const CreateUser = () => {
     setSuccessMessage(null);
 
     try {
-      const response = await fetch(USERS_URL, {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(formData),
-      });
+      console.log("Payload: ", formData)
+      // const response = await fetch(USERS_URL, {
+      //   method: 'POST',
+      //   headers: { 
+      //       'Content-Type': 'application/json',
+      //       Authorization: `Bearer ${token}`
+      //   },
+      //   body: JSON.stringify(formData),
+      // });
 
-      const data = await response.json();
-      if (data.successful) {
-        setSuccessMessage('User successfully created!');
-        setFormData({
-          email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver',
-          dateOfBirth: '', maritalStatus: 'single', position: 'caregiver', credential: '', dateEmployed: '', supervisor: '', provider: ''
-        });
-      } else {
-        setErrors(errorHandler(data?.responseObject?.errors));
-        setTimeout(() => setErrors([]), 10000);
-      }
+      // const data = await response.json();
+      // if (data.successful) {
+      //   setSuccessMessage('User successfully created!');
+      //   setFormData({
+      //     email: '', firstName: '', middleNames: '', lastName: '', phoneNumber: '', sex: 'male', role: 'care giver',
+      //     dateOfBirth: '', maritalStatus: 'single', position: 'caregiver', credential: '', dateEmployed: '', supervisor: '', provider: ''
+      //   });
+      // } else {
+      //   setErrors(errorHandler(data?.responseObject?.errors));
+      //   setTimeout(() => setErrors([]), 10000);
+      // }
     } catch (err) {
       setErrors(['An error occurred while processing your request.']);
     } finally {
