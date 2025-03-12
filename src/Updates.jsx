@@ -214,7 +214,7 @@ const Updates = () => {
                                             setShowReview(true);
                                         }}
                                         >
-                                        Review Vitals
+                                        Review
                                         </button>
                                     </td>
                                 </tr>
