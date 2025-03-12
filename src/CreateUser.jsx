@@ -50,7 +50,7 @@ const CreateUser = () => {
     try {
       const response = await createData(USERS_URL, formData)
       if (response?.error) {
-        setErrors(errorHandler(data?.responseObject?.errors));
+        setErrors(errorHandler(response?.error));
         setTimeout(() => setErrors([]), 10000);
       } else {
         setSuccessMessage('User successfully created!');
