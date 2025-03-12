@@ -199,7 +199,9 @@ const Updates = () => {
                                             {update.patientName}
                                         </td>
                                     )}
-                                    <td className="border border-gray-700 p-2 text-center">{update.dateTaken}</td>
+                                    <td className="border border-gray-700 p-2 text-center">
+                                        {new Date(update.dateTaken).toLocaleDateString("en-US")}
+                                    </td>
                                     <td className="border border-gray-700 p-2">{update.notes}</td>
                                     <td className="border border-gray-700 p-2">{update.type}</td>
                                     <td className="border border-gray-700 p-2">{update.weight? update.weight : ""}</td>
