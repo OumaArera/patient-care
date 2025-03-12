@@ -39,19 +39,20 @@ const PendingUpdates = ({ patient }) => {
 
         const payload = {
             updateId,
-            notes: updatedNote
+            notes: updatedNote,
+            status: "updated"
         };
-
-        setIsSubmitting(true);
-        updateData(payload)
-            .then(() => {
-                setMessage("Update successful.");
-                fetchUpdates();
-            })
-            .catch((err) => {
-                setErrors(errorHandler(err));
-            })
-            .finally(() => setIsSubmitting(false));
+        console.log("Payload: ", payload);
+        // setIsSubmitting(true);
+        // updateData(payload)
+        //     .then(() => {
+        //         setMessage("Update successful.");
+        //         fetchUpdates();
+        //     })
+        //     .catch((err) => {
+        //         setErrors(errorHandler(err));
+        //     })
+        //     .finally(() => setIsSubmitting(false));
     };
 
     return (
