@@ -127,32 +127,47 @@ const CreateUser = () => {
             />
 
           </div>
-          <label className="block text-gray-300 mb-1">Date of Birth</label>
-          <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required className="input" />
-          <label className="block text-gray-300 mb-1">Select Marital Status</label>
-          <select name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} required className="input">
-            <option value="single">Single</option>
-            <option value="married">Married</option>
-            <option value="divorced">Divorced</option>
-            <option value="widowed">Widowed</option>
-          </select>
-          <label className="block text-gray-300 mb-1">Select the position</label>
-          <select name="position" value={formData.position} onChange={handleChange} required className="input">
-            <option value="caregiver">Caregiver</option>
-            <option value="manager">Manager</option>
-            <option value="consultant">Consultant</option>
-            <option value="coordinator">Coordinator</option>
-            <option value="CEO">CEO</option>
-          </select>
-          <label className="block text-gray-300 mb-1">State the Credentials</label>
-          <input type="text" name="credential" placeholder="Credential" value={formData.credential} onChange={handleChange} required className="input" />
-          <label className="block text-gray-300 mb-1">Date Employed</label>
-          <input type="date" name="dateEmployed" value={formData.dateEmployed} onChange={handleChange} required className="input" />
-          <label className="block text-gray-300 mb-1">Name of Supervisor</label>
-          <input type="text" name="supervisor" placeholder="Supervisor" value={formData.supervisor} onChange={handleChange} required className="input" />
-          <label className="block text-gray-300 mb-1">Name of Provider</label>
-          <input type="text" name="provider" placeholder="Provider" value={formData.provider} onChange={handleChange} required className="input" />
-          
+          <div>
+            <label className="block text-gray-300 mb-1">Date of Birth</label>
+            <input className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required/>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label className="block text-gray-300 mb-1">Select Marital Status</label>
+              <select className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} required >
+                <option value="single">Single</option>
+                <option value="married">Married</option>
+                <option value="divorced">Divorced</option>
+                <option value="widowed">Widowed</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-gray-300 mb-1">Select the position</label>
+              <select className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" name="position" value={formData.position} onChange={handleChange} required>
+                <option value="caregiver">Caregiver</option>
+                <option value="manager">Manager</option>
+                <option value="consultant">Consultant</option>
+                <option value="coordinator">Coordinator</option>
+                <option value="CEO">CEO</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="block text-gray-300 mb-1">State the Credentials</label>
+            <input className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" type="text" name="credential" placeholder="Credential" value={formData.credential} onChange={handleChange} required />
+          </div>
+          <div>
+            <label className="block text-gray-300 mb-1">Date Employed</label>
+            <input className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" type="date" name="dateEmployed" value={formData.dateEmployed} onChange={handleChange} required  />
+          </div>
+          <div>
+            <label className="block text-gray-300 mb-1">Name of Supervisor</label>
+            <input className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" type="text" name="supervisor" placeholder="Supervisor" value={formData.supervisor} onChange={handleChange} required />
+          </div>
+          <div>
+            <label className="block text-gray-300 mb-1">Name of Provider</label>
+            <input className="w-full p-3 border border-gray-600 rounded-lg bg-gray-700 text-white" type="text" name="provider" placeholder="Provider" value={formData.provider} onChange={handleChange} required />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div>
