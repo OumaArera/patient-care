@@ -50,6 +50,7 @@ const CreateUser = () => {
     try {
       const response = await createData(USERS_URL, formData)
       if (response?.error) {
+        console.log("Errors: ", response.error);
         setErrors(errorHandler(response?.error));
         setTimeout(() => setErrors([]), 10000);
       } else {
