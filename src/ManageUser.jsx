@@ -1,128 +1,122 @@
 import { useState, useEffect } from "react";
-import { FaUserLock, FaUserSlash, FaUserCheck } from "react-icons/fa";
+import { FaUser, FaSearch } from "react-icons/fa";
 import { getData } from "../services/updatedata";
 import { Loader } from "lucide-react";
 
-const PASSWORD_RESET_URL = "https://patient-care-server.onrender.com/api/v1/auth/reset-password";
-const BLOCK_PASSWORD_URL = "https://patient-care-server.onrender.com/api/v1/auth/block-users";
-const UNBLOCK_PASSWORD_URL = "https://patient-care-server.onrender.com/api/v1/auth/unblock-users";
 const ALL_USERS = "https://patient-care-server.onrender.com/api/v1/users";
 
 const ManageUser = () => {
-  const [username, setUsername] = useState("");
-  const [action, setAction] = useState("reset");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
-  const [token, setToken] = useState("");
-  const [loadingUsers, setLoadingUsers] = useState(false);
   const [users, setUsers] = useState([]);
-
-  useEffect(()=>{
-    setLoadingUsers(true);
-    getData(ALL_USERS)
-      .then((data) => {console.log("Users: ", data); setUsers(data?.responseObject);})
-      .catch(() => {})
-      .finally(()=> setLoadingUsers(false))
-  }, [])
-  console.log("Users: ", users)
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [search, setSearch] = useState("");
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 4;
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    setToken(savedToken);
+    setLoadingUsers(true);
+    getData(ALL_USERS)
+      .then((data) => {
+        setUsers(data?.responseObject || []);
+        setFilteredUsers(data?.responseObject || []);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingUsers(false));
   }, []);
 
-  const handleSubmit = async () => {
-    if (!username) {
-      setError("Please enter a username.");
-      return;
-    }
+  useEffect(() => {
+    const lowerSearch = search.toLowerCase();
+    const filtered = users.filter(
+      (user) =>
+        user.fullName.toLowerCase().includes(lowerSearch) ||
+        user.email.toLowerCase().includes(lowerSearch) ||
+        user.supervisor.toLowerCase().includes(lowerSearch)
+    );
+    setFilteredUsers(filtered);
+    setCurrentPage(1);
+  }, [search, users]);
 
-    const confirmMessage = `Are you sure you want to ${action} the user ${username}?`;
-    if (!window.confirm(confirmMessage)) return;
-
-    setLoading(true);
-    setError(null);
-    setMessage(null);
-
-    let url = "";
-    if (action === "reset") url = PASSWORD_RESET_URL;
-    if (action === "block") url = BLOCK_PASSWORD_URL;
-    if (action === "unblock") url = UNBLOCK_PASSWORD_URL;
-
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ username: username.toLowerCase() }),
-      });
-
-      const data = await response.json();
-
-      if (data.successful) {
-        setUsername("");
-        setMessage(`User ${username} has been ${action}ed successfully.`);
-      } else {
-        setError(data.message || `Failed to ${action} user. Try again.`);
-      }
-    } catch (err) {
-      setError("An error occurred. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   return (
-    <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg w-full max-w-2xl mx-auto mt-10">
-      <h2 className="text-2xl font-bold text-blue-400 mb-6 text-center">Manage User</h2>
-      {loadingUsers && (
-        <div className="flex items-center space-x-2">
+    <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-10">
+      <h2 className="text-2xl font-bold text-blue-400 mb-6 text-center">Manage Users</h2>
+      
+      {/* Search Input */}
+      <div className="flex items-center bg-gray-800 p-3 rounded mb-6">
+        <FaSearch className="text-gray-500 mr-3" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name, email, or supervisor..."
+          className="bg-transparent w-full text-white outline-none"
+        />
+      </div>
+
+      {loadingUsers ? (
+        <div className="flex items-center justify-center space-x-2">
           <Loader className="animate-spin text-gray-500" size={20} />
           <p className="text-gray-500">Loading users...</p>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {currentUsers.map((user) => (
+            <div key={user.userId} className="bg-gray-800 p-4 rounded-lg shadow">
+              <div className="flex items-center gap-4">
+                <FaUser className="text-gray-500 text-3xl" />
+                <div>
+                  <h3 className="text-lg font-semibold">{user.fullName}</h3>
+                  <p className="text-gray-400">Role: {user.role}</p>
+                  <p className="text-gray-400">DOB: {user.dateOfBirth}</p>
+                </div>
+              </div>
+              <button
+                className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full"
+                onClick={() => setSelectedUser(user)}
+              >
+                View
+              </button>
+            </div>
+          ))}
+        </div>
       )}
-      <label className="block mb-2 text-lg">Select Action:</label>
-      <select
-        value={action}
-        onChange={(e) => setAction(e.target.value)}
-        className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700"
-      >
-        <option value="reset">Reset User</option>
-        <option value="block">Block User</option>
-        <option value="unblock">Unblock User</option>
-      </select>
+      
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-6 space-x-4">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className="px-4 py-2 bg-gray-700 rounded disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <button
+          disabled={indexOfLastUser >= filteredUsers.length}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className="px-4 py-2 bg-gray-700 rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
 
-      <label className="block mt-6 mb-2 text-lg">Enter Username:</label>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value.toLowerCase())}
-        className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700"
-        placeholder="Enter username in lowercase"
-      />
-
-      {error && <p className="text-red-400 text-center mt-4">{error}</p>}
-      {message && <p className="text-green-400 text-center mt-4">{message}</p>}
-
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className={`mt-6 w-full flex items-center justify-center gap-3 p-4 rounded text-white text-lg ${
-          action === "reset"
-            ? "bg-blue-500 hover:bg-blue-600"
-            : action === "block"
-            ? "bg-red-500 hover:bg-red-600"
-            : "bg-green-500 hover:bg-green-600"
-        }`}
-      >
-        {action === "reset" && <FaUserLock />}
-        {action === "block" && <FaUserSlash />}
-        {action === "unblock" && <FaUserCheck />}
-        {loading ? "Processing..." : `${action.charAt(0).toUpperCase() + action.slice(1)} User`}
-      </button>
+      {/* Selected User Details */}
+      {selectedUser && (
+        <div className="mt-8 p-4 bg-gray-800 rounded-lg">
+          <h3 className="text-xl font-bold">User Details</h3>
+          <p><strong>Name:</strong> {selectedUser.fullName}</p>
+          <p><strong>Email:</strong> {selectedUser.email}</p>
+          <p><strong>Phone:</strong> {selectedUser.phoneNumber}</p>
+          <p><strong>Role:</strong> {selectedUser.role}</p>
+          <p><strong>Supervisor:</strong> {selectedUser.supervisor}</p>
+          <button className="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 rounded" onClick={() => setSelectedUser(null)}>
+            Close
+          </button>
+        </div>
+      )}
     </div>
   );
 };
