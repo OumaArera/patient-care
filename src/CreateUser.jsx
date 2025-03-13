@@ -49,7 +49,7 @@ const CreateUser = () => {
       const response = await createData(USERS_URL, formData)
       if (response?.error) {
         console.log("Errors: ", response.error);
-        setErrors(errorHandler(response?.error));
+        setErrors(response?.error);
         setTimeout(() => setErrors([]), 10000);
       } else {
         setSuccessMessage('User successfully created!');
