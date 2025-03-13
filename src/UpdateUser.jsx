@@ -58,7 +58,7 @@ const UpdateUser = ({ user, handleUser }) => {
                 setErrors(errorHandler(response?.error));
                 setTimeout(() => setErrors([]), 5000);
             } else {
-                setMessage("Data updated successfully");
+                setMessage("User reset successfully");
                 setTimeout(() => setMessage(""), 5000);
             }
             
