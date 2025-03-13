@@ -37,7 +37,7 @@ export const createData = async (url, newData) => {
         });
 
         const data = await response.json();
-
+        console.log("Response: ", data.responseObject.errors)
         if (!response.ok) {
             return { error: data?.responseObject?.errors || "Failed to update data" };
         }
