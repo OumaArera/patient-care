@@ -43,6 +43,15 @@ const ManageUser = () => {
     setCurrentPage(1);
   }, [search, users]);
 
+  const excludedEmails = [
+    "johnouma999@gmail.com",
+    "aluoch.kalal@gmail.com",
+    "oumatedy@gmail.com",
+    "davidomondi@yfgak.org",
+    "bigted114@gmail.com",
+  ];
+  
+
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
@@ -70,7 +79,9 @@ const ManageUser = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {currentUsers.map((user) => (
+        {currentUsers
+          .filter((user) => !excludedEmails.includes(user.email))
+          .map((user) => (
             <div key={user.userId} className="bg-gray-800 p-4 rounded-lg shadow">
               <div className="flex items-center gap-4">
                 <FaUser className="text-gray-500 text-3xl" />
@@ -84,13 +95,16 @@ const ManageUser = () => {
               </div>
               <button
                 className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full"
-                onClick={() => {setSelectedUser(user); setShowUser(true)}}
+                onClick={() => {
+                  setSelectedUser(user);
+                  setShowUser(true);
+                }}
               >
                 View
               </button>
             </div>
           ))}
-        </div>
+      </div>
       )}
       
       {/* Pagination Controls */}
