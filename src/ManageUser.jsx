@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaUserLock, FaUserSlash, FaUserCheck } from "react-icons/fa";
 import { getData } from "../services/updatedata";
+import { Loader } from "lucide-react";
 
 const PASSWORD_RESET_URL = "https://patient-care-server.onrender.com/api/v1/auth/reset-password";
 const BLOCK_PASSWORD_URL = "https://patient-care-server.onrender.com/api/v1/auth/block-users";
@@ -20,11 +21,12 @@ const ManageUser = () => {
   useEffect(()=>{
     setLoadingUsers(true);
     getData(ALL_USERS)
-      .then((data) => setUsers(data?.responseObject))
+      .then((data) => {console.log("Users: ", data); setUsers(data?.responseObject);})
       .catch(() => {})
       .finally(()=> setLoadingUsers(false))
   }, [])
   console.log("Users: ", users)
+
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     setToken(savedToken);
@@ -76,7 +78,12 @@ const ManageUser = () => {
   return (
     <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg w-full max-w-2xl mx-auto mt-10">
       <h2 className="text-2xl font-bold text-blue-400 mb-6 text-center">Manage User</h2>
-
+      {loadingUsers && (
+        <div className="flex items-center space-x-2">
+          <Loader className="animate-spin text-gray-500" size={20} />
+          <p className="text-gray-500">Loading users...</p>
+        </div>
+      )}
       <label className="block mb-2 text-lg">Select Action:</label>
       <select
         value={action}
