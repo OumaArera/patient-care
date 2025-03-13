@@ -26,14 +26,13 @@ const CreateUser = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
-  const [token, setToken] = useState("");
 
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setToken(token)
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   setToken(token)
     
-  }, []);
+  // }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +41,6 @@ const CreateUser = () => {
 
 
   const handleSubmit = async (e) => {
-    if (!token) return
     e.preventDefault();
     setLoading(true);
     setSuccessMessage(null);
