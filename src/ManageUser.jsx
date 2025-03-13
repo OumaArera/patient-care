@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FaUser, FaSearch } from "react-icons/fa";
 import { getData } from "../services/updatedata";
 import { Loader } from "lucide-react";
+import UpdateUser from "./UpdateUser";
 
 const ALL_USERS = "https://patient-care-server.onrender.com/api/v1/users";
 
@@ -12,9 +13,11 @@ const ManageUser = () => {
   const [search, setSearch] = useState("");
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showUser, setShowUser] = useState(false);
   const usersPerPage = 4;
 
-  useEffect(() => {
+  
+  const getUsers =() =>{
     setLoadingUsers(true);
     getData(ALL_USERS)
       .then((data) => {
@@ -23,6 +26,10 @@ const ManageUser = () => {
       })
       .catch(() => {})
       .finally(() => setLoadingUsers(false));
+  }
+
+  useEffect(() => {
+    getUsers()
   }, []);
 
   useEffect(() => {
@@ -75,7 +82,7 @@ const ManageUser = () => {
               </div>
               <button
                 className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full"
-                onClick={() => setSelectedUser(user)}
+                onClick={() => {setSelectedUser(user); setShowUser(true)}}
               >
                 View
               </button>
@@ -101,21 +108,27 @@ const ManageUser = () => {
           Next
         </button>
       </div>
-
-      {/* Selected User Details */}
-      {selectedUser && (
-        <div className="mt-8 p-4 bg-gray-800 rounded-lg">
-          <h3 className="text-xl font-bold">User Details</h3>
-          <p><strong>Name:</strong> {selectedUser.fullName}</p>
-          <p><strong>Email:</strong> {selectedUser.email}</p>
-          <p><strong>Phone:</strong> {selectedUser.phoneNumber}</p>
-          <p><strong>Role:</strong> {selectedUser.role}</p>
-          <p><strong>Supervisor:</strong> {selectedUser.supervisor}</p>
-          <button className="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 rounded" onClick={() => setSelectedUser(null)}>
-            Close
+      {showUser && selectedUser &&(
+        <div
+          className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+          onClick={() => setShowUser(false)}
+        >
+          <div
+          className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+          >
+          <UpdateUser user={selectedUser} handleUser={getUsers} />
+          <button
+            className="absolute top-2 right-2 text-white hover:text-gray-400"
+            onClick={() =>setShowUser(false)}
+          >
+              ✖
           </button>
+          </div>
         </div>
-      )}
+        )}
+
+    
     </div>
   );
 };
