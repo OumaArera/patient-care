@@ -77,7 +77,9 @@ const ManageUser = () => {
                 <div>
                   <h3 className="text-lg font-semibold">{user.fullName}</h3>
                   <p className="text-gray-400">Role: {user.role}</p>
-                  <p className="text-gray-400">DOB: {user.dateOfBirth}</p>
+                  <p className="text-gray-400">
+                    DOB: {new Date(user.dateOfBirth + "T00:00:00").toLocaleDateString("en-US")}
+                  </p>
                 </div>
               </div>
               <button
