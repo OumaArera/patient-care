@@ -27,13 +27,6 @@ const CreateUser = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
 
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   setToken(token)
-    
-  // }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: name === 'email' ? value.toLowerCase() : value }));
@@ -179,13 +172,7 @@ const CreateUser = () => {
             </select>
           </div>
           </div>
-          {errors.length > 0 && (
-            <div className="mb-4 p-3 rounded">
-                {errors.map((error, index) => (
-                    <p key={index} className="text-sm text-red-600">{error}</p>
-                ))}
-            </div>
-            )}
+          {errors && <p className="text-red-600 mt-2 text-center">{errors}</p>}
           {successMessage && <p className="text-green-400 mt-2 text-center">{successMessage}</p>}
 
           <button type="submit" className="w-full p-3 mt-6 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200 shadow-lg" disabled={loading}>
