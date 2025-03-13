@@ -41,7 +41,7 @@ const ManageUser = () => {
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   return (
-    <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-10">
+    <div className="p-6 bg-gray-900 text-white">
       <h2 className="text-2xl font-bold text-blue-400 mb-6 text-center">Manage Users</h2>
       
       {/* Search Input */}
