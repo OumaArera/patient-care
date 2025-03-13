@@ -14,7 +14,11 @@ const UpdateUser = ({ user, handleUser }) => {
   const handleSubmit = () => {
     const payload = { userId: user.userId, ...changedFields };
     console.log("Updated Payload:", payload);
-    handleUser()
+    handleUser();
+  };
+
+  const handleResetUser = () => {
+    console.log("Resetting User with Email:", formData.email);
   };
 
   return (
@@ -22,7 +26,7 @@ const UpdateUser = ({ user, handleUser }) => {
       <h2 className="text-xl font-bold text-blue-400 mb-4 text-center">Update User</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <label className="block text-gray-300 mb-1">First Name</label>
+        <label className="block text-gray-300 mb-1">First Name</label>
         <input
           type="text"
           value={formData.firstName}
@@ -38,7 +42,7 @@ const UpdateUser = ({ user, handleUser }) => {
           placeholder="Middle Names"
           className="bg-gray-800 text-white p-2 rounded w-full"
         />
-        <label className="block text-gray-300 mb-1">Last Names</label>
+        <label className="block text-gray-300 mb-1">Last Name</label>
         <input
           type="text"
           value={formData.lastName}
@@ -88,7 +92,7 @@ const UpdateUser = ({ user, handleUser }) => {
         </select>
         <label className="block text-gray-300 mb-1">Date of Employment</label>
         <input type="date" value={formData.dateEmployed} onChange={(e) => handleChange("dateEmployed", e.target.value)} className="bg-gray-800 text-white p-2 rounded w-full" />
-        <label className="block text-gray-300 mb-1">Supervisior</label>
+        <label className="block text-gray-300 mb-1">Supervisor</label>
         <input type="text" value={formData.supervisor} onChange={(e) => handleChange("supervisor", e.target.value)} placeholder="Supervisor" className="bg-gray-800 text-white p-2 rounded w-full" />
         <label className="block text-gray-300 mb-1">Provider</label>
         <input type="text" value={formData.provider} onChange={(e) => handleChange("provider", e.target.value)} placeholder="Provider" className="bg-gray-800 text-white p-2 rounded w-full" />
@@ -102,6 +106,10 @@ const UpdateUser = ({ user, handleUser }) => {
 
       <button onClick={handleSubmit} className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full">
         Save Changes
+      </button>
+
+      <button onClick={handleResetUser} className="mt-3 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-full">
+        Reset User
       </button>
     </div>
   );
