@@ -1,25 +1,74 @@
 import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { updateData } from "../services/updatedata";
+import { createData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
+
+const RESET_URL = "https://patient-care-server.onrender.com/api/v1/auth/reset-password";
+const USER_URL = 'https://patient-care-server.onrender.com/api/v1/users';
 
 const UpdateUser = ({ user, handleUser }) => {
-  const [formData, setFormData] = useState({ ...user });
-  const [changedFields, setChangedFields] = useState({});
+    const [formData, setFormData] = useState({ ...user });
+    const [changedFields, setChangedFields] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setChangedFields((prev) => ({ ...prev, [field]: value }));
-  };
+    const handleChange = (field, value) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+        setChangedFields((prev) => ({ ...prev, [field]: value }));
+    };
 
-  const handleSubmit = () => {
-    const payload = { userId: user.userId, ...changedFields };
-    console.log("Updated Payload:", payload);
-    handleUser();
-  };
+    const handleSubmit = async () => {
+        if (!changedFields) return;
+        setIsSubmitting(true);
+        const updatedUrl = `${USER_URL}/${user.userId}`;
+        try {
+            const response = await updateData(updatedUrl, changedFields);
+                
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setTimeout(() => handleUser(), 5000);
+                setTimeout(() => setMessage(""), 5000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-  const handleResetUser = () => {
-    console.log("Resetting User with Email:", formData.email);
-  };
+    const handleResetUser = async () => {
+        if (!formData.email) return
+        setLoading(true);
+        const payload ={
+            username: formData.email
+        }
+        try {
+            const response = await createData(RESET_URL, payload);
+                
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data updated successfully");
+                setTimeout(() => setMessage(""), 5000);
+            }
+            
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setLoading(false);
+        }
+    };
 
   return (
     <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg max-w-3xl mx-auto mt-6">
@@ -131,13 +180,38 @@ const UpdateUser = ({ user, handleUser }) => {
             </select>
         </div>
       </div>
+        {errors.length > 0 && (
+            <div className="mb-4 p-3 rounded">
+                {errors.map((error, index) => (
+                    <p key={index} className="text-sm text-red-600">{error}</p>
+                ))}
+            </div>
+        )}
+        {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
 
-      <button onClick={handleSubmit} className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full">
-        Save Changes
+      <button 
+        onClick={handleSubmit} 
+        className={`mt-6px-4 py-2 rounded w-full
+            ${changedFields
+                ? "bg-blue-500 hover:bg-blue-600 text-white" 
+                : "bg-gray-500 cursor-not-allowed"
+            }` }
+        disabled={!changedFields}
+      >
+        {isSubmitting? "Submitting..." : "Save Changes"}
       </button>
 
-      <button onClick={handleResetUser} className="mt-3 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded w-full">
-        Reset User
+      <button 
+        onClick={handleResetUser} 
+        className={`mt-3 px-4 py-2 rounded w-full
+            ${formData.email
+                ? "bg-red-500 hover:bg-red-600 text-white"
+                : "bg-gray-500 cursor-not-allowed"
+            }
+            `}
+        disabled={!formData.email}
+    >
+        {loading? "Submitting...": "Reset User"}
       </button>
     </div>
   );
