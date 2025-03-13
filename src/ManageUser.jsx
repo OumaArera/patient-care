@@ -15,14 +15,26 @@ const ManageUser = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showUser, setShowUser] = useState(false);
   const usersPerPage = 4;
+  const excludedEmails = [
+    "johnouma999@gmail.com",
+    "aluoch.kalal@gmail.com",
+    "oumatedy@gmail.com",
+    "davidomondi@yfgak.org",
+    "bigted114@gmail.com",
+  ];
 
   
   const getUsers =() =>{
     setLoadingUsers(true);
     getData(ALL_USERS)
       .then((data) => {
-        setUsers(data?.responseObject || []);
-        setFilteredUsers(data?.responseObject || []);
+        const allUsers = data?.responseObject || [];
+        const filteredUsers = allUsers.filter(
+        (user) => !excludedEmails.includes(user.email)
+      );
+
+        setUsers(filteredUsers);
+        setFilteredUsers(filteredUsers);
       })
       .catch(() => {})
       .finally(() => setLoadingUsers(false));
@@ -42,14 +54,6 @@ const ManageUser = () => {
     setFilteredUsers(filtered);
     setCurrentPage(1);
   }, [search, users]);
-
-  const excludedEmails = [
-    "johnouma999@gmail.com",
-    "aluoch.kalal@gmail.com",
-    "oumatedy@gmail.com",
-    "davidomondi@yfgak.org",
-    "bigted114@gmail.com",
-  ];
   
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -79,9 +83,7 @@ const ManageUser = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {currentUsers
-          .filter((user) => !excludedEmails.includes(user.email))
-          .map((user) => (
+          {currentUsers.map((user) => (
             <div key={user.userId} className="bg-gray-800 p-4 rounded-lg shadow">
               <div className="flex items-center gap-4">
                 <FaUser className="text-gray-500 text-3xl" />
@@ -95,16 +97,13 @@ const ManageUser = () => {
               </div>
               <button
                 className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full"
-                onClick={() => {
-                  setSelectedUser(user);
-                  setShowUser(true);
-                }}
+                onClick={() => {setSelectedUser(user); setShowUser(true)}}
               >
                 View
               </button>
             </div>
           ))}
-      </div>
+        </div>
       )}
       
       {/* Pagination Controls */}
