@@ -109,9 +109,9 @@ const SuperUserDashboard = () => {
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("manageUser")}>
                 <FaUndo /> Manage Users
               </button>
-              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("users")}>
+              {/* <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("users")}>
                 <FaUsers /> Users
-              </button>
+              </button> */}
             </div>
           )}
         </div>
