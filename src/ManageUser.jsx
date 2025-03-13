@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { FaUserLock, FaUserSlash, FaUserCheck } from "react-icons/fa";
+import { getData } from "../services/updatedata";
 
 const PASSWORD_RESET_URL = "https://patient-care-server.onrender.com/api/v1/auth/reset-password";
 const BLOCK_PASSWORD_URL = "https://patient-care-server.onrender.com/api/v1/auth/block-users";
 const UNBLOCK_PASSWORD_URL = "https://patient-care-server.onrender.com/api/v1/auth/unblock-users";
+const ALL_USERS = "https://patient-care-server.onrender.com/api/v1/users";
 
 const ManageUser = () => {
   const [username, setUsername] = useState("");
@@ -12,7 +14,17 @@ const ManageUser = () => {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [token, setToken] = useState("");
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [users, setUsers] = useState([]);
 
+  useEffect(()=>{
+    setLoadingUsers(true);
+    getData(ALL_USERS)
+      .then((data) => setUsers(data?.responseObject))
+      .catch(() => {})
+      .finally(()=> setLoadingUsers(false))
+  }, [])
+  console.log("Users: ", users)
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     setToken(savedToken);
