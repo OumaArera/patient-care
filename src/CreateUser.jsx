@@ -42,7 +42,10 @@ const CreateUser = () => {
       const response = await createData(USERS_URL, formData)
       if (response?.error) {
         console.log("Errors: ", response.error);
-        setErrors(response?.error);
+        const extractedErrors = Object.values(response?.error)
+          .flat() 
+          .filter(msg => msg !== "A user with that username already exists.");
+        setErrors(extractedErrors);
         setTimeout(() => setErrors([]), 10000);
       } else {
         setSuccessMessage('User successfully created!');
@@ -172,7 +175,14 @@ const CreateUser = () => {
             </select>
           </div>
           </div>
-          {errors && <p className="text-red-600 mt-2 text-center">{errors}</p>}
+          {/* {errors && <p className="text-red-600 mt-2 text-center">{errors}</p>} */}
+          {errors.length > 0 && (
+            <div className="mb-4 p-3 rounded bg-red-100">
+              {errors.map((error, index) => (
+                <p key={index} className="text-red-600 text-sm">{error}</p>
+              ))}
+            </div>
+          )}
           {successMessage && <p className="text-green-400 mt-2 text-center">{successMessage}</p>}
 
           <button type="submit" className="w-full p-3 mt-6 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-200 shadow-lg" disabled={loading}>
