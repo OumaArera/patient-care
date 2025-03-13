@@ -27,11 +27,10 @@ const ManageUser = () => {
 
   useEffect(() => {
     const lowerSearch = search.toLowerCase();
-    const filtered = users.filter(
-      (user) =>
-        user.fullName.toLowerCase().includes(lowerSearch) ||
-        user.email.toLowerCase().includes(lowerSearch) ||
-        user.supervisor.toLowerCase().includes(lowerSearch)
+    const filtered = users.filter((user) =>
+      (user.fullName?.toLowerCase() || "").includes(lowerSearch) ||
+      (user.email?.toLowerCase() || "").includes(lowerSearch) ||
+      (user.supervisor?.toLowerCase() || "").includes(lowerSearch)
     );
     setFilteredUsers(filtered);
     setCurrentPage(1);
