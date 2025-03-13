@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getData } from "../services/updatedata";
 import Confetti from "react-confetti"; 
 import useWindowSize from "react-use/lib/useWindowSize"; 
+import { motion } from "framer-motion";
 import Christopher from './assets/christopher.jpeg';
 import Ouma from './assets/ouma.png';
 
@@ -56,7 +57,7 @@ const Birthday = () => {
   const randomMessage = birthdayMessages[Math.floor(Math.random() * birthdayMessages.length)];
 
   return (
-    <div className="p-4 flex flex-col items-center">
+    <div className="p-4 flex flex-col items-center relative">
       {/* 🎉 Confetti Effect for the Logged-in User */}
       {loggedInUserBirthday && <Confetti width={width} height={height} />}
 
@@ -66,19 +67,10 @@ const Birthday = () => {
           <h2 className="text-3xl font-bold">🎉 Happy Birthday, {loggedInUser.firstName}! 🎂</h2>
           <p className="text-lg">{randomMessage}</p>
 
-          {/* 🧸 Animated Teddy Bear */}
-          <div className="w-20 h-20 mx-auto mt-4 animate-bounce">
-            🧸🎈
-          </div>
-
           {/* 🎭 Display User’s Image If Available */}
           {loggedInUserImage && (
             <img src={loggedInUserImage} alt="Birthday User" className="w-32 h-32 rounded-full mx-auto mt-4 shadow-lg" />
           )}
-
-          <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-            🎈🎈🎈
-          </div>
         </div>
       )}
 
@@ -101,6 +93,24 @@ const Birthday = () => {
       )}
 
       {loading && <p className="text-gray-500">Loading users...</p>}
+
+      {/* 🧸 Walking Teddy Bear Blowing Balloons */}
+      {loggedInUserBirthday && (
+        <motion.div
+          className="absolute bottom-0 left-0 w-40 h-40 text-6xl"
+          animate={{ x: [0, width - 100, 0] }}
+          transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+        >
+          🧸
+          <motion.div
+            className="absolute top-[-30px] left-[30px] text-4xl"
+            animate={{ y: [-10, -50], opacity: [1, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+          >
+            🎈
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 };
