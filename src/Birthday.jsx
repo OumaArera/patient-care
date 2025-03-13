@@ -95,22 +95,23 @@ const Birthday = () => {
       {loading && <p className="text-gray-500">Loading users...</p>}
 
       {/* 🧸 Walking Teddy Bear Blowing Balloons */}
-      {loggedInUserBirthday && (
+        {loggedInUserBirthday && (
         <motion.div
-          className="absolute bottom-0 left-0 w-40 h-40 text-6xl"
-          animate={{ x: [0, width - 100, 0] }}
-          transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+            className="absolute bottom-10 left-10 w-40 h-40 text-6xl"
+            animate={{ x: [0, width * 0.6, 0] }} // Moves within 60% of screen width
+            transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
         >
-          🧸
-          <motion.div
+            🧸
+            <motion.div
             className="absolute top-[-30px] left-[30px] text-4xl"
-            animate={{ y: [-10, -50], opacity: [1, 0] }}
+            animate={{ y: [-10, -60], opacity: [1, 0] }}
             transition={{ repeat: Infinity, duration: 2 }}
-          >
+            >
             🎈
-          </motion.div>
+            </motion.div>
         </motion.div>
-      )}
+        )}
+
     </div>
   );
 };
