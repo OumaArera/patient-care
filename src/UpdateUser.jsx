@@ -192,19 +192,19 @@ const UpdateUser = ({ user, handleUser }) => {
       <button 
         onClick={handleSubmit} 
         className={`mt-6px-4 py-2 rounded w-full
-            ${changedFields
+            ${changedFields || !isSubmitting
                 ? "bg-blue-500 hover:bg-blue-600 text-white" 
                 : "bg-gray-500 cursor-not-allowed"
             }` }
         disabled={!changedFields}
       >
-        {isSubmitting? "Submitting..." : "Save Changes"}
+        {isSubmitting ? "Submitting..." : "Save Changes"}
       </button>
 
       <button 
         onClick={handleResetUser} 
         className={`mt-3 px-4 py-2 rounded w-full
-            ${formData.email
+            ${formData.email || !loading
                 ? "bg-red-500 hover:bg-red-600 text-white"
                 : "bg-gray-500 cursor-not-allowed"
             }
