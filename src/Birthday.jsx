@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { getData } from "../services/updatedata";
 import Confetti from "react-confetti"; 
 import useWindowSize from "react-use/lib/useWindowSize"; 
+import Christopher from './assets/christopher.jpeg';
+import Ouma from './assets/ouma.png';
 
 const ALL_USERS = "https://patient-care-server.onrender.com/api/v1/users";
 
@@ -10,6 +12,12 @@ const Birthday = () => {
   const [loading, setLoading] = useState(false);
   const { width, height } = useWindowSize();
   const loggedInUserId = localStorage.getItem("userId");
+
+  // Birthday images mapped to first names in lowercase
+  const birthdayImages = {
+    christopher: Christopher,
+    ouma: Ouma,
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -26,6 +34,9 @@ const Birthday = () => {
   // Find logged-in user
   const loggedInUser = users.find((user) => user.userId.toString() === loggedInUserId);
   const loggedInUserBirthday = loggedInUser?.dateOfBirth?.slice(5, 10) === today;
+
+  // Determine if the logged-in user has a special birthday image
+  const loggedInUserImage = loggedInUser ? birthdayImages[loggedInUser.firstName?.toLowerCase()] : null;
 
   // Find other users with birthdays today (excluding logged-in user)
   const usersWithBirthdayToday = users.filter(
@@ -54,6 +65,17 @@ const Birthday = () => {
         <div className="relative bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white text-center p-6 rounded-lg shadow-lg mb-6 animate-bounce">
           <h2 className="text-3xl font-bold">🎉 Happy Birthday, {loggedInUser.firstName}! 🎂</h2>
           <p className="text-lg">{randomMessage}</p>
+
+          {/* 🧸 Animated Teddy Bear */}
+          <div className="w-20 h-20 mx-auto mt-4 animate-bounce">
+            🧸🎈
+          </div>
+
+          {/* 🎭 Display User’s Image If Available */}
+          {loggedInUserImage && (
+            <img src={loggedInUserImage} alt="Birthday User" className="w-32 h-32 rounded-full mx-auto mt-4 shadow-lg" />
+          )}
+
           <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
             🎈🎈🎈
           </div>
@@ -65,11 +87,15 @@ const Birthday = () => {
         <div className="bg-blue-100 border-l-4 border-blue-500 text-blue-900 p-6 rounded-lg shadow-lg max-w-lg text-center">
           <h3 className="text-xl font-bold">🎂 Birthdays Today!</h3>
           <ul className="list-none mt-2 space-y-2">
-            {usersWithBirthdayToday.map((user) => (
-              <li key={user.userId} className="text-lg font-semibold">
-                {user.fullName} 🎉 - <span className="text-red-500">Send them your best wishes!</span>
-              </li>
-            ))}
+            {usersWithBirthdayToday.map((user) => {
+              const userImage = birthdayImages[user.firstName?.toLowerCase()];
+              return (
+                <li key={user.userId} className="text-lg font-semibold flex flex-col items-center">
+                  {user.fullName} 🎉 - <span className="text-red-500">Send them your best wishes!</span>
+                  {userImage && <img src={userImage} alt="Birthday User" className="w-24 h-24 rounded-full mt-2 shadow-lg" />}
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
