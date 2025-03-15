@@ -144,9 +144,7 @@ const LeaveManagement = () => {
                                 onChange={(e) => handleStatusChange(leave.leaveId, e.target.value)}
                                 className="bg-gray-800 text-white p-1 rounded w-full"
                             >
-                            <option value="" disabled>
-                                Select Status
-                            </option>
+                            <option value="">Select Status</option>
                             <option value="approved">Approve</option>
                             <option value="declined">Decline</option>
                             </select>
