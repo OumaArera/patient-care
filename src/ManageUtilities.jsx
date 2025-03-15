@@ -19,7 +19,7 @@ const ManageUtilities = () => {
     const fetchUtilities = () => {
         setLoading(true);
         getData(URL)
-            .then((data) => setUtilities(data))
+            .then((data) => setUtilities(data?.responseObject || []))
             .catch(() => setErrors(["Failed to fetch utilities"]))
             .finally(() => setLoading(false));
     };
