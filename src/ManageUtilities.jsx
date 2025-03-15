@@ -101,7 +101,7 @@ const ManageUtilities = () => {
                                             onChange={(e) => handleStatusChange(utility.utilityId, e.target.value)}
                                             className="bg-gray-800 text-white p-1 rounded w-full"
                                         >
-                                            <option value="">Select Status</option>
+                                            <option value="" disabled>Select Status</option>
                                             <option value="review">Under Review</option>
                                             <option value="addressed">Addressed</option>
                                         </select>
