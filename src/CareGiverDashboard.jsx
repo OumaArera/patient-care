@@ -14,11 +14,13 @@ import ChartUpdate from "./ChartUpdates";
 import ChartVitals from "./ChartVitals";
 import logo1 from "./assets/1ST EDMONDS_LOGO.png";
 import logo2 from './assets/BSC-LOGO.png';
+import Staff from "./Staff";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showStaff, setShowStaff] = useState(false);
   const navigate = useNavigate();
 
   // Ref for user menu and modal
@@ -107,10 +109,13 @@ const CareGiverDashboard = () => {
           {/* User Dropdown and Additional Icons */}
           <div className="flex items-center space-x-6">
             {/* Staff Icon */}
-            <div className="flex flex-col items-center cursor-pointer">
+            <button 
+              className="flex flex-col items-center cursor-pointer"
+              onClick={() => setShowStaff(true)}
+            >
               <FaUser className="text-blue-400 text-xl" />
               <span className="text-sm text-gray-400">Staff</span>
-            </div>
+            </button>
 
             {/* Utilities Icon */}
             <div className="flex flex-col items-center cursor-pointer">
@@ -171,6 +176,25 @@ const CareGiverDashboard = () => {
             </button>
           </div>
         )}
+        {showStaff &&(
+            <div
+                className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+                onClick={() => setShowStaff(false)}
+            >
+                <div
+                className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+                >
+                <Staff  />
+                <button
+                    className="absolute top-2 right-2 text-white hover:text-gray-400"
+                    onClick={() => setShowStaff(false)}
+                >
+                    ✖
+                </button>
+                </div>
+            </div>
+            )}
       </div>
     </div>
   );

@@ -51,7 +51,6 @@ const ChartVitals = () => {
     
         getData(`${URL}?${queryParams}`)
           .then((data) => {
-            console.log("Data: ", data.responseObject || [])
               setLateSubmission(data.responseObject || []);
           })
           .catch(() => {})
