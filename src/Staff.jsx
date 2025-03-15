@@ -44,7 +44,6 @@ const Staff = () => {
         }
         setIsSubmitting(true);
         const payload ={ startDate, endDate, reasonForLeave }
-        console.log(payload);
         try {
             
             const response = await createData(URL, payload);

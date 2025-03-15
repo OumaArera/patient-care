@@ -40,7 +40,6 @@ const Utilities = () => {
     const handleSubmit = async () => {
         setIsSubmitting(true);
         const payload = { item, details }
-        console.log(payload);
         try {
             
             const response = await createData(URL, payload);

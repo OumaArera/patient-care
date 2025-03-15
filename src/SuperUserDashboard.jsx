@@ -26,6 +26,7 @@ import Appointments from "./Appointments";
 import Vitals from "./Vitals";
 import logo1 from "./assets/1ST EDMONDS_LOGO.png";
 import logo2 from './assets/BSC-LOGO.png';
+import LeaveManagement from "./LeaveManagement";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -33,6 +34,8 @@ const SuperUserDashboard = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showLeaves, setShowLeaves] = useState(false);
+  const [showUtilities, setShowUtilities] = useState(false);
   const navigate = useNavigate();
 
   const menuRef = useRef(null);
@@ -159,6 +162,22 @@ const SuperUserDashboard = () => {
 
           {/* User Dropdown */}
           <div className="relative ml-auto">
+          <button 
+              className="flex flex-col items-center cursor-pointer"
+              onClick={() => setShowLeaves(true)}
+            >
+              <FaUser className="text-blue-400 text-xl" />
+              <span className="text-sm text-gray-400">Staff</span>
+            </button>
+
+            {/* Utilities Icon */}
+            <button 
+              className="flex flex-col items-center cursor-pointer"
+              onClick={() => setShowUtilities(true)}
+            >
+              <FaNewspaper className="text-blue-400 text-xl" />
+              <span className="text-sm text-gray-400">Utilities</span>
+            </button>
             <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 bg-gray-800 px-3 py-2 rounded-lg hover:bg-gray-700">
               <FaUser className="text-blue-400" />
               <span>{fullName}</span>
@@ -214,7 +233,25 @@ const SuperUserDashboard = () => {
             </button>
           </div>
         )} 
-        
+        {showLeaves &&(
+          <div
+              className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+              onClick={() => setShowLeaves(false)}
+          >
+              <div
+              className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              >
+              <LeaveManagement  />
+              <button
+                  className="absolute top-2 right-2 text-white hover:text-gray-400"
+                  onClick={() => setShowLeaves(false)}
+              >
+                  ✖
+              </button>
+              </div>
+          </div>
+          )}
       </div>
     </div>
   );
