@@ -71,6 +71,7 @@ const Staff = () => {
           <textarea
             value={reasonForLeave}
             onChange={(e) => setReasonForLeave(e.target.value)}
+            placeholder="Enter the reason for leave..."
             className="w-full p-2 rounded bg-gray-800 text-white h-24"
           />
         </div>
