@@ -77,7 +77,7 @@ const Patients = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSubmitting(true); // Set submitting state to true
+    setSubmitting(true); 
     setSuccessMessage("");
     const token = localStorage.getItem("token");
     const formDataToSend = new FormData();
@@ -172,7 +172,6 @@ const Patients = () => {
                 rows="4"
                 placeholder={`Enter ${key}`}
                 className="border p-2 rounded w-full bg-gray-700 text-white"
-                required
               ></textarea>
             ) : (
               <input
