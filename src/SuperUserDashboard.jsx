@@ -27,6 +27,7 @@ import Vitals from "./Vitals";
 import logo1 from "./assets/1ST EDMONDS_LOGO.png";
 import logo2 from './assets/BSC-LOGO.png';
 import LeaveManagement from "./LeaveManagement";
+import ManageUtilities from "./ManageUtilities";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -254,6 +255,25 @@ const SuperUserDashboard = () => {
               <button
                   className="absolute top-2 right-2 text-white hover:text-gray-400"
                   onClick={() => setShowLeaves(false)}
+              >
+                  ✖
+              </button>
+              </div>
+          </div>
+          )}
+          {showUtilities &&(
+          <div
+              className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+              onClick={() => setShowUtilities(false)}
+          >
+              <div
+              className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              >
+              <ManageUtilities  />
+              <button
+                  className="absolute top-2 right-2 text-white hover:text-gray-400"
+                  onClick={() => setShowUtilities(false)}
               >
                   ✖
               </button>

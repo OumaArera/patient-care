@@ -52,7 +52,6 @@ const LeaveManagement = () => {
         status: action[leaveId],
         declineReason: action[leaveId] === "declined" ? declineReasons[leaveId] : null,
         };
-        console.log("Data: ", payload);
         const updatedURL = `${URL}/${leaveId}`
         try {
             const response = await updateData(updatedURL, payload);
