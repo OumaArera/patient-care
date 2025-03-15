@@ -52,6 +52,7 @@ const LeaveManagement = () => {
         status: action[leaveId],
         declineReason: action[leaveId] === "declined" ? declineReasons[leaveId] : null,
         };
+        console.log("Data: ", payload);
         const updatedURL = `${URL}/${leaveId}`
         try {
             const response = await updateData(updatedURL, payload);
@@ -155,7 +156,15 @@ const LeaveManagement = () => {
                                 className="bg-gray-800 text-white p-1 rounded w-full h-16"
                                 />
                             )}
+                            {errors.length > 0 && (
+                                <div className="mb-4 p-3 rounded">
+                                    {errors.map((error, index) => (
+                                        <p key={index} className="text-sm text-red-600">{error}</p>
+                                    ))}
+                                </div>
+                            )}
 
+                            {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
                             <button
                                 onClick={() => handleSubmit(leave.leaveId)}
                                 className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 w-full"
