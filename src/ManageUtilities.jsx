@@ -8,9 +8,10 @@ const ManageUtilities = () => {
     const [utilities, setUtilities] = useState([]);
     const [loading, setLoading] = useState(false);
     const [action, setAction] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState({});
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
+    const [filterStatus, setFilterStatus] = useState("all");
 
     useEffect(() => {
         fetchUtilities();
@@ -29,7 +30,7 @@ const ManageUtilities = () => {
     };
 
     const handleSubmit = async (utilityId) => {
-        setIsSubmitting(true);
+        setIsSubmitting((prev) => ({ ...prev, [utilityId]: true }));
         const payload = { utilityId, status: action[utilityId] };
         const updatedURL = `${URL}/${utilityId}`;
 
@@ -40,20 +41,39 @@ const ManageUtilities = () => {
                 setTimeout(() => setErrors([]), 5000);
             } else {
                 setMessage("Status updated successfully");
-                setTimeout(() => fetchUtilities(), 5000);
                 setTimeout(() => setMessage(""), 5000);
+                fetchUtilities();
             }
         } catch (error) {
             setErrors(["An error occurred. Please try again."]);
             setTimeout(() => setErrors([]), 5000);
         } finally {
-            setIsSubmitting(false);
+            setIsSubmitting((prev) => ({ ...prev, [utilityId]: false }));
         }
     };
+
+    const filteredUtilities = filterStatus === "all"
+        ? utilities
+        : utilities.filter((utility) => utility.status === filterStatus);
 
     return (
         <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-full max-w-5xl mx-auto">
             <h2 className="text-xl font-bold text-blue-500 mb-4">Manage Utilities</h2>
+            
+            <div className="mb-4">
+                <label className="block text-gray-300 mb-2">Filter by Status:</label>
+                <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="bg-gray-800 text-white p-2 rounded w-full"
+                >
+                    <option value="all">All</option>
+                    <option value="review">Review</option>
+                    <option value="pending">Pending</option>
+                    <option value="addressed">Addressed</option>
+                </select>
+            </div>
+
             {loading ? (
                 <p className="text-gray-400">Loading...</p>
             ) : (
@@ -68,8 +88,8 @@ const ManageUtilities = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {utilities.length > 0 ? (
-                            utilities.map((utility) => (
+                        {filteredUtilities.length > 0 ? (
+                            filteredUtilities.map((utility) => (
                                 <tr key={utility.utilityId} className="border-gray-700">
                                     <td className="p-2 border border-gray-700">{utility.staffName}</td>
                                     <td className="p-2 border border-gray-700">{utility.item}</td>
@@ -81,16 +101,16 @@ const ManageUtilities = () => {
                                             onChange={(e) => handleStatusChange(utility.utilityId, e.target.value)}
                                             className="bg-gray-800 text-white p-1 rounded w-full"
                                         >
-                                            <option value="" disabled>Select Status</option>
-                                            <option value="review">Review</option>
+                                            <option value="">Select Status</option>
+                                            <option value="review">Under Review</option>
                                             <option value="addressed">Addressed</option>
                                         </select>
                                         <button
                                             onClick={() => handleSubmit(utility.utilityId)}
                                             className="mt-2 bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 w-full"
-                                            disabled={isSubmitting}
+                                            disabled={isSubmitting[utility.utilityId]}
                                         >
-                                            {isSubmitting ? "Submitting..." : "Submit"}
+                                            {isSubmitting[utility.utilityId] ? "Submitting..." : "Submit"}
                                         </button>
                                     </td>
                                 </tr>
