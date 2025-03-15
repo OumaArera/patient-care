@@ -165,7 +165,7 @@ const SuperUserDashboard = () => {
             {/* Staff Icon */}
             <button 
               className="flex flex-col items-center cursor-pointer"
-              onClick={() => setShowStaff(true)}
+              onClick={() => setShowLeaves(true)}
             >
               <FaUser className="text-blue-400 text-xl" />
               <span className="text-sm text-gray-400">Staff</span>
