@@ -140,12 +140,15 @@ const LeaveManagement = () => {
                         ) : (
                             <div className="space-y-2">
                             <select
-                                value={action[leave.leaveId]}
+                                value={action[leave.leaveId] || ""}
                                 onChange={(e) => handleStatusChange(leave.leaveId, e.target.value)}
                                 className="bg-gray-800 text-white p-1 rounded w-full"
                             >
-                                <option value="approved">Approve</option>
-                                <option value="declined">Decline</option>
+                            <option value="" disabled>
+                                Select Status
+                            </option>
+                            <option value="approved">Approve</option>
+                            <option value="declined">Decline</option>
                             </select>
 
                             {action[leave.leaveId] === "declined" && (
