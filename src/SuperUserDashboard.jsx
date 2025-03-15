@@ -161,10 +161,11 @@ const SuperUserDashboard = () => {
           {/* <h2 className="text-xl font-semibold">Dashboard</h2> */}
 
           {/* User Dropdown */}
-          <div className="relative ml-auto">
-          <button 
+          <div className="flex items-center space-x-6">
+            {/* Staff Icon */}
+            <button 
               className="flex flex-col items-center cursor-pointer"
-              onClick={() => setShowLeaves(true)}
+              onClick={() => setShowStaff(true)}
             >
               <FaUser className="text-blue-400 text-xl" />
               <span className="text-sm text-gray-400">Staff</span>
@@ -178,28 +179,35 @@ const SuperUserDashboard = () => {
               <FaNewspaper className="text-blue-400 text-xl" />
               <span className="text-sm text-gray-400">Utilities</span>
             </button>
-            <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-2 bg-gray-800 px-3 py-2 rounded-lg hover:bg-gray-700">
-              <FaUser className="text-blue-400" />
-              <span>{fullName}</span>
-            </button>
 
-            {menuOpen && (
-              <div className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg">
-                <p className="p-3 border-b border-gray-700">{fullName}</p>
-                <button 
-                  className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700" 
-                  onClick={() => setShowChangePassword(true)}
-                >
-                  <FaLock className="mr-2" /> Change Password
-                </button>
-                <button 
-                  onClick={() => handleLogout(navigate)} 
-                  className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700"
-                >
-                  <FaSignOutAlt className="mr-2" /> Logout
-                </button>
-              </div>
-            )}
+            {/* User Dropdown */}
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="flex items-center gap-2 bg-gray-800 px-3 py-2 rounded-lg hover:bg-gray-700"
+              >
+                <FaUser className="text-blue-400" />
+                <span>{fullName}</span>
+              </button>
+
+              {menuOpen && (
+                <div className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg">
+                  <p className="p-3 border-b border-gray-700">{fullName}</p>
+                  <button
+                    className="flex w-full px-4 py-2 text-yellow-400 hover:bg-gray-700"
+                    onClick={() => setShowChangePassword(true)}
+                  >
+                    <FaLock className="mr-2" /> Change Password
+                  </button>
+                  <button
+                    onClick={() => handleLogout(navigate)}
+                    className="flex w-full px-4 py-2 text-red-500 hover:bg-gray-700"
+                  >
+                    <FaSignOutAlt className="mr-2" /> Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
