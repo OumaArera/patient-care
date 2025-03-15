@@ -67,19 +67,21 @@ const LeaveManagement = () => {
                 <th className="p-2 border border-gray-700">Start Date</th>
                 <th className="p-2 border border-gray-700">End Date</th>
                 <th className="p-2 border border-gray-700">Reason</th>
+                <th className="p-2 border border-gray-700">Status</th>
                 <th className="p-2 border border-gray-700">Decline Reason</th>
                 <th className="p-2 border border-gray-700">Action</th>
               </tr>
             </thead>
             <tbody>
               {leaves.map((leave) => (
-                <tr key={leave.leaveId} className="border border-gray-700">
-                  <td className="p-2">{leave.staffName}</td>
-                  <td className="p-2">{formatDate(leave.startDate)}</td>
-                  <td className="p-2">{formatDate(leave.endDate)}</td>
-                  <td className="p-2">{leave.reasonForLeave}</td>
-                  <td className="p-2">{leave.declineReason || "-"}</td>
-                  <td className="p-2">
+                <tr key={leave.leaveId} className="border-gray-700">
+                  <td className="p-2 border border-gray-700">{leave.staffName}</td>
+                  <td className="p-2 border border-gray-700">{formatDate(leave.startDate)}</td>
+                  <td className="p-2 border border-gray-700">{formatDate(leave.endDate)}</td>
+                  <td className="p-2 border border-gray-700">{leave.reasonForLeave}</td>
+                  <td className="p-2 border border-gray-700">{leave.status}</td>
+                  <td className="p-2 border border-gray-700">{leave.declineReason || "-"}</td>
+                  <td className="p-2 border border-gray-700">
                     {!action[leave.leaveId] ? (
                       <button
                         onClick={() => setAction({ ...action, [leave.leaveId]: "pending" })}
