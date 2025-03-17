@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { createData } from "../services/updatedata";
 import { getData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
+import GroceriesCard from "./GroceriesCard";
 
 const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
 const BRANCHES_URL = `https://patient-care-server.onrender.com/api/v1/branches`
@@ -153,6 +154,7 @@ const Groceries = () => {
             >
                 {isSubmitting ? "Submitting ...": "Submit"}
             </button>
+            {!loading && (<GroceriesCard groceries={pendingGroceries} handleGetGroceries={getGroceries} />)}
         </div>
     );
 };
