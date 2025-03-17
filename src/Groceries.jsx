@@ -36,6 +36,7 @@ const Groceries = () => {
         const queryParams = new URLSearchParams({ staff }).toString();
         getData(`${GROCERIES_URL}?${queryParams}`)
         .then((data) => {
+            console.log("Data: ", data)
             setPendingGroceries(data?.responseObject || []);
         })
         .catch(() => {})

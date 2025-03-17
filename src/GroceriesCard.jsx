@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 const GroceriesCard = ({ groceries, handleGetGroceries }) => {
+    console.log("Groceries: ", groceries);
     const [currentPage, setCurrentPage] = useState(1);
     const [updatedGroceries, setUpdatedGroceries] = useState(groceries);
     const itemsPerPage = 3;
