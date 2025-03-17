@@ -158,7 +158,7 @@ const Groceries = () => {
             >
                 {isSubmitting ? "Submitting ...": "Submit"}
             </button>
-            {!loading && (<GroceriesCard groceries={pendingGroceries} handleGetGroceries={getGroceries} />)}
+            {pendingGroceries && (<GroceriesCard groceries={pendingGroceries} handleGetGroceries={getGroceries} />)}
         </div>
     );
 };
