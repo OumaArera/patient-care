@@ -39,7 +39,6 @@ const Groceries = () => {
         const queryParams = new URLSearchParams({ staff }).toString();
         getData(`${GROCERIES_URL}?${queryParams}`)
         .then((data) => {
-            console.log("Data: ", data)
             setPendingGroceries(data?.responseObject || []);
         })
         .catch(() => {})
@@ -98,7 +97,7 @@ const Groceries = () => {
             )}
             <select
                 value={selectedBranch}
-                onChange={() => setSelectedBranch(e.target.value)}
+                onChange={e => setSelectedBranch(e.target.value)}
                 className="border p-2 rounded w-full bg-gray-700 text-white mb-4"
                 required
             >
