@@ -4,7 +4,7 @@ import {
   FaChartBar, FaPills, FaUser, FaSignOutAlt, FaLock, FaNewspaper,
   FaCalendarAlt, FaUserTimes
 } from "react-icons/fa";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Wrench } from "lucide-react";
 import handleLogout from "./Logout";
 import ChangePassword from "./ChangePassword";
 import ChartPatient from "./ChartPatient";
@@ -135,8 +135,8 @@ const CareGiverDashboard = () => {
               className="flex flex-col items-center cursor-pointer"
               onClick={() => setShowUtilities(true)}
             >
-              <FaNewspaper className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">General requests</span>
+              <Wrench className="text-blue-400 text-xl" />
+              <span className="text-sm text-gray-400">Repairs</span>
             </button>
 
             {/* User Dropdown */}
