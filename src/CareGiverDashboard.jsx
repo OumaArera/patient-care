@@ -116,7 +116,7 @@ const CareGiverDashboard = () => {
               onClick={() => setShowStaff(true)}
             >
               <FaUser className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">Staff</span>
+              <span className="text-sm text-gray-400">Leave Request</span>
             </button>
 
             {/* Utilities Icon */}
@@ -125,7 +125,7 @@ const CareGiverDashboard = () => {
               onClick={() => setShowUtilities(true)}
             >
               <FaNewspaper className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">Utilities</span>
+              <span className="text-sm text-gray-400">General requests</span>
             </button>
 
             {/* User Dropdown */}

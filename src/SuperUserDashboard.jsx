@@ -35,7 +35,6 @@ const SuperUserDashboard = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [showLeaves, setShowLeaves] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
   const navigate = useNavigate();
 
@@ -61,7 +60,7 @@ const SuperUserDashboard = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showChangePassword]); // Add showChangePassword as a dependency
+  }, [showChangePassword]);
   
 
   // Retrieve logged-in user info
@@ -103,7 +102,7 @@ const SuperUserDashboard = () => {
         {/* User Management Dropdown */}
         <div>
           <button className="p-3 flex items-center gap-2 text-gray-400 hover:text-blue-500 w-full text-left" onClick={() => setUserMenuOpen(!userMenuOpen)}>
-            <FaUsers /> User Management
+            <FaUsers /> Staff Management
           </button>
           {userMenuOpen && (
             <div className="ml-5 flex flex-col text-gray-300">
@@ -113,9 +112,9 @@ const SuperUserDashboard = () => {
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("manageUser")}>
                 <FaUndo /> Manage Users
               </button>
-              {/* <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("users")}>
-                <FaUsers /> Users
-              </button> */}
+              <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("leave")}>
+                <FaUsers /> Leave Requests
+              </button>
             </div>
           )}
         </div>
@@ -139,15 +138,9 @@ const SuperUserDashboard = () => {
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("chartData")}>
                 <FaChartPie /> Chart Data
               </button>
-              {/* <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("chartDataUpdate")}>
-                <FaUserTimes /> Chart Data Update
-              </button> */}
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("medicationsAdmin")}>
                 <FaPills /> Create Medication
               </button>
-              {/* <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("appointments")}>
-                <FaCalendarAlt /> Appointments
-              </button> */}
               <button className="p-2 flex items-center gap-2 hover:text-blue-500" onClick={() => setActiveTab("assignPatient")}>
                 <FaUserCheck /> Assign Resident
               </button>
@@ -163,14 +156,6 @@ const SuperUserDashboard = () => {
 
           {/* User Dropdown */}
           <div className="flex items-center space-x-6">
-            {/* Staff Icon */}
-            <button 
-              className="flex flex-col items-center cursor-pointer"
-              onClick={() => setShowLeaves(true)}
-            >
-              <FaUser className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">Staff</span>
-            </button>
 
             {/* Utilities Icon */}
             <button 
@@ -178,7 +163,7 @@ const SuperUserDashboard = () => {
               onClick={() => setShowUtilities(true)}
             >
               <FaNewspaper className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">Utilities</span>
+              <span className="text-sm text-gray-400">General Requests</span>
             </button>
 
             {/* User Dropdown */}
@@ -229,6 +214,7 @@ const SuperUserDashboard = () => {
         {activeTab === "medications" && <MedAdministration />}  
         {activeTab === "dashboard" && <LandingPage />}
         {activeTab === "vitals" && <Vitals />}
+        {activeTab === "leave" && <LeaveManagement />}
 
         {showChangePassword && (
           <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">
@@ -242,25 +228,6 @@ const SuperUserDashboard = () => {
             </button>
           </div>
         )} 
-        {showLeaves &&(
-          <div
-              className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
-              onClick={() => setShowLeaves(false)}
-          >
-              <div
-              className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-              >
-              <LeaveManagement  />
-              <button
-                  className="absolute top-2 right-2 text-white hover:text-gray-400"
-                  onClick={() => setShowLeaves(false)}
-              >
-                  ✖
-              </button>
-              </div>
-          </div>
-          )}
           {showUtilities &&(
           <div
               className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"

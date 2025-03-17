@@ -67,7 +67,7 @@ const Utilities = () => {
 
         <div className="space-y-4">
             <div>
-            <label className="block text-gray-300">Item</label>
+            <label className="block text-gray-300">Area</label>
             <input
                 type="text"
                 value={item}
