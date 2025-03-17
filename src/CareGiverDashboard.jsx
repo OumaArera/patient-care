@@ -4,6 +4,7 @@ import {
   FaChartBar, FaPills, FaUser, FaSignOutAlt, FaLock, FaNewspaper,
   FaCalendarAlt, FaUserTimes
 } from "react-icons/fa";
+import { ShoppingCart } from "lucide-react";
 import handleLogout from "./Logout";
 import ChangePassword from "./ChangePassword";
 import ChartPatient from "./ChartPatient";
@@ -16,6 +17,7 @@ import logo1 from "./assets/1ST EDMONDS_LOGO.png";
 import logo2 from './assets/BSC-LOGO.png';
 import Staff from "./Staff";
 import Utilities from "./Utilities";
+import Groceries from "./Groceries";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -23,6 +25,7 @@ const CareGiverDashboard = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showStaff, setShowStaff] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
+  const [showGroceries, setShowGroceries] = useState(false);
   const navigate = useNavigate();
 
   // Ref for user menu and modal
@@ -119,6 +122,14 @@ const CareGiverDashboard = () => {
               <span className="text-sm text-gray-400">Leave Request</span>
             </button>
 
+            <button 
+              className="flex flex-col items-center cursor-pointer"
+              onClick={() => setShowGroceries(true)}
+            >
+              <ShoppingCart className="text-blue-400 text-xl" />
+              <span className="text-sm text-gray-400">Groceries</span>
+            </button>
+
             {/* Utilities Icon */}
             <button 
               className="flex flex-col items-center cursor-pointer"
@@ -194,6 +205,25 @@ const CareGiverDashboard = () => {
               <button
                   className="absolute top-2 right-2 text-white hover:text-gray-400"
                   onClick={() => setShowUtilities(false)}
+              >
+                  ✖
+              </button>
+              </div>
+          </div>
+          )}
+          {showGroceries &&(
+          <div
+              className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+              onClick={() => setShowGroceries(false)}
+          >
+              <div
+              className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              >
+              <Groceries  />
+              <button
+                  className="absolute top-2 right-2 text-white hover:text-gray-400"
+                  onClick={() => setShowGroceries(false)}
               >
                   ✖
               </button>
