@@ -38,7 +38,7 @@ export const createData = async (url, newData) => {
 
         const data = await response.json();
         if (!response.ok) {
-            return { error: data?.responseObject?.errors || "Failed to update data" };
+            return { error: data?.responseObject?.errors || "Failed to create data" };
         }
 
         return data;

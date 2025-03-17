@@ -20,11 +20,13 @@ const Groceries = () => {
     const [selectedBranch, setSelectedBranch] = useState("");
 
     useEffect(() => {
+        setLoading(true);
         getData(BRANCHES_URL)
           .then((data) => {
             setBranches(data.responseObject || []);
           })
-          .catch(() => setErrors(["Failed to fetch branches."]));
+          .catch(() => setErrors(["Failed to fetch branches."]))
+          .finally(() => setLoading(false))
         getGroceries();
       }, []);
 
@@ -57,8 +59,9 @@ const Groceries = () => {
     };
 
     const handleSubmit =async () => {
+        if (!selectedBranch) return;
         setIsSubmitting(true);
-        const payload ={ details:  groceries, branch: selectedBranch,}
+        const payload ={ details:  groceries, branch: selectedBranch}
         try {
             
             const response = await createData(GROCERIES_URL, payload);
