@@ -27,11 +27,8 @@ const Groceries = () => {
           })
           .catch(() => setErrors(["Failed to fetch branches."]))
           .finally(() => setLoading(false))
-      }, []);
-
-    useEffect(() =>{
         getGroceries();
-    }, [])
+      }, []);
 
     const getGroceries = () =>{
         setLoading(true);
