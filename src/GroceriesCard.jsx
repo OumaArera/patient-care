@@ -60,7 +60,7 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
             <h2 className="text-xl font-bold text-blue-500 mb-4">Groceries List</h2>
             {currentGroceries.map((grocery, groceryIndex) => (
                 <div key={grocery.groceryId} className="mb-6 p-4 border border-gray-700 rounded-lg">
-                    <h3 className="text-lg font-semibold">Staff: {grocery.staffName}</h3>
+                    <h3 className="text-lg font-semibold">Home: {grocery.branch.branchName || null}</h3>
                     <p className="text-gray-400">Status: {grocery.status}</p>
                     <table className="w-full mt-3 border border-gray-700 text-left">
                         <thead className="bg-gray-800">
