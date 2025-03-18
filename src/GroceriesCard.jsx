@@ -72,7 +72,7 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
 
     return (
         <div className="p-6 bg-gray-900 text-white rounded-lg w-full max-w-4xl mx-auto shadow-lg">
-            <h2 className="text-xl font-bold text-blue-500 mb-4">Groceries List</h2>
+            <h2 className="text-xl flex text-center font-bold text-blue-500 mb-4">Groceries List</h2>
 
             <div className="flex flex-wrap gap-4 mb-4">
                 <select
