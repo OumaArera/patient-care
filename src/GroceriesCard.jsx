@@ -12,6 +12,9 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
         setUpdatedGroceries(groceries);
     }, [groceries]);
 
+    const statusOrder = { pending: 1, delivered: 2, approved: 3, declined: 4 };
+    const sortedGroceries = [...updatedGroceries].sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+
     const filteredGroceries = sortedGroceries.filter((grocery) => {
         return (
             (filterStatus ? grocery.status === filterStatus : true) &&
@@ -19,11 +22,6 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
             (filterDate ? grocery.createdAt?.startsWith(filterDate) : true)
         );
     });
-
-
-    // Sort groceries by status order: pending -> delivered -> approved -> declined
-    const statusOrder = { pending: 1, delivered: 2, approved: 3, declined: 4 };
-    const sortedGroceries = [...updatedGroceries].sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
 
     // Pagination logic
     const indexOfLastItem = currentPage * itemsPerPage;
