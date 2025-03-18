@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { updateData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
+
+const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
 
 const GroceriesCard = ({ groceries, handleGetGroceries }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -6,6 +10,9 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
     const [filterStatus, setFilterStatus] = useState("");
     const [filterBranch, setFilterBranch] = useState("");
     const [filterDate, setFilterDate] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
     const itemsPerPage = 3;
 
     useEffect(() => {
@@ -59,15 +66,33 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
         setUpdatedGroceries(updated);
     };
 
-    const handleSubmit = (grocery) => {
+    const handleSubmit = async (grocery) => {
+        setIsSubmitting(true);
         const status = grocery.details.some((d) => !d.delivered) ? "updated" : grocery.status;
-        console.log({
+        const payload = {
             groceryId: grocery.groceryId,
             details: grocery.details,
             feedback: grocery.feedback,
             status,
-        });
-        handleGetGroceries()
+        }
+        try {
+            const updatedURL = `${GROCERIES_URL}/${grocery.groceryId}`
+            const response = await updateData(updatedURL, payload);
+                            
+            if (response?.error) {
+                setErrors(errorHandler(response?.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Data created successfully");
+                setTimeout(() => handleGetGroceries(), 5000);
+                setTimeout(() => setMessage(""), 5000);
+            }
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
 
@@ -173,12 +198,21 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
                             />
                         </div>
                     )}
+                    {errors.length > 0 && (
+                        <div className="mb-4 p-3 rounded">
+                            {errors.map((error, index) => (
+                                <p key={index} className="text-sm text-red-600">{error}</p>
+                            ))}
+                        </div>
+                    )}
+                    {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
                     {grocery.status === "declined" || grocery.status === "delivered" && (
+                        
                         <button
                             onClick={() => handleSubmit(grocery)}
                             className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
                         >
-                            Submit
+                            {isSubmitting ? "Submitting ..." : "Submit"}
                         </button>
                     )}
                     
