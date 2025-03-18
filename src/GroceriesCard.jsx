@@ -134,12 +134,15 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
                             />
                         </div>
                     )}
-                    <button
-                        onClick={() => handleSubmit(grocery)}
-                        className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
-                    >
-                        Submit
-                    </button>
+                    {grocery.status === "declined" || grocery.status === "approved" && (
+                        <button
+                            onClick={() => handleSubmit(grocery)}
+                            className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+                        >
+                            Submit
+                        </button>
+                    )}
+                    
                 </div>
             ))}
 
