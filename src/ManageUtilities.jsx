@@ -93,13 +93,7 @@ const ManageUtilities = () => {
                             filteredUtilities.map((utility) => (
                                 <tr key={utility.utilityId} className="border-gray-700">
                                     <td className="p-2 border border-gray-700">
-                                        {new Date(new Date(utility.createdAt + "T00:00:00Z").setDate(new Date(utility.createdAt + "T00:00:00Z").getDate() ))
-                                            .toLocaleDateString("en-US", {
-                                            year: "numeric",
-                                            month: "long",
-                                            day: "numeric",
-                                            timeZone: "UTC", 
-                                        })}
+                                        {new Date(utility.createdAt).toLocaleString("en-US")}
                                     </td>
                                     <td className="p-2 border border-gray-700">{utility.staffName}</td>
                                     <td className="p-2 border border-gray-700">{utility.item}</td>

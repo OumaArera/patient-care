@@ -71,7 +71,7 @@ const Utilities = () => {
             <input
                 type="text"
                 value={item}
-                placeholder="Enter item name"
+                placeholder="Enter area name"
                 onChange={(e) => setItem(e.target.value)}
                 className="w-full p-2 rounded bg-gray-800 text-white"
                 required
