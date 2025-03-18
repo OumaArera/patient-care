@@ -143,7 +143,7 @@ const Login = () => {
         to="/bothel" 
         className="text-blue-400 hover:text-blue-600 transition duration-200 text-lg font-medium"
       >
-        Bothel Brochure
+        Bothell Brochure
       </NavLink>
       <NavLink 
         to="/edmonds" 

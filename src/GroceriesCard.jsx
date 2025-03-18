@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const GroceriesCard = ({ groceries, handleGetGroceries }) => {
     const [currentPage, setCurrentPage] = useState(1);
