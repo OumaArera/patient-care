@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 const GroceriesCard = ({ groceries, handleGetGroceries }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [updatedGroceries, setUpdatedGroceries] = useState(groceries);
+    const [filterStatus, setFilterStatus] = useState("");
+    const [filterBranch, setFilterBranch] = useState("");
+    const [filterDate, setFilterDate] = useState("");
     const itemsPerPage = 3;
 
     useEffect(() => {
