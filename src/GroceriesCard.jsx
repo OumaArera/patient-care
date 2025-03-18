@@ -18,7 +18,7 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
     const filteredGroceries = sortedGroceries.filter((grocery) => {
         return (
             (filterStatus ? grocery.status === filterStatus : true) &&
-            (filterBranch ? grocery.branch.toLowerCase().includes(filterBranch.toLowerCase()) : true) &&
+            (filterBranch ? grocery?.branch?.toLowerCase().includes(filterBranch.toLowerCase()) : true) &&
             (filterDate ? grocery.createdAt?.startsWith(filterDate) : true)
         );
     });
