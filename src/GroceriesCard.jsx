@@ -10,8 +10,8 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
     }, [groceries]);
 
 
-    // Sort groceries by status order: pending -> approved -> declined
-    const statusOrder = { pending: 1, approved: 2, declined: 3 };
+    // Sort groceries by status order: pending -> delivered -> approved -> declined
+    const statusOrder = { pending: 1, delivered: 2, approved: 3, declined: 4 };
     const sortedGroceries = [...updatedGroceries].sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
 
     // Pagination logic
@@ -108,7 +108,7 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
                                         )}
                                     </td>
                                     <td className="p-2 border border-gray-700 text-center">
-                                        {grocery.status === "approved" ? (
+                                        {grocery.status === "delivered" ? (
                                             <input
                                                 type="checkbox"
                                                 checked={detail.delivered}
@@ -124,7 +124,7 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
                             ))}
                         </tbody>
                     </table>
-                    {grocery.status === "approved" && (
+                    {grocery.status === "delivered" && (
                         <div className="mt-3">
                             <textarea
                                 className="w-full p-2 bg-gray-800 text-white rounded"
@@ -134,7 +134,7 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
                             />
                         </div>
                     )}
-                    {grocery.status === "declined" || grocery.status === "approved" && (
+                    {grocery.status === "declined" || grocery.status === "delivered" && (
                         <button
                             onClick={() => handleSubmit(grocery)}
                             className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
