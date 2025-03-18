@@ -5,6 +5,7 @@ import {
   FaUserPlus, FaUserTimes, FaUndo, FaChartPie, FaLock, FaHospital,
   FaUserInjured, FaMapMarkerAlt, FaDatabase, FaUserCheck, FaCalendarAlt
 } from "react-icons/fa";
+import { ShoppingCart, Wrench } from "lucide-react";
 import Updates from "./Updates";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
@@ -36,6 +37,7 @@ const SuperUserDashboard = () => {
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
+  const [showGroceries, setShowGroceries] = useState(false);
   const navigate = useNavigate();
 
   const menuRef = useRef(null);
@@ -156,14 +158,21 @@ const SuperUserDashboard = () => {
 
           {/* User Dropdown */}
           <div className="flex items-center space-x-6">
+          <button 
+              className="flex flex-col items-center cursor-pointer"
+              onClick={() => setShowGroceries(true)}
+            >
+              <ShoppingCart className="text-blue-400 text-xl" />
+              <span className="text-sm text-gray-400">Groceries</span>
+            </button>
 
             {/* Utilities Icon */}
             <button 
               className="flex flex-col items-center cursor-pointer"
               onClick={() => setShowUtilities(true)}
             >
-              <FaNewspaper className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">General Requests</span>
+              <Wrench className="text-blue-400 text-xl" />
+              <span className="text-sm text-gray-400">Repairs</span>
             </button>
 
             {/* User Dropdown */}
