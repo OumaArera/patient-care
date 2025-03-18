@@ -93,7 +93,7 @@ const ManageUtilities = () => {
                             filteredUtilities.map((utility) => (
                                 <tr key={utility.utilityId} className="border-gray-700">
                                     <td className="p-2 border border-gray-700">
-                                        {new Date(utility.createdAt).toLocaleString("en-US")}
+                                        {new Date(utility.createdAt).toLocaleDateString("en-US")}
                                     </td>
                                     <td className="p-2 border border-gray-700">{utility.staffName}</td>
                                     <td className="p-2 border border-gray-700">{utility.item}</td>
