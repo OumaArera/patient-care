@@ -5,6 +5,11 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
     const [updatedGroceries, setUpdatedGroceries] = useState(groceries);
     const itemsPerPage = 3;
 
+    useEffect(() => {
+        setUpdatedGroceries(groceries);
+    }, [groceries]);
+
+
     // Sort groceries by status order: pending -> approved -> declined
     const statusOrder = { pending: 1, approved: 2, declined: 3 };
     const sortedGroceries = [...updatedGroceries].sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);

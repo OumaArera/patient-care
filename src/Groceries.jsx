@@ -30,17 +30,23 @@ const Groceries = () => {
         getGroceries();
       }, []);
 
-    const getGroceries = () =>{
+      const getGroceries = () => {
         setLoading(true);
         const staff = localStorage.getItem("userId");
         const queryParams = new URLSearchParams({ staff }).toString();
+        
         getData(`${GROCERIES_URL}?${queryParams}`)
         .then((data) => {
-            setPendingGroceries(data?.responseObject || []);
+            if (data?.responseObject) {
+                setPendingGroceries(data.responseObject);
+            } else {
+                setPendingGroceries([]);
+            }
         })
-        .catch(() => {})
+        .catch(() => setPendingGroceries([]))
         .finally(() => setLoading(false));
-    }
+    };
+    
     
     const handleInputChange = (index, field, value) => {
         const updatedGroceries = [...groceries];
@@ -158,7 +164,7 @@ const Groceries = () => {
             >
                 {isSubmitting ? "Submitting ...": "Submit"}
             </button>
-            {pendingGroceries && (<GroceriesCard groceries={pendingGroceries} handleGetGroceries={getGroceries} />)}
+            {pendingGroceries.length > 0 && <GroceriesCard groceries={pendingGroceries} handleGetGroceries={getGroceries} />}
         </div>
     );
 };
