@@ -1,111 +1,134 @@
-import React, { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import image1 from "./assets/image1.jpg";
-import image2 from "./assets/image2.jpg";
-import image3 from "./assets/image3.jpg";
-import image4 from "./assets/image4.jpg";
-import image5 from "./assets/image5.jpg";
-import image6 from "./assets/image6.jpg";
-import secondPDF from "./assets/BOTHELL_SERENITY_CORP _BROCHURE.pdf";
-import firstPDF from "./assets/1ST_EDMONDS AFH LLC _BROCHURE.pdf";
-// import Birthday from "./Birthday";
+import React, { useState, useEffect } from "react";
+import { 
+  FaChartBar, 
+  FaPills, 
+  FaUserInjured, 
+  FaCalendarAlt, 
+  FaBell,
+  FaUsers,
+  FaHospital
+} from "react-icons/fa";
 
-const caregivingMessages = [
-  "Mission: We are dedicated to providing exceptional care with compassion, respect, and dignity by providing appropriate training and skills for our staff that fit our client's needs.",
-  "Vision: To become the most trusted name in home healthcare by providing care with passion while ensuring independence of every client.",
-  "Respect: We respect our residents’ aspirations and commitments, seeking to understand and promote their priorities, needs, abilities, and limits.",
-  "Integrity: Doing the right thing, in the right way, at all times. Being the model for compliance, discipline, and quality.",
-  "Compassion: At the heart of everything we do, combining humanity, kindness, and care.",
-  "Excellence: Creating an environment of teamwork and participation through continuous improvement and open communication.",
-];
+const QuickAccessCard = ({ icon, title, count, onClick }) => (
+  <div 
+    onClick={onClick}
+    className="bg-gray-800 p-4 rounded-lg shadow-md hover:bg-gray-700 cursor-pointer transition-all duration-300 transform hover:scale-105"
+  >
+    <div className="flex justify-between items-center">
+      <div className="flex items-center space-x-3">
+        {icon}
+        <h3 className="text-lg font-semibold text-white">{title}</h3>
+      </div>
+      <span className="text-2xl font-bold text-blue-400">{count}</span>
+    </div>
+  </div>
+);
 
-const images = [image1, image2, image3, image4, image5, image6];
+const PendingNotification = ({ icon, title, description, time }) => (
+  <div className="bg-gray-800 p-4 rounded-lg border-l-4 border-blue-500 mb-2">
+    <div className="flex items-center space-x-3 mb-2">
+      {icon}
+      <h4 className="text-md font-semibold text-white">{title}</h4>
+      <span className="text-sm text-gray-400">{time}</span>
+    </div>
+    <p className="text-gray-300">{description}</p>
+  </div>
+);
 
-const LandingPage = () => {
-  const indexRef = useRef(Math.floor(Math.random() * images.length));
-  const [content, setContent] = useState({
-    image: images[indexRef.current],
-    message:
-      caregivingMessages[
-        Math.floor(Math.random() * caregivingMessages.length)
-      ],
-  });
+const LandingPage = ({ onTabChange }) => {
+  const [pendingNotifications, setPendingNotifications] = useState([
+    {
+      id: 1,
+      icon: <FaUserInjured className="text-blue-400" />,
+      title: "New Resident Admission",
+      description: "John Doe needs initial assessment",
+      time: "2 hours ago"
+    },
+    {
+      id: 2,
+      icon: <FaPills className="text-green-400" />,
+      title: "Medication Review",
+      description: "Medication inventory requires update",
+      time: "4 hours ago"
+    },
+    {
+      id: 3,
+      icon: <FaCalendarAlt className="text-purple-400" />,
+      title: "Pending Appointments",
+      description: "3 appointments need scheduling",
+      time: "1 day ago"
+    }
+  ]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      indexRef.current = (indexRef.current + 1) % images.length;
-      const nextImage = images[indexRef.current];
-
-      // Preload next image to prevent glitches
-      const img = new Image();
-      img.src = nextImage;
-      img.onload = () => {
-        setContent({
-          image: nextImage,
-          message:
-            caregivingMessages[
-              Math.floor(Math.random() * caregivingMessages.length)
-            ],
-        });
-      };
-    }, 15000); // Change every 15 seconds for smoother experience
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const openPDF = (pdfFile) => {
-    window.open(pdfFile, "_blank");
-  };
+  const quickAccessItems = [
+    {
+      icon: <FaUserInjured className="text-3xl text-blue-400" />,
+      title: "Manage Residents",
+      count: 42,
+      tab: "patients"
+    },
+    {
+      icon: <FaCalendarAlt className="text-3xl text-green-400" />,
+      title: "Appointments",
+      count: 15,
+      tab: "appointments"
+    },
+    {
+      icon: <FaPills className="text-3xl text-purple-400" />,
+      title: "Medication Admin",
+      count: 23,
+      tab: "medications"
+    },
+    {
+      icon: <FaChartBar className="text-3xl text-yellow-400" />,
+      title: "Charts",
+      count: 8,
+      tab: "charts"
+    },
+    {
+      icon: <FaUsers className="text-3xl text-pink-400" />,
+      title: "Staff Management",
+      count: 35,
+      tab: "manageUser"
+    },
+    {
+      icon: <FaHospital className="text-3xl text-red-400" />,
+      title: "Facilities",
+      count: 6,
+      tab: "facilities"
+    }
+  ];
 
   return (
-    <div
-      className="relative w-full h-screen flex flex-col items-center justify-end transition-all duration-1000"
-      style={{
-        backgroundImage: `url(${content.image})`,
-        backgroundSize: "contain",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      {/* Dark Gradient Overlay at Bottom */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-1000"></div>
+    <div className="bg-black text-white min-h-screen p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Quick Access Section */}
+        <div>
+          <h2 className="text-2xl font-bold mb-4 flex items-center">
+            <FaBell className="mr-3 text-blue-500" /> Quick Access
+          </h2>
+          <div className="grid grid-cols-2 gap-4">
+            {quickAccessItems.map((item) => (
+              <QuickAccessCard 
+                key={item.title}
+                {...item}
+                onClick={() => onTabChange(item.tab)}
+              />
+            ))}
+          </div>
+        </div>
 
-      {/* <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl">
-        <Birthday />
-      </div> */}
-      
-      {/* Animated Text Container */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={content.message}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 1 }}
-          className="relative z-10 mb-6 bg-black/60 p-6 rounded-xl shadow-lg max-w-4xl text-center"
-        >
-          <p className="text-2xl md:text-3xl font-bold text-white leading-relaxed drop-shadow-lg">
-            {content.message}
-          </p>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* PDF Buttons */}
-      <div className="relative z-10 mb-12 flex space-x-4">
-        <button
-          onClick={() => openPDF(firstPDF)}
-          className="px-4 py-2 bg-blue-300 hover:bg-blue-400 text-white font-medium rounded-md shadow-md transition-all duration-200"
-        >
-          View Edmonds Brochure
-        </button>
-        <button
-          onClick={() => openPDF(secondPDF)}
-          className="px-4 py-2 bg-green-300 hover:bg-green-400 text-white font-medium rounded-md shadow-md transition-all duration-200"
-        >
-          View Bothell Brochure
-        </button>
+        {/* Pending Notifications */}
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Pending Notifications</h2>
+          {pendingNotifications.map((notification) => (
+            <PendingNotification 
+              key={notification.id} 
+              {...notification} 
+            />
+          ))}
+        </div>
       </div>
-
     </div>
   );
 };

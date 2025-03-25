@@ -222,7 +222,8 @@ const SuperUserDashboard = () => {
         {activeTab === "charts" && <Charts />}  
         {activeTab === "allCharts" && <AllCharts />}  
         {activeTab === "medications" && <MedAdministration />}  
-        {activeTab === "dashboard" && <LandingPage />}
+        {/* {activeTab === "dashboard" && <LandingPage />} */}
+        {activeTab === "dashboard" && <LandingPage onTabChange={setActiveTab} />}
         {activeTab === "vitals" && <Vitals />}
         {activeTab === "leave" && <LeaveManagement />}
 
