@@ -30,7 +30,7 @@ const Groceries = () => {
         getGroceries();
       }, []);
 
-      const getGroceries = () => {
+    const getGroceries = () => {
         setLoading(true);
         const staff = localStorage.getItem("userId");
         const queryParams = new URLSearchParams({ staff }).toString();
