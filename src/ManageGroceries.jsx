@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
 
 const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
 
@@ -9,6 +10,9 @@ const ManageGroceries = () => {
     const [filterDate, setFilterDate] = useState("");
     const [filterBranch, setFilterBranch] = useState("");
     const [filterStatus, setFilterStatus] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState("");
+    const [errors, setErrors] = useState([]);
 
     useEffect(() => {
         getGroceries();
@@ -26,9 +30,10 @@ const ManageGroceries = () => {
 
     const handleStatusChange = (groceryId, newStatus) => {
         console.log({ groceryId, status: newStatus });
-        setGroceries(groceries.map(grocery => 
+        setGroceries(groceries.map(grocery =>
             grocery.groceryId === groceryId ? { ...grocery, status: newStatus } : grocery
         ));
+        handleUpdate(groceryId, newStatus);
     };
 
     const filteredGroceries = groceries.filter(grocery => 
@@ -36,6 +41,30 @@ const ManageGroceries = () => {
         (filterBranch ? grocery.branch.toLowerCase().includes(filterBranch.toLowerCase()) : true) &&
         (filterStatus ? grocery.status === filterStatus : true)
     );
+
+    const handleUpdate = async (groceryId, newStatus) =>{
+        if (!newStatus) return;
+        setIsSubmitting(true)
+        const payload = {status: newStatus };
+        const updatedURL = `${GROCERIES_URL}/${groceryId}`;
+        try {
+            const response = await updateData(updatedURL, payload);
+            if (response?.error) {
+                setErrors(errorHandler(response.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setMessage("Status updated successfully");
+                setTimeout(() => setMessage(""), 5000);
+                getGroceries();
+            }
+        } catch (error) {
+            setErrors(["An error occurred. Please try again."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally {
+            setIsSubmitting(false);
+        }
+
+    }
 
     return (
         <div className="p-6 bg-gray-900 text-white rounded-lg w-full max-w-6xl mx-auto shadow-lg">
