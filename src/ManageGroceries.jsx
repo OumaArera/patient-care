@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getData } from "../services/updatedata";
+import { updateData } from "../services/updatedata";  // Import update function
 import { errorHandler } from "../services/errorHandler";
 
 const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
@@ -29,24 +30,19 @@ const ManageGroceries = () => {
     };
 
     const handleStatusChange = (groceryId, newStatus) => {
-        console.log({ groceryId, status: newStatus });
         setGroceries(groceries.map(grocery =>
             grocery.groceryId === groceryId ? { ...grocery, status: newStatus } : grocery
         ));
         handleUpdate(groceryId, newStatus);
     };
 
-    const filteredGroceries = groceries.filter(grocery => 
-        (filterDate ? grocery.createdAt.startsWith(filterDate) : true) &&
-        (filterBranch ? grocery.branch.toLowerCase().includes(filterBranch.toLowerCase()) : true) &&
-        (filterStatus ? grocery.status === filterStatus : true)
-    );
-
-    const handleUpdate = async (groceryId, newStatus) =>{
+    const handleUpdate = async (groceryId, newStatus) => {
         if (!newStatus) return;
-        setIsSubmitting(true)
-        const payload = {status: newStatus };
+
+        setIsSubmitting(true);
+        const payload = { status: newStatus };
         const updatedURL = `${GROCERIES_URL}/${groceryId}`;
+
         try {
             const response = await updateData(updatedURL, payload);
             if (response?.error) {
@@ -55,7 +51,7 @@ const ManageGroceries = () => {
             } else {
                 setMessage("Status updated successfully");
                 setTimeout(() => setMessage(""), 5000);
-                getGroceries();
+                getGroceries(); 
             }
         } catch (error) {
             setErrors(["An error occurred. Please try again."]);
@@ -63,8 +59,7 @@ const ManageGroceries = () => {
         } finally {
             setIsSubmitting(false);
         }
-
-    }
+    };
 
     return (
         <div className="p-6 bg-gray-900 text-white rounded-lg w-full max-w-6xl mx-auto shadow-lg">
@@ -112,7 +107,7 @@ const ManageGroceries = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredGroceries.map((grocery) => (
+                        {groceries.map((grocery) => (
                             <tr key={grocery.groceryId} className="border-gray-700">
                                 <td className="p-2 border border-gray-700">
                                     {new Date(grocery.createdAt).toLocaleDateString("en-US")}
@@ -144,6 +139,15 @@ const ManageGroceries = () => {
                         ))}
                     </tbody>
                 </table>
+            )}
+
+            {message && <p className="text-green-400 mt-4">{message}</p>}
+            {errors.length > 0 && (
+                <ul className="text-red-400 mt-4">
+                    {errors.map((error, index) => (
+                        <li key={index}>{error}</li>
+                    ))}
+                </ul>
             )}
         </div>
     );
