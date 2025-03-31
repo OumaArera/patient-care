@@ -43,8 +43,8 @@ const Incident = () => {
 
         setIsSubmitting(true);
         setError("");
+        const token = localStorage.getItem("token");
 
-        // Create FormData object
         const formData = new FormData();
         formData.append("details", details);
         formData.append("filePath", file);
@@ -53,6 +53,9 @@ const Incident = () => {
             // Custom fetch for FormData
             const response = await fetch(INCIDENT_URL, {
                 method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
                 body: formData,
             });
 
