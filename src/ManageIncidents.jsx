@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getData } from "../services/updatedata";
-import { Loader, FileDown, Filter, Calendar, RefreshCw } from "lucide-react";
+import { Loader, FileDown, Filter, Calendar, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
 
 const INCIDENT_URL = "https://patient-care-server.onrender.com/api/v1/incidents";
 
@@ -12,6 +12,10 @@ const ManageIncidents = () => {
     const [endDate, setEndDate] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
     const [currentPreview, setCurrentPreview] = useState(null);
+    
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const incidentsPerPage = 5;
 
     useEffect(() => {
         fetchIncidents();
@@ -68,6 +72,22 @@ const ManageIncidents = () => {
         new Date(b.createdAt) - new Date(a.createdAt)
     );
 
+    // Pagination logic
+    const indexOfLastIncident = currentPage * incidentsPerPage;
+    const indexOfFirstIncident = indexOfLastIncident - incidentsPerPage;
+    const currentIncidents = sortedIncidents.slice(indexOfFirstIncident, indexOfLastIncident);
+    const totalPages = Math.ceil(sortedIncidents.length / incidentsPerPage);
+
+    const paginate = (pageNumber) => {
+        if (pageNumber > 0 && pageNumber <= totalPages) {
+            setCurrentPage(pageNumber);
+        }
+    };
+
+    // Reset to first page when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [startDate, endDate, statusFilter]);
 
     return (
         <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-full max-w-6xl mx-auto">
@@ -134,8 +154,15 @@ const ManageIncidents = () => {
             </div>
 
             {/* Results count */}
-            <div className="mb-4 text-gray-400">
-                Showing {sortedIncidents.length} of {incidents.length} incidents
+            <div className="mb-4 text-gray-400 flex justify-between items-center">
+                <div>
+                    Showing {indexOfFirstIncident + 1}-{Math.min(indexOfLastIncident, sortedIncidents.length)} of {sortedIncidents.length} incidents
+                </div>
+                {totalPages > 1 && (
+                    <div className="text-sm">
+                        Page {currentPage} of {totalPages}
+                    </div>
+                )}
             </div>
 
             {loading ? (
@@ -144,10 +171,10 @@ const ManageIncidents = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 gap-4">
-                    {sortedIncidents.length === 0 ? (
+                    {currentIncidents.length === 0 ? (
                         <p className="text-center text-gray-400 py-10">No incidents found matching the criteria</p>
                     ) : (
-                        sortedIncidents.map((incident) => (
+                        currentIncidents.map((incident) => (
                             <div key={incident.incidentId} className="bg-gray-800 rounded-lg overflow-hidden">
                                 <div className="p-4">
                                     <div className="flex flex-wrap justify-between items-start mb-3">
@@ -184,6 +211,62 @@ const ManageIncidents = () => {
                             </div>
                         ))
                     )}
+                </div>
+            )}
+
+            {/* Pagination Controls */}
+            {!loading && totalPages > 1 && (
+                <div className="mt-6 flex justify-center">
+                    <div className="flex items-center space-x-2">
+                        <button 
+                            onClick={() => paginate(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className={`p-2 rounded-full ${currentPage === 1 ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 hover:bg-gray-800'}`}
+                            aria-label="Previous page"
+                        >
+                            <ChevronLeft className="h-5 w-5" />
+                        </button>
+                        
+                        {/* Simple Pagination Numbers */}
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            // For up to 5 pages, show all page numbers
+                            if (totalPages <= 5) {
+                                return i + 1;
+                            }
+                            
+                            // For more than 5 pages, create a dynamic window around current page
+                            let pageNum;
+                            if (currentPage <= 3) {
+                                // Near the start
+                                pageNum = i + 1;
+                            } else if (currentPage >= totalPages - 2) {
+                                // Near the end
+                                pageNum = totalPages - 4 + i;
+                            } else {
+                                // In the middle
+                                pageNum = currentPage - 2 + i;
+                            }
+                            
+                            return pageNum;
+                        }).map(number => (
+                            <button
+                                key={number}
+                                onClick={() => paginate(number)}
+                                className={`w-8 h-8 rounded-full ${currentPage === number ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800'}`}
+                            >
+                                {number}
+                            </button>
+                        ))}
+                        
+                        <button 
+                            onClick={() => paginate(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className={`p-2 rounded-full ${currentPage === totalPages ? 'text-gray-600 cursor-not-allowed' : 'text-gray-300 hover:bg-gray-800'}`}
+                            aria-label="Next page"
+                        >
+                            <ChevronRight className="h-5 w-5" />
+                        </button>
+                    </div>
                 </div>
             )}
 
