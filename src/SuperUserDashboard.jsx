@@ -5,7 +5,7 @@ import {
   FaUserPlus, FaUserTimes, FaUndo, FaChartPie, FaLock, FaHospital,
   FaUserInjured, FaMapMarkerAlt, FaDatabase, FaUserCheck, FaCalendarAlt
 } from "react-icons/fa";
-import { ShoppingCart, Wrench } from "lucide-react";
+import { ShoppingCart, Wrench, AlertTriangle, ClipboardList } from "lucide-react";
 import Updates from "./Updates";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
@@ -30,6 +30,7 @@ import logo2 from './assets/BSC-LOGO.png';
 import LeaveManagement from "./LeaveManagement";
 import ManageUtilities from "./ManageUtilities";
 import ManageGroceries from "./ManageGroceries";
+import ManageIncidents from "./ManageIncidents";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -39,6 +40,7 @@ const SuperUserDashboard = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
   const [showGroceries, setShowGroceries] = useState(false);
+  const [showIncident, setShowIncident] = useState(false);
   const navigate = useNavigate();
 
   const menuRef = useRef(null);
@@ -160,11 +162,19 @@ const SuperUserDashboard = () => {
           {/* User Dropdown */}
           <div className="flex items-center space-x-6">
           <button 
-              className="flex flex-col items-center cursor-pointer"
-              onClick={() => setShowGroceries(true)}
-            >
-              <ShoppingCart className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">Groceries</span>
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => setShowIncident(true)}
+              >
+                <AlertTriangle className="text-blue-400 text-xl" />
+                <span className="text-sm text-gray-400">Incident Reports</span>
+            </button>
+
+            <button 
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => setShowGroceries(true)}
+              >
+                <ShoppingCart className="text-blue-400 text-xl" />
+                <span className="text-sm text-gray-400">Groceries</span>
             </button>
 
             {/* Utilities Icon */}
@@ -252,6 +262,25 @@ const SuperUserDashboard = () => {
               <button
                   className="absolute top-2 right-2 text-white hover:text-gray-400"
                   onClick={() => setShowUtilities(false)}
+              >
+                  ✖
+              </button>
+              </div>
+          </div>
+          )}
+          {showIncident &&(
+          <div
+              className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+              onClick={() => setShowIncident(false)}
+          >
+              <div
+              className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              >
+              <ManageIncidents  />
+              <button
+                  className="absolute top-2 right-2 text-white hover:text-gray-400"
+                  onClick={() => setShowIncident(false)}
               >
                   ✖
               </button>

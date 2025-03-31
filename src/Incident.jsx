@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { createData } from "../services/updatedata";
 import { getData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
