@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getData } from "../services/updatedata";
-import { Loader, FileDown, Eye, Filter, Calendar, RefreshCw } from "lucide-react";
+import { Loader, FileDown, Filter, Calendar, RefreshCw } from "lucide-react";
 
 const INCIDENT_URL = "https://patient-care-server.onrender.com/api/v1/incidents";
 
@@ -23,10 +23,6 @@ const ManageIncidents = () => {
             .then((data) => setIncidents(data?.responseObject || []))
             .catch(() => setErrors(["Failed to fetch incidents"]))
             .finally(() => setLoading(false));
-    };
-
-    const openPreview = (url) => {
-        setCurrentPreview(url);
     };
 
     const closePreview = () => {
@@ -173,13 +169,6 @@ const ManageIncidents = () => {
                                     </div>
                                     
                                     <div className="flex flex-wrap gap-2 mt-4">
-                                        <button
-                                            onClick={() => openPreview(incident.filePath)}
-                                            className="flex items-center bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm"
-                                        >
-                                            <Eye className="mr-1 h-4 w-4" />
-                                            Preview
-                                        </button>
                                         <a 
                                             href={incident.filePath}
                                             target="_blank"
