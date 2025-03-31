@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getData } from "../services/updatedata";
-import { updateData } from "../services/updatedata";  // Import update function
+import { updateData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 
 const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
@@ -14,6 +14,9 @@ const ManageGroceries = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
+    const [expandedCard, setExpandedCard] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
 
     useEffect(() => {
         getGroceries();
@@ -51,13 +54,52 @@ const ManageGroceries = () => {
             } else {
                 setMessage("Status updated successfully");
                 setTimeout(() => setMessage(""), 5000);
-                getGroceries(); 
+                getGroceries();
             }
         } catch (error) {
             setErrors(["An error occurred. Please try again."]);
             setTimeout(() => setErrors([]), 5000);
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const toggleCard = (groceryId) => {
+        setExpandedCard(expandedCard === groceryId ? null : groceryId);
+    };
+
+    // Filter groceries based on search criteria
+    const filteredGroceries = groceries.filter((grocery) => {
+        const dateMatch = filterDate ? new Date(grocery.createdAt).toLocaleDateString("en-US").includes(filterDate) : true;
+        const branchMatch = filterBranch ? grocery.branch.toLowerCase().includes(filterBranch.toLowerCase()) : true;
+        const statusMatch = filterStatus ? grocery.status === filterStatus : true;
+        return dateMatch && branchMatch && statusMatch;
+    });
+
+    // Pagination logic
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredGroceries.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredGroceries.length / itemsPerPage);
+
+    // Group items by category
+    const getGroupedItems = (details) => {
+        return details.reduce((acc, item) => {
+            if (!acc[item.category]) {
+                acc[item.category] = [];
+            }
+            acc[item.category].push(item);
+            return acc;
+        }, {});
+    };
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "pending": return "bg-yellow-600";
+            case "approved": return "bg-green-600";
+            case "declined": return "bg-red-600";
+            case "delivered": return "bg-blue-600";
+            default: return "bg-gray-600";
         }
     };
 
@@ -95,50 +137,106 @@ const ManageGroceries = () => {
             {loading ? (
                 <p className="text-center text-blue-400">Loading...</p>
             ) : (
-                <table className="w-full border border-gray-700 text-left">
-                    <thead className="bg-gray-800">
-                        <tr>
-                            <th className="p-2 border border-gray-700">Date</th>
-                            <th className="p-2 border border-gray-700">Branch</th>
-                            <th className="p-2 border border-gray-700">Items</th>
-                            <th className="p-2 border border-gray-700">Feedback</th>
-                            <th className="p-2 border border-gray-700">Status</th>
-                            <th className="p-2 border border-gray-700">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {groceries.map((grocery) => (
-                            <tr key={grocery.groceryId} className="border-gray-700">
-                                <td className="p-2 border border-gray-700">
-                                    {new Date(grocery.createdAt).toLocaleDateString("en-US")}
-                                </td>
-                                <td className="p-2 border border-gray-700">{grocery.branch}</td>
-                                <td className="p-2 border border-gray-700">
-                                    <ul>
-                                        {grocery.details.map((detail, index) => (
-                                            <li key={index}>{detail.item} ({detail.quantity})</li>
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {currentItems.map((grocery) => (
+                            <div 
+                                key={grocery.groceryId} 
+                                className="bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-200"
+                            >
+                                <div 
+                                    className="p-4 cursor-pointer hover:bg-gray-700 flex justify-between items-center"
+                                    onClick={() => toggleCard(grocery.groceryId)}
+                                >
+                                    <div>
+                                        <h3 className="font-bold text-lg">{grocery.branch}</h3>
+                                        <p className="text-gray-400 text-sm">
+                                            {new Date(grocery.createdAt).toLocaleDateString("en-US")}
+                                        </p>
+                                        <p className="text-gray-400 text-sm">
+                                            Requested by: {grocery.staffName}
+                                        </p>
+                                    </div>
+                                    <div className={`px-3 py-1 rounded-full text-sm font-bold ${getStatusColor(grocery.status)}`}>
+                                        {grocery.status}
+                                    </div>
+                                </div>
+
+                                {expandedCard === grocery.groceryId && (
+                                    <div className="p-4 bg-gray-700 border-t border-gray-600">
+                                        {Object.entries(getGroupedItems(grocery.details)).map(([category, items]) => (
+                                            <div key={category} className="mb-3">
+                                                <h4 className="font-semibold text-blue-400 mb-1">{category}</h4>
+                                                <ul className="pl-4">
+                                                    {items.map((item, i) => (
+                                                        <li key={i} className="text-sm pb-1">
+                                                            {item.item} ({item.quantity})
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
                                         ))}
-                                    </ul>
-                                </td>
-                                <td className="p-2 border border-gray-700">{grocery.feedback || "-"}</td>
-                                <td className="p-2 border border-gray-700">{grocery.status}</td>
-                                <td className="p-2 border border-gray-700">
-                                    {grocery.status !== "delivered" && (
-                                        <select
-                                            className="p-1 bg-gray-700 text-white rounded"
-                                            onChange={(e) => handleStatusChange(grocery.groceryId, e.target.value)}
-                                        >
-                                            <option value="">Review</option>
-                                            <option value="approved">Approved</option>
-                                            <option value="declined">Declined</option>
-                                            <option value="delivered">Delivered</option>
-                                        </select>
-                                    )}
-                                </td>
-                            </tr>
+                                        
+                                        {grocery.feedback && (
+                                            <div className="mt-2">
+                                                <h4 className="font-semibold text-blue-400">Feedback</h4>
+                                                <p className="text-sm mt-1">{grocery.feedback}</p>
+                                            </div>
+                                        )}
+                                        
+                                        {grocery.status !== "delivered" && (
+                                            <div className="mt-4">
+                                                <select
+                                                    className="p-2 bg-gray-600 text-white rounded w-full"
+                                                    onChange={(e) => handleStatusChange(grocery.groceryId, e.target.value)}
+                                                    defaultValue=""
+                                                >
+                                                    <option value="" disabled>Update Status</option>
+                                                    <option value="approved">Approved</option>
+                                                    <option value="declined">Declined</option>
+                                                    <option value="delivered">Delivered</option>
+                                                </select>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         ))}
-                    </tbody>
-                </table>
+                    </div>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                        <div className="flex justify-center mt-6">
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="mx-1 px-3 py-1 rounded bg-gray-700 disabled:bg-gray-800 disabled:text-gray-500"
+                            >
+                                Prev
+                            </button>
+                            
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                    className={`mx-1 px-3 py-1 rounded ${
+                                        currentPage === i + 1 ? 'bg-blue-600' : 'bg-gray-700'
+                                    }`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                className="mx-1 px-3 py-1 rounded bg-gray-700 disabled:bg-gray-800 disabled:text-gray-500"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
 
             {message && <p className="text-green-400 mt-4">{message}</p>}
