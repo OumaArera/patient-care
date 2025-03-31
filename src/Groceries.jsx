@@ -8,15 +8,6 @@ import { Loader } from "lucide-react";
 const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
 const BRANCHES_URL = `https://patient-care-server.onrender.com/api/v1/branches`;
 
-// Default categories based on the image
-const DEFAULT_CATEGORIES = [
-  "BREAKFAST",
-  "LUNCH",
-  "DINNER",
-  "SNACKS",
-  "CLEANING AND DETERGENTS",
-  "OTHERS"
-];
 
 const Groceries = () => {
   const [categorizedGroceries, setCategorizedGroceries] = useState({

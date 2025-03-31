@@ -30,7 +30,6 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
         );
     });
     
-
     // Pagination logic
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -95,6 +94,20 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
         }
     };
 
+    // Function to group details by category
+    const groupDetailsByCategory = (details) => {
+        const groupedDetails = {};
+        
+        details.forEach((detail) => {
+            const category = detail.category || "UNCATEGORIZED";
+            if (!groupedDetails[category]) {
+                groupedDetails[category] = [];
+            }
+            groupedDetails[category].push(detail);
+        });
+        
+        return groupedDetails;
+    };
 
     return (
         <div className="p-6 bg-gray-900 text-white rounded-lg w-full max-w-4xl mx-auto shadow-lg">
@@ -127,97 +140,118 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
                 />
             </div>
 
-            {currentGroceries.map((grocery, groceryIndex) => (
-                <div key={grocery.groceryId} className="mb-6 p-4 border border-gray-700 rounded-lg">
-                    <h3 className="text-lg font-semibold">Home: {grocery?.branch || "-"}</h3>
-                    <p className="text-gray-400">Status: {grocery.status}</p>
-                    <table className="w-full mt-3 border border-gray-700 text-left">
-                        <thead className="bg-gray-800">
-                            <tr>
-                                <th className="p-2 border border-gray-700">Item</th>
-                                <th className="p-2 border border-gray-700">Quantity</th>
-                                <th className="p-2 border border-gray-700">Delivered</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {grocery.details.map((detail, detailIndex) => (
-                                <tr key={detailIndex} className="border-gray-700">
-                                    <td className="p-2 border border-gray-700">
-                                        {grocery.status === "declined" ? (
-                                            <input
-                                                type="text"
-                                                value={detail.item}
-                                                onChange={(e) =>
-                                                    handleItemEdit(groceryIndex, detailIndex, "item", e.target.value)
-                                                }
-                                                className="bg-gray-800 text-white p-1 rounded w-full"
-                                            />
-                                        ) : (
-                                            detail.item
-                                        )}
-                                    </td>
-                                    <td className="p-2 border border-gray-700">
-                                        {grocery.status === "declined" ? (
-                                            <input
-                                                type="number"
-                                                value={detail.quantity}
-                                                onChange={(e) =>
-                                                    handleItemEdit(groceryIndex, detailIndex, "quantity", e.target.value)
-                                                }
-                                                className="bg-gray-800 text-white p-1 rounded w-full"
-                                                min="1"
-                                            />
-                                        ) : (
-                                            detail.quantity
-                                        )}
-                                    </td>
-                                    <td className="p-2 border border-gray-700 text-center">
-                                        {grocery.status === "delivered" ? (
-                                            <input
-                                                type="checkbox"
-                                                checked={detail.delivered}
-                                                onChange={() => handleDeliveredChange(groceryIndex, detailIndex)}
-                                            />
-                                        ) : detail.delivered ? (
-                                            "Yes"
-                                        ) : (
-                                            "No"
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    {grocery.status === "delivered" && (
-                        <div className="mt-3">
-                            <textarea
-                                className="w-full p-2 bg-gray-800 text-white rounded"
-                                placeholder="Enter feedback..."
-                                value={grocery.feedback || ""}
-                                onChange={(e) => handleFeedbackChange(groceryIndex, e.target.value)}
-                            />
-                        </div>
-                    )}
-                    {errors.length > 0 && (
-                        <div className="mb-4 p-3 rounded">
-                            {errors.map((error, index) => (
-                                <p key={index} className="text-sm text-red-600">{error}</p>
-                            ))}
-                        </div>
-                    )}
-                    {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
-                    {grocery.status === "declined" || grocery.status === "delivered" && (
+            {currentGroceries.map((grocery, groceryIndex) => {
+                // Group details by category
+                const groupedDetails = groupDetailsByCategory(grocery.details);
+                
+                return (
+                    <div key={grocery.groceryId} className="mb-6 p-4 border border-gray-700 rounded-lg">
+                        <h3 className="text-lg font-semibold">Home: {grocery?.branch || "-"}</h3>
+                        <p className="text-gray-400">Status: {grocery.status}</p>
                         
-                        <button
-                            onClick={() => handleSubmit(grocery)}
-                            className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
-                        >
-                            {isSubmitting ? "Submitting ..." : "Submit"}
-                        </button>
-                    )}
-                    
-                </div>
-            ))}
+                        {/* Render each category in a separate section */}
+                        {Object.keys(groupedDetails).map((category) => (
+                            <div key={category} className="mt-4">
+                                <h4 className="text-md font-medium text-blue-400 mb-2">{category}</h4>
+                                <table className="w-full border border-gray-700 text-left">
+                                    <thead className="bg-gray-800">
+                                        <tr>
+                                            <th className="p-2 border border-gray-700">Item</th>
+                                            <th className="p-2 border border-gray-700">Quantity</th>
+                                            <th className="p-2 border border-gray-700">Delivered</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {groupedDetails[category].map((detail, detailIndex) => {
+                                            // Find the original index in the flat array
+                                            const originalDetailIndex = grocery.details.findIndex(
+                                                (d) => d === detail
+                                            );
+                                            
+                                            return (
+                                                <tr key={detailIndex} className="border-gray-700">
+                                                    <td className="p-2 border border-gray-700">
+                                                        {grocery.status === "declined" ? (
+                                                            <input
+                                                                type="text"
+                                                                value={detail.item}
+                                                                onChange={(e) =>
+                                                                    handleItemEdit(groceryIndex, originalDetailIndex, "item", e.target.value)
+                                                                }
+                                                                className="bg-gray-800 text-white p-1 rounded w-full"
+                                                            />
+                                                        ) : (
+                                                            detail.item
+                                                        )}
+                                                    </td>
+                                                    <td className="p-2 border border-gray-700">
+                                                        {grocery.status === "declined" ? (
+                                                            <input
+                                                                type="number"
+                                                                value={detail.quantity}
+                                                                onChange={(e) =>
+                                                                    handleItemEdit(groceryIndex, originalDetailIndex, "quantity", e.target.value)
+                                                                }
+                                                                className="bg-gray-800 text-white p-1 rounded w-full"
+                                                                min="1"
+                                                            />
+                                                        ) : (
+                                                            detail.quantity
+                                                        )}
+                                                    </td>
+                                                    <td className="p-2 border border-gray-700 text-center">
+                                                        {grocery.status === "delivered" ? (
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={detail.delivered}
+                                                                onChange={() => handleDeliveredChange(groceryIndex, originalDetailIndex)}
+                                                            />
+                                                        ) : detail.delivered ? (
+                                                            "Yes"
+                                                        ) : (
+                                                            "No"
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ))}
+                        
+                        {grocery.status === "delivered" && (
+                            <div className="mt-3">
+                                <textarea
+                                    className="w-full p-2 bg-gray-800 text-white rounded"
+                                    placeholder="Enter feedback..."
+                                    value={grocery.feedback || ""}
+                                    onChange={(e) => handleFeedbackChange(groceryIndex, e.target.value)}
+                                />
+                            </div>
+                        )}
+                        
+                        {errors.length > 0 && (
+                            <div className="mb-4 p-3 rounded">
+                                {errors.map((error, index) => (
+                                    <p key={index} className="text-sm text-red-600">{error}</p>
+                                ))}
+                            </div>
+                        )}
+                        
+                        {message && <p className="mt-3 text-center font-medium text-blue-400">{message}</p>}
+                        
+                        {(grocery.status === "declined" || grocery.status === "delivered") && (
+                            <button
+                                onClick={() => handleSubmit(grocery)}
+                                className="mt-3 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
+                            >
+                                {isSubmitting ? "Submitting ..." : "Submit"}
+                            </button>
+                        )}
+                    </div>
+                );
+            })}
 
             {/* Pagination Controls */}
             <div className="flex justify-between mt-4">
@@ -241,5 +275,3 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
 };
 
 export default GroceriesCard;
-
-
