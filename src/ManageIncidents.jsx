@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { getData } from "../services/updatedata";
-import { updateData } from "../services/updatedata";
-import { errorHandler } from "../services/errorHandler";
 import { Loader, FileDown, Eye, Filter, Calendar, RefreshCw } from "lucide-react";
 
 const INCIDENT_URL = "https://patient-care-server.onrender.com/api/v1/incidents";
@@ -9,13 +7,11 @@ const INCIDENT_URL = "https://patient-care-server.onrender.com/api/v1/incidents"
 const ManageIncidents = () => {
     const [incidents, setIncidents] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
     const [currentPreview, setCurrentPreview] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         fetchIncidents();
@@ -27,31 +23,6 @@ const ManageIncidents = () => {
             .then((data) => setIncidents(data?.responseObject || []))
             .catch(() => setErrors(["Failed to fetch incidents"]))
             .finally(() => setLoading(false));
-    };
-
-    const handleStatusChange = async (incidentId, newStatus) => {
-        if (!newStatus) return;
-
-        setIsSubmitting(true);
-        const payload = { status: newStatus };
-        const updatedURL = `${INCIDENT_URL}/${incidentId}`;
-
-        try {
-            const response = await updateData(updatedURL, payload);
-            if (response?.error) {
-                setErrors(errorHandler(response.error));
-                setTimeout(() => setErrors([]), 5000);
-            } else {
-                setMessage("Status updated successfully");
-                setTimeout(() => setMessage(""), 5000);
-                fetchIncidents();
-            }
-        } catch (error) {
-            setErrors(["An error occurred. Please try again."]);
-            setTimeout(() => setErrors([]), 5000);
-        } finally {
-            setIsSubmitting(false);
-        }
     };
 
     const openPreview = (url) => {
@@ -74,7 +45,6 @@ const ManageIncidents = () => {
     };
 
     const getDownloadFilename = (filepath) => {
-        // Extract filename from Google Drive link if possible
         if (filepath.includes('/')) {
             const parts = filepath.split('/');
             return `incident_${parts[parts.length - 1]}.pdf`;
@@ -102,15 +72,6 @@ const ManageIncidents = () => {
         new Date(b.createdAt) - new Date(a.createdAt)
     );
 
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "pending": return "bg-yellow-600";
-            case "in-progress": return "bg-blue-600";
-            case "resolved": return "bg-green-600";
-            case "declined": return "bg-red-600";
-            default: return "bg-gray-600";
-        }
-    };
 
     return (
         <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-full max-w-6xl mx-auto">
@@ -124,7 +85,7 @@ const ManageIncidents = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1 flex items-center">
+                        <label className="text-sm font-medium mb-1 flex items-center">
                             <Calendar className="mr-1 h-4 w-4" />
                             Start Date
                         </label>
@@ -136,7 +97,7 @@ const ManageIncidents = () => {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium mb-1 flex items-center">
+                        <label className="text-sm font-medium mb-1 flex items-center">
                             <Calendar className="mr-1 h-4 w-4" />
                             End Date
                         </label>
@@ -156,9 +117,8 @@ const ManageIncidents = () => {
                         >
                             <option value="">All Statuses</option>
                             <option value="pending">Pending</option>
-                            <option value="in-progress">In Progress</option>
-                            <option value="resolved">Resolved</option>
-                            <option value="declined">Declined</option>
+                            <option value="approved">Approved</option>
+                            <option value="updated">Updated</option>
                         </select>
                     </div>
                 </div>
@@ -196,7 +156,6 @@ const ManageIncidents = () => {
                                 <div className="p-4">
                                     <div className="flex flex-wrap justify-between items-start mb-3">
                                         <div>
-                                            <h3 className="font-bold mb-1">Incident #{incident.incidentId}</h3>
                                             <p className="text-gray-400 text-sm">
                                                 Reported: {formatDateTime(incident.createdAt)}
                                             </p>
@@ -206,13 +165,10 @@ const ManageIncidents = () => {
                                                 </p>
                                             )}
                                         </div>
-                                        <div className={`px-3 py-1 rounded-full text-sm font-bold ${getStatusColor(incident.status)}`}>
-                                            {incident.status}
-                                        </div>
                                     </div>
                                     
                                     <div className="bg-gray-700 p-3 rounded mb-3">
-                                        <h4 className="text-sm font-medium text-gray-300 mb-1">Details:</h4>
+                                        <h4 className="text-sm font-medium text-gray-300 mb-1"></h4>
                                         <p className="whitespace-pre-wrap">{incident.details}</p>
                                     </div>
                                     
@@ -234,20 +190,6 @@ const ManageIncidents = () => {
                                             <FileDown className="mr-1 h-4 w-4" />
                                             Download
                                         </a>
-                                        
-                                        {incident.status === "pending" && (
-                                            <select
-                                                className="bg-gray-700 border border-gray-600 rounded px-3 py-1 text-sm ml-auto"
-                                                onChange={(e) => handleStatusChange(incident.incidentId, e.target.value)}
-                                                defaultValue=""
-                                                disabled={isSubmitting}
-                                            >
-                                                <option value="" disabled>Update Status</option>
-                                                <option value="in-progress">Mark as In Progress</option>
-                                                <option value="resolved">Mark as Resolved</option>
-                                                <option value="declined">Decline</option>
-                                            </select>
-                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -279,8 +221,6 @@ const ManageIncidents = () => {
                     </div>
                 </div>
             )}
-
-            {message && <p className="text-green-400 mt-4 text-center">{message}</p>}
             {errors.length > 0 && (
                 <div className="mt-4 p-3 rounded bg-red-900 bg-opacity-20">
                     {errors.map((error, index) => (
