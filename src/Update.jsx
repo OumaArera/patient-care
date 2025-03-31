@@ -54,7 +54,7 @@ const Update = ({ patientId }) => {
 
     // Check for valid weekly or monthly update time
     if (updateType === "weekly") {
-      isValid = day === 5 && hour >= 8 && hour < 12;
+      isValid = (day === 4 && hour >= 18) || (day === 5 && hour < 12);
     } else if (updateType === "monthly") {
       isValid = [1, 2, 3].includes(dateOfMonth);
     }
