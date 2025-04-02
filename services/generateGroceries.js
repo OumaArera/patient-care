@@ -12,42 +12,19 @@ export const generateGroceryPDF = async (grocery) => {
 
     // Group items by their categories
     const groupItemsByCategory = (items) => {
-        const categories = {
-            'BREAKFAST': [],
-            'LUNCH': [],
-            'DINNER': [],
-            'SNACKS': [],
-            'CLEANING AND DETERGENTS': [],
-            'OTHERS': []
-        };
+        // Create a dynamic object to store all categories
+        const categories = {};
         
-        // Map each item to its appropriate category
+        // First pass to identify all unique categories
         items.forEach(item => {
-            const category = determineCategory(item.category);
+            const category = item.category.toUpperCase();
+            if (!categories[category]) {
+                categories[category] = [];
+            }
             categories[category].push(item);
         });
         
         return categories;
-    };
-    
-    // Helper function to map item category to main categories
-    const determineCategory = (itemCategory) => {
-        itemCategory = itemCategory.toUpperCase();
-        if (itemCategory.includes('BREAKFAST') || itemCategory === 'MORNING MEAL') {
-            return 'BREAKFAST';
-        } else if (itemCategory.includes('LUNCH') || itemCategory === 'MIDDAY MEAL') {
-            return 'LUNCH';
-        } else if (itemCategory.includes('DINNER') || itemCategory === 'EVENING MEAL') {
-            return 'DINNER';
-        } else if (itemCategory.includes('SNACK') || itemCategory.includes('FRUIT')) {
-            return 'SNACKS';
-        } else if (itemCategory.includes('CLEAN') || itemCategory.includes('DETERGENT') || 
-                  itemCategory.includes('SANITIZER') || itemCategory.includes('PAPER') ||
-                  itemCategory.includes('TISSUE') || itemCategory.includes('SOAP')) {
-            return 'CLEANING AND DETERGENTS';
-        } else {
-            return 'OTHERS';
-        }
     };
 
     const categorizedItems = groupItemsByCategory(grocery.details);
@@ -65,7 +42,16 @@ export const generateGroceryPDF = async (grocery) => {
         </div>
         <div style="font-size: 14px; margin-bottom: 15px;">
             <strong>DATE:</strong> ${new Date(grocery.createdAt).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" })}
+        </div>
+        <div style="font-size: 14px; margin-bottom: 15px;">
+            <strong>REQUESTED BY:</strong> ${grocery.staffName || ""}
         </div>`;
+
+    // Determine how to split categories between left and right columns
+    const categoryNames = Object.keys(categorizedItems);
+    const midpoint = Math.ceil(categoryNames.length / 2);
+    const leftColumnCategories = categoryNames.slice(0, midpoint);
+    const rightColumnCategories = categoryNames.slice(midpoint);
 
     // Create a two-column table layout
     let tableHTML = `
@@ -73,52 +59,30 @@ export const generateGroceryPDF = async (grocery) => {
             <tr>
                 <td style="width: 50%; vertical-align: top; padding: 0;">
                     <!-- Left Column -->
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <th colspan="2" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0;">BREAKFAST</th>
-                        </tr>`;
+                    <table style="width: 100%; border-collapse: collapse;">`;
     
-    // Add breakfast items
-    categorizedItems['BREAKFAST'].forEach(item => {
+    // Add items for left column categories
+    leftColumnCategories.forEach(category => {
         tableHTML += `
                         <tr>
-                            <td style="padding: 5px; border-top: 1px solid #ccc;">${item.item}</td>
-                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">
-                                ${item.status !== "declined" ? "✓" : "✗"}
-                            </td>
-                        </tr>`;
-    });
-    
-    // Add lunch items
-    tableHTML += `
+                            <th colspan="3" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000;">${category}</th>
+                        </tr>
                         <tr>
-                            <th colspan="2" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000;">LUNCH</th>
+                            <th style="width: 70%; text-align: left; padding: 5px; border-top: 1px solid #ccc;">Item</th>
+                            <th style="width: 15%; text-align: center; padding: 5px; border-top: 1px solid #ccc;">Qty</th>
+                            <th style="width: 15%; text-align: center; padding: 5px; border-top: 1px solid #ccc;">Status</th>
                         </tr>`;
-    
-    categorizedItems['LUNCH'].forEach(item => {
-        tableHTML += `
+        
+        categorizedItems[category].forEach(item => {
+            tableHTML += `
                         <tr>
                             <td style="padding: 5px; border-top: 1px solid #ccc;">${item.item}</td>
+                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">${item.quantity || 1}</td>
                             <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">
-                                ${item.status !== "declined" ? "✓" : "✗"}
+                                ${item.delivered ? "Delivered" : (item.status !== "declined" ? "Approved" : "Declined")}
                             </td>
                         </tr>`;
-    });
-    
-    // Add dinner items
-    tableHTML += `
-                        <tr>
-                            <th colspan="2" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000;">DINNER</th>
-                        </tr>`;
-    
-    categorizedItems['DINNER'].forEach(item => {
-        tableHTML += `
-                        <tr>
-                            <td style="padding: 5px; border-top: 1px solid #ccc;">${item.item}</td>
-                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">
-                                ${item.status !== "declined" ? "✓" : "✗"}
-                            </td>
-                        </tr>`;
+        });
     });
 
     // Close the left column and start the right column
@@ -127,69 +91,59 @@ export const generateGroceryPDF = async (grocery) => {
                 </td>
                 <td style="width: 50%; vertical-align: top; padding: 0;">
                     <!-- Right Column -->
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr>
-                            <th colspan="2" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0;">SNACKS</th>
-                        </tr>`;
+                    <table style="width: 100%; border-collapse: collapse;">`;
     
-    // Add snacks items
-    categorizedItems['SNACKS'].forEach(item => {
+    // Add items for right column categories
+    rightColumnCategories.forEach(category => {
         tableHTML += `
                         <tr>
-                            <td style="padding: 5px; border-top: 1px solid #ccc;">${item.item}</td>
-                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">
-                                ${item.status !== "declined" ? "✓" : "✗"}
-                            </td>
-                        </tr>`;
-    });
-    
-    // Add cleaning items
-    tableHTML += `
+                            <th colspan="3" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000;">${category}</th>
+                        </tr>
                         <tr>
-                            <th colspan="2" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000;">CLEANING AND DETERGENTS</th>
+                            <th style="width: 70%; text-align: left; padding: 5px; border-top: 1px solid #ccc;">Item</th>
+                            <th style="width: 15%; text-align: center; padding: 5px; border-top: 1px solid #ccc;">Qty</th>
+                            <th style="width: 15%; text-align: center; padding: 5px; border-top: 1px solid #ccc;">Status</th>
                         </tr>`;
-    
-    categorizedItems['CLEANING AND DETERGENTS'].forEach(item => {
-        tableHTML += `
+        
+        categorizedItems[category].forEach(item => {
+            tableHTML += `
                         <tr>
                             <td style="padding: 5px; border-top: 1px solid #ccc;">${item.item}</td>
+                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">${item.quantity || 1}</td>
                             <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">
-                                ${item.status !== "declined" ? "✓" : "✗"}
+                                ${item.delivered ? "Delivered" : (item.status !== "declined" ? "Approved" : "Declined")}
                             </td>
                         </tr>`;
-    });
-    
-    // Add other items
-    tableHTML += `
-                        <tr>
-                            <th colspan="2" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000;">OTHERS</th>
-                        </tr>`;
-    
-    categorizedItems['OTHERS'].forEach(item => {
-        tableHTML += `
-                        <tr>
-                            <td style="padding: 5px; border-top: 1px solid #ccc;">${item.item}</td>
-                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">
-                                ${item.status !== "declined" ? "✓" : "✗"}
-                            </td>
-                        </tr>`;
+        });
     });
 
-    // Close the right column and the main table
     tableHTML += `
                     </table>
                 </td>
             </tr>
         </table>`;
     
-    // Add non-requested items section if feedback exists
+    // Add feedback section if it exists
     if (grocery.feedback) {
         tableHTML += `
             <div style="margin-top: 15px;">
-                <div style="text-decoration: underline; font-weight: bold;">Non requested items</div>
+                <div style="text-decoration: underline; font-weight: bold;">Notes/Feedback</div>
                 <div style="margin-top: 5px;">${grocery.feedback}</div>
             </div>`;
     }
+
+    // Add signature lines
+    tableHTML += `
+        <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+            <div>
+                <div style="margin-bottom: 25px;">Requested by: ________________________</div>
+                <div>Date: _____________________</div>
+            </div>
+            <div>
+                <div style="margin-bottom: 25px;">Approved by: ________________________</div>
+                <div>Date: _____________________</div>
+            </div>
+        </div>`;
 
     // Append all HTML to the container
     container.innerHTML = headerHTML + tableHTML;
