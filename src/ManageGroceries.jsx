@@ -12,12 +12,11 @@ const ManageGroceries = () => {
     const [filterDate, setFilterDate] = useState("");
     const [filterBranch, setFilterBranch] = useState("");
     const [filterStatus, setFilterStatus] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
     const [expandedCard, setExpandedCard] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [viewMode, setViewMode] = useState("cards"); // 'cards' or 'table'
+    const [viewMode, setViewMode] = useState("cards");
     const tableRef = useRef(null);
     const itemsPerPage = 6;
 
@@ -45,7 +44,7 @@ const ManageGroceries = () => {
     const handleUpdate = async (groceryId, newStatus) => {
         if (!newStatus) return;
 
-        setIsSubmitting(true);
+        // setIsSubmitting(true);
         const payload = { status: newStatus };
         const updatedURL = `${GROCERIES_URL}/${groceryId}`;
 
@@ -62,9 +61,7 @@ const ManageGroceries = () => {
         } catch (error) {
             setErrors(["An error occurred. Please try again."]);
             setTimeout(() => setErrors([]), 5000);
-        } finally {
-            setIsSubmitting(false);
-        }
+        } 
     };
 
     const toggleCard = (groceryId) => {
