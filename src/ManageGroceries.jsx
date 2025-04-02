@@ -3,6 +3,7 @@ import { getData } from "../services/updatedata";
 import { updateData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 import { generateGroceryPDF } from "../services/generateGroceries";
+import TableOverlayModal from "./TableOverlayModal";
 
 const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
 
@@ -17,6 +18,8 @@ const ManageGroceries = () => {
     const [expandedCard, setExpandedCard] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [viewMode, setViewMode] = useState("cards");
+    const [isTableModalOpen, setIsTableModalOpen] = useState(false);
+    const [selectedGrocery, setSelectedGrocery] = useState(null);
     const tableRef = useRef(null);
     const itemsPerPage = 6;
 
@@ -66,7 +69,13 @@ const ManageGroceries = () => {
 
     const toggleCard = (groceryId) => {
         setExpandedCard(expandedCard === groceryId ? null : groceryId);
-        setViewMode("table");
+        setViewMode("cards"); // Reset view mode when toggling cards
+    };
+
+    // Open table modal with the selected grocery
+    const openTableModal = (grocery) => {
+        setSelectedGrocery(grocery);
+        setIsTableModalOpen(true);
     };
 
     // Filter groceries based on search criteria
@@ -102,32 +111,6 @@ const ManageGroceries = () => {
             case "delivered": return "bg-blue-600";
             default: return "bg-gray-600";
         }
-    };
-
-    // New method to render items as a table
-    const renderItemsTable = (details) => {
-        return (
-            <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left border-collapse">
-                    <thead className="text-xs uppercase bg-gray-700">
-                        <tr>
-                            <th className="px-4 py-2">Item</th>
-                            <th className="px-4 py-2">Quantity</th>
-                            <th className="px-4 py-2">Category</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {details.map((item, index) => (
-                            <tr key={index} className="border-b border-gray-600">
-                                <td className="px-4 py-2">{item.item}</td>
-                                <td className="px-4 py-2">{item.quantity}</td>
-                                <td className="px-4 py-2">{item.category}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
     };
 
     return (
@@ -200,10 +183,10 @@ const ManageGroceries = () => {
                                                     Category View
                                                 </button>
                                                 <button
-                                                    className={`px-3 py-1 text-xs rounded ${viewMode === 'table' ? 'bg-blue-600' : 'bg-gray-600'}`}
-                                                    onClick={() => setViewMode('table')}
+                                                    className="px-3 py-1 text-xs rounded bg-indigo-600 hover:bg-indigo-700"
+                                                    onClick={() => openTableModal(grocery)}
                                                 >
-                                                    Table View
+                                                    View Full Table
                                                 </button>
                                             </div>
                                             <button
@@ -217,25 +200,19 @@ const ManageGroceries = () => {
                                             </button>
                                         </div>
 
-                                        {viewMode === 'table' ? (
-                                            <div ref={tableRef}>
-                                                {renderItemsTable(grocery.details)}
+                                        {/* Always use category view in the card */}
+                                        {Object.entries(getGroupedItems(grocery.details)).map(([category, items]) => (
+                                            <div key={category} className="mb-3">
+                                                <h4 className="font-semibold text-blue-400 mb-1">{category}</h4>
+                                                <ul className="pl-4">
+                                                    {items.map((item, i) => (
+                                                        <li key={i} className="text-sm pb-1">
+                                                            {item.item} ({item.quantity})
+                                                        </li>
+                                                    ))}
+                                                </ul>
                                             </div>
-                                        ) : (
-                                            // Original category view
-                                            Object.entries(getGroupedItems(grocery.details)).map(([category, items]) => (
-                                                <div key={category} className="mb-3">
-                                                    <h4 className="font-semibold text-blue-400 mb-1">{category}</h4>
-                                                    <ul className="pl-4">
-                                                        {items.map((item, i) => (
-                                                            <li key={i} className="text-sm pb-1">
-                                                                {item.item} ({item.quantity})
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            ))
-                                        )}
+                                        ))}
                                         
                                         {grocery.feedback && (
                                             <div className="mt-2">
@@ -307,6 +284,14 @@ const ManageGroceries = () => {
                     ))}
                 </ul>
             )}
+
+            {/* Table Overlay Modal */}
+            <TableOverlayModal 
+                isOpen={isTableModalOpen}
+                onClose={() => setIsTableModalOpen(false)}
+                details={selectedGrocery?.details || []}
+                groceryInfo={selectedGrocery}
+            />
         </div>
     );
 };
