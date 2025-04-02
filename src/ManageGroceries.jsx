@@ -17,10 +17,8 @@ const ManageGroceries = () => {
     const [errors, setErrors] = useState([]);
     const [expandedCard, setExpandedCard] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [viewMode, setViewMode] = useState("cards");
     const [isTableModalOpen, setIsTableModalOpen] = useState(false);
     const [selectedGrocery, setSelectedGrocery] = useState(null);
-    const [showTable, setShowTable] = useState(false);
     const tableRef = useRef(null);
     const itemsPerPage = 6;
 
@@ -48,7 +46,6 @@ const ManageGroceries = () => {
     const handleUpdate = async (groceryId, newStatus) => {
         if (!newStatus) return;
 
-        // setIsSubmitting(true);
         const payload = { status: newStatus };
         const updatedURL = `${GROCERIES_URL}/${groceryId}`;
 
@@ -70,13 +67,27 @@ const ManageGroceries = () => {
 
     const toggleCard = (groceryId) => {
         setExpandedCard(expandedCard === groceryId ? null : groceryId);
-        setViewMode("cards"); // Reset view mode when toggling cards
     };
 
     // Open table modal with the selected grocery
     const openTableModal = (grocery) => {
         setSelectedGrocery(grocery);
         setIsTableModalOpen(true);
+    };
+
+    // Group items by category and sort categories
+    const groupItemsByCategory = (items) => {
+        const categories = {};
+        
+        items.forEach(item => {
+            const category = item.category.toUpperCase();
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+            categories[category].push(item);
+        });
+        
+        return categories;
     };
 
     // Filter groceries based on search criteria
@@ -92,17 +103,6 @@ const ManageGroceries = () => {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = filteredGroceries.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(filteredGroceries.length / itemsPerPage);
-
-    // Group items by category
-    const getGroupedItems = (details) => {
-        return details.reduce((acc, item) => {
-            if (!acc[item.category]) {
-                acc[item.category] = [];
-            }
-            acc[item.category].push(item);
-            return acc;
-        }, {});
-    };
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -176,23 +176,14 @@ const ManageGroceries = () => {
                                 {expandedCard === grocery.groceryId && (
                                     <div className="p-4 bg-gray-700 border-t border-gray-600">
                                         <div className="flex justify-between items-center mb-4">
-                                            <div className="flex space-x-2">
-                                                <button
-                                                    className={`px-3 py-1 text-xs rounded ${viewMode === 'cards' ? 'bg-blue-600' : 'bg-gray-600'}`}
-                                                    onClick={() => setViewMode('cards')}
-                                                >
-                                                    Category View
-                                                </button>
-                                                <button
-                                                    className="px-3 py-1 text-xs rounded bg-indigo-600 hover:bg-indigo-700"
-                                                    onClick={() => {
-                                                        openTableModal(grocery);
-                                                        setShowTable(true);
-                                                    }}
-                                                >
-                                                    View Full Table
-                                                </button>
-                                            </div>
+                                            <button
+                                                className="px-3 py-1 text-xs rounded bg-indigo-600 hover:bg-indigo-700"
+                                                onClick={() => {
+                                                    openTableModal(grocery);
+                                                }}
+                                            >
+                                                View Full Table
+                                            </button>
                                             <button
                                                 className="px-3 py-1 text-xs rounded bg-green-600 flex items-center"
                                                 onClick={() => generateGroceryPDF(grocery)}
@@ -203,20 +194,6 @@ const ManageGroceries = () => {
                                                 Download PDF
                                             </button>
                                         </div>
-
-                                        {/* Always use category view in the card */}
-                                        {Object.entries(getGroupedItems(grocery.details)).map(([category, items]) => (
-                                            <div key={category} className="mb-3">
-                                                <h4 className="font-semibold text-blue-400 mb-1">{category}</h4>
-                                                <ul className="pl-4">
-                                                    {items.map((item, i) => (
-                                                        <li key={i} className="text-sm pb-1">
-                                                            {item.item} ({item.quantity})
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        ))}
                                         
                                         {grocery.feedback && (
                                             <div className="mt-2">
@@ -289,38 +266,13 @@ const ManageGroceries = () => {
                 </ul>
             )}
 
-        {showTable &&(
-          <div
-              className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
-              onClick={() => setShowTable(false)}
-          >
-              <div
-              className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-              >
-              <TableOverlayModal 
+            {/* Table Overlay Modal */}
+            <TableOverlayModal 
                 isOpen={isTableModalOpen}
                 onClose={() => setIsTableModalOpen(false)}
                 details={selectedGrocery?.details || []}
                 groceryInfo={selectedGrocery}
             />
-              <button
-                  className="absolute top-2 right-2 text-white hover:text-gray-400"
-                  onClick={() => setShowTable(false)}
-              >
-                  ✖
-              </button>
-              </div>
-          </div>
-          )}
-
-            {/* Table Overlay Modal */}
-            {/* <TableOverlayModal 
-                isOpen={isTableModalOpen}
-                onClose={() => setIsTableModalOpen(false)}
-                details={selectedGrocery?.details || []}
-                groceryInfo={selectedGrocery}
-            /> */}
         </div>
     );
 };
