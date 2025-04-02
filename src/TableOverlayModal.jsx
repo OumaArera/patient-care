@@ -1,6 +1,6 @@
 import React from "react";
 
-const TableOverlayModal = ({ details, groceryInfo }) => {
+const TableOverlayModal = ({ isOpen, onClose, details, groceryInfo }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
@@ -13,14 +13,14 @@ const TableOverlayModal = ({ details, groceryInfo }) => {
               {groceryInfo?.staffName && ` • Requested by: ${groceryInfo.staffName}`}
             </p>
           </div>
-          {/* <button
+          <button
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button> */}
+          </button>
         </div>
         <div className="p-6">
           <div className="overflow-x-auto">
@@ -45,12 +45,12 @@ const TableOverlayModal = ({ details, groceryInfo }) => {
           </div>
         </div>
         <div className="p-4 border-t border-gray-700 flex justify-end">
-          {/* <button
+          <button
             onClick={onClose}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
             Close
-          </button> */}
+          </button>
         </div>
       </div>
     </div>

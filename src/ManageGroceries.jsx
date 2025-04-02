@@ -299,6 +299,8 @@ const ManageGroceries = () => {
               onClick={(e) => e.stopPropagation()}
               >
               <TableOverlayModal 
+                isOpen={isTableModalOpen}
+                onClose={() => setIsTableModalOpen(false)}
                 details={selectedGrocery?.details || []}
                 groceryInfo={selectedGrocery}
             />
