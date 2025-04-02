@@ -20,6 +20,7 @@ const ManageGroceries = () => {
     const [viewMode, setViewMode] = useState("cards");
     const [isTableModalOpen, setIsTableModalOpen] = useState(false);
     const [selectedGrocery, setSelectedGrocery] = useState(null);
+    const [showTable, setShowTable] = useState(false);
     const tableRef = useRef(null);
     const itemsPerPage = 6;
 
@@ -184,7 +185,10 @@ const ManageGroceries = () => {
                                                 </button>
                                                 <button
                                                     className="px-3 py-1 text-xs rounded bg-indigo-600 hover:bg-indigo-700"
-                                                    onClick={() => openTableModal(grocery)}
+                                                    onClick={() => {
+                                                        // openTableModal(grocery);
+                                                        setShowTable(true);
+                                                    }}
                                                 >
                                                     View Full Table
                                                 </button>
@@ -285,13 +289,36 @@ const ManageGroceries = () => {
                 </ul>
             )}
 
+        {showTable &&(
+          <div
+              className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+              onClick={() => setShowTable(false)}
+          >
+              <div
+              className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              >
+              <TableOverlayModal 
+                details={selectedGrocery?.details || []}
+                groceryInfo={selectedGrocery}
+            />
+              <button
+                  className="absolute top-2 right-2 text-white hover:text-gray-400"
+                  onClick={() => setShowTable(false)}
+              >
+                  ✖
+              </button>
+              </div>
+          </div>
+          )}
+
             {/* Table Overlay Modal */}
-            <TableOverlayModal 
+            {/* <TableOverlayModal 
                 isOpen={isTableModalOpen}
                 onClose={() => setIsTableModalOpen(false)}
                 details={selectedGrocery?.details || []}
                 groceryInfo={selectedGrocery}
-            />
+            /> */}
         </div>
     );
 };
