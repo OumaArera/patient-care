@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { getData } from "../services/updatedata";
 import { updateData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
+import { generateGroceryPDF } from "../services/generateGroceries";
 
 const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
 
@@ -16,6 +17,8 @@ const ManageGroceries = () => {
     const [errors, setErrors] = useState([]);
     const [expandedCard, setExpandedCard] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [viewMode, setViewMode] = useState("cards"); // 'cards' or 'table'
+    const tableRef = useRef(null);
     const itemsPerPage = 6;
 
     useEffect(() => {
@@ -66,6 +69,7 @@ const ManageGroceries = () => {
 
     const toggleCard = (groceryId) => {
         setExpandedCard(expandedCard === groceryId ? null : groceryId);
+        setViewMode("table");
     };
 
     // Filter groceries based on search criteria
@@ -101,6 +105,32 @@ const ManageGroceries = () => {
             case "delivered": return "bg-blue-600";
             default: return "bg-gray-600";
         }
+    };
+
+    // New method to render items as a table
+    const renderItemsTable = (details) => {
+        return (
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left border-collapse">
+                    <thead className="text-xs uppercase bg-gray-700">
+                        <tr>
+                            <th className="px-4 py-2">Item</th>
+                            <th className="px-4 py-2">Quantity</th>
+                            <th className="px-4 py-2">Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {details.map((item, index) => (
+                            <tr key={index} className="border-b border-gray-600">
+                                <td className="px-4 py-2">{item.item}</td>
+                                <td className="px-4 py-2">{item.quantity}</td>
+                                <td className="px-4 py-2">{item.category}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
     };
 
     return (
@@ -164,18 +194,51 @@ const ManageGroceries = () => {
 
                                 {expandedCard === grocery.groceryId && (
                                     <div className="p-4 bg-gray-700 border-t border-gray-600">
-                                        {Object.entries(getGroupedItems(grocery.details)).map(([category, items]) => (
-                                            <div key={category} className="mb-3">
-                                                <h4 className="font-semibold text-blue-400 mb-1">{category}</h4>
-                                                <ul className="pl-4">
-                                                    {items.map((item, i) => (
-                                                        <li key={i} className="text-sm pb-1">
-                                                            {item.item} ({item.quantity})
-                                                        </li>
-                                                    ))}
-                                                </ul>
+                                        <div className="flex justify-between items-center mb-4">
+                                            <div className="flex space-x-2">
+                                                <button
+                                                    className={`px-3 py-1 text-xs rounded ${viewMode === 'cards' ? 'bg-blue-600' : 'bg-gray-600'}`}
+                                                    onClick={() => setViewMode('cards')}
+                                                >
+                                                    Category View
+                                                </button>
+                                                <button
+                                                    className={`px-3 py-1 text-xs rounded ${viewMode === 'table' ? 'bg-blue-600' : 'bg-gray-600'}`}
+                                                    onClick={() => setViewMode('table')}
+                                                >
+                                                    Table View
+                                                </button>
                                             </div>
-                                        ))}
+                                            <button
+                                                className="px-3 py-1 text-xs rounded bg-green-600 flex items-center"
+                                                onClick={() => generateGroceryPDF(grocery)}
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m-9 3h12M5 18h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                                </svg>
+                                                Download PDF
+                                            </button>
+                                        </div>
+
+                                        {viewMode === 'table' ? (
+                                            <div ref={tableRef}>
+                                                {renderItemsTable(grocery.details)}
+                                            </div>
+                                        ) : (
+                                            // Original category view
+                                            Object.entries(getGroupedItems(grocery.details)).map(([category, items]) => (
+                                                <div key={category} className="mb-3">
+                                                    <h4 className="font-semibold text-blue-400 mb-1">{category}</h4>
+                                                    <ul className="pl-4">
+                                                        {items.map((item, i) => (
+                                                            <li key={i} className="text-sm pb-1">
+                                                                {item.item} ({item.quantity})
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            ))
+                                        )}
                                         
                                         {grocery.feedback && (
                                             <div className="mt-2">
