@@ -186,7 +186,7 @@ const ManageGroceries = () => {
                                                 <button
                                                     className="px-3 py-1 text-xs rounded bg-indigo-600 hover:bg-indigo-700"
                                                     onClick={() => {
-                                                        // openTableModal(grocery);
+                                                        openTableModal(grocery);
                                                         setShowTable(true);
                                                     }}
                                                 >
