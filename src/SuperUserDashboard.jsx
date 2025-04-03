@@ -5,7 +5,7 @@ import {
   FaUserPlus, FaUserTimes, FaUndo, FaChartPie, FaLock, FaHospital,
   FaUserInjured, FaMapMarkerAlt, FaDatabase, FaUserCheck, FaCalendarAlt
 } from "react-icons/fa";
-import { ShoppingCart, Wrench, AlertTriangle, ClipboardList } from "lucide-react";
+import { ShoppingCart, Wrench, AlertTriangle, ClipboardList, Bell } from "lucide-react";
 import Updates from "./Updates";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
@@ -25,6 +25,7 @@ import LandingPage from "./LandingPage";
 import MedAdministration from "./MedAdministration";
 import Appointments from "./Appointments";
 import Vitals from "./Vitals";
+import Assessment from "./Assessment"; // Import the Assessment component
 import logo1 from "./assets/1ST EDMONDS_LOGO.png";
 import logo2 from './assets/BSC-LOGO.png';
 import LeaveManagement from "./LeaveManagement";
@@ -161,7 +162,10 @@ const SuperUserDashboard = () => {
 
           {/* User Dropdown */}
           <div className="flex items-center space-x-6">
-          <button 
+            {/* Assessment Notification Component */}
+            <Assessment />
+            
+            <button 
                 className="flex flex-col items-center cursor-pointer"
                 onClick={() => setShowIncident(true)}
               >
@@ -232,7 +236,6 @@ const SuperUserDashboard = () => {
         {activeTab === "charts" && <Charts />}  
         {activeTab === "allCharts" && <AllCharts />}  
         {activeTab === "medications" && <MedAdministration />}  
-        {/* {activeTab === "dashboard" && <LandingPage />} */}
         {activeTab === "dashboard" && <LandingPage onTabChange={setActiveTab} />}
         {activeTab === "vitals" && <Vitals />}
         {activeTab === "leave" && <LeaveManagement />}

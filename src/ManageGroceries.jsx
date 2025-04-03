@@ -75,21 +75,6 @@ const ManageGroceries = () => {
         setIsTableModalOpen(true);
     };
 
-    // Group items by category and sort categories
-    const groupItemsByCategory = (items) => {
-        const categories = {};
-        
-        items.forEach(item => {
-            const category = item.category.toUpperCase();
-            if (!categories[category]) {
-                categories[category] = [];
-            }
-            categories[category].push(item);
-        });
-        
-        return categories;
-    };
-
     // Filter groceries based on search criteria
     const filteredGroceries = groceries.filter((grocery) => {
         const dateMatch = filterDate ? new Date(grocery.createdAt).toLocaleDateString("en-US").includes(filterDate) : true;
