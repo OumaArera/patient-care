@@ -25,7 +25,7 @@ import LandingPage from "./LandingPage";
 import MedAdministration from "./MedAdministration";
 import Appointments from "./Appointments";
 import Vitals from "./Vitals";
-import Assessment from "./Assessment"; // Import the Assessment component
+import Assessment from "./Assessments";
 import logo1 from "./assets/1ST EDMONDS_LOGO.png";
 import logo2 from './assets/BSC-LOGO.png';
 import LeaveManagement from "./LeaveManagement";
