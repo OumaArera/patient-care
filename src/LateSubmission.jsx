@@ -16,7 +16,33 @@ const LateSubmission = ({ patient, type }) => {
     const [errors, setErrors] = useState([]);
     const [reason, setReason] = useState("");
     
+    // Set date constraints for the date-time picker
+    const [minDate, setMinDate] = useState("");
+    const [maxDate, setMaxDate] = useState("");
+    
     useEffect(() => {
+        // Set date restrictions (today and tomorrow)
+        const today = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+        
+        // Format the dates as YYYY-MM-DD
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+        
+        // Set min as today with earliest time (7AM)
+        const minDateStr = `${formatDate(today)}T07:00`;
+        setMinDate(minDateStr);
+        
+        // Set max as tomorrow with latest time (10PM)
+        const maxDateStr = `${formatDate(tomorrow)}T22:00`;
+        setMaxDate(maxDateStr);
+        
+        // Load caregivers data
         setLoading(true);
         getCareGivers()
             .then((data) => {
@@ -36,7 +62,7 @@ const LateSubmission = ({ patient, type }) => {
         const utcDate = localDate.toISOString();
         
         const payload = {
-            patient: patient.patientId ? patient.patientId : patient ,
+            patient: patient.patientId ? patient.patientId : patient,
             type,
             careGiver: selectedCareGiver,
             start: utcDate,
@@ -102,14 +128,18 @@ const LateSubmission = ({ patient, type }) => {
                     </select>
 
                     
-                    {/* Start Time Input */}
+                    {/* Start Time Input - with restricted date/time */}
                     <label className="block mt-4 mb-2 text-blue-300 font-medium">Start Time</label>
                     <input
                         type="datetime-local"
                         className="w-full p-3 bg-gray-800 text-white border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
+                        min={minDate}
+                        max={maxDate}
+                        step="3600" // Allow only hourly selections (in seconds)
                     />
+                    <p className="text-xs text-gray-400 mt-1">Only today and tomorrow allowed, between 7AM and 10PM</p>
                     
                     {/* Duration Selection */}
                     <label className="block mt-4 mb-2 text-blue-300 font-medium">Duration</label>
@@ -124,10 +154,6 @@ const LateSubmission = ({ patient, type }) => {
                         <option value="120">2 hours</option>
                         <option value="180">3 hours</option>
                         <option value="360">6 hours</option>
-                        <option value="720">12 hours</option>
-                        <option value="1440">24 hours</option>
-                        <option value="2160">36 hours</option>
-                        <option value="2880">48 hours</option>
                     </select>
                     <label className="block mt-4 mb-2 text-blue-300 font-medium">Reason for Late Submission</label>
                     <textarea
