@@ -4,7 +4,7 @@ import {
   FaChartBar, FaPills, FaUser, FaSignOutAlt, FaLock, FaNewspaper,
   FaCalendarAlt, FaUserTimes
 } from "react-icons/fa";
-import { ShoppingCart, Wrench, AlertTriangle, ClipboardList, Bell } from "lucide-react";
+import { ShoppingCart, Wrench, AlertTriangle, ClipboardList } from "lucide-react";
 import handleLogout from "./Logout";
 import ChangePassword from "./ChangePassword";
 import ChartPatient from "./ChartPatient";
@@ -30,7 +30,6 @@ const CareGiverDashboard = () => {
   const [showUtilities, setShowUtilities] = useState(false);
   const [showGroceries, setShowGroceries] = useState(false);
   const [showIncident, setShowIncident] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
 
   // Ref for user menu and modal
@@ -124,13 +123,9 @@ const CareGiverDashboard = () => {
 
           {/* User Dropdown and Additional Icons */}
           <div className="flex items-center space-x-6">
-          <button 
-              className="flex flex-col items-center cursor-pointer"
-              onClick={() => setShowNotifications(true)}
-            >
-              <Bell className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">Due Appointments</span>
-            </button>
+            {/* Appointment Notification Component */}
+            <AppointmentNotification />
+            
             <button 
               className="flex flex-col items-center cursor-pointer"
               onClick={() => setShowIncident(true)}
@@ -231,26 +226,6 @@ const CareGiverDashboard = () => {
               <button
                   className="absolute top-2 right-2 text-white hover:text-gray-400"
                   onClick={() => setShowUtilities(false)}
-              >
-                  ✖
-              </button>
-              </div>
-          </div>
-          )}
-
-        {showNotifications &&(
-          <div
-              className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
-              onClick={() => setShowNotifications(false)}
-          >
-              <div
-              className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-              >
-              <AppointmentNotification  />
-              <button
-                  className="absolute top-2 right-2 text-white hover:text-gray-400"
-                  onClick={() => setShowNotifications(false)}
               >
                   ✖
               </button>
