@@ -19,6 +19,7 @@ import Staff from "./Staff";
 import Utilities from "./Utilities";
 import Groceries from "./Groceries";
 import Incident from "./Incident";
+import ReportsDownloader from "./ReportsDownloader";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -105,6 +106,12 @@ const CareGiverDashboard = () => {
         >
           <FaUserTimes /> Vitals
         </button>
+        <button 
+          className={`p-3 flex items-center gap-2 ${activeTab === "reports" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
+          onClick={() => setActiveTab("reports")}
+        >
+          <FaUserTimes /> Reports
+        </button>
       </div>
       
 
@@ -186,6 +193,7 @@ const CareGiverDashboard = () => {
         {activeTab === "dashboard" && <LandingPage />}
         {activeTab === "appointments" && <ChartAppointments />}
         {activeTab === "vitals" && <ChartVitals />}
+        {activeTab === "reports" && <ReportsDownloader />}
         
 
         {/* Change Password Overlay (only inside user menu) */}
