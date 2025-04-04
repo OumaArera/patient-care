@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { errorHandler } from "../services/errorHandler";
 import { postAppointments } from "../services/postAppointments";
 import { getAppointments } from "../services/getAppointments";
-import { Loader } from "lucide-react";
+import { Loader, Edit } from "lucide-react";
 
 const Appointment = ({ patientId }) => {
   const [dateTaken, setDateTaken] = useState("");
@@ -15,6 +15,8 @@ const Appointment = ({ patientId }) => {
   const [loadingAppointments, setLoadingAppointments] = useState(false);
   const [appointments, setAppointments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingAppointmentId, setEditingAppointmentId] = useState(null);
   const appointmentsPerPage = 10;
 
   const indexOfLastAppointment = currentPage * appointmentsPerPage;
@@ -22,8 +24,6 @@ const Appointment = ({ patientId }) => {
   const currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
 
   const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
-
-  
 
   const appointmentTypes = [
     "Primary Care Provider (PCP)",
@@ -36,8 +36,7 @@ const Appointment = ({ patientId }) => {
     "Other",
   ];
 
-  
-  const fetchAppointments = () =>{
+  const fetchAppointments = () => {
     setLoadingAppointments(true);
     getAppointments(patientId)
       .then((data) => {
@@ -46,10 +45,10 @@ const Appointment = ({ patientId }) => {
       .catch(() => {})
       .finally(() => setLoadingAppointments(false));
   }
+  
   useEffect(() => {
     fetchAppointments();
-  }, []);
-
+  }, [patientId]);
 
   const validateAndSubmit = async () => {
     let validationErrors = [];
@@ -79,16 +78,28 @@ const Appointment = ({ patientId }) => {
     };
 
     try {
-      const response = await postAppointments(payload);
+      let response;
+      
+      if (isEditing && editingAppointmentId) {
+        // Update existing appointment
+        response = await updateAppointment(editingAppointmentId, payload);
+        if (!response?.error) {
+          setMessage("Appointment updated successfully.");
+        }
+      } else {
+        // Create new appointment
+        response = await postAppointments(payload);
+        if (!response?.error) {
+          setMessage("Appointment marked successfully.");
+        }
+      }
+      
       if (response?.error) {
         setErrors(errorHandler(response.error));
         setTimeout(() => setErrors([]), 5000);
       } else {
-        setMessage("Appointment marked successfully.");
         fetchAppointments();
-        setDateTaken("");
-        setDetails("");
-        setNextAppointmentDate("");
+        resetForm();
         setTimeout(() => setMessage(""), 30000);
       }
     } catch (error) {
@@ -99,9 +110,48 @@ const Appointment = ({ patientId }) => {
     }
   };
 
+  const updateAppointment = async (appointmentId, payload) => {
+    try {
+      const response = await fetch(`https://patient-care-server.onrender.com/api/v1/appointments/${appointmentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(payload)
+      });
+      return await response.json();
+    } catch (error) {
+      throw new Error('Failed to update appointment');
+    }
+  };
+
+  const handleEditAppointment = (appointment) => {
+    setIsEditing(true);
+    setEditingAppointmentId(appointment.appointmentId);
+    setDateTaken(appointment.dateTaken.split('T')[0]);
+    setType(appointment.type);
+    setDetails(appointment.details || "");
+    setNextAppointmentDate(appointment.nextAppointmentDate ? appointment.nextAppointmentDate.split('T')[0] : "");
+    
+    // Scroll to the form section
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const resetForm = () => {
+    setDateTaken("");
+    setDetails("");
+    setNextAppointmentDate("");
+    setType("");
+    setIsEditing(false);
+    setEditingAppointmentId(null);
+  };
+
   return (
     <div className="p-6 bg-gray-900 text-white rounded-lg shadow-lg max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Schedule Appointment</h2>
+      <h2 className="text-2xl font-bold mb-4">
+        {isEditing ? "Edit Appointment" : "Schedule Appointment"}
+      </h2>
   
       {/* Form Section */}
       <div className="mb-6">
@@ -143,7 +193,7 @@ const Appointment = ({ patientId }) => {
           className="mb-4 p-2 border border-gray-700 rounded bg-gray-800 text-white w-full"
         />
         
-        {message && <p className="text-green-600">{message}</p>}
+        {message && <p className="text-green-500 mb-4">{message}</p>}
         {errors.length > 0 && (
           <div className="mb-4 p-3 bg-red-800 rounded">
             {errors.map((error, index) => (
@@ -152,13 +202,24 @@ const Appointment = ({ patientId }) => {
           </div>
         )}
   
-        <button
-          onClick={validateAndSubmit}
-          className="w-full px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition disabled:bg-gray-500"
-          disabled={!dateTaken || !type}
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
+        <div className="flex space-x-4">
+          <button
+            onClick={validateAndSubmit}
+            className="flex-1 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 transition disabled:bg-gray-500"
+            disabled={!dateTaken || !type}
+          >
+            {loading ? "Submitting..." : (isEditing ? "Update Appointment" : "Submit")}
+          </button>
+          
+          {isEditing && (
+            <button
+              onClick={resetForm}
+              className="flex-1 px-4 py-2 rounded-md bg-gray-600 hover:bg-gray-700 transition"
+            >
+              Cancel Edit
+            </button>
+          )}
+        </div>
       </div>
   
       {/* Table Section */}
@@ -180,6 +241,7 @@ const Appointment = ({ patientId }) => {
                   <th className="border border-gray-700 p-2 text-left">Type</th>
                   <th className="border border-gray-700 p-2 text-left">Other Details</th>
                   <th className="border border-gray-700 p-2 text-left">Next Appointment Date</th>
+                  <th className="border border-gray-700 p-2 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -198,26 +260,34 @@ const Appointment = ({ patientId }) => {
                           </td>
                         ) : null}
                         <td className="border border-gray-700 p-2">
-                          {new Date(new Date(curr.dateTaken + "T00:00:00Z").setDate(new Date(curr.dateTaken + "T00:00:00Z").getDate() ))
+                          {new Date(new Date(curr.dateTaken + "T00:00:00Z").setDate(new Date(curr.dateTaken + "T00:00:00Z").getDate()))
                             .toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "long",
                               day: "numeric",
                               timeZone: "UTC", 
                             })}
-                          
-                          </td>
+                        </td>
                         <td className="border border-gray-700 p-2">{curr.type}</td>
                         <td className="border border-gray-700 p-2">{curr.details || ""}</td>
                         <td className="border border-gray-700 p-2">
-                        {curr.nextAppointmentDate ?
-                          new Date(new Date(curr.nextAppointmentDate + "T00:00:00Z").setDate(new Date(curr.nextAppointmentDate + "T00:00:00Z").getDate() ))
-                            .toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              timeZone: "UTC",
-                            }): "No appointment scheduled"}
+                          {curr.nextAppointmentDate ?
+                            new Date(new Date(curr.nextAppointmentDate + "T00:00:00Z").setDate(new Date(curr.nextAppointmentDate + "T00:00:00Z").getDate()))
+                              .toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                timeZone: "UTC",
+                              }) : "No appointment scheduled"}
+                        </td>
+                        <td className="border border-gray-700 p-2 text-center">
+                          <button 
+                            onClick={() => handleEditAppointment(curr)}
+                            className="p-2 text-blue-400 hover:text-blue-300 transition"
+                            title="Edit Appointment"
+                          >
+                            <Edit size={18} />
+                          </button>
                         </td>
                       </tr>
                     );
@@ -225,7 +295,7 @@ const Appointment = ({ patientId }) => {
                   }, [])
                 ) : (
                   <tr>
-                    <td colSpan="5" className="text-center p-4">No appointments available.</td>
+                    <td colSpan="6" className="text-center p-4">No appointments available.</td>
                   </tr>
                 )}
               </tbody>
@@ -256,7 +326,6 @@ const Appointment = ({ patientId }) => {
       </div>
     </div>
   );
-  
 };
 
 export default Appointment;
