@@ -1,19 +1,19 @@
-// components/AppointmentNotification.js
 import React, { useState, useEffect, useRef } from "react";
 import { Bell } from "lucide-react";
-import { getUpcomingAppointments } from "../services/appointmentServices";
+import { getAllAppointments } from "../services/appointmentServices";
 
 const AppointmentNotification = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [allAppointments, setAllAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
   const notificationRef = useRef(null);
 
   useEffect(() => {
-    fetchUpcomingAppointments();
+    fetchAppointments();
     
-    // Set up an interval to check for upcoming appointments every 30 minutes
-    const intervalId = setInterval(fetchUpcomingAppointments, 30 * 60 * 1000);
+    // Set up an interval to check for appointments every 30 minutes
+    const intervalId = setInterval(fetchAppointments, 30 * 60 * 1000);
     
     return () => clearInterval(intervalId);
   }, []);
@@ -32,16 +32,37 @@ const AppointmentNotification = () => {
     };
   }, []);
 
-  const fetchUpcomingAppointments = async () => {
+  useEffect(() => {
+    // Filter upcoming appointments whenever all appointments change
+    filterUpcomingAppointments();
+  }, [allAppointments]);
+
+  const fetchAppointments = async () => {
     setLoading(true);
     try {
-      const appointments = await getUpcomingAppointments(10);
-      setUpcomingAppointments(appointments);
+      const response = await getAllAppointments();
+      setAllAppointments(response.responseObject || []);
     } catch (error) {
-      console.error("Error fetching upcoming appointments:", error);
+      console.error("Error fetching appointments:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const filterUpcomingAppointments = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const tenDaysFromNow = new Date(today);
+    tenDaysFromNow.setDate(today.getDate() + 10);
+    
+    const upcoming = allAppointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.nextAppointmentDate);
+      appointmentDate.setHours(0, 0, 0, 0);
+      return appointmentDate >= today && appointmentDate <= tenDaysFromNow;
+    });
+    
+    setUpcomingAppointments(upcoming);
   };
 
   // Format date for display
@@ -121,7 +142,8 @@ const AppointmentNotification = () => {
                       {" - "}
                       {formatDate(appointment.nextAppointmentDate)}
                     </div>
-                    <div className="text-sm text-gray-400">{appointment.type}</div>
+                    <div className="text-sm text-gray-400">{appointment.details}</div>
+                    <div className="text-sm text-gray-400">Type: {appointment.type}</div>
                   </div>
                 );
               })}
@@ -134,7 +156,7 @@ const AppointmentNotification = () => {
           
           <div className="p-2 border-t border-gray-700">
             <button 
-              onClick={fetchUpcomingAppointments}
+              onClick={fetchAppointments}
               className="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded text-sm"
             >
               Refresh
