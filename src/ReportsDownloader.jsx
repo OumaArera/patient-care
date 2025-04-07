@@ -27,6 +27,7 @@ const ReportsDownloader = () => {
   // Get branchId from localStorage and fetch patients on component mount
   useEffect(() => {
     const storedBranchId = localStorage.getItem("branch");
+    console.log("Branch ID: ", storedBranchId)
     setBranchId(storedBranchId);
     
     setLoadingPatients(true);
@@ -34,6 +35,7 @@ const ReportsDownloader = () => {
       .then((data) => {
         // Filter patients to only those matching the branchId from localStorage
         const allPatients = data?.responseObject || [];
+        console.log("Patients: ", allPatients)
         const filteredPatients = allPatients.filter(patient => patient.branchId === storedBranchId);
         setPatients(filteredPatients);
       })
