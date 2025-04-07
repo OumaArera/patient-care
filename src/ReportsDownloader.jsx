@@ -27,7 +27,7 @@ const ReportsDownloader = () => {
   // Get branchId from localStorage and fetch patients on component mount
   useEffect(() => {
     const storedBranchId = localStorage.getItem("branch");
-    console.log("Branch ID: ", storedBranchId)
+    console.log("Branch ID from localStorage: ", storedBranchId);
     setBranchId(storedBranchId);
     
     setLoadingPatients(true);
@@ -35,8 +35,20 @@ const ReportsDownloader = () => {
       .then((data) => {
         // Filter patients to only those matching the branchId from localStorage
         const allPatients = data?.responseObject || [];
-        console.log("Patients: ", allPatients)
-        const filteredPatients = allPatients.filter(patient => patient.branchId === storedBranchId);
+        console.log("All patients: ", allPatients);
+        
+        // Convert the branchId to the same type for comparison (both to numbers)
+        const storedBranchIdNum = parseInt(storedBranchId);
+        const filteredPatients = allPatients.filter(patient => {
+          // Convert patient.branchId to number if it's not already
+          const patientBranchId = typeof patient.branchId === 'string' ? 
+            parseInt(patient.branchId) : patient.branchId;
+          
+          return patientBranchId === storedBranchIdNum;
+        });
+        
+        console.log("Filtered patients: ", filteredPatients);
+        console.log("Using branch ID for filter: ", storedBranchIdNum);
         setPatients(filteredPatients);
       })
       .catch((error) => {
@@ -160,13 +172,15 @@ const ReportsDownloader = () => {
 
         {/* Patient Selection */}
         <div className="mb-4">
-          <label className="block text-blue-300 mb-2">Resident:</label>
+          <label className="block text-blue-300 mb-2">
+            Resident {patients.length ? `(${patients.length})` : ""}:
+          </label>
           {loadingPatients ? (
             <div className="flex items-center space-x-2">
               <Loader className="animate-spin text-blue-400" size={20} />
               <p className="text-gray-400">Loading residents...</p>
             </div>
-          ) : (
+          ) : patients.length > 0 ? (
             <select
               className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
               value={selectedPatient || ""}
@@ -181,6 +195,10 @@ const ReportsDownloader = () => {
                   </option>
                 ))}
             </select>
+          ) : (
+            <div className="p-2 bg-gray-800 text-gray-400 border border-gray-700 rounded">
+              No residents found for your branch
+            </div>
           )}
         </div>
       </div>
