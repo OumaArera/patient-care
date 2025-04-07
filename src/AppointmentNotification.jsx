@@ -108,7 +108,7 @@ const AppointmentNotification = () => {
             {upcomingAppointments.length}
           </span>
         )}
-        <span className="text-sm text-gray-400">Notifications</span>
+        <span className="text-sm text-gray-400">Due Appointments</span>
       </button>
 
       {showNotifications && (

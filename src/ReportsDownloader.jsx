@@ -10,10 +10,10 @@ const ReportsDownloader = () => {
   // State management
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [selectedMonth, setSelectedMonth] = useState((new Date().getMonth() + 1).toString().padStart(2, "0"));
-  const [reportType, setReportType] = useState("charts"); // "charts" or "vitals"
+  const [reportType, setReportType] = useState("charts"); 
+  const [branchId, setBranchId] = useState("");
   
   // Loading states
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -24,21 +24,24 @@ const ReportsDownloader = () => {
   const [vitalsData, setVitalsData] = useState([]);
   const [dataReady, setDataReady] = useState(false);
 
-  // Fetch patients on component mount
+  // Get branchId from localStorage and fetch patients on component mount
   useEffect(() => {
+    const storedBranchId = localStorage.getItem("branch");
+    setBranchId(storedBranchId);
+    
     setLoadingPatients(true);
     fetchPatients()
       .then((data) => {
-        setPatients(data?.responseObject || []);
+        // Filter patients to only those matching the branchId from localStorage
+        const allPatients = data?.responseObject || [];
+        const filteredPatients = allPatients.filter(patient => patient.branchId === storedBranchId);
+        setPatients(filteredPatients);
       })
       .catch((error) => {
         console.error("Error fetching patients:", error);
       })
       .finally(() => setLoadingPatients(false));
   }, []);
-
-  // Get unique branch names
-  const branchNames = [...new Set(patients.map((p) => p.branchName))].sort();
 
   // Handle patient selection
   const handlePatientChange = (e) => {
@@ -153,24 +156,6 @@ const ReportsDownloader = () => {
           </select>
         </div>
 
-        {/* Branch Selection */}
-        <div className="mb-4">
-          <label className="block text-blue-300 mb-2">Branch:</label>
-          <select
-            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
-            value={selectedBranch}
-            onChange={(e) => setSelectedBranch(e.target.value)}
-            disabled={loadingPatients}
-          >
-            <option value="">All Branches</option>
-            {branchNames.map((branch) => (
-              <option key={branch} value={branch}>{branch}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {/* Patient Selection */}
         <div className="mb-4">
           <label className="block text-blue-300 mb-2">Resident:</label>
@@ -187,7 +172,6 @@ const ReportsDownloader = () => {
             >
               <option value="">-- Select Resident --</option>
               {patients
-                .filter((p) => !selectedBranch || p.branchName === selectedBranch)
                 .sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`))
                 .map((p) => (
                   <option key={p.patientId} value={p.patientId}>
@@ -197,37 +181,37 @@ const ReportsDownloader = () => {
             </select>
           )}
         </div>
+      </div>
 
-        {/* Month/Year Selection */}
-        <div className="mb-4">
-          <label className="block text-blue-300 mb-2">Report Period:</label>
-          <div className="flex space-x-2">
-            <select
-              className="w-1/2 p-2 bg-gray-800 text-white border border-gray-700 rounded"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              disabled={!selectedPatient}
-            >
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-                <option key={m} value={m.toString().padStart(2, "0")}>
-                  {new Date(0, m - 1).toLocaleString("en-US", { month: "long" })}
-                </option>
-              ))}
-            </select>
-            
-            <select
-              className="w-1/2 p-2 bg-gray-800 text-white border border-gray-700 rounded"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value)}
-              disabled={!selectedPatient}
-            >
-              {[...Array(10)].map((_, i) => (
-                <option key={i} value={new Date().getFullYear() - i}>
-                  {new Date().getFullYear() - i}
-                </option>
-              ))}
-            </select>
-          </div>
+      {/* Month/Year Selection */}
+      <div className="mb-6">
+        <label className="block text-blue-300 mb-2">Report Period:</label>
+        <div className="flex space-x-2">
+          <select
+            className="w-1/2 p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            disabled={!selectedPatient}
+          >
+            {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+              <option key={m} value={m.toString().padStart(2, "0")}>
+                {new Date(0, m - 1).toLocaleString("en-US", { month: "long" })}
+              </option>
+            ))}
+          </select>
+          
+          <select
+            className="w-1/2 p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            disabled={!selectedPatient}
+          >
+            {[...Array(10)].map((_, i) => (
+              <option key={i} value={new Date().getFullYear() - i}>
+                {new Date().getFullYear() - i}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
