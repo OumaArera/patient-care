@@ -1,4 +1,3 @@
-// SleepPatternComponents/index.jsx
 import React, { useEffect, useState } from "react";
 import { getData } from "../../services/updatedata";
 import { fetchPatients } from "../../services/fetchPatients";
@@ -6,6 +5,7 @@ import SelectionControls from "./SelectionControls";
 import SleepPatternChart from "./SleepPatternChart";
 import MonthlySummary from "./MonthlySummary";
 import PatternAnalysis from "./PatternAnalysis";
+import { downloadSleepPatternData } from "../utils/downloadUtils";
 
 const SLEEP_PATTERNS_URLS = "https://patient-care-server.onrender.com/api/v1/sleeps";
 
@@ -14,6 +14,7 @@ const ManageSleepPatterns = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingResidents, setLoadingResidents] = useState(false); // Added specific resident loading state
   const [sleepData, setSleepData] = useState([]);
   const [loadingSleepData, setLoadingSleepData] = useState(false);
   const [selectedResident, setSelectedResident] = useState("");
@@ -21,7 +22,8 @@ const ManageSleepPatterns = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [chartData, setChartData] = useState([]);
-  const [viewMode, setViewMode] = useState("bar"); // 'bar', 'line', or 'heatmap'
+  const [viewMode, setViewMode] = useState("bar");
+  const [downloadingData, setDownloadingData] = useState(false); // Added state for download progress
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -51,10 +53,12 @@ const ManageSleepPatterns = () => {
 
   useEffect(() => {
     if (selectedBranch) {
+      setLoadingResidents(true); // Set loading state when filtering residents
       const filtered = residents.filter(resident => resident.branchId === parseInt(selectedBranch));
       setFilteredResidents(filtered);
       setSelectedResident(""); 
       setSleepData([]);
+      setLoadingResidents(false); // Clear loading state
     } else {
       setFilteredResidents([]);
     }
@@ -74,10 +78,14 @@ const ManageSleepPatterns = () => {
 
   const getResidents = () => {
     setLoading(true);
+    setLoadingResidents(true); // Set loading state for residents specifically
     fetchPatients()
       .then((data) => setResidents(data?.responseObject || []))
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setLoadingResidents(false); // Clear loading state
+      });
   };
 
   const getSleepData = (residentId) => {
@@ -186,6 +194,29 @@ const ManageSleepPatterns = () => {
     setViewMode(mode);
   };
 
+  const handleDownloadData = () => {
+    if (!selectedResident || chartData.length === 0) return;
+    
+    setDownloadingData(true);
+    
+    const selectedResidentData = residents.find(r => r.patientId === parseInt(selectedResident));
+    const branchData = branches.find(b => b.id === parseInt(selectedBranch));
+    
+    const residentInfo = {
+      residentName: `${selectedResidentData?.firstName || ''} ${selectedResidentData?.lastName || ''}`,
+      facilityName: branchData?.name || 'Unknown Facility',
+      branchName: branchData?.name || 'Unknown Branch',
+      month: months[selectedMonth],
+      year: selectedYear
+    };
+    
+    // Execute download function
+    downloadSleepPatternData(sleepData, residentInfo, selectedMonth, selectedYear)
+      .finally(() => {
+        setDownloadingData(false);
+      });
+  };
+
   const selectedResidentName = selectedResident ? 
     residents.find(r => r.patientId === parseInt(selectedResident))?.firstName + " " + 
     residents.find(r => r.patientId === parseInt(selectedResident))?.lastName : "";
@@ -196,6 +227,7 @@ const ManageSleepPatterns = () => {
       
       <SelectionControls 
         loading={loading}
+        loadingResidents={loadingResidents} 
         branches={branches}
         selectedBranch={selectedBranch}
         handleBranchChange={handleBranchChange}
@@ -211,6 +243,33 @@ const ManageSleepPatterns = () => {
         viewMode={viewMode}
         handleViewModeChange={handleViewModeChange}
       />
+      
+      {selectedResident && (
+        <div className="mb-4 flex justify-end">
+          <button 
+            onClick={handleDownloadData}
+            disabled={downloadingData || loadingSleepData || chartData.length === 0}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded flex items-center disabled:bg-gray-400"
+          >
+            {downloadingData ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Downloading...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Sleep Data
+              </>
+            )}
+          </button>
+        </div>
+      )}
       
       <SleepPatternChart 
         loadingSleepData={loadingSleepData}
