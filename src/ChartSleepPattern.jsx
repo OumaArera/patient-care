@@ -7,7 +7,6 @@ import PatientList from "./sleep-components/PatientList";
 import StatusSelector from "./sleep-components/StatusSelector";
 import MissingEntriesList from "./sleep-components/MissingEntriesList";
 import CurrentSelection from "./sleep-components/CurrentSelection";
-import ReasonModal from "./sleep-components/ReasonModal";
 import { 
   getCurrentDate, 
   getCurrentTimeSlot, 
@@ -54,9 +53,9 @@ const SleepPattern = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [reasonModalOpen, setReasonModalOpen] = useState(false);
   const [currentTimeSlot, setCurrentTimeSlot] = useState(null);
   const [missingEntries, setMissingEntries] = useState([]);
+  const [filledEntries, setFilledEntries] = useState([]);
   
   const [formData, setFormData] = useState({
     resident: null,
@@ -105,8 +104,9 @@ const SleepPattern = () => {
       const url = `${SLEEP_URL}?resident=${selectedPatientId}`;
       const response = await getData(url);
       if (response?.responseObject) {
-        // setSleepData(response.responseObject);
-        findMissingEntries(response.responseObject);
+        const sleepData = response.responseObject;
+        setFilledEntries(sleepData);
+        findMissingEntries(sleepData);
       }
     } catch (err) {
       setErrors(["Failed to load sleep data"]);
@@ -131,7 +131,9 @@ const SleepPattern = () => {
           missing.push({
             date,
             slot: slot.value,
-            requiresReason: date !== getCurrentDate()
+            requiresReason: date !== getCurrentDate(),
+            isCurrentTimeSlot: date === getCurrentDate() && slot.value === getCurrentTimeSlot(),
+            disabled: false
           });
         }
       });
@@ -144,7 +146,9 @@ const SleepPattern = () => {
     setSelectedPatientId(patientId);
     setFormData(prev => ({ 
       ...prev, 
-      resident: patientId 
+      resident: patientId,
+      markAs: "",
+      reasonFilledLate: null
     }));
   };
 
@@ -156,33 +160,21 @@ const SleepPattern = () => {
   };
 
   const handleTimeSlotSelect = (entry) => {
-    if (entry.requiresReason) {
-      setCurrentTimeSlot(entry);
-      setReasonModalOpen(true);
-    }
-    
     setFormData(prev => ({
       ...prev,
       markedFor: entry.slot,
       dateTaken: entry.date,
       reasonFilledLate: entry.requiresReason ? prev.reasonFilledLate : null
     }));
+    
+    setCurrentTimeSlot(entry);
   };
 
-  const handleReasonChange = (reason) => {
+  const handleReasonChange = (e) => {
     setFormData(prev => ({
       ...prev,
-      reasonFilledLate: reason
+      reasonFilledLate: e.target.value
     }));
-  };
-
-  const confirmReason = () => {
-    if (!formData.reasonFilledLate) {
-      setErrors(["Please provide a reason for late entry"]);
-      setTimeout(() => setErrors([]), 5000);
-      return false;
-    }
-    return true;
   };
 
   const handleSubmit = async () => {
@@ -194,13 +186,13 @@ const SleepPattern = () => {
     }
     
     if (!formData.markAs) {
-        setErrors([]);
+      setErrors(["Please select a sleep status"]);
       setTimeout(() => setErrors([]), 5000);
       return;
     }
     
     if (!formData.markedFor) {
-        setErrors(["Time slot is required"]);
+      setErrors(["Time slot is required"]);
       setTimeout(() => setErrors([]), 5000);
       return;
     }
@@ -221,7 +213,7 @@ const SleepPattern = () => {
         setTimeout(() => setErrors([]), 5000);
       } else {
         setMessage("Sleep pattern recorded successfully");
-        fetchSleepData();
+        await fetchSleepData(); // Refresh data after submission
         
         // Reset form except patient selection
         setFormData(prev => ({
@@ -234,7 +226,7 @@ const SleepPattern = () => {
       }
     } catch (err) {
       setErrors(["An error occurred while saving data"]);
-      setTimeout(() => setErrors([]))
+      setTimeout(() => setErrors([]), 5000);
     } finally {
       setIsSubmitting(false);
       setTimeout(() => {
@@ -242,6 +234,21 @@ const SleepPattern = () => {
         setErrors([]);
       }, 5000);
     }
+  };
+
+  // Check if a time slot is filled or is current time
+  const isSlotDisabled = (entry) => {
+    // Check if entry is already filled
+    const isAlreadyFilled = filledEntries.some(
+      filled => filled.dateTaken === entry.date && filled.markedFor === entry.slot
+    );
+    
+    // Check if it's the currently selected entry
+    const isSelected = 
+      formData.dateTaken === entry.date && 
+      formData.markedFor === entry.slot;
+      
+    return isAlreadyFilled || isSelected;
   };
 
   return (
@@ -289,26 +296,81 @@ const SleepPattern = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Missing Entries */}
                     <div>
-                      <MissingEntriesList 
-                        entries={missingEntries}
-                        selectedDate={formData.dateTaken}
-                        selectedSlot={formData.markedFor}
-                        onEntrySelect={handleTimeSlotSelect}
-                      />
+                      <h4 className="text-lg font-medium mb-3">Missing Entries</h4>
+                      <div className="space-y-2 max-h-80 overflow-y-auto">
+                        {missingEntries.length > 0 ? (
+                          missingEntries.map((entry, idx) => (
+                            <button
+                              key={`${entry.date}-${entry.slot}`}
+                              onClick={() => handleTimeSlotSelect(entry)}
+                              disabled={isSlotDisabled(entry)}
+                              className={`p-2 rounded text-left w-full flex items-center justify-between ${
+                                formData.dateTaken === entry.date && formData.markedFor === entry.slot
+                                  ? "bg-blue-700 text-white"
+                                  : isSlotDisabled(entry)
+                                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                                  : "bg-gray-700 hover:bg-gray-600"
+                              }`}
+                            >
+                              <span>
+                                {entry.slot} - {formatDate(entry.date)}
+                              </span>
+                              {entry.isCurrentTimeSlot && (
+                                <span className="text-xs bg-green-600 px-2 py-1 rounded">Current</span>
+                              )}
+                              {isSlotDisabled(entry) && !entry.isCurrentTimeSlot && (
+                                <span className="text-xs bg-gray-600 px-2 py-1 rounded">Filled</span>
+                              )}
+                            </button>
+                          ))
+                        ) : (
+                          <p className="text-gray-400">No missing entries</p>
+                        )}
+                      </div>
                     </div>
                     
                     {/* Current Selection */}
                     <div>
-                      <CurrentSelection formData={formData} />
+                      <h4 className="text-lg font-medium mb-3">Current Selection</h4>
+                      <div className="bg-gray-700 p-4 rounded">
+                        <p className="mb-2">
+                          <span className="text-gray-400">Time: </span>
+                          <span className="font-medium">{formData.markedFor || "Not selected"}</span>
+                        </p>
+                        <p className="mb-2">
+                          <span className="text-gray-400">Date: </span>
+                          <span className="font-medium">{formData.dateTaken ? formatDate(formData.dateTaken) : "Not selected"}</span>
+                        </p>
+                        <p className="mb-2">
+                          <span className="text-gray-400">Status: </span>
+                          <span className="font-medium">{formData.markAs || "Not selected"}</span>
+                        </p>
+                        
+                        {/* Inline reason field for late entries */}
+                        {currentTimeSlot && currentTimeSlot.requiresReason && (
+                          <div className="mt-4">
+                            <label className="block text-sm font-medium text-gray-300 mb-1">
+                              Reason for Late Entry <span className="text-red-500">*</span>
+                            </label>
+                            <textarea
+                              value={formData.reasonFilledLate || ""}
+                              onChange={handleReasonChange}
+                              className="w-full bg-gray-800 border border-gray-600 rounded p-2 text-white"
+                              rows="3"
+                              placeholder="Please provide reason for late entry"
+                            />
+                          </div>
+                        )}
+                      </div>
                       
                       {/* Fixed Submit Section */}
                       <div className="mt-6 sticky bottom-4">
                         {errors.length > 0 && (
-                            <div className="mb-4 p-3 bg-red-800 rounded">
+                          <div className="mb-4 p-3 bg-red-800 rounded">
                             {errors.map((error, index) => (
-                                <p key={index} className="text-sm text-white">{error}</p>
+                              <p key={index} className="text-sm text-white">{error}</p>
                             ))}
-                            </div>
+                          </div>
                         )}
 
                         {message && (
@@ -319,7 +381,7 @@ const SleepPattern = () => {
 
                         <button
                           onClick={handleSubmit}
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || !formData.markAs || !formData.markedFor}
                           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full disabled:bg-gray-600"
                         >
                           {isSubmitting ? "Submitting..." : "Submit Sleep Record"}
@@ -338,19 +400,6 @@ const SleepPattern = () => {
             )}
           </div>
         </div>
-      )}
-
-      {/* Modal for entering reason for late entry */}
-      {reasonModalOpen && (
-        <ReasonModal
-          timeSlot={currentTimeSlot}
-          reason={formData.reasonFilledLate}
-          onReasonChange={handleReasonChange}
-          onConfirm={() => {
-            if (confirmReason()) setReasonModalOpen(false);
-          }}
-          onCancel={() => setReasonModalOpen(false)}
-        />
       )}
     </div>
   );
