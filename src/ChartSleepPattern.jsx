@@ -15,6 +15,7 @@ import {
   formatDate,
   isTimeInPast 
 } from "./utils/dateTimeUtils";
+import { errorHandler } from "../services/errorHandler";
 
 const SLEEP_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
 
@@ -49,11 +50,9 @@ const SleepPattern = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [loadingSleepData, setLoadingSleepData] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
-  const [allPatients, setAllPatients] = useState([]);
   const [filteredPatients, setFilteredPatients] = useState([]);
-  const [sleepData, setSleepData] = useState([]);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [reasonModalOpen, setReasonModalOpen] = useState(false);
   const [currentTimeSlot, setCurrentTimeSlot] = useState(null);
@@ -63,7 +62,7 @@ const SleepPattern = () => {
     resident: null,
     markAs: "",
     dateTaken: null,
-    reasonFilledLate: "",
+    reasonFilledLate: null,
     markedFor: ""
   });
 
@@ -75,14 +74,12 @@ const SleepPattern = () => {
     fetchPatients()
       .then((data) => {
         const patients = data?.responseObject || [];
-        // setAllPatients(patients);
-        // Filter patients client-side based on branch
         const filtered = patients.filter(p => parseInt(p.branchId) === parseInt(branch));
         setFilteredPatients(filtered);
       })
       .catch(() => {
-        setError("Failed to load patients");
-        setTimeout(() => setError(""), 5000);
+        setErrors(["Failed to load patients"]);
+        setTimeout(() => setErrors([]), 5000);
       })
       .finally(() => setLoadingPatients(false));
   }, []);
@@ -112,8 +109,8 @@ const SleepPattern = () => {
         findMissingEntries(response.responseObject);
       }
     } catch (err) {
-      setError("Failed to load sleep data");
-      setTimeout(() => setError(""), 5000);
+      setErrors(["Failed to load sleep data"]);
+      setTimeout(() => setErrors([]), 5000);
     } finally {
       setLoadingSleepData(false);
     }
@@ -181,8 +178,8 @@ const SleepPattern = () => {
 
   const confirmReason = () => {
     if (!formData.reasonFilledLate) {
-      setError("Please provide a reason for late entry");
-      setTimeout(() => setError(""), 5000);
+      setErrors(["Please provide a reason for late entry"]);
+      setTimeout(() => setErrors([]), 5000);
       return false;
     }
     return true;
@@ -191,28 +188,28 @@ const SleepPattern = () => {
   const handleSubmit = async () => {
     // Validation
     if (!formData.resident) {
-      setError("Please select a resident");
-      setTimeout(() => setError(""), 5000);
+      setErrors(["Please select a resident"]);
+      setTimeout(() => setErrors([]), 5000);
       return;
     }
     
     if (!formData.markAs) {
-      setError("Please mark resident as Awake or Sleeping");
-      setTimeout(() => setError(""), 5000);
+        setErrors([]);
+      setTimeout(() => setErrors([]), 5000);
       return;
     }
     
     if (!formData.markedFor) {
-      setError("Time slot is required");
-      setTimeout(() => setError(""), 5000);
+        setErrors(["Time slot is required"]);
+      setTimeout(() => setErrors([]), 5000);
       return;
     }
 
     // Check if reason is required but not provided
     const isLateEntry = formData.dateTaken !== getCurrentDate();
     if (isLateEntry && !formData.reasonFilledLate) {
-      setError("Please provide a reason for late entry");
-      setTimeout(() => setError(""), 5000);
+      setErrors(["Please provide a reason for late entry"]);
+      setTimeout(() => setErrors([]), 5000);
       return;
     }
     
@@ -220,27 +217,29 @@ const SleepPattern = () => {
     try {
       const response = await createData(SLEEP_URL, formData);
       if (response?.error) {
-        setError("Failed to save sleep pattern");
+        setErrors(errorHandler(response.error));
+        setTimeout(() => setErrors([]), 5000);
       } else {
         setMessage("Sleep pattern recorded successfully");
-        fetchSleepData(); // Refresh data
+        fetchSleepData();
         
         // Reset form except patient selection
         setFormData(prev => ({
           ...prev,
           markAs: "",
-          reasonFilledLate: "",
+          reasonFilledLate: null,
           markedFor: getCurrentTimeSlot(),
           dateTaken: getCurrentDate()
         }));
       }
     } catch (err) {
-      setError("An error occurred while saving data");
+      setErrors(["An error occurred while saving data"]);
+      setTimeout(() => setErrors([]))
     } finally {
       setIsSubmitting(false);
       setTimeout(() => {
         setMessage("");
-        setError("");
+        setErrors([]);
       }, 5000);
     }
   };
@@ -304,10 +303,12 @@ const SleepPattern = () => {
                       
                       {/* Fixed Submit Section */}
                       <div className="mt-6 sticky bottom-4">
-                        {error && (
-                          <div className="mb-4 p-3 bg-red-800 rounded">
-                            <p className="text-sm text-white">{error}</p>
-                          </div>
+                        {errors.length > 0 && (
+                            <div className="mb-4 p-3 bg-red-800 rounded">
+                            {errors.map((error, index) => (
+                                <p key={index} className="text-sm text-white">{error}</p>
+                            ))}
+                            </div>
                         )}
 
                         {message && (
