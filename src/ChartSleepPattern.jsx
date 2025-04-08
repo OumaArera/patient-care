@@ -58,7 +58,6 @@ const SleepPattern = () => {
   const [reasonModalOpen, setReasonModalOpen] = useState(false);
   const [currentTimeSlot, setCurrentTimeSlot] = useState(null);
   const [missingEntries, setMissingEntries] = useState([]);
-  const [branchId, setBranchId] = useState("");
   
   const [formData, setFormData] = useState({
     resident: null,
@@ -71,16 +70,14 @@ const SleepPattern = () => {
   useEffect(() => {
     const branch = localStorage.getItem("branch");
     if (!branch) return;
-    
-    setBranchId(branch);
     setLoadingPatients(true);
     
     fetchPatients()
       .then((data) => {
         const patients = data?.responseObject || [];
-        setAllPatients(patients);
+        // setAllPatients(patients);
         // Filter patients client-side based on branch
-        const filtered = patients.filter(p => p.branchId === branch);
+        const filtered = patients.filter(p => parseInt(p.branchId) === parseInt(branch));
         setFilteredPatients(filtered);
       })
       .catch(() => {
@@ -111,7 +108,7 @@ const SleepPattern = () => {
       const url = `${SLEEP_URL}?resident=${selectedPatientId}`;
       const response = await getData(url);
       if (response?.responseObject) {
-        setSleepData(response.responseObject);
+        // setSleepData(response.responseObject);
         findMissingEntries(response.responseObject);
       }
     } catch (err) {
