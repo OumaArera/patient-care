@@ -4,7 +4,7 @@ import {
   FaChartBar, FaPills, FaUser, FaSignOutAlt, FaLock, FaNewspaper,
   FaCalendarAlt, FaUserTimes
 } from "react-icons/fa";
-import { ShoppingCart, Wrench, AlertTriangle, ClipboardList } from "lucide-react";
+import { ShoppingCart, Wrench, AlertTriangle, ClipboardList, Moon } from "lucide-react";
 import handleLogout from "./Logout";
 import ChangePassword from "./ChangePassword";
 import ChartPatient from "./ChartPatient";
@@ -21,6 +21,7 @@ import Groceries from "./Groceries";
 import Incident from "./Incident";
 import ReportsDownloader from "./ReportsDownloader";
 import AppointmentNotification from "./AppointmentNotification";
+import SleepPattern from "./ChartSleepPattern";
 
 const CareGiverDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -113,6 +114,12 @@ const CareGiverDashboard = () => {
         >
           <ClipboardList /> Reports
         </button>
+        <button 
+          className={`p-3 flex items-center gap-2 ${activeTab === "sleeps" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
+          onClick={() => setActiveTab("sleeps")}
+        >
+          <Moon /> Sleep Pattern
+        </button>
       </div>
       
 
@@ -198,6 +205,7 @@ const CareGiverDashboard = () => {
         {activeTab === "appointments" && <ChartAppointments />}
         {activeTab === "vitals" && <ChartVitals />}
         {activeTab === "reports" && <ReportsDownloader />}
+        {activeTab === "sleeps" && <SleepPattern />}
         
 
         {/* Change Password Overlay (only inside user menu) */}

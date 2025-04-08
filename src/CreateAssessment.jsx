@@ -18,10 +18,10 @@ const CreateAssessment = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [formData, setFormData] = useState({
-        assessmentStartDate: "",
-        assessmentNextDate: "",
-        NCPStartDate: "",
-        NCPNextDate: "",
+        assessmentStartDate: null,
+        assessmentNextDate: null,
+        NCPStartDate: null,
+        NCPNextDate: null,
         socialWorker: "",
         resident: null,
     });
@@ -82,10 +82,10 @@ const CreateAssessment = () => {
                 setTimeout(() => setErrors([]), 5000);
             } else {
                 setFormData({
-                    assessmentStartDate: "",
-                    assessmentNextDate: "",
-                    NCPStartDate: "",
-                    NCPNextDate: "",
+                    assessmentStartDate: null,
+                    assessmentNextDate: null,
+                    NCPStartDate: null,
+                    NCPNextDate: null,
                     socialWorker: "",
                     resident: null,
                 });
