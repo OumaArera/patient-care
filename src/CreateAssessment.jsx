@@ -140,7 +140,7 @@ const CreateAssessment = () => {
 
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold">Assessment Start Date:</label>
+              <label className="block font-semibold">Last Assessment Date:</label>
               <input
                 type="date"
                 name="assessmentStartDate"
@@ -151,7 +151,7 @@ const CreateAssessment = () => {
             </div>
 
             <div>
-              <label className="block font-semibold">Assessment Next Date:</label>
+              <label className="block font-semibold">Next Assessment Date:</label>
               <input
                 type="date"
                 name="assessmentNextDate"
@@ -162,7 +162,7 @@ const CreateAssessment = () => {
             </div>
 
             <div>
-              <label className="block font-semibold">NCP Start Date:</label>
+              <label className="block font-semibold">Last NCP Date:</label>
               <input
                 type="date"
                 name="NCPStartDate"
@@ -173,7 +173,7 @@ const CreateAssessment = () => {
             </div>
 
             <div>
-              <label className="block font-semibold">NCP Next Date:</label>
+              <label className="block font-semibold">Next NCP Date:</label>
               <input
                 type="date"
                 name="NCPNextDate"
