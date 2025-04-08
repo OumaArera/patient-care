@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getData, createData } from "../services/updatedata";
+import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -7,86 +8,98 @@ const PATIENTS_URL = "https://patient-care-server.onrender.com/api/v1/patients";
 const ASSESSMENT_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
 
 const CreateAssessment = () => {
-  const [loading, setLoading] = useState(false);
-  const [patients, setPatients] = useState([]);
-  const [branches, setBranches] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState("");
-  const [selectedPatientId, setSelectedPatientId] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [patients, setPatients] = useState([]);
+    const [branches, setBranches] = useState([]);
+    const [selectedBranch, setSelectedBranch] = useState("");
+    const [selectedPatientId, setSelectedPatientId] = useState(null);
+    const [errors, setErrors] = useState([]);
+    const [message, setMessage] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [formData, setFormData] = useState({
-    assessmentStartDate: "",
-    assessmentNextDate: "",
-    NCPStartDate: "",
-    NCPNextDate: "",
-    socialWorker: "",
-    resident: null,
-  });
-
-  useEffect(() => {
-    setLoading(true);
-    getData(PATIENTS_URL)
-      .then((data) => {
-        const allPatients = data?.responseObject || [];
-        setPatients(allPatients);
-        const branchSet = new Set(allPatients.map((p) => p.branchName));
-        setBranches([...branchSet]);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  const filteredPatients = patients.filter(
-    (p) => p.branchName === selectedBranch
-  );
-
-  const handlePatientSelect = (patientId) => {
-    setSelectedPatientId(patientId);
-    setFormData((prev) => ({ ...prev, resident: patientId }));
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value || null,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    // Validation logic
-    if ((formData.assessmentStartDate && !formData.assessmentNextDate) || (!formData.assessmentStartDate && formData.assessmentNextDate)) {
-      alert("Both assessment dates must be provided together.");
-      return;
-    }
-
-    if ((formData.NCPStartDate && !formData.NCPNextDate) || (!formData.NCPStartDate && formData.NCPNextDate)) {
-      alert("Both NCP dates must be provided together.");
-      return;
-    }
-
-    if (!formData.resident || !formData.socialWorker) {
-      alert("Resident and Social Worker are required.");
-      return;
-    }
-
-    try {
-      const response = await createData(ASSESSMENT_URL, formData);
-      alert("Assessment created successfully.");
-      console.log(response);
-      // Reset form
-      setFormData({
+    const [formData, setFormData] = useState({
         assessmentStartDate: "",
         assessmentNextDate: "",
         NCPStartDate: "",
         NCPNextDate: "",
         socialWorker: "",
         resident: null,
-      });
-      setSelectedPatientId(null);
-    } catch (err) {
-      alert("Failed to submit assessment.");
-    }
-  };
+    });
+
+    useEffect(() => {
+        setLoading(true);
+        getData(PATIENTS_URL)
+        .then((data) => {
+            const allPatients = data?.responseObject || [];
+            setPatients(allPatients);
+            const branchSet = new Set(allPatients.map((p) => p.branchName));
+            setBranches([...branchSet]);
+        })
+        .catch(() => {})
+        .finally(() => setLoading(false));
+    }, []);
+
+    const filteredPatients = patients.filter(
+        (p) => p.branchName === selectedBranch
+    );
+
+    const handlePatientSelect = (patientId) => {
+        setSelectedPatientId(patientId);
+        setFormData((prev) => ({ ...prev, resident: patientId }));
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+        ...prev,
+        [name]: value || null,
+        }));
+    };
+
+    const handleSubmit = async () => {
+        if ((formData.assessmentStartDate && !formData.assessmentNextDate) || (!formData.assessmentStartDate && formData.assessmentNextDate)) {
+            setErrors(["Both assessment dates must be provided together."]);
+            setTimeout(() => setErrors([]), 5000);
+            return;
+        }
+
+        if ((formData.NCPStartDate && !formData.NCPNextDate) || (!formData.NCPStartDate && formData.NCPNextDate)) {
+            setErrors(["Both NCP dates must be provided together."]);
+            setTimeout(() => setErrors([]), 5000);
+            return;
+        }
+
+        if (!formData.resident || !formData.socialWorker) {
+            setErrors(["Resident and Social Worker are required."]);
+            setTimeout(() => setErrors([]), 5000);
+        return;
+        }
+        setIsSubmitting(true);
+        try {
+            const response = await createData(ASSESSMENT_URL, formData);
+            if (response?.error) {
+                setErrors(errorHandler(response.error));
+                setTimeout(() => setErrors([]), 5000);
+            } else {
+                setFormData({
+                    assessmentStartDate: "",
+                    assessmentNextDate: "",
+                    NCPStartDate: "",
+                    NCPNextDate: "",
+                    socialWorker: "",
+                    resident: null,
+                });
+                setSelectedPatientId(null);
+                setMessage(["Assessment set successfully."]);
+                setTimeout(() => setMessage(""), 5000);
+            }
+        } catch (err) {
+            setErrors(["Failed to submit assessment."]);
+            setTimeout(() => setErrors([]), 5000);
+        } finally{
+            setIsSubmitting(false)
+        }
+    };
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -195,12 +208,20 @@ const CreateAssessment = () => {
               />
             </div>
           </div>
+            {message && <p className="text-green-600">{message}</p>}
+            {errors.length > 0 && (
+                <div className="mb-4 p-3 bg-red-800 rounded">
+                {errors.map((error, index) => (
+                    <p key={index} className="text-sm text-white">{error}</p>
+                ))}
+                </div>
+            )}
 
           <button
             onClick={handleSubmit}
             className="mt-6 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full"
           >
-            Submit Assessment
+            {isSubmitting ? "Submitting..." : "Submit Assessment"}
           </button>
         </div>
       )}
