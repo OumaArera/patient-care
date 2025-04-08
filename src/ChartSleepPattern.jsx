@@ -1,4 +1,3 @@
-// SleepPattern.jsx
 import React, { useEffect, useState } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { createData, getData } from "../services/updatedata";
@@ -160,6 +159,15 @@ const SleepPattern = () => {
   };
 
   const handleTimeSlotSelect = (entry) => {
+    // Check if the slot is already filled
+    const isAlreadyFilled = isSlotAlreadyFilled(entry.date, entry.slot);
+    
+    if (isAlreadyFilled) {
+      setErrors([`Entry for ${entry.slot} on ${formatDate(entry.date)} already exists`]);
+      setTimeout(() => setErrors([]), 5000);
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       markedFor: entry.slot,
@@ -175,6 +183,13 @@ const SleepPattern = () => {
       ...prev,
       reasonFilledLate: e.target.value
     }));
+  };
+
+  // New function to check if a slot is already filled
+  const isSlotAlreadyFilled = (date, slot) => {
+    return filledEntries.some(
+      entry => entry.dateTaken === date && entry.markedFor === slot
+    );
   };
 
   const handleSubmit = async () => {
@@ -193,6 +208,13 @@ const SleepPattern = () => {
     
     if (!formData.markedFor) {
       setErrors(["Time slot is required"]);
+      setTimeout(() => setErrors([]), 5000);
+      return;
+    }
+
+    // Check if entry already exists for this time slot
+    if (isSlotAlreadyFilled(formData.dateTaken, formData.markedFor)) {
+      setErrors([`An entry for ${formData.markedFor} on ${formatDate(formData.dateTaken)} already exists`]);
       setTimeout(() => setErrors([]), 5000);
       return;
     }
@@ -236,19 +258,15 @@ const SleepPattern = () => {
     }
   };
 
-  // Check if a time slot is filled or is current time
+  // Updated to check both filled entries and current selection
   const isSlotDisabled = (entry) => {
-    // Check if entry is already filled
-    const isAlreadyFilled = filledEntries.some(
-      filled => filled.dateTaken === entry.date && filled.markedFor === entry.slot
-    );
-    
-    // Check if it's the currently selected entry
-    const isSelected = 
-      formData.dateTaken === entry.date && 
-      formData.markedFor === entry.slot;
-      
-    return isAlreadyFilled || isSelected;
+    return isSlotAlreadyFilled(entry.date, entry.slot);
+  };
+
+  // Check if currently selected slot is already filled
+  const isCurrentSelectionFilled = () => {
+    return formData.dateTaken && formData.markedFor && 
+      isSlotAlreadyFilled(formData.dateTaken, formData.markedFor);
   };
 
   return (
@@ -291,6 +309,7 @@ const SleepPattern = () => {
                   <StatusSelector
                     currentStatus={formData.markAs}
                     onStatusChange={handleMarkSleep}
+                    disabled={isCurrentSelectionFilled()}
                   />
                   
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -346,8 +365,15 @@ const SleepPattern = () => {
                           <span className="font-medium">{formData.markAs || "Not selected"}</span>
                         </p>
                         
+                        {/* Show warning if entry already exists */}
+                        {isCurrentSelectionFilled() && (
+                          <div className="mt-2 p-2 bg-yellow-800 rounded text-sm">
+                            An entry for this time slot already exists and cannot be modified.
+                          </div>
+                        )}
+                        
                         {/* Inline reason field for late entries */}
-                        {currentTimeSlot && currentTimeSlot.requiresReason && (
+                        {currentTimeSlot && currentTimeSlot.requiresReason && !isCurrentSelectionFilled() && (
                           <div className="mt-4">
                             <label className="block text-sm font-medium text-gray-300 mb-1">
                               Reason for Late Entry <span className="text-red-500">*</span>
@@ -381,7 +407,7 @@ const SleepPattern = () => {
 
                         <button
                           onClick={handleSubmit}
-                          disabled={isSubmitting || !formData.markAs || !formData.markedFor}
+                          disabled={isSubmitting || !formData.markAs || !formData.markedFor || isCurrentSelectionFilled()}
                           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full disabled:bg-gray-600"
                         >
                           {isSubmitting ? "Submitting..." : "Submit Sleep Record"}
