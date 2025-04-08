@@ -1,8 +1,20 @@
+// SleepPattern.jsx
 import React, { useEffect, useState } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { createData, getData } from "../services/updatedata";
-import { Loader, Check, AlertCircle } from "lucide-react";
-import { FaUserCircle, FaBed, FaRegClock } from "react-icons/fa";
+import { Loader, Moon } from "lucide-react";
+import PatientList from "./sleep-components/PatientList";
+import StatusSelector from "./sleep-components/StatusSelector";
+import MissingEntriesList from "./sleep-components/MissingEntriesList";
+import CurrentSelection from "./sleep-components/CurrentSelection";
+import ReasonModal from "./sleep-components/ReasonModal";
+import { 
+  getCurrentDate, 
+  getCurrentTimeSlot, 
+  getDatesForLastThreeDays,
+  formatDate,
+  isTimeInPast 
+} from "../utils/dateTimeUtils";
 
 const SLEEP_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
 
@@ -37,7 +49,8 @@ const SleepPattern = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
   const [loadingSleepData, setLoadingSleepData] = useState(false);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
-  const [patients, setPatients] = useState([]);
+  const [allPatients, setAllPatients] = useState([]);
+  const [filteredPatients, setFilteredPatients] = useState([]);
   const [sleepData, setSleepData] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -45,6 +58,7 @@ const SleepPattern = () => {
   const [reasonModalOpen, setReasonModalOpen] = useState(false);
   const [currentTimeSlot, setCurrentTimeSlot] = useState(null);
   const [missingEntries, setMissingEntries] = useState([]);
+  const [branchId, setBranchId] = useState("");
   
   const [formData, setFormData] = useState({
     resident: null,
@@ -54,90 +68,20 @@ const SleepPattern = () => {
     markedFor: ""
   });
 
-  // Get current date in YYYY-MM-DD format
-  const getCurrentDate = () => {
-    const now = new Date();
-    return now.toISOString().split('T')[0];
-  };
-
-  // Determine current time slot based on time
-  const getCurrentTimeSlot = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    
-    // Format to match time slots
-    let hour = hours % 12;
-    if (hour === 0) hour = 12;
-    const ampm = hours < 12 ? "AM" : "PM";
-    
-    // Round down to the nearest hour
-    return `${hour}:00${ampm}`;
-  };
-
-  // Generate dates for today, yesterday and day before yesterday
-  const getDatesForLastThreeDays = () => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const dayBeforeYesterday = new Date(today);
-    dayBeforeYesterday.setDate(dayBeforeYesterday.getDate() - 2);
-    
-    return [
-      today.toISOString().split('T')[0],
-      yesterday.toISOString().split('T')[0],
-      dayBeforeYesterday.toISOString().split('T')[0]
-    ];
-  };
-
-  // Format date to more readable format
-  const formatDate = (dateString) => {
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  // Check if a given time is in the past
-  const isTimeInPast = (date, timeSlot) => {
-    const now = new Date();
-    const entryDate = new Date(date);
-    
-    // If date is in the past, time is definitely in the past
-    if (entryDate.getDate() < now.getDate() || 
-        entryDate.getMonth() < now.getMonth() || 
-        entryDate.getFullYear() < now.getFullYear()) {
-      return true;
-    }
-    
-    // If it's today, check the time
-    if (entryDate.getDate() === now.getDate() && 
-        entryDate.getMonth() === now.getMonth() && 
-        entryDate.getFullYear() === now.getFullYear()) {
-      
-      const slotHour = parseInt(timeSlot.match(/\d+/)[0]);
-      const slotAmPm = timeSlot.includes("AM") ? "AM" : "PM";
-      let hour24Format = slotHour;
-      
-      if (slotAmPm === "PM" && slotHour !== 12) {
-        hour24Format += 12;
-      } else if (slotAmPm === "AM" && slotHour === 12) {
-        hour24Format = 0;
-      }
-      
-      return now.getHours() > hour24Format || 
-             (now.getHours() === hour24Format && now.getMinutes() > 0);
-    }
-    
-    return false;
-  };
-
   useEffect(() => {
     const branch = localStorage.getItem("branch");
     if (!branch) return;
     
+    setBranchId(branch);
     setLoadingPatients(true);
-    fetchPatients(branch)
+    
+    fetchPatients()
       .then((data) => {
-        setPatients(data?.responseObject || []);
+        const patients = data?.responseObject || [];
+        setAllPatients(patients);
+        // Filter patients client-side based on branch
+        const filtered = patients.filter(p => p.branchId === branch);
+        setFilteredPatients(filtered);
       })
       .catch(() => {
         setError("Failed to load patients");
@@ -148,10 +92,9 @@ const SleepPattern = () => {
 
   useEffect(() => {
     // Auto-set current time slot when component loads
-    const currentSlot = getCurrentTimeSlot();
     setFormData(prev => ({
       ...prev,
-      markedFor: currentSlot,
+      markedFor: getCurrentTimeSlot(),
       dateTaken: getCurrentDate()
     }));
   }, []);
@@ -218,29 +161,24 @@ const SleepPattern = () => {
     }));
   };
 
-  const handleTimeSlotSelect = (slot, requiresReason) => {
-    if (requiresReason) {
-      setCurrentTimeSlot(slot);
+  const handleTimeSlotSelect = (entry) => {
+    if (entry.requiresReason) {
+      setCurrentTimeSlot(entry);
       setReasonModalOpen(true);
-      setFormData(prev => ({
-        ...prev,
-        markedFor: slot.slot,
-        dateTaken: slot.date
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        markedFor: slot.slot,
-        dateTaken: slot.date,
-        reasonFilledLate: null
-      }));
     }
-  };
-
-  const handleReasonChange = (e) => {
+    
     setFormData(prev => ({
       ...prev,
-      reasonFilledLate: e.target.value
+      markedFor: entry.slot,
+      dateTaken: entry.date,
+      reasonFilledLate: entry.requiresReason ? prev.reasonFilledLate : null
+    }));
+  };
+
+  const handleReasonChange = (reason) => {
+    setFormData(prev => ({
+      ...prev,
+      reasonFilledLate: reason
     }));
   };
 
@@ -248,9 +186,9 @@ const SleepPattern = () => {
     if (!formData.reasonFilledLate) {
       setError("Please provide a reason for late entry");
       setTimeout(() => setError(""), 5000);
-      return;
+      return false;
     }
-    setReasonModalOpen(false);
+    return true;
   };
 
   const handleSubmit = async () => {
@@ -312,201 +250,109 @@ const SleepPattern = () => {
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Sleep Pattern Tracking</h2>
+      <h2 className="text-2xl font-bold mb-4 flex items-center">
+        <Moon size={24} className="text-blue-400 mr-2" />
+        Sleep Pattern Tracking
+      </h2>
 
       {loadingPatients ? (
         <div className="flex justify-center items-center h-64">
           <Loader className="animate-spin" size={32} />
         </div>
       ) : (
-        <>
-          <div className="mb-6">
-            <h3 className="text-xl font-semibold mb-3">Select Resident</h3>
-            <div className="grid md:grid-cols-3 gap-4">
-              {patients.map((patient) => (
-                <div
-                  key={patient.patientId}
-                  className={`p-4 rounded-lg shadow-lg cursor-pointer ${
-                    selectedPatientId === patient.patientId
-                      ? "bg-green-800"
-                      : "bg-gray-800"
-                  }`}
-                  onClick={() => handlePatientSelect(patient.patientId)}
-                >
-                  <FaUserCircle size={50} className="mx-auto text-blue-400 mb-3" />
-                  <h3 className="text-lg font-bold text-center">
-                    {patient.firstName} {patient.lastName}
-                  </h3>
-                  <p className="text-sm text-center text-gray-400">
-                    ID: {patient.patientId}
-                  </p>
-                </div>
-              ))}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Patient Selection */}
+          <div className="lg:col-span-1">
+            <div className="bg-gray-800 p-4 rounded-lg shadow-md h-full">
+              <h3 className="text-xl font-semibold mb-3">Select Resident</h3>
+              <PatientList 
+                patients={filteredPatients}
+                selectedPatientId={selectedPatientId}
+                onPatientSelect={handlePatientSelect}
+              />
             </div>
           </div>
-
-          {selectedPatientId && (
-            <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-              {loadingSleepData ? (
+          
+          {/* Right Column - Sleep Status and Form */}
+          <div className="lg:col-span-2">
+            {selectedPatientId ? (
+              loadingSleepData ? (
                 <div className="flex justify-center items-center h-32">
                   <Loader className="animate-spin" size={32} />
                 </div>
               ) : (
-                <>
+                <div className="bg-gray-800 p-6 rounded-lg shadow-md">
                   <h3 className="text-xl font-semibold mb-4">Record Sleep Status</h3>
                   
-                  <div className="mb-6">
-                    <h4 className="font-medium mb-2">Status</h4>
-                    <div className="flex space-x-4">
-                      <button
-                        className={`flex items-center px-4 py-2 rounded ${
-                          formData.markAs === "A"
-                            ? "bg-yellow-600"
-                            : "bg-gray-700 hover:bg-gray-600"
-                        }`}
-                        onClick={() => handleMarkSleep("A")}
-                      >
-                        <Check className="mr-2" size={18} />
-                        Awake
-                      </button>
-                      <button
-                        className={`flex items-center px-4 py-2 rounded ${
-                          formData.markAs === "S"
-                            ? "bg-blue-800"
-                            : "bg-gray-700 hover:bg-gray-600"
-                        }`}
-                        onClick={() => handleMarkSleep("S")}
-                      >
-                        <FaBed className="mr-2" size={18} />
-                        Sleeping
-                      </button>
+                  {/* Status Selection */}
+                  <StatusSelector
+                    currentStatus={formData.markAs}
+                    onStatusChange={handleMarkSleep}
+                  />
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Missing Entries */}
+                    <div>
+                      <MissingEntriesList 
+                        entries={missingEntries}
+                        selectedDate={formData.dateTaken}
+                        selectedSlot={formData.markedFor}
+                        onEntrySelect={handleTimeSlotSelect}
+                      />
                     </div>
-                  </div>
+                    
+                    {/* Current Selection */}
+                    <div>
+                      <CurrentSelection formData={formData} />
+                      
+                      {/* Fixed Submit Section */}
+                      <div className="mt-6 sticky bottom-4">
+                        {error && (
+                          <div className="mb-4 p-3 bg-red-800 rounded">
+                            <p className="text-sm text-white">{error}</p>
+                          </div>
+                        )}
 
-                  {missingEntries.length > 0 && (
-                    <div className="mb-6">
-                      <h4 className="font-medium mb-2">Missing Entries</h4>
-                      <div className="bg-gray-700 p-4 rounded-lg">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {missingEntries.map((entry, idx) => {
-                            const isSelected = 
-                              formData.dateTaken === entry.date && 
-                              formData.markedFor === entry.slot;
-                            
-                            return (
-                              <div 
-                                key={idx} 
-                                className={`flex items-center justify-between p-3 rounded cursor-pointer ${
-                                  isSelected ? "bg-green-700" : "bg-gray-800 hover:bg-gray-600"
-                                }`}
-                                onClick={() => handleTimeSlotSelect(entry, entry.requiresReason)}
-                              >
-                                <div>
-                                  <span className="font-medium">{entry.slot}</span>
-                                  <span className="text-sm text-gray-400 block">
-                                    {formatDate(entry.date)}
-                                  </span>
-                                </div>
-                                {entry.requiresReason && (
-                                  <AlertCircle size={18} className="text-yellow-400" />
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                        {message && (
+                          <div className="mb-4 p-3 bg-green-800 rounded">
+                            <p className="text-sm text-white">{message}</p>
+                          </div>
+                        )}
 
-                  <div className="mb-6">
-                    <h4 className="font-medium mb-2 flex items-center">
-                      <FaRegClock className="mr-2" size={16} />
-                      Current Selection
-                    </h4>
-                    <div className="bg-gray-700 p-4 rounded-lg">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm text-gray-400">Date</label>
-                          <div className="font-medium">
-                            {formData.dateTaken ? formatDate(formData.dateTaken) : "Not selected"}
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-sm text-gray-400">Time</label>
-                          <div className="font-medium">
-                            {formData.markedFor || "Not selected"}
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-sm text-gray-400">Status</label>
-                          <div className="font-medium">
-                            {formData.markAs === "A" ? "Awake" : 
-                             formData.markAs === "S" ? "Sleeping" : 
-                             "Not selected"}
-                          </div>
-                        </div>
+                        <button
+                          onClick={handleSubmit}
+                          disabled={isSubmitting}
+                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full disabled:bg-gray-600"
+                        >
+                          {isSubmitting ? "Submitting..." : "Submit Sleep Record"}
+                        </button>
                       </div>
                     </div>
                   </div>
-
-                  {error && (
-                    <div className="mb-4 p-3 bg-red-800 rounded">
-                      <p className="text-sm text-white">{error}</p>
-                    </div>
-                  )}
-
-                  {message && (
-                    <div className="mb-4 p-3 bg-green-800 rounded">
-                      <p className="text-sm text-white">{message}</p>
-                    </div>
-                  )}
-
-                  <button
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full disabled:bg-gray-600"
-                  >
-                    {isSubmitting ? "Submitting..." : "Submit Sleep Record"}
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Modal for entering reason for late entry */}
-          {reasonModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
-                <h3 className="text-xl font-bold mb-4">Late Entry Reason Required</h3>
-                <p className="mb-4">
-                  You're entering data for {currentTimeSlot?.slot} on {formatDate(currentTimeSlot?.date)}.
-                  Please provide a reason for this late entry:
-                </p>
-                <textarea
-                  className="w-full p-3 bg-gray-700 text-white rounded mb-4"
-                  rows="3"
-                  placeholder="Enter reason for late entry..."
-                  value={formData.reasonFilledLate}
-                  onChange={handleReasonChange}
-                ></textarea>
-                <div className="flex justify-end space-x-3">
-                  <button
-                    className="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded"
-                    onClick={() => setReasonModalOpen(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded"
-                    onClick={confirmReason}
-                  >
-                    Confirm
-                  </button>
                 </div>
+              )
+            ) : (
+              <div className="bg-gray-800 p-6 rounded-lg shadow-md flex items-center justify-center h-full">
+                <p className="text-gray-400 text-center">
+                  Please select a resident to record sleep patterns
+                </p>
               </div>
-            </div>
-          )}
-        </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal for entering reason for late entry */}
+      {reasonModalOpen && (
+        <ReasonModal
+          timeSlot={currentTimeSlot}
+          reason={formData.reasonFilledLate}
+          onReasonChange={handleReasonChange}
+          onConfirm={() => {
+            if (confirmReason()) setReasonModalOpen(false);
+          }}
+          onCancel={() => setReasonModalOpen(false)}
+        />
       )}
     </div>
   );
