@@ -4,8 +4,6 @@ import { createData, getData } from "../services/updatedata";
 import { Loader, Moon } from "lucide-react";
 import PatientList from "./sleep-components/PatientList";
 import StatusSelector from "./sleep-components/StatusSelector";
-import MissingEntriesList from "./sleep-components/MissingEntriesList";
-import CurrentSelection from "./sleep-components/CurrentSelection";
 import { 
   getCurrentDate, 
   getCurrentTimeSlot, 

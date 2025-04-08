@@ -5,7 +5,7 @@ import {
   FaUserPlus, FaUserTimes, FaUndo, FaChartPie, FaLock, FaHospital,
   FaUserInjured, FaMapMarkerAlt, FaDatabase, FaUserCheck, FaCalendarAlt
 } from "react-icons/fa";
-import { ShoppingCart, Wrench, AlertTriangle, ClipboardList, Bell } from "lucide-react";
+import { ShoppingCart, Wrench, AlertTriangle, ClipboardList, Moon, Bell } from "lucide-react";
 import Updates from "./Updates";
 import handleLogout from "./Logout";
 import CreateUser from "./CreateUser";
@@ -33,6 +33,7 @@ import ManageUtilities from "./ManageUtilities";
 import ManageGroceries from "./ManageGroceries";
 import ManageIncidents from "./ManageIncidents";
 import CreateAssessment from "./CreateAssessment";
+import ManageSleepPatterns from "./sleep-components/ManageSleepPatterns";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -107,6 +108,9 @@ const SuperUserDashboard = () => {
         </button>
         <button className={`p-3 flex items-center gap-2 ${activeTab === "assessment" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("assessment")}>
           <ClipboardList /> Assessment
+        </button>
+        <button className={`p-3 flex items-center gap-2 ${activeTab === "sleeps" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("sleeps")}>
+          <Moon /> Sleep Pattern
         </button>
 
         {/* User Management Dropdown */}
@@ -244,6 +248,7 @@ const SuperUserDashboard = () => {
         {activeTab === "vitals" && <Vitals />}
         {activeTab === "leave" && <LeaveManagement />}
         {activeTab === "assessment" && <CreateAssessment />}
+        {activeTab === "sleeps" && <ManageSleepPatterns />}
 
         {showChangePassword && (
           <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">
