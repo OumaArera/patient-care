@@ -1,6 +1,6 @@
 // sleep-components/ReasonModal.jsx
 import React, { useState } from "react";
-import { formatDate } from "../../utils/dateTimeUtils";
+import { formatDate } from "../utils/dateTimeUtils";
 
 const ReasonModal = ({ timeSlot, reason, onReasonChange, onConfirm, onCancel }) => {
   const [localReason, setLocalReason] = useState(reason);

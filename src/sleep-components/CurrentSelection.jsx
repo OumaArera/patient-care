@@ -1,7 +1,7 @@
 // sleep-components/CurrentSelection.jsx
 import React from "react";
 import { FaRegClock } from "react-icons/fa";
-import { formatDate } from "../../utils/dateTimeUtils";
+import { formatDate } from "../utils/dateTimeUtils";
 
 const CurrentSelection = ({ formData }) => {
   return (
