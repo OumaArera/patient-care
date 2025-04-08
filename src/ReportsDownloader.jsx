@@ -13,7 +13,6 @@ const ReportsDownloader = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [selectedMonth, setSelectedMonth] = useState((new Date().getMonth() + 1).toString().padStart(2, "0"));
   const [reportType, setReportType] = useState("charts"); 
-  const [branchId, setBranchId] = useState("");
   
   // Loading states
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -28,7 +27,6 @@ const ReportsDownloader = () => {
   useEffect(() => {
     const storedBranchId = localStorage.getItem("branch");
     console.log("Branch ID from localStorage: ", storedBranchId);
-    setBranchId(storedBranchId);
     
     setLoadingPatients(true);
     fetchPatients()
@@ -61,7 +59,7 @@ const ReportsDownloader = () => {
   const handlePatientChange = (e) => {
     const patientId = e.target.value;
     setSelectedPatient(patientId);
-    setDataReady(false); // Reset data ready state
+    setDataReady(false);
     
     if (patientId) {
       if (reportType === "charts") {

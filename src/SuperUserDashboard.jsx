@@ -32,6 +32,7 @@ import LeaveManagement from "./LeaveManagement";
 import ManageUtilities from "./ManageUtilities";
 import ManageGroceries from "./ManageGroceries";
 import ManageIncidents from "./ManageIncidents";
+import CreateAssessment from "./CreateAssessment";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -103,6 +104,9 @@ const SuperUserDashboard = () => {
         </button>
         <button className={`p-3 flex items-center gap-2 ${activeTab === "appointments" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("appointments")}>
           <FaCalendarAlt /> Appointments
+        </button>
+        <button className={`p-3 flex items-center gap-2 ${activeTab === "assessment" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("assessment")}>
+          <ClipboardList /> Assessment
         </button>
 
         {/* User Management Dropdown */}
@@ -239,6 +243,7 @@ const SuperUserDashboard = () => {
         {activeTab === "dashboard" && <LandingPage onTabChange={setActiveTab} />}
         {activeTab === "vitals" && <Vitals />}
         {activeTab === "leave" && <LeaveManagement />}
+        {activeTab === "assessment" && <CreateAssessment />}
 
         {showChangePassword && (
           <div ref={modalRef} className="absolute right-0 mt-2 w-64 bg-gray-900 p-4 rounded-lg shadow-lg z-50 border border-gray-700">

@@ -8,7 +8,7 @@ import image5 from "./assets/image5.jpg";
 import image6 from "./assets/image6.jpg";
 import secondPDF from "./assets/BOTHELL_SERENITY_CORP _BROCHURE.pdf";
 import firstPDF from "./assets/1ST_EDMONDS AFH LLC _BROCHURE.pdf";
-// import Birthday from "./Birthday";
+import Birthday from "./Birthday";
 
 const caregivingMessages = [
   "Mission: We are dedicated to providing exceptional care with compassion, respect, and dignity by providing appropriate training and skills for our staff that fit our client's needs.",
@@ -48,7 +48,7 @@ const LandingPage = () => {
             ],
         });
       };
-    }, 15000); // Change every 15 seconds for smoother experience
+    }, 15000);
 
     return () => clearInterval(interval);
   }, []);
@@ -70,9 +70,9 @@ const LandingPage = () => {
       {/* Dark Gradient Overlay at Bottom */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent transition-opacity duration-1000"></div>
 
-      {/* <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-2xl">
         <Birthday />
-      </div> */}
+      </div>
       
       {/* Animated Text Container */}
       <AnimatePresence mode="wait">
