@@ -1,7 +1,11 @@
+// SleepPatternComponents/index.jsx
 import React, { useEffect, useState } from "react";
 import { getData } from "../../services/updatedata";
 import { fetchPatients } from "../../services/fetchPatients";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import SelectionControls from "./SelectionControls";
+import SleepPatternChart from "./SleepPatternChart";
+import MonthlySummary from "./MonthlySummary";
+import PatternAnalysis from "./PatternAnalysis";
 
 const SLEEP_PATTERNS_URLS = "https://patient-care-server.onrender.com/api/v1/sleeps";
 
@@ -17,6 +21,7 @@ const ManageSleepPatterns = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [chartData, setChartData] = useState([]);
+  const [viewMode, setViewMode] = useState("bar"); // 'bar', 'line', or 'heatmap'
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -95,35 +100,69 @@ const ManageSleepPatterns = () => {
 
     // Group data by date
     const groupedByDate = {};
+    const hourlyPatterns = {}; // For tracking patterns by hour
     
     filteredData.forEach(entry => {
       const date = entry.dateTaken;
-      const day = new Date(date).getDate();
+      const entryDate = new Date(date);
+      const day = entryDate.getDate();
+      const hour = entry.markedFor ? parseInt(entry.markedFor.split(':')[0]) : 0;
       
+      // Initialize day data if not exists
       if (!groupedByDate[day]) {
         groupedByDate[day] = {
           day,
           date,
           awakeHours: 0,
           sleepHours: 0,
-          entries: []
+          entries: [],
+          hourlyStatus: Array(24).fill(null) // Track status for each hour
         };
       }
       
+      // Add entry details
       groupedByDate[day].entries.push({
         time: entry.markedFor,
-        status: entry.markAs
+        status: entry.markAs,
+        hour
       });
       
+      // Update hourly status
+      if (hour >= 0 && hour < 24) {
+        groupedByDate[day].hourlyStatus[hour] = entry.markAs;
+      }
+      
+      // Count sleep/awake hours
       if (entry.markAs === 'A') {
         groupedByDate[day].awakeHours++;
+        
+        // Track hourly patterns
+        if (!hourlyPatterns[hour]) hourlyPatterns[hour] = { awake: 0, sleep: 0 };
+        hourlyPatterns[hour].awake++;
+        
       } else if (entry.markAs === 'S') {
         groupedByDate[day].sleepHours++;
+        
+        // Track hourly patterns
+        if (!hourlyPatterns[hour]) hourlyPatterns[hour] = { awake: 0, sleep: 0 };
+        hourlyPatterns[hour].sleep++;
       }
     });
 
     // Convert to array and sort by day
     const chartData = Object.values(groupedByDate).sort((a, b) => a.day - b.day);
+    
+    // Add pattern analysis data
+    chartData.patternAnalysis = Object.entries(hourlyPatterns).map(([hour, data]) => ({
+      hour: parseInt(hour),
+      awakeCount: data.awake,
+      sleepCount: data.sleep,
+      total: data.awake + data.sleep,
+      awakePercentage: data.awake / (data.awake + data.sleep) * 100,
+      sleepPercentage: data.sleep / (data.awake + data.sleep) * 100,
+      timeLabel: `${hour.padStart ? hour.padStart(2, '0') : hour}:00`
+    })).sort((a, b) => a.hour - b.hour);
+    
     setChartData(chartData);
   };
 
@@ -143,184 +182,51 @@ const ManageSleepPatterns = () => {
     setSelectedYear(e.target.value);
   };
 
-  const formatTimeForTooltip = (entries) => {
-    if (!entries || entries.length === 0) return "";
-    
-    return entries.map(entry => {
-      return `${entry.time}: ${entry.status === 'A' ? 'Awake' : 'Sleeping'}`;
-    }).join('\n');
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
   };
 
   const selectedResidentName = selectedResident ? 
     residents.find(r => r.patientId === parseInt(selectedResident))?.firstName + " " + 
     residents.find(r => r.patientId === parseInt(selectedResident))?.lastName : "";
 
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-4 shadow-md rounded-md border border-gray-200">
-          <p className="font-bold">{`Date: ${new Date(data.date).toLocaleDateString()}`}</p>
-          <p className="text-blue-500">{`Awake Hours: ${data.awakeHours}`}</p>
-          <p className="text-purple-500">{`Sleep Hours: ${data.sleepHours}`}</p>
-          <div className="mt-2">
-            <p className="font-semibold">Details:</p>
-            {data.entries.map((entry, idx) => (
-              <p key={idx} className={`${entry.status === 'A' ? 'text-blue-500' : 'text-purple-500'}`}>
-                {`${entry.time}: ${entry.status === 'A' ? 'Awake' : 'Sleeping'}`}
-              </p>
-            ))}
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Sleep Pattern Management</h1>
+    <div className="p-6 bg-gray-50">
+      <h1 className="text-3xl font-bold mb-8 text-gray-800 border-b pb-4">Sleep Pattern Management</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        {/* Branch Selection */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select Branch</label>
-          <select
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={selectedBranch}
-            onChange={handleBranchChange}
-            disabled={loading || branches.length === 0}
-          >
-            <option value="">Select a branch</option>
-            {branches.map((branch) => (
-              <option key={branch.id} value={branch.id}>
-                {branch.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        {/* Resident Selection */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select Resident</label>
-          <select
-            className="w-full p-2 border border-gray-300 rounded-md"
-            value={selectedResident}
-            onChange={handleResidentChange}
-            disabled={!selectedBranch || filteredResidents.length === 0}
-          >
-            <option value="">Select a resident</option>
-            {filteredResidents.map((resident) => (
-              <option key={resident.patientId} value={resident.patientId}>
-                {resident.firstName} {resident.lastName}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-        {/* Time Period Selection */}
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
-            <select
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={selectedMonth}
-              onChange={handleMonthChange}
-              disabled={!selectedResident}
-            >
-              {months.map((month, index) => (
-                <option key={month} value={index}>
-                  {month}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
-            <select
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={selectedYear}
-              onChange={handleYearChange}
-              disabled={!selectedResident}
-            >
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+      <SelectionControls 
+        loading={loading}
+        branches={branches}
+        selectedBranch={selectedBranch}
+        handleBranchChange={handleBranchChange}
+        filteredResidents={filteredResidents}
+        selectedResident={selectedResident}
+        handleResidentChange={handleResidentChange}
+        months={months}
+        selectedMonth={selectedMonth}
+        handleMonthChange={handleMonthChange}
+        years={years}
+        selectedYear={selectedYear}
+        handleYearChange={handleYearChange}
+        viewMode={viewMode}
+        handleViewModeChange={handleViewModeChange}
+      />
       
-      {/* Sleep Data Visualization */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        {loadingSleepData ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="text-lg text-gray-500">Loading sleep data...</div>
-          </div>
-        ) : selectedResident && chartData.length > 0 ? (
-          <>
-            <h2 className="text-xl font-semibold mb-4">
-              Sleep Patterns for {selectedResidentName} - {months[selectedMonth]} {selectedYear}
-            </h2>
-            <div className="h-96">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={chartData}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" label={{ value: 'Day of Month', position: 'insideBottom', offset: -5 }} />
-                  <YAxis label={{ value: 'Hours', angle: -90, position: 'insideLeft' }} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                  <Bar dataKey="awakeHours" name="Awake Hours" fill="#3b82f6" />
-                  <Bar dataKey="sleepHours" name="Sleep Hours" fill="#8b5cf6" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            {chartData.length === 0 && (
-              <div className="text-center py-10 text-gray-500">
-                No sleep data available for {selectedResidentName} in {months[selectedMonth]} {selectedYear}
-              </div>
-            )}
-          </>
-        ) : selectedResident ? (
-          <div className="text-center py-10 text-gray-500">
-            No sleep data available for the selected resident in {months[selectedMonth]} {selectedYear}
-          </div>
-        ) : (
-          <div className="text-center py-10 text-gray-500">
-            Select a branch and resident to view sleep patterns
-          </div>
-        )}
-      </div>
+      <SleepPatternChart 
+        loadingSleepData={loadingSleepData}
+        selectedResident={selectedResident}
+        selectedResidentName={selectedResidentName}
+        months={months}
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+        chartData={chartData}
+        viewMode={viewMode}
+      />
       
-      {/* Optional: Summary Information */}
       {selectedResident && chartData.length > 0 && (
-        <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-4">Monthly Summary</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-blue-50 rounded-md">
-              <div className="text-xl font-bold text-blue-600">
-                {chartData.reduce((sum, day) => sum + day.awakeHours, 0)}
-              </div>
-              <div className="text-sm text-gray-600">Total Awake Hours</div>
-            </div>
-            <div className="p-4 bg-purple-50 rounded-md">
-              <div className="text-xl font-bold text-purple-600">
-                {chartData.reduce((sum, day) => sum + day.sleepHours, 0)}
-              </div>
-              <div className="text-sm text-gray-600">Total Sleep Hours</div>
-            </div>
-            <div className="p-4 bg-gray-50 rounded-md">
-              <div className="text-xl font-bold text-gray-600">
-                {chartData.length}
-              </div>
-              <div className="text-sm text-gray-600">Days with Records</div>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <MonthlySummary chartData={chartData} />
+          <PatternAnalysis chartData={chartData} />
         </div>
       )}
     </div>
