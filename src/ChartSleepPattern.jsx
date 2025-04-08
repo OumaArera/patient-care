@@ -17,7 +17,7 @@ import {
 } from "./utils/dateTimeUtils";
 import { errorHandler } from "../services/errorHandler";
 
-const SLEEP_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
+const SLEEP_URL = "https://patient-care-server.onrender.com/api/v1/sleeps";
 
 const TIME_SLOTS = [
   { value: "7:00AM", label: "7:00 AM" },
