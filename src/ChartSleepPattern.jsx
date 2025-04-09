@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { createData, getData } from "../services/updatedata";
-import { Loader, Moon, Calendar } from "lucide-react";
+import { Loader, Moon, Calendar, FileText, Eye, Download } from "lucide-react";
 import PatientList from "./sleep-components/PatientList";
 import StatusSelector from "./sleep-components/StatusSelector";
+import SleepPatternReport from "./sleep-components/SleepPatternReport";
 import { 
   getCurrentDate, 
   getCurrentTimeSlot, 
@@ -12,6 +13,7 @@ import {
   isTimeInPast 
 } from "./utils/dateTimeUtils";
 import { errorHandler } from "../services/errorHandler";
+import { downloadSleepPatternData } from "./utils/downloadUtils";
 
 const SLEEP_URL = "https://patient-care-server.onrender.com/api/v1/sleeps";
 
@@ -62,6 +64,8 @@ const SleepPattern = () => {
   const [missingEntries, setMissingEntries] = useState([]);
   const [filledEntries, setFilledEntries] = useState([]);
   const [selectedDate, setSelectedDate] = useState(getCurrentDate());
+  const [showReport, setShowReport] = useState(false);
+  const [selectedPatient, setSelectedPatient] = useState(null);
   
   const [formData, setFormData] = useState({
     resident: null,
@@ -101,8 +105,11 @@ const SleepPattern = () => {
   useEffect(() => {
     if (selectedPatientId) {
       fetchSleepData();
+      // Find the selected patient data
+      const patient = filteredPatients.find(p => p.id === selectedPatientId);
+      setSelectedPatient(patient);
     }
-  }, [selectedPatientId]);
+  }, [selectedPatientId, filteredPatients]);
 
   const fetchSleepData = async () => {
     setLoadingSleepData(true);
@@ -157,6 +164,7 @@ const SleepPattern = () => {
       markAs: "",
       reasonFilledLate: null
     }));
+    setShowReport(false); // Hide report when selecting a new patient
   };
 
   const handleMarkSleep = (sleepStatus) => {
@@ -281,6 +289,30 @@ const SleepPattern = () => {
   // Filter missing entries based on selected date
   const filteredMissingEntries = missingEntries.filter(entry => entry.date === selectedDate);
 
+  // Handle toggling the report view
+  const toggleReportView = () => {
+    setShowReport(!showReport);
+  };
+
+  // Handle direct PDF download
+  const handleDownloadPDF = () => {
+    if (!selectedPatient || filledEntries.length === 0) {
+      setErrors(["No data available to download"]);
+      setTimeout(() => setErrors([]), 5000);
+      return;
+    }
+
+    const residentInfo = {
+      residentName: selectedPatient?.name || "Unknown Resident",
+      facilityName: selectedPatient?.facilityName || "Serenity Adult Family Home",
+      branchName: selectedPatient?.branchName || "",
+      month: new Date().toLocaleString('default', { month: 'long' }),
+      year: new Date().getFullYear()
+    };
+    
+    downloadSleepPatternData(filledEntries, residentInfo);
+  };
+
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4 flex items-center">
@@ -292,7 +324,25 @@ const SleepPattern = () => {
         <div className="flex justify-center items-center h-64">
           <Loader className="animate-spin" size={32} />
         </div>
+      ) : showReport && selectedPatientId ? (
+        // Show the report view
+        <>
+          <div className="mb-6 flex justify-between items-center">
+            <button
+              onClick={toggleReportView}
+              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded flex items-center"
+            >
+              <Calendar size={18} className="mr-2" />
+              Back to Sleep Tracking
+            </button>
+          </div>
+          <SleepPatternReport 
+            sleepData={filledEntries} 
+            resident={selectedPatient} 
+          />
+        </>
       ) : (
+        // Show the main tracking view
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Patient Selection */}
           <div className="lg:col-span-1">
@@ -315,11 +365,31 @@ const SleepPattern = () => {
                 </div>
               ) : (
                 <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-                  <h3 className="text-xl font-semibold mb-4">Record Sleep Status</h3>
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-semibold">Record Sleep Status</h3>
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={toggleReportView}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded flex items-center"
+                        disabled={filledEntries.length === 0}
+                      >
+                        <Eye size={16} className="mr-2" />
+                        View Report
+                      </button>
+                      <button
+                        onClick={handleDownloadPDF}
+                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded flex items-center"
+                        disabled={filledEntries.length === 0}
+                      >
+                        <Download size={16} className="mr-2" />
+                        Download PDF
+                      </button>
+                    </div>
+                  </div>
                   
                   {/* Date Selector */}
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-300 mb-2 items-center">
+                    <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center">
                       <Calendar size={18} className="mr-2" />
                       Select Date
                     </label>
