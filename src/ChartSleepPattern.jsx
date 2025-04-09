@@ -60,7 +60,6 @@ const SleepPattern = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [currentTimeSlot, setCurrentTimeSlot] = useState(null);
   const [missingEntries, setMissingEntries] = useState([]);
   const [filledEntries, setFilledEntries] = useState([]);
   const [selectedDate, setSelectedDate] = useState(getCurrentDate());
@@ -191,7 +190,7 @@ const SleepPattern = () => {
       reasonFilledLate: null // No reason needed as per requirements
     }));
     
-    setCurrentTimeSlot(entry);
+    // setCurrentTimeSlot(entry);
   };
 
   const handleDateSelect = (e) => {
@@ -303,7 +302,7 @@ const SleepPattern = () => {
     }
 
     const residentInfo = {
-      residentName: selectedPatient?.name || "Unknown Resident",
+      residentName: `${selectedPatient?.firstName} ${selectedPatient?.lastName}` || "Unknown Resident",
       facilityName: selectedPatient?.facilityName || "Serenity Adult Family Home",
       branchName: selectedPatient?.branchName || "",
       month: new Date().toLocaleString('default', { month: 'long' }),
