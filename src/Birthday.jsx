@@ -30,7 +30,25 @@ const Birthday = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const today = new Date().toISOString().slice(5, 10); // Extract MM-DD format
+  // Get today's date in PST (Washington State time)
+  const getTodayInPST = () => {
+    const now = new Date();
+    // Convert to PST (UTC-8 or UTC-7 during daylight saving)
+    // Note: Using Intl.DateTimeFormat to handle daylight saving time automatically
+    const pstFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Los_Angeles',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    
+    const parts = pstFormatter.formatToParts(now);
+    const month = parts.find(part => part.type === 'month').value;
+    const day = parts.find(part => part.type === 'day').value;
+    
+    return `${month}-${day}`;
+  };
+
+  const today = getTodayInPST(); // Get today's date in PST format MM-DD
 
   // Find logged-in user
   const loggedInUser = users.find((user) => user.userId.toString() === loggedInUserId);
@@ -67,7 +85,7 @@ const Birthday = () => {
           <h2 className="text-3xl font-bold">🎉 Happy Birthday, {loggedInUser.firstName}! 🎂</h2>
           <p className="text-lg">{randomMessage}</p>
 
-          {/* 🎭 Display User’s Image If Available */}
+          {/* 🎭 Display User's Image If Available */}
           {loggedInUserImage && (
             <img src={loggedInUserImage} alt="Birthday User" className="w-32 h-32 rounded-full mx-auto mt-4 shadow-lg" />
           )}
@@ -83,7 +101,7 @@ const Birthday = () => {
               const userImage = birthdayImages[user.firstName?.toLowerCase()];
               return (
                 <li key={user.userId} className="text-lg font-semibold flex flex-col items-center">
-                  {user.fullName} 🎉 - <span className="text-red-500">Send them your best wishes!</span>
+                  {user.fullName} 🎉 - <span className="text-red-500">Let's celebrate our Colleague with a message!</span>
                   {userImage && <img src={userImage} alt="Birthday User" className="w-24 h-24 rounded-full mt-2 shadow-lg" />}
                 </li>
               );
