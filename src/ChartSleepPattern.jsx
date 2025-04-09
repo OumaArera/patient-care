@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { createData, getData } from "../services/updatedata";
-import { Loader, Moon } from "lucide-react";
+import { Loader, Moon, Calendar } from "lucide-react";
 import PatientList from "./sleep-components/PatientList";
 import StatusSelector from "./sleep-components/StatusSelector";
 import { 
   getCurrentDate, 
   getCurrentTimeSlot, 
-  getDatesForLastThreeDays,
+  getDatesFromAprilFirst,
   formatDate,
   isTimeInPast 
 } from "./utils/dateTimeUtils";
@@ -15,7 +15,15 @@ import { errorHandler } from "../services/errorHandler";
 
 const SLEEP_URL = "https://patient-care-server.onrender.com/api/v1/sleeps";
 
+// Reordered time slots to start from 12AM (midnight) to 11PM
 const TIME_SLOTS = [
+  { value: "12:00AM", label: "12:00 AM (Midnight)" },
+  { value: "1:00AM", label: "1:00 AM" },
+  { value: "2:00AM", label: "2:00 AM" },
+  { value: "3:00AM", label: "3:00 AM" },
+  { value: "4:00AM", label: "4:00 AM" },
+  { value: "5:00AM", label: "5:00 AM" },
+  { value: "6:00AM", label: "6:00 AM" },
   { value: "7:00AM", label: "7:00 AM" },
   { value: "8:00AM", label: "8:00 AM" },
   { value: "9:00AM", label: "9:00 AM" },
@@ -33,14 +41,14 @@ const TIME_SLOTS = [
   { value: "9:00PM", label: "9:00 PM" },
   { value: "10:00PM", label: "10:00 PM" },
   { value: "11:00PM", label: "11:00 PM" },
-  { value: "12:00AM", label: "12:00 AM (Midnight)" },
-  { value: "1:00AM", label: "1:00 AM" },
-  { value: "2:00AM", label: "2:00 AM" },
-  { value: "3:00AM", label: "3:00 AM" },
-  { value: "4:00AM", label: "4:00 AM" },
-  { value: "5:00AM", label: "5:00 AM" },
-  { value: "6:00AM", label: "6:00 AM" },
 ];
+
+// Sleep status descriptions for reporting
+const SLEEP_STATUS_DESCRIPTIONS = {
+  "A": "Awake",
+  "S": "Sleeping",
+  "N/A": "Resident not at the Facility"
+};
 
 const SleepPattern = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);
@@ -53,13 +61,14 @@ const SleepPattern = () => {
   const [currentTimeSlot, setCurrentTimeSlot] = useState(null);
   const [missingEntries, setMissingEntries] = useState([]);
   const [filledEntries, setFilledEntries] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(getCurrentDate());
   
   const [formData, setFormData] = useState({
     resident: null,
     markAs: "",
-    dateTaken: null,
+    dateTaken: getCurrentDate(),
     reasonFilledLate: null,
-    markedFor: ""
+    markedFor: getCurrentTimeSlot()
   });
 
   useEffect(() => {
@@ -114,7 +123,8 @@ const SleepPattern = () => {
   };
 
   const findMissingEntries = (data) => {
-    const dates = getDatesForLastThreeDays();
+    // Get all dates from April 1st to today
+    const dates = getDatesFromAprilFirst();
     const missing = [];
     
     dates.forEach(date => {
@@ -128,7 +138,7 @@ const SleepPattern = () => {
           missing.push({
             date,
             slot: slot.value,
-            requiresReason: date !== getCurrentDate(),
+            requiresReason: false, // Removed reason requirement as requested
             isCurrentTimeSlot: date === getCurrentDate() && slot.value === getCurrentTimeSlot(),
             disabled: false
           });
@@ -170,20 +180,29 @@ const SleepPattern = () => {
       ...prev,
       markedFor: entry.slot,
       dateTaken: entry.date,
-      reasonFilledLate: entry.requiresReason ? prev.reasonFilledLate : null
+      reasonFilledLate: null // No reason needed as per requirements
     }));
     
     setCurrentTimeSlot(entry);
   };
 
-  const handleReasonChange = (e) => {
+  const handleDateSelect = (e) => {
+    const selectedDate = e.target.value;
+    setSelectedDate(selectedDate);
+    
+    // Update the form data with the selected date
     setFormData(prev => ({
       ...prev,
-      reasonFilledLate: e.target.value
+      dateTaken: selectedDate
     }));
+    
+    // Refresh the missing entries for this date
+    if (filledEntries.length > 0) {
+      findMissingEntries(filledEntries);
+    }
   };
 
-  // New function to check if a slot is already filled
+  // Function to check if a slot is already filled
   const isSlotAlreadyFilled = (date, slot) => {
     return filledEntries.some(
       entry => entry.dateTaken === date && entry.markedFor === slot
@@ -216,14 +235,6 @@ const SleepPattern = () => {
       setTimeout(() => setErrors([]), 5000);
       return;
     }
-
-    // Check if reason is required but not provided
-    const isLateEntry = formData.dateTaken !== getCurrentDate();
-    if (isLateEntry && !formData.reasonFilledLate) {
-      setErrors(["Please provide a reason for late entry"]);
-      setTimeout(() => setErrors([]), 5000);
-      return;
-    }
     
     setIsSubmitting(true);
     try {
@@ -241,7 +252,7 @@ const SleepPattern = () => {
           markAs: "",
           reasonFilledLate: null,
           markedFor: getCurrentTimeSlot(),
-          dateTaken: getCurrentDate()
+          dateTaken: selectedDate // Keep the selected date
         }));
       }
     } catch (err) {
@@ -256,7 +267,7 @@ const SleepPattern = () => {
     }
   };
 
-  // Updated to check both filled entries and current selection
+  // Check if slot is disabled (already filled)
   const isSlotDisabled = (entry) => {
     return isSlotAlreadyFilled(entry.date, entry.slot);
   };
@@ -266,6 +277,9 @@ const SleepPattern = () => {
     return formData.dateTaken && formData.markedFor && 
       isSlotAlreadyFilled(formData.dateTaken, formData.markedFor);
   };
+
+  // Filter missing entries based on selected date
+  const filteredMissingEntries = missingEntries.filter(entry => entry.date === selectedDate);
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -303,20 +317,38 @@ const SleepPattern = () => {
                 <div className="bg-gray-800 p-6 rounded-lg shadow-md">
                   <h3 className="text-xl font-semibold mb-4">Record Sleep Status</h3>
                   
+                  {/* Date Selector */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-300 mb-2 items-center">
+                      <Calendar size={18} className="mr-2" />
+                      Select Date
+                    </label>
+                    <input
+                      type="date"
+                      value={selectedDate}
+                      onChange={handleDateSelect}
+                      min="2025-04-01"
+                      max={getCurrentDate()}
+                      className="bg-gray-700 text-white p-2 rounded border border-gray-600 w-full"
+                    />
+                  </div>
+                  
                   {/* Status Selection */}
                   <StatusSelector
                     currentStatus={formData.markAs}
                     onStatusChange={handleMarkSleep}
                     disabled={isCurrentSelectionFilled()}
+                    includeNA={true} // Add N/A option
+                    descriptions={SLEEP_STATUS_DESCRIPTIONS} // Add descriptions
                   />
                   
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Missing Entries */}
                     <div>
-                      <h4 className="text-lg font-medium mb-3">Missing Entries</h4>
+                      <h4 className="text-lg font-medium mb-3">Available Time Slots</h4>
                       <div className="space-y-2 max-h-80 overflow-y-auto">
-                        {missingEntries.length > 0 ? (
-                          missingEntries.map((entry, idx) => (
+                        {filteredMissingEntries.length > 0 ? (
+                          filteredMissingEntries.map((entry, idx) => (
                             <button
                               key={`${entry.date}-${entry.slot}`}
                               onClick={() => handleTimeSlotSelect(entry)}
@@ -330,7 +362,7 @@ const SleepPattern = () => {
                               }`}
                             >
                               <span>
-                                {entry.slot} - {formatDate(entry.date)}
+                                {entry.slot}
                               </span>
                               {entry.isCurrentTimeSlot && (
                                 <span className="text-xs bg-green-600 px-2 py-1 rounded">Current</span>
@@ -341,7 +373,7 @@ const SleepPattern = () => {
                             </button>
                           ))
                         ) : (
-                          <p className="text-gray-400">No missing entries</p>
+                          <p className="text-gray-400">No available time slots for the selected date</p>
                         )}
                       </div>
                     </div>
@@ -360,29 +392,15 @@ const SleepPattern = () => {
                         </p>
                         <p className="mb-2">
                           <span className="text-gray-400">Status: </span>
-                          <span className="font-medium">{formData.markAs || "Not selected"}</span>
+                          <span className="font-medium">
+                            {formData.markAs ? `${formData.markAs} - ${SLEEP_STATUS_DESCRIPTIONS[formData.markAs] || ""}` : "Not selected"}
+                          </span>
                         </p>
                         
                         {/* Show warning if entry already exists */}
                         {isCurrentSelectionFilled() && (
                           <div className="mt-2 p-2 bg-yellow-800 rounded text-sm">
                             An entry for this time slot already exists and cannot be modified.
-                          </div>
-                        )}
-                        
-                        {/* Inline reason field for late entries */}
-                        {currentTimeSlot && currentTimeSlot.requiresReason && !isCurrentSelectionFilled() && (
-                          <div className="mt-4">
-                            <label className="block text-sm font-medium text-gray-300 mb-1">
-                              Reason for Late Entry <span className="text-red-500">*</span>
-                            </label>
-                            <textarea
-                              value={formData.reasonFilledLate || ""}
-                              onChange={handleReasonChange}
-                              className="w-full bg-gray-800 border border-gray-600 rounded p-2 text-white"
-                              rows="3"
-                              placeholder="Please provide reason for late entry"
-                            />
                           </div>
                         )}
                       </div>
