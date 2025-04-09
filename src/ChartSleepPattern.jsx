@@ -105,7 +105,7 @@ const SleepPattern = () => {
     if (selectedPatientId) {
       fetchSleepData();
       // Find the selected patient data with additional logging for debugging
-      const patient = filteredPatients.find(p => p.id === selectedPatientId);
+      const patient = filteredPatients.find(p => parseInt(p.patientId) === parseInt(selectedPatientId));
       console.log("Found patient:", patient);
       setSelectedPatient(patient);
     }
@@ -158,7 +158,7 @@ const SleepPattern = () => {
 
   const handlePatientSelect = (patientId) => {
     setSelectedPatientId(patientId);
-    const patient = filteredPatients.find(p => p.id === patientId);
+    const patient = filteredPatients.find(p => parseInt(p.patientId) === parseInt(patientId));
     setSelectedPatient(patient);
     setFormData(prev => ({ 
       ...prev, 
