@@ -104,8 +104,9 @@ const SleepPattern = () => {
   useEffect(() => {
     if (selectedPatientId) {
       fetchSleepData();
-      // Find the selected patient data
+      // Find the selected patient data with additional logging for debugging
       const patient = filteredPatients.find(p => p.id === selectedPatientId);
+      console.log("Found patient:", patient);
       setSelectedPatient(patient);
     }
   }, [selectedPatientId, filteredPatients]);
@@ -157,13 +158,15 @@ const SleepPattern = () => {
 
   const handlePatientSelect = (patientId) => {
     setSelectedPatientId(patientId);
+    const patient = filteredPatients.find(p => p.id === patientId);
+    setSelectedPatient(patient);
     setFormData(prev => ({ 
       ...prev, 
       resident: patientId,
       markAs: "",
       reasonFilledLate: null
     }));
-    setShowReport(false); // Hide report when selecting a new patient
+    setShowReport(false); 
   };
 
   const handleMarkSleep = (sleepStatus) => {
@@ -187,10 +190,8 @@ const SleepPattern = () => {
       ...prev,
       markedFor: entry.slot,
       dateTaken: entry.date,
-      reasonFilledLate: null // No reason needed as per requirements
+      reasonFilledLate: null 
     }));
-    
-    // setCurrentTimeSlot(entry);
   };
 
   const handleDateSelect = (e) => {
@@ -295,6 +296,7 @@ const SleepPattern = () => {
 
   // Handle direct PDF download
   const handleDownloadPDF = () => {
+    console.log("Download requested for patient:", selectedPatient);
     if (!selectedPatient || filledEntries.length === 0) {
       setErrors(["No data available to download"]);
       setTimeout(() => setErrors([]), 5000);
@@ -390,7 +392,7 @@ const SleepPattern = () => {
                   
                   {/* Date Selector */}
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center">
+                    <label className="block text-sm font-medium text-gray-300 mb-2 items-center">
                       <Calendar size={18} className="mr-2" />
                       Select Date
                     </label>
