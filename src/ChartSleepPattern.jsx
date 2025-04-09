@@ -313,7 +313,7 @@ const SleepPattern = () => {
     console.log("Selected Patient: ", selectedPatient);
     downloadSleepPatternData(filledEntries, residentInfo);
   };
-
+  console.log("Selected Patient: ", selectedPatient);
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold mb-4 flex items-center">
