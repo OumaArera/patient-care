@@ -302,13 +302,15 @@ const SleepPattern = () => {
     }
 
     const residentInfo = {
-      residentName: `${selectedPatient?.firstName} ${selectedPatient?.lastName}` || "Unknown Resident",
+      residentName: selectedPatient?.firstName && selectedPatient?.lastName 
+        ? `${selectedPatient.firstName} ${selectedPatient.lastName}` 
+        : "Unknown Resident",
       facilityName: selectedPatient?.facilityName || "Serenity Adult Family Home",
       branchName: selectedPatient?.branchName || "",
       month: new Date().toLocaleString('default', { month: 'long' }),
       year: new Date().getFullYear()
     };
-    
+    console.log("Selected Patient: ", selectedPatient);
     downloadSleepPatternData(filledEntries, residentInfo);
   };
 
