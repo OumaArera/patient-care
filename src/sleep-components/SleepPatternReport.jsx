@@ -53,7 +53,7 @@ const SleepPatternReport = ({ sleepData, resident }) => {
 
   const handleDownloadPDF = () => {
     const residentInfo = {
-      residentName: resident?.name || "Unknown Resident",
+      residentName: `${resident?.firstName} ${resident?.lastName}` || "Unknown Resident",
       facilityName: resident?.facilityName || "Serenity Adult Family Home",
       branchName: resident?.branchName || "",
       month: new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' }),
