@@ -195,10 +195,30 @@ const Assessment = () => {
             )}
 
             {/* All Assessments Modal */}
-            {showAllAssessments && (
+            {/* {showAllAssessments && (
                 <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
                     <AllAssessments onClose={handleCloseAllAssessments} />
                 </div>
+            )} */}
+
+            {showAllAssessments &&(
+            <div
+                className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50"
+                onClick={() => setShowAllAssessments(false)}
+            >
+                <div
+                className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+                >
+                <AllAssessments onClose={handleCloseAllAssessments} />
+                <button
+                    className="absolute top-2 right-2 text-white hover:text-gray-400"
+                    onClick={() => setShowAllAssessments(false)}
+                >
+                    ✖
+                </button>
+                </div>
+            </div>
             )}
         </div>
     );
