@@ -8,12 +8,12 @@ const SleepPatternReport = ({ sleepData, resident }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Define all time slots
+  // Define all time slots in order from 12AM to 11PM
   const timeSlots = [
-    "7:00AM", "8:00AM", "9:00AM", "10:00AM", "11:00AM", "12:00PM", 
-    "1:00PM", "2:00PM", "3:00PM", "4:00PM", "5:00PM", "6:00PM", 
-    "7:00PM", "8:00PM", "9:00PM", "10:00PM", "11:00PM", "12:00AM", 
-    "1:00AM", "2:00AM", "3:00AM", "4:00AM", "5:00AM", "6:00AM"
+    "12:00AM", "1:00AM", "2:00AM", "3:00AM", "4:00AM", "5:00AM", "6:00AM",
+    "7:00AM", "8:00AM", "9:00AM", "10:00AM", "11:00AM", 
+    "12:00PM", "1:00PM", "2:00PM", "3:00PM", "4:00PM", "5:00PM", "6:00PM", 
+    "7:00PM", "8:00PM", "9:00PM", "10:00PM", "11:00PM"
   ];
   
   // Status descriptions
@@ -177,7 +177,7 @@ const SleepPatternReport = ({ sleepData, resident }) => {
       
       <div className="mb-4">
         <h3 className="text-lg font-medium mb-2">
-          {resident?.name} - {new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' })} {selectedYear}
+          {resident?.firstName} {resident?.lastName} - {new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' })} {selectedYear}
         </h3>
       </div>
       
