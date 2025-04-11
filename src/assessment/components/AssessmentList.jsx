@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getData } from "../services/updatedata";
+import { getData } from "../../../services/updatedata";
 import { Search, Edit, Save, X, ArrowLeft } from "lucide-react";
 
 const ASSESSMENT_URL = "https://patient-care-server.onrender.com/api/v1/assessments";

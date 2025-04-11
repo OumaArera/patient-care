@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getData } from "../services/updatedata";
+import { getData } from "../../../services/updatedata";
 import { Calendar, User, Save, X, Edit, AlertTriangle } from "lucide-react";
 import EditAssessment from "./EditAssessment";
 
