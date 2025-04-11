@@ -172,6 +172,7 @@ const AllAssessments = ({ onClose }) => {
                     assessment={assessment}
                     onCancel={() => setEditingAssessmentId(null)}
                     onSuccess={handleUpdateSuccess}
+                    fetchAllAssessments={fetchAllAssessments}
                   />
                 );
               }

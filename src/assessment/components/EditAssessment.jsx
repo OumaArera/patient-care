@@ -5,7 +5,7 @@ import { errorHandler } from "../../../services/errorHandler";
 
 const ASSESSMENT_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
 
-const EditAssessment = ({ assessment, onCancel, onSuccess }) => {
+const EditAssessment = ({ assessment, fetchAllAssessments, onCancel, onSuccess }) => {
     const [formData, setFormData] = useState({
         assessmentNextDate: assessment.assessmentNextDate.split('T')[0], 
         NCPNextDate: assessment.NCPNextDate.split('T')[0], 
@@ -40,6 +40,7 @@ const EditAssessment = ({ assessment, onCancel, onSuccess }) => {
                 setTimeout(() => setErrors([]), 5000);
             } else {
                 onSuccess(result);
+                fetchAllAssessments()
                 setMessage(["Assessment updated successfully."]);
                 setTimeout(() => setMessage(""), 5000);
             }
