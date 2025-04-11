@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getData } from "../services/updatedata";
 import { Bell, Calendar, AlertTriangle, CheckCircle } from "lucide-react";
+import AllAssessments from "./assessment/components/AllAssessments";
 
 const ASSESSMENT_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
 
@@ -10,6 +11,7 @@ const Assessment = () => {
     const [showAssessments, setShowAssessments] = useState(false);
     const [hasDueAssessments, setHasDueAssessments] = useState(false);
     const [urgentCount, setUrgentCount] = useState(0);
+    const [showAllAssessments, setShowAllAssessments] = useState(false);
 
     useEffect(() => {
         getDueAssessments();
@@ -71,6 +73,15 @@ const Assessment = () => {
 
     const toggleAssessments = () => {
         setShowAssessments(!showAssessments);
+    };
+
+    const handleViewAll = () => {
+        setShowAssessments(false);  // Close the dropdown
+        setShowAllAssessments(true);  // Open the "View All" modal
+    };
+
+    const handleCloseAllAssessments = () => {
+        setShowAllAssessments(false);
     };
 
     return (
@@ -166,14 +177,27 @@ const Assessment = () => {
                     {/* Action buttons */}
                     {assessments.length > 0 && (
                         <div className="p-3 bg-gray-50 flex justify-end space-x-2">
-                            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
+                            <button 
+                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+                                onClick={handleViewAll}
+                            >
                                 View All
                             </button>
-                            <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm" onClick={toggleAssessments}>
+                            <button 
+                                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm" 
+                                onClick={toggleAssessments}
+                            >
                                 Close
                             </button>
                         </div>
                     )}
+                </div>
+            )}
+
+            {/* All Assessments Modal */}
+            {showAllAssessments && (
+                <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+                    <AllAssessments onClose={handleCloseAllAssessments} />
                 </div>
             )}
         </div>
