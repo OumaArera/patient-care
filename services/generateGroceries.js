@@ -9,6 +9,8 @@ export const generateGroceryPDF = async (grocery) => {
     container.style.padding = "20px";
     container.style.fontFamily = "Arial, sans-serif";
     container.style.color = "#000";
+    // Set a fixed width to ensure consistent scaling
+    container.style.width = "780px";
 
     // Group items by their categories
     const groupItemsByCategory = (items) => {
@@ -29,21 +31,21 @@ export const generateGroceryPDF = async (grocery) => {
 
     const categorizedItems = groupItemsByCategory(grocery.details);
 
-    // Create the header
+    // Create the header with INCREASED font sizes
     let headerHTML = `
-        <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 5px; text-decoration: underline;">
+        <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 8px; text-decoration: underline;">
             ${grocery.branch.toUpperCase()} ADULT FAMILY HOME
         </div>
-        <div style="text-align: center; font-size: 14px; margin-bottom: 5px;">
+        <div style="text-align: center; font-size: 18px; margin-bottom: 8px;">
             ${grocery.address || "1507 128th ST SW EVERETT WA, 98204"}
         </div>
-        <div style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 15px; text-decoration: underline;">
+        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px; text-decoration: underline;">
             REQUISITION FOR FOOD, CLEANING MATERIALS, DETERGENTS ETC
         </div>
-        <div style="font-size: 14px; margin-bottom: 15px;">
+        <div style="font-size: 18px; margin-bottom: 15px;">
             <strong>DATE:</strong> ${new Date(grocery.createdAt).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" })}
         </div>
-        <div style="font-size: 14px; margin-bottom: 15px;">
+        <div style="font-size: 18px; margin-bottom: 20px;">
             <strong>REQUESTED BY:</strong> ${grocery.staffName || ""}
         </div>`;
 
@@ -53,9 +55,9 @@ export const generateGroceryPDF = async (grocery) => {
     const leftColumnCategories = categoryNames.slice(0, midpoint);
     const rightColumnCategories = categoryNames.slice(midpoint);
 
-    // Create a two-column table layout
+    // Create a two-column table layout with INCREASED font sizes
     let tableHTML = `
-        <table border="1" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+        <table border="1" style="width: 100%; border-collapse: collapse; font-size: 16px;">
             <tr>
                 <td style="width: 50%; vertical-align: top; padding: 0;">
                     <!-- Left Column -->
@@ -65,20 +67,20 @@ export const generateGroceryPDF = async (grocery) => {
     leftColumnCategories.forEach(category => {
         tableHTML += `
                         <tr>
-                            <th colspan="3" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000;">${category}</th>
+                            <th colspan="3" style="text-align: left; padding: 8px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000; font-size: 18px;">${category}</th>
                         </tr>
                         <tr>
-                            <th style="width: 70%; text-align: left; padding: 5px; border-top: 1px solid #ccc;">Item</th>
-                            <th style="width: 15%; text-align: center; padding: 5px; border-top: 1px solid #ccc;">Qty</th>
-                            <th style="width: 15%; text-align: center; padding: 5px; border-top: 1px solid #ccc;">Status</th>
+                            <th style="width: 70%; text-align: left; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Item</th>
+                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Qty</th>
+                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Status</th>
                         </tr>`;
         
         categorizedItems[category].forEach(item => {
             tableHTML += `
                         <tr>
-                            <td style="padding: 5px; border-top: 1px solid #ccc;">${item.item}</td>
-                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">${item.quantity || 1}</td>
-                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">
+                            <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">${item.item}</td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 16px;">${item.quantity || 1}</td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 16px;">
                                 ${item.delivered ? "Delivered" : (item.status !== "declined" ? "Approved" : "Declined")}
                             </td>
                         </tr>`;
@@ -97,20 +99,20 @@ export const generateGroceryPDF = async (grocery) => {
     rightColumnCategories.forEach(category => {
         tableHTML += `
                         <tr>
-                            <th colspan="3" style="text-align: left; padding: 5px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000;">${category}</th>
+                            <th colspan="3" style="text-align: left; padding: 8px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000; font-size: 18px;">${category}</th>
                         </tr>
                         <tr>
-                            <th style="width: 70%; text-align: left; padding: 5px; border-top: 1px solid #ccc;">Item</th>
-                            <th style="width: 15%; text-align: center; padding: 5px; border-top: 1px solid #ccc;">Qty</th>
-                            <th style="width: 15%; text-align: center; padding: 5px; border-top: 1px solid #ccc;">Status</th>
+                            <th style="width: 70%; text-align: left; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Item</th>
+                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Qty</th>
+                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Status</th>
                         </tr>`;
         
         categorizedItems[category].forEach(item => {
             tableHTML += `
                         <tr>
-                            <td style="padding: 5px; border-top: 1px solid #ccc;">${item.item}</td>
-                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">${item.quantity || 1}</td>
-                            <td style="padding: 5px; border-top: 1px solid #ccc; text-align: center;">
+                            <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">${item.item}</td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 16px;">${item.quantity || 1}</td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 16px;">
                                 ${item.delivered ? "Delivered" : (item.status !== "declined" ? "Approved" : "Declined")}
                             </td>
                         </tr>`;
@@ -126,21 +128,21 @@ export const generateGroceryPDF = async (grocery) => {
     // Add feedback section if it exists
     if (grocery.feedback) {
         tableHTML += `
-            <div style="margin-top: 15px;">
-                <div style="text-decoration: underline; font-weight: bold;">Notes/Feedback</div>
-                <div style="margin-top: 5px;">${grocery.feedback}</div>
+            <div style="margin-top: 20px;">
+                <div style="text-decoration: underline; font-weight: bold; font-size: 18px;">Notes/Feedback</div>
+                <div style="margin-top: 8px; font-size: 16px;">${grocery.feedback}</div>
             </div>`;
     }
 
-    // Add signature lines
+    // Add signature lines with larger fonts
     tableHTML += `
-        <div style="margin-top: 30px; display: flex; justify-content: space-between;">
+        <div style="margin-top: 40px; display: flex; justify-content: space-between; font-size: 16px;">
             <div>
-                <div style="margin-bottom: 25px;">Requested by: ________________________</div>
+                <div style="margin-bottom: 35px;">Requested by: ________________________</div>
                 <div>Date: _____________________</div>
             </div>
             <div>
-                <div style="margin-bottom: 25px;">Approved by: ________________________</div>
+                <div style="margin-bottom: 35px;">Approved by: ________________________</div>
                 <div>Date: _____________________</div>
             </div>
         </div>`;
@@ -151,15 +153,42 @@ export const generateGroceryPDF = async (grocery) => {
     // Append container to body (temporarily)
     document.body.appendChild(container);
 
-    // Capture the container using html2canvas
-    const canvas = await html2canvas(container, { scale: 2 });
+    try {
+        // Capture the container using html2canvas with higher scale for better quality
+        const canvas = await html2canvas(container, { 
+            scale: 3, // Increased from 2 to 3 for better resolution
+            logging: false,
+            useCORS: true,
+            letterRendering: true
+        });
 
-    // Remove container after capturing
-    document.body.removeChild(container);
+        // Remove container after capturing
+        document.body.removeChild(container);
 
-    // Convert canvas to PDF
-    const pdf = new jsPDF();
-    const imgData = canvas.toDataURL("image/png");
-    pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
-    pdf.save(`${grocery.branch}_Requisition_${new Date(grocery.createdAt).toLocaleDateString("en-US")}.pdf`);
+        // Create PDF with proper dimensions
+        const imgWidth = 210; // A4 width in mm (210mm)
+        const pageHeight = 297; // A4 height in mm (297mm)
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        // Add first page
+        pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // Add additional pages if content overflows
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        pdf.save(`${grocery.branch}_Requisition_${new Date(grocery.createdAt).toLocaleDateString("en-US")}.pdf`);
+    } catch (error) {
+        console.error("Error generating PDF:", error);
+        document.body.removeChild(container);
+    }
 };
