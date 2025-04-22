@@ -79,7 +79,6 @@ export const generateGroceryPDF = async (grocery) => {
                         <tr>
                             <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">${item.item}</td>
                             <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 24px;">${item.quantity || 1}</td>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 24px;">
                         </tr>`;
         });
     });
@@ -149,7 +148,7 @@ export const generateGroceryPDF = async (grocery) => {
     try {
         // Capture the container using html2canvas with higher scale for better quality
         const canvas = await html2canvas(container, { 
-            scale: 3, // Increased from 2 to 3 for better resolution
+            scale: 3,
             logging: false,
             useCORS: true,
             letterRendering: true
@@ -159,8 +158,8 @@ export const generateGroceryPDF = async (grocery) => {
         document.body.removeChild(container);
 
         // Create PDF with proper dimensions
-        const imgWidth = 210; // A4 width in mm (210mm)
-        const pageHeight = 297; // A4 height in mm (297mm)
+        const imgWidth = 210;
+        const pageHeight = 297;
         const imgHeight = canvas.height * imgWidth / canvas.width;
         
         const pdf = new jsPDF('p', 'mm', 'a4');
