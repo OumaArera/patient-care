@@ -20,7 +20,7 @@ export const generateVitalsPDFReport = async (vitals, selectedYear, selectedMont
     };
 
     let pageIndex = 1;
-    let totalPages = Math.ceil(vitals.length / 20); // 20 rows per page
+    let totalPages = Math.ceil(vitals.length / 20);
 
     for (let i = 0; i < vitals.length; i += 20) {
         const vitalsBatch = vitals.slice(i, i + 20);
