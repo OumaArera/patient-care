@@ -79,6 +79,7 @@ const PendingUpdates = ({ patient }) => {
                             <p><strong>Resident:</strong> {update.patientName}</p>
                             <p><strong>Type:</strong> {update.type}</p>
                             <p><strong>Branch:</strong> {update.branchName}</p>
+                            <p><strong>Date Taken:</strong> {update.dateTaken}</p>
                             <p><strong>Notes:</strong></p>
                             
                             {update.status === "declined" ? (

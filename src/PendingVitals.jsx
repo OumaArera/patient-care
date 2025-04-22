@@ -138,6 +138,7 @@ const PendingVitals = ({ patient }) => {
                                         </button>
                                     </div>
                                 )}
+                                <p><strong>Date Taken:</strong> {vital.dateTaken || "N/A"}</p>
                             </div>
                         )}
                     </div>

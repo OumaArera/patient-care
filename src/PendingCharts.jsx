@@ -128,7 +128,7 @@ const PendingCharts = ({ patient }) => {
             <p className={`font-bold ${chart.status === "pending" ? "text-blue-500" : "text-red-500"}`}>
               Status: {chart.status}
             </p>
-
+            <p>{chart.dateTaken || "N/A"}</p>
             {chart.status === "declined" && (
               <p className="text-red-600 mt-2">Decline Reason: {chart.declineReason || "N/A"}</p>
             )}

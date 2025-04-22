@@ -67,22 +67,19 @@ export const generateGroceryPDF = async (grocery) => {
     leftColumnCategories.forEach(category => {
         tableHTML += `
                         <tr>
-                            <th colspan="3" style="text-align: left; padding: 8px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000; font-size: 18px;">${category}</th>
+                            <th colspan="3" style="text-align: left; padding: 8px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000; font-size: 30px;">${category}</th>
                         </tr>
                         <tr>
-                            <th style="width: 70%; text-align: left; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Item</th>
-                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Qty</th>
-                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Status</th>
+                            <th style="width: 70%; text-align: left; padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">Item</th>
+                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">Qty</th>
                         </tr>`;
         
         categorizedItems[category].forEach(item => {
             tableHTML += `
                         <tr>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">${item.item}</td>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 16px;">${item.quantity || 1}</td>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 16px;">
-                                ${item.delivered ? "Delivered" : (item.status !== "declined" ? "Approved" : "Declined")}
-                            </td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">${item.item}</td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 24px;">${item.quantity || 1}</td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 24px;">
                         </tr>`;
         });
     });
@@ -99,22 +96,18 @@ export const generateGroceryPDF = async (grocery) => {
     rightColumnCategories.forEach(category => {
         tableHTML += `
                         <tr>
-                            <th colspan="3" style="text-align: left; padding: 8px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000; font-size: 18px;">${category}</th>
+                            <th colspan="3" style="text-align: left; padding: 8px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000; font-size: 30px;">${category}</th>
                         </tr>
                         <tr>
-                            <th style="width: 70%; text-align: left; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Item</th>
-                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Qty</th>
-                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">Status</th>
+                            <th style="width: 70%; text-align: left; padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">Item</th>
+                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">Qty</th>
                         </tr>`;
         
         categorizedItems[category].forEach(item => {
             tableHTML += `
                         <tr>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 16px;">${item.item}</td>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 16px;">${item.quantity || 1}</td>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 16px;">
-                                ${item.delivered ? "Delivered" : (item.status !== "declined" ? "Approved" : "Declined")}
-                            </td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">${item.item}</td>
+                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 24px;">${item.quantity || 1}</td>
                         </tr>`;
         });
     });
@@ -129,7 +122,7 @@ export const generateGroceryPDF = async (grocery) => {
     if (grocery.feedback) {
         tableHTML += `
             <div style="margin-top: 20px;">
-                <div style="text-decoration: underline; font-weight: bold; font-size: 18px;">Notes/Feedback</div>
+                <div style="text-decoration: underline; font-weight: bold; font-size: 24px;">Notes/Feedback</div>
                 <div style="margin-top: 8px; font-size: 16px;">${grocery.feedback}</div>
             </div>`;
     }

@@ -6,7 +6,6 @@ import { errorHandler } from "../services/errorHandler";
 import { getData } from "../services/updatedata";
 import { Loader } from "lucide-react";
 import PendingVitals from "./PendingVitals";
-import CustomDatePicker from "./CustomDatePicker";
 import DatePicker from "react-datepicker";
 import dayjs from "dayjs";
 
@@ -57,7 +56,7 @@ const ChartVitals = () => {
           .finally(() => setLoadingLate(false))
       }, [patientId]);
 
-      useEffect(() => {
+    useEffect(() => {
         const now = new Date();
         const hour = now.getHours();
         
