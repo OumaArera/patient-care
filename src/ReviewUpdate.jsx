@@ -7,21 +7,22 @@ const URL = "https://patient-care-server.onrender.com/api/v1/updates";
 const ReviewUpdate = ({ update, fetchUpdates }) => {
     const [status, setStatus] = useState("");
     const [declineReason, setDeclineReason] = useState("");
+    const [notes, setNotes] = useState(update.notes);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState([]);
 
-    const handleSubmit =async () => {
+    const handleSubmit = async () => {
         setIsSubmitting(true);
-        const payload ={
+        const payload = {
             updateId: update.updateId,
             status,
+            notes: notes,
             declineReason: status === "declined" ? declineReason : null,
         }
 
         const updatedUrl = `${URL}/${update.updateId}`;
         try {
-            setIsSubmitting(true);
             const response = await updateData(updatedUrl, payload);
                 
             if (response?.error) {
@@ -46,7 +47,16 @@ const ReviewUpdate = ({ update, fetchUpdates }) => {
         <div className="p-4 border rounded-lg shadow-md w-96">
             <h2 className="text-lg font-semibold">Review Update</h2>
             <p><strong>Resident:</strong> {update.patientName}</p>
-            <p><strong>Notes:</strong> {update.notes}</p>
+            
+            <div className="mt-2">
+                <label className="block font-medium">Notes:</label>
+                <textarea
+                    className="w-full p-2 border rounded bg-gray-900 text-white"
+                    rows="3"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                ></textarea>
+            </div>
             
             <label className="block mt-2 font-medium">Status:</label>
             <select
@@ -63,7 +73,7 @@ const ReviewUpdate = ({ update, fetchUpdates }) => {
                 <div className="mt-2">
                     <label className="block font-medium">Reason for Decline(Required):</label>
                     <textarea
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded bg-gray-900 text-white"
                         rows="3"
                         placeholder="Enter reason for declining..."
                         value={declineReason}
