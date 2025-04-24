@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { createData, getData } from "../services/updatedata";
 import { Loader, Moon } from "lucide-react";
-import { getCurrentDate, getCurrentTimeSlot } from "./utils/dateTimeUtils";
+import { getCurrentDate, getCurrentTimeSlot, getDatesFromAprilFirst, isTimeInPast } from "./utils/dateTimeUtils";
 import { errorHandler } from "../services/errorHandler";
+import { TIME_SLOTS } from "./utils/constants";
 
 // Import compartmentalized components
 import PatientList from "./sleep-components/PatientList";
@@ -84,24 +85,21 @@ const SleepPattern = () => {
   const fetchSleepData = async () => {
     setLoadingSleepData(true);
     try {
-      console.log("ID: ", selectedPatientId)
       const url = `${SLEEP_URL}?resident=${selectedPatientId}`;
-      console.log("Pass 1")
       const response = await getData(url);
-      console.log("Pass 2")
-      console.log("Response: ", response.responseObject || null);
+      
       if (response?.responseObject) {
-        console.log("Pass 3")
         const sleepData = response.responseObject;
-        console.log("Pass 4")
         setFilledEntries(sleepData);
-        console.log("Pass 5")
         findMissingEntries(sleepData);
-        console.log("Pass 6")
+        return;
       }
+      // If we reach here, there was likely no error but no data either
+      setFilledEntries([]);
+      findMissingEntries([]);
     } catch (err) {
+      console.error("Error fetching sleep data:", err);
       setErrors(["Failed to load sleep data"]);
-      console.log("Error: ", err);
       setTimeout(() => setErrors([]), 5000);
     } finally {
       setLoadingSleepData(false);
@@ -109,9 +107,7 @@ const SleepPattern = () => {
   };
 
   const findMissingEntries = (data) => {
-    const { getDatesFromAprilFirst, isTimeInPast } = require("./utils/dateTimeUtils");
-    const TIME_SLOTS = require("./utils/constants").TIME_SLOTS;
-    
+    // Instead of require, use the already imported functions
     const dates = getDatesFromAprilFirst();
     const missing = [];
     
@@ -270,7 +266,7 @@ const SleepPattern = () => {
   };
 
   const formatDate = (dateString) => {
-    // Import this function from dateTimeUtils or implement here
+    // Implement here instead of using require
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
       year: 'numeric', 
