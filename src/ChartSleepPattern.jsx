@@ -86,14 +86,22 @@ const SleepPattern = () => {
     try {
       console.log("ID: ", selectedPatientId)
       const url = `${SLEEP_URL}?resident=${selectedPatientId}`;
+      console.log("Pass 1")
       const response = await getData(url);
+      console.log("Pass 2")
+      console.log("Response: ", response.responseObject || null);
       if (response?.responseObject) {
+        console.log("Pass 3")
         const sleepData = response.responseObject;
+        console.log("Pass 4")
         setFilledEntries(sleepData);
+        console.log("Pass 5")
         findMissingEntries(sleepData);
+        console.log("Pass 6")
       }
     } catch (err) {
       setErrors(["Failed to load sleep data"]);
+      console.log("Error: ", err);
       setTimeout(() => setErrors([]), 5000);
     } finally {
       setLoadingSleepData(false);
@@ -101,11 +109,6 @@ const SleepPattern = () => {
   };
 
   const findMissingEntries = (data) => {
-    // This function is provided by the imported utils
-    // Get all dates from April 1st to today and find missing entries
-    // Implementation remains the same
-    
-    // Placeholder - this would need to be filled with the original implementation
     const { getDatesFromAprilFirst, isTimeInPast } = require("./utils/dateTimeUtils");
     const TIME_SLOTS = require("./utils/constants").TIME_SLOTS;
     
