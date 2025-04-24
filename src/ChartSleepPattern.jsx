@@ -84,6 +84,7 @@ const SleepPattern = () => {
   const fetchSleepData = async () => {
     setLoadingSleepData(true);
     try {
+      console.log("ID: ", selectedPatientId)
       const url = `${SLEEP_URL}?resident=${selectedPatientId}`;
       const response = await getData(url);
       if (response?.responseObject) {
