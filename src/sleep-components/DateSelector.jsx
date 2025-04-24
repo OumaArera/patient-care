@@ -1,20 +1,25 @@
 import React from "react";
-import { Calendar } from "lucide-react";
 
 const DateSelector = ({ selectedDate, onDateSelect, getCurrentDate }) => {
+  // Get today's date and 7 days before for range
+  const today = getCurrentDate();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const minDate = sevenDaysAgo.toISOString().split('T')[0];
+
   return (
     <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-300 mb-2 items-center">
-        <Calendar size={18} className="mr-2" />
-        Select Date
+      <label htmlFor="date-select" className="block mb-2 text-sm font-medium">
+        Select Date:
       </label>
       <input
+        id="date-select"
         type="date"
         value={selectedDate}
         onChange={onDateSelect}
-        min="2025-04-01"
-        max={getCurrentDate()}
-        className="bg-gray-700 text-white p-2 rounded border border-gray-600 w-full"
+        max={today}
+        min={minDate}
+        className="bg-gray-700 border border-gray-600 text-white rounded-lg p-2.5 w-full sm:w-64"
       />
     </div>
   );

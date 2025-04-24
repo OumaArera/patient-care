@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { createData, getData } from "../services/updatedata";
-import { Loader, Moon, Check, X } from "lucide-react";
+import { Loader, Moon } from "lucide-react";
 import { getCurrentDate, getCurrentTimeSlot, getDatesFromAprilFirst, isTimeInPast } from "./utils/dateTimeUtils";
 import { errorHandler } from "../services/errorHandler";
 import { TIME_SLOTS } from "./utils/constants";
@@ -14,6 +14,7 @@ import CurrentSelection from "./sleep-components/CurrentSelection";
 import SleepPatternReport from "./sleep-components/SleepPatternReport";
 import ActionButtons from "./sleep-components/ActionButtons";
 import Notifications from "./sleep-components/Notifications";
+import BatchModeControls from "./sleep-components/BatchModeControls";
 
 const SLEEP_URL = "https://patient-care-server.onrender.com/api/v1/sleeps";
 
@@ -149,7 +150,7 @@ const SleepPattern = () => {
     setBatchMode(false);  // Exit batch mode when changing patients
   };
 
-  // New function for handling batch slot selection
+  // Function for handling batch slot selection
   const handleSlotToggle = (entry) => {
     if (!batchMode) return;
     
@@ -405,7 +406,7 @@ const SleepPattern = () => {
     });
   };
   
-  // Get a time range for selection
+  // Get a time range for selection - either preset or custom
   const selectTimeRange = (startTime, endTime) => {
     if (!batchMode) {
       setBatchMode(true);
@@ -516,125 +517,32 @@ const SleepPattern = () => {
                     getCurrentDate={getCurrentDate}
                   />
                   
-                  <Notifications 
-                    errors={errors} 
-                    message={message} 
-                  />
+                  <Notifications errors={errors} message={message} />
                   
                   {batchMode && (
-                    <div className="mb-4 bg-gray-700 p-4 rounded-lg">
-                      <h4 className="text-lg font-medium mb-2">Batch Selection Mode</h4>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <div className="text-sm">Quick select:</div>
-                        <button 
-                          onClick={() => selectTimeRange("11:00PM", "5:00AM")}
-                          className="px-2 py-1 text-xs bg-blue-600 rounded hover:bg-blue-700"
-                        >
-                          11:00PM - 5:00AM
-                        </button>
-                        <button 
-                          onClick={() => selectTimeRange("12:00AM", "6:00AM")}
-                          className="px-2 py-1 text-xs bg-blue-600 rounded hover:bg-blue-700"
-                        >
-                          12:00AM - 6:00AM
-                        </button>
-                        <button 
-                          onClick={() => selectTimeRange("10:00PM", "6:00AM")}
-                          className="px-2 py-1 text-xs bg-blue-600 rounded hover:bg-blue-700"
-                        >
-                          10:00PM - 6:00AM
-                        </button>
-                      </div>
-                      
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="font-medium">Mark selected as:</div>
-                        <div className="flex gap-2">
-                          {Object.entries(SLEEP_STATUS_DESCRIPTIONS).map(([status, description]) => (
-                            <button
-                              key={status}
-                              onClick={() => setSelectedStatus(status)}
-                              className={`px-3 py-1 rounded-md ${
-                                selectedStatus === status
-                                  ? "bg-blue-600 text-white"
-                                  : "bg-gray-600 text-gray-300"
-                              }`}
-                            >
-                              {description}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        <span className="mr-2">Selected: {selectedSlots.length} slots</span>
-                        <button
-                          onClick={submitBatchEntries}
-                          disabled={selectedSlots.length === 0 || !selectedStatus}
-                          className={`flex items-center px-3 py-1 rounded-md ${
-                            selectedSlots.length > 0 && selectedStatus
-                              ? "bg-green-600 hover:bg-green-700 text-white"
-                              : "bg-gray-700 text-gray-400 cursor-not-allowed"
-                          }`}
-                        >
-                          <Check size={16} className="mr-1" />
-                          Submit All
-                        </button>
-                        <button
-                          onClick={() => setSelectedSlots([])}
-                          disabled={selectedSlots.length === 0}
-                          className={`flex items-center ml-2 px-3 py-1 rounded-md ${
-                            selectedSlots.length > 0
-                              ? "bg-red-600 hover:bg-red-700 text-white"
-                              : "bg-gray-700 text-gray-400 cursor-not-allowed"
-                          }`}
-                        >
-                          <X size={16} className="mr-1" />
-                          Clear Selection
-                        </button>
-                      </div>
-                    </div>
+                    <BatchModeControls
+                      selectedSlots={selectedSlots}
+                      selectedStatus={selectedStatus}
+                      sleepStatusDescriptions={SLEEP_STATUS_DESCRIPTIONS}
+                      setSelectedStatus={setSelectedStatus}
+                      setSelectedSlots={setSelectedSlots}
+                      submitBatchEntries={submitBatchEntries}
+                      selectTimeRange={selectTimeRange}
+                      timeSlots={TIME_SLOTS}
+                    />
                   )}
                   
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-lg font-medium mb-2">Available Time Slots</h4>
-                      <div className="grid grid-cols-2 gap-2">
-                        {filteredMissingEntries.length > 0 ? (
-                          filteredMissingEntries.map((entry) => {
-                            const isDisabled = isSlotDisabled(entry);
-                            const isSelected = isSlotSelected(entry);
-                            const isSubmitting = submittingSlots[`${entry.date}-${entry.slot}`];
-                            
-                            return (
-                              <div
-                                key={`${entry.date}-${entry.slot}`}
-                                onClick={() => !isDisabled && handleTimeSlotSelect(entry)}
-                                className={`p-2 rounded cursor-pointer border ${
-                                  isDisabled
-                                    ? "bg-gray-700 text-gray-500 border-gray-700 cursor-not-allowed"
-                                    : isSelected
-                                    ? "bg-blue-700 border-blue-500"
-                                    : "bg-gray-700 border-gray-600 hover:bg-gray-600"
-                                }`}
-                              >
-                                <div className="flex justify-between items-center">
-                                  <span>{entry.slot}</span>
-                                  {isSubmitting && (
-                                    <Loader size={16} className="animate-spin" />
-                                  )}
-                                  {!isSubmitting && isSelected && (
-                                    <Check size={16} className="text-blue-300" />
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <div className="col-span-2 p-4 text-center text-gray-400">
-                            No missing entries for this date
-                          </div>
-                        )}
-                      </div>
+                      <TimeSlotsList
+                        filteredMissingEntries={filteredMissingEntries}
+                        isSlotDisabled={isSlotDisabled}
+                        isSlotSelected={isSlotSelected}
+                        submittingSlots={submittingSlots}
+                        handleTimeSlotSelect={handleTimeSlotSelect}
+                        batchMode={batchMode}
+                      />
                     </div>
                     
                     {!batchMode && (

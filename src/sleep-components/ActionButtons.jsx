@@ -1,45 +1,52 @@
 import React from "react";
-import { Calendar, Eye, Download } from "lucide-react";
+import { ChevronLeft, FileText, Download } from "lucide-react";
 
-const ActionButtons = ({ 
-  onViewReport, 
-  onDownloadPDF, 
-  hasData = false,
-  onBack,
-  showBackOnly = false
-}) => {
-  if (showBackOnly) {
-    return (
-      <div className="mb-6">
+const ActionButtons = ({ onBack, onViewReport, onDownloadPDF, showBackOnly, hasData }) => {
+  return (
+    <div className="flex space-x-2 mb-4">
+      {onBack && (
         <button
           onClick={onBack}
-          className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded flex items-center"
+          className="flex items-center px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-md"
         >
-          <Calendar size={18} className="mr-2" />
-          Back to Sleep Tracking
+          <ChevronLeft size={16} className="mr-1" />
+          Back
         </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex space-x-3">
-      <button
-        onClick={onViewReport}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded flex items-center"
-        disabled={!hasData}
-      >
-        <Eye size={16} className="mr-2" />
-        View Report
-      </button>
-      <button
-        onClick={onDownloadPDF}
-        className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded flex items-center"
-        disabled={!hasData}
-      >
-        <Download size={16} className="mr-2" />
-        Download PDF
-      </button>
+      )}
+      
+      {!showBackOnly && (
+        <>
+          {onViewReport && (
+            <button
+              onClick={onViewReport}
+              disabled={!hasData}
+              className={`flex items-center px-3 py-1.5 rounded-md ${
+                hasData 
+                  ? "bg-blue-600 hover:bg-blue-700 text-white" 
+                  : "bg-gray-700 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              <FileText size={16} className="mr-1" />
+              View Report
+            </button>
+          )}
+          
+          {onDownloadPDF && (
+            <button
+              onClick={onDownloadPDF}
+              disabled={!hasData}
+              className={`flex items-center px-3 py-1.5 rounded-md ${
+                hasData 
+                  ? "bg-green-600 hover:bg-green-700 text-white" 
+                  : "bg-gray-700 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              <Download size={16} className="mr-1" />
+              Download PDF
+            </button>
+          )}
+        </>
+      )}
     </div>
   );
 };

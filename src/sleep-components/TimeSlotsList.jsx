@@ -1,80 +1,51 @@
 import React from "react";
-import StatusSelector from "./StatusSelector";
+import { Loader, Check } from "lucide-react";
 
-const TimeSlotsList = ({ 
-  entries, 
-  onTimeSlotSelect, 
-  isSlotDisabled, 
-  currentSelection, 
+const TimeSlotsList = ({
+  filteredMissingEntries,
+  isSlotDisabled,
+  isSlotSelected,
   submittingSlots,
-  sleepStatusDescriptions,
-  onMarkAndSubmit
+  handleTimeSlotSelect,
+  batchMode
 }) => {
-  // Check if a slot is currently being submitted
-  const isSubmitting = (entry) => {
-    const key = `${entry.date}-${entry.slot}`;
-    return submittingSlots[key] === true;
-  };
-
-  // Check if a slot is selected
-  const isSelected = (entry) => {
-    return currentSelection.dateTaken === entry.date && currentSelection.markedFor === entry.slot;
-  };
-
   return (
-    <div>
-      <h4 className="text-lg font-medium mb-3">Available Time Slots</h4>
-      <div className="space-y-2 max-h-80 overflow-y-auto">
-        {entries.length > 0 ? (
-          entries.map((entry) => (
-            <div 
+    <div className="grid grid-cols-2 gap-2">
+      {filteredMissingEntries.length > 0 ? (
+        filteredMissingEntries.map((entry) => {
+          const isDisabled = isSlotDisabled(entry);
+          const isSelected = isSlotSelected(entry);
+          const isSubmitting = submittingSlots[`${entry.date}-${entry.slot}`];
+          
+          return (
+            <div
               key={`${entry.date}-${entry.slot}`}
-              className="mb-4"
+              onClick={() => !isDisabled && handleTimeSlotSelect(entry)}
+              className={`p-2 rounded cursor-pointer border ${
+                isDisabled
+                  ? "bg-gray-700 text-gray-500 border-gray-700 cursor-not-allowed"
+                  : isSelected
+                  ? "bg-blue-700 border-blue-500"
+                  : "bg-gray-700 border-gray-600 hover:bg-gray-600"
+              }`}
             >
-              <button
-                onClick={() => onTimeSlotSelect(entry)}
-                disabled={isSlotDisabled(entry) || isSubmitting(entry)}
-                className={`p-2 rounded text-left w-full flex items-center justify-between mb-2 ${
-                  isSelected(entry)
-                    ? "bg-blue-700 text-white"
-                    : isSlotDisabled(entry)
-                    ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                    : isSubmitting(entry)
-                    ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-700 hover:bg-gray-600"
-                }`}
-              >
+              <div className="flex justify-between items-center">
                 <span>{entry.slot}</span>
-                {entry.isCurrentTimeSlot && (
-                  <span className="text-xs bg-green-600 px-2 py-1 rounded">Current</span>
+                {isSubmitting && (
+                  <Loader size={16} className="animate-spin" />
                 )}
-                {isSlotDisabled(entry) && !entry.isCurrentTimeSlot && (
-                  <span className="text-xs bg-gray-600 px-2 py-1 rounded">Filled</span>
+                {!isSubmitting && isSelected && (
+                  <Check size={16} className="text-blue-300" />
                 )}
-                {isSubmitting(entry) && (
-                  <span className="text-xs bg-yellow-600 px-2 py-1 rounded">Submitting...</span>
-                )}
-              </button>
-              
-              {/* Show status selector if this time slot is selected */}
-              {isSelected(entry) && !isSlotDisabled(entry) && (
-                <div className="ml-4 border-l-2 border-blue-500 pl-3">
-                  <StatusSelector
-                    currentStatus={currentSelection.markAs}
-                    onStatusChange={onMarkAndSubmit}
-                    disabled={isSubmitting(entry)}
-                    includeNA={true}
-                    descriptions={sleepStatusDescriptions}
-                    autoSubmit={true}
-                  />
-                </div>
-              )}
+              </div>
             </div>
-          ))
-        ) : (
-          <p className="text-gray-400">No available time slots for the selected date</p>
-        )}
-      </div>
+          );
+        })
+      ) : (
+        <div className="col-span-2 p-4 text-center text-gray-400">
+          No missing entries for this date
+        </div>
+      )}
     </div>
   );
 };
