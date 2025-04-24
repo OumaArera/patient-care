@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchPatients } from "../services/fetchPatients";
 import { createData, getData } from "../services/updatedata";
-import { Loader, Moon } from "lucide-react";
+import { Loader, Moon, Check, X } from "lucide-react";
 import { getCurrentDate, getCurrentTimeSlot, getDatesFromAprilFirst, isTimeInPast } from "./utils/dateTimeUtils";
 import { errorHandler } from "../services/errorHandler";
 import { TIME_SLOTS } from "./utils/constants";
@@ -37,6 +37,9 @@ const SleepPattern = () => {
   const [selectedDate, setSelectedDate] = useState(getCurrentDate());
   const [showReport, setShowReport] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [batchMode, setBatchMode] = useState(false);
+  const [selectedSlots, setSelectedSlots] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("");
   
   const [formData, setFormData] = useState({
     resident: null,
@@ -107,7 +110,6 @@ const SleepPattern = () => {
   };
 
   const findMissingEntries = (data) => {
-    // Instead of require, use the already imported functions
     const dates = getDatesFromAprilFirst();
     const missing = [];
     
@@ -143,9 +145,112 @@ const SleepPattern = () => {
       reasonFilledLate: null
     }));
     setShowReport(false);
+    setSelectedSlots([]); // Clear selected slots when changing patients
+    setBatchMode(false);  // Exit batch mode when changing patients
   };
 
-  // New function that combines sleep status selection and submission
+  // New function for handling batch slot selection
+  const handleSlotToggle = (entry) => {
+    if (!batchMode) return;
+    
+    const slotKey = `${entry.date}-${entry.slot}`;
+    
+    // Check if this slot is already selected
+    if (selectedSlots.some(slot => slot.key === slotKey)) {
+      // Remove from selected slots
+      setSelectedSlots(prev => prev.filter(slot => slot.key !== slotKey));
+    } else {
+      // Add to selected slots
+      setSelectedSlots(prev => [...prev, {
+        key: slotKey,
+        date: entry.date,
+        slot: entry.slot
+      }]);
+    }
+  };
+
+  // Function to submit all selected slots with the chosen status
+  const submitBatchEntries = async () => {
+    if (!selectedPatientId) {
+      setErrors(["Please select a resident"]);
+      setTimeout(() => setErrors([]), 5000);
+      return;
+    }
+    
+    if (!selectedStatus) {
+      setErrors(["Please select a sleep status"]);
+      setTimeout(() => setErrors([]), 5000);
+      return;
+    }
+    
+    if (selectedSlots.length === 0) {
+      setErrors(["Please select at least one time slot"]);
+      setTimeout(() => setErrors([]), 5000);
+      return;
+    }
+    
+    // Mark all slots as submitting
+    const newSubmittingState = {};
+    selectedSlots.forEach(slot => {
+      newSubmittingState[slot.key] = true;
+    });
+    setSubmittingSlots(prev => ({ ...prev, ...newSubmittingState }));
+    
+    let successCount = 0;
+    let errorCount = 0;
+    
+    // Process each slot sequentially to avoid overwhelming the server
+    for (const slot of selectedSlots) {
+      // Prepare data for submission
+      const submissionData = {
+        resident: selectedPatientId,
+        markAs: selectedStatus,
+        dateTaken: slot.date,
+        reasonFilledLate: null,
+        markedFor: slot.slot
+      };
+      
+      try {
+        const response = await createData(SLEEP_URL, submissionData);
+        if (response?.error) {
+          errorCount++;
+          console.error(`Error submitting ${slot.key}:`, response.error);
+        } else {
+          successCount++;
+        }
+      } catch (err) {
+        errorCount++;
+        console.error(`Error submitting ${slot.key}:`, err);
+      }
+      
+      // Remove this submission from loading state
+      setSubmittingSlots(prev => {
+        const newState = { ...prev };
+        delete newState[slot.key];
+        return newState;
+      });
+    }
+    
+    // Show completion message
+    if (successCount > 0 && errorCount === 0) {
+      setMessage(`Successfully recorded ${successCount} sleep entries as ${selectedStatus}`);
+    } else if (successCount > 0 && errorCount > 0) {
+      setMessage(`Recorded ${successCount} entries, but ${errorCount} failed`);
+    } else {
+      setErrors(["Failed to submit sleep entries"]);
+    }
+    
+    // Reset selected slots and fetch updated data
+    setSelectedSlots([]);
+    await fetchSleepData();
+    
+    setTimeout(() => {
+      setMessage("");
+      setErrors([]);
+    }, 5000);
+  };
+
+  // Original single submission function
   const handleMarkAndSubmitSleep = async (sleepStatus, date, timeSlot) => {
     if (!selectedPatientId) {
       setErrors(["Please select a resident"]);
@@ -206,6 +311,11 @@ const SleepPattern = () => {
   };
 
   const handleTimeSlotSelect = (entry) => {
+    if (batchMode) {
+      handleSlotToggle(entry);
+      return;
+    }
+    
     // Check if the slot is already filled
     const isAlreadyFilled = isSlotAlreadyFilled(entry.date, entry.slot);
     
@@ -237,6 +347,11 @@ const SleepPattern = () => {
     if (filledEntries.length > 0) {
       findMissingEntries(filledEntries);
     }
+    
+    // Clear selected slots when changing dates
+    if (batchMode) {
+      setSelectedSlots([]);
+    }
   };
 
   // Function to check if a slot is already filled
@@ -257,6 +372,22 @@ const SleepPattern = () => {
       isSlotAlreadyFilled(formData.dateTaken, formData.markedFor);
   };
 
+  // Check if a slot is selected in batch mode
+  const isSlotSelected = (entry) => {
+    const slotKey = `${entry.date}-${entry.slot}`;
+    return selectedSlots.some(slot => slot.key === slotKey);
+  };
+
+  // Toggle batch selection mode
+  const toggleBatchMode = () => {
+    if (batchMode) {
+      // If exiting batch mode, clear all selected slots
+      setSelectedSlots([]);
+      setSelectedStatus("");
+    }
+    setBatchMode(!batchMode);
+  };
+
   // Filter missing entries based on selected date
   const filteredMissingEntries = missingEntries.filter(entry => entry.date === selectedDate);
 
@@ -266,13 +397,53 @@ const SleepPattern = () => {
   };
 
   const formatDate = (dateString) => {
-    // Implement here instead of using require
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
+  };
+  
+  // Get a time range for selection
+  const selectTimeRange = (startTime, endTime) => {
+    if (!batchMode) {
+      setBatchMode(true);
+    }
+    
+    const timeSlots = TIME_SLOTS.map(slot => slot.value);
+    const startIndex = timeSlots.indexOf(startTime);
+    const endIndex = timeSlots.indexOf(endTime);
+    
+    if (startIndex === -1 || endIndex === -1) {
+      setErrors(["Invalid time range"]);
+      setTimeout(() => setErrors([]), 5000);
+      return;
+    }
+    
+    // Handle wrap-around (e.g., 11:00PM to 5:00AM spans across midnight)
+    const newSelected = [];
+    let currentIndex = startIndex;
+    
+    while (true) {
+      const currentSlot = timeSlots[currentIndex];
+      const entry = filteredMissingEntries.find(entry => entry.slot === currentSlot);
+      
+      if (entry && !isSlotAlreadyFilled(entry.date, entry.slot)) {
+        newSelected.push({
+          key: `${entry.date}-${entry.slot}`,
+          date: entry.date,
+          slot: entry.slot
+        });
+      }
+      
+      if (currentIndex === endIndex) break;
+      
+      // Move to next slot, wrap around if needed
+      currentIndex = (currentIndex + 1) % timeSlots.length;
+    }
+    
+    setSelectedSlots(newSelected);
   };
 
   return (
@@ -322,11 +493,21 @@ const SleepPattern = () => {
                 <div className="bg-gray-800 p-6 rounded-lg shadow-md">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-semibold">Record Sleep Status</h3>
-                    <ActionButtons 
-                      onViewReport={toggleReportView}
-                      onDownloadPDF={() => downloadSleepPatternData(filledEntries, selectedPatient)}
-                      hasData={filledEntries.length > 0}
-                    />
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={toggleBatchMode}
+                        className={`px-3 py-1 rounded-md ${
+                          batchMode ? "bg-purple-600 text-white" : "bg-gray-700 text-gray-300"
+                        }`}
+                      >
+                        {batchMode ? "Exit Batch Mode" : "Batch Mode"}
+                      </button>
+                      <ActionButtons 
+                        onViewReport={toggleReportView}
+                        onDownloadPDF={() => downloadSleepPatternData(filledEntries, selectedPatient)}
+                        hasData={filledEntries.length > 0}
+                      />
+                    </div>
                   </div>
                   
                   <DateSelector 
@@ -340,25 +521,133 @@ const SleepPattern = () => {
                     message={message} 
                   />
                   
+                  {batchMode && (
+                    <div className="mb-4 bg-gray-700 p-4 rounded-lg">
+                      <h4 className="text-lg font-medium mb-2">Batch Selection Mode</h4>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        <div className="text-sm">Quick select:</div>
+                        <button 
+                          onClick={() => selectTimeRange("11:00PM", "5:00AM")}
+                          className="px-2 py-1 text-xs bg-blue-600 rounded hover:bg-blue-700"
+                        >
+                          11:00PM - 5:00AM
+                        </button>
+                        <button 
+                          onClick={() => selectTimeRange("12:00AM", "6:00AM")}
+                          className="px-2 py-1 text-xs bg-blue-600 rounded hover:bg-blue-700"
+                        >
+                          12:00AM - 6:00AM
+                        </button>
+                        <button 
+                          onClick={() => selectTimeRange("10:00PM", "6:00AM")}
+                          className="px-2 py-1 text-xs bg-blue-600 rounded hover:bg-blue-700"
+                        >
+                          10:00PM - 6:00AM
+                        </button>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="font-medium">Mark selected as:</div>
+                        <div className="flex gap-2">
+                          {Object.entries(SLEEP_STATUS_DESCRIPTIONS).map(([status, description]) => (
+                            <button
+                              key={status}
+                              onClick={() => setSelectedStatus(status)}
+                              className={`px-3 py-1 rounded-md ${
+                                selectedStatus === status
+                                  ? "bg-blue-600 text-white"
+                                  : "bg-gray-600 text-gray-300"
+                              }`}
+                            >
+                              {description}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center">
+                        <span className="mr-2">Selected: {selectedSlots.length} slots</span>
+                        <button
+                          onClick={submitBatchEntries}
+                          disabled={selectedSlots.length === 0 || !selectedStatus}
+                          className={`flex items-center px-3 py-1 rounded-md ${
+                            selectedSlots.length > 0 && selectedStatus
+                              ? "bg-green-600 hover:bg-green-700 text-white"
+                              : "bg-gray-700 text-gray-400 cursor-not-allowed"
+                          }`}
+                        >
+                          <Check size={16} className="mr-1" />
+                          Submit All
+                        </button>
+                        <button
+                          onClick={() => setSelectedSlots([])}
+                          disabled={selectedSlots.length === 0}
+                          className={`flex items-center ml-2 px-3 py-1 rounded-md ${
+                            selectedSlots.length > 0
+                              ? "bg-red-600 hover:bg-red-700 text-white"
+                              : "bg-gray-700 text-gray-400 cursor-not-allowed"
+                          }`}
+                        >
+                          <X size={16} className="mr-1" />
+                          Clear Selection
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <TimeSlotsList 
-                      entries={filteredMissingEntries}
-                      onTimeSlotSelect={handleTimeSlotSelect}
-                      isSlotDisabled={isSlotDisabled}
-                      currentSelection={formData}
-                      submittingSlots={submittingSlots}
-                      sleepStatusDescriptions={SLEEP_STATUS_DESCRIPTIONS}
-                      onMarkAndSubmit={(status) => 
-                        handleMarkAndSubmitSleep(status, formData.dateTaken, formData.markedFor)
-                      }
-                    />
+                    <div>
+                      <h4 className="text-lg font-medium mb-2">Available Time Slots</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        {filteredMissingEntries.length > 0 ? (
+                          filteredMissingEntries.map((entry) => {
+                            const isDisabled = isSlotDisabled(entry);
+                            const isSelected = isSlotSelected(entry);
+                            const isSubmitting = submittingSlots[`${entry.date}-${entry.slot}`];
+                            
+                            return (
+                              <div
+                                key={`${entry.date}-${entry.slot}`}
+                                onClick={() => !isDisabled && handleTimeSlotSelect(entry)}
+                                className={`p-2 rounded cursor-pointer border ${
+                                  isDisabled
+                                    ? "bg-gray-700 text-gray-500 border-gray-700 cursor-not-allowed"
+                                    : isSelected
+                                    ? "bg-blue-700 border-blue-500"
+                                    : "bg-gray-700 border-gray-600 hover:bg-gray-600"
+                                }`}
+                              >
+                                <div className="flex justify-between items-center">
+                                  <span>{entry.slot}</span>
+                                  {isSubmitting && (
+                                    <Loader size={16} className="animate-spin" />
+                                  )}
+                                  {!isSubmitting && isSelected && (
+                                    <Check size={16} className="text-blue-300" />
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <div className="col-span-2 p-4 text-center text-gray-400">
+                            No missing entries for this date
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     
-                    <CurrentSelection 
-                      formData={formData}
-                      isCurrentSelectionFilled={isCurrentSelectionFilled}
-                      sleepStatusDescriptions={SLEEP_STATUS_DESCRIPTIONS}
-                      formatDate={formatDate}
-                    />
+                    {!batchMode && (
+                      <CurrentSelection 
+                        formData={formData}
+                        isCurrentSelectionFilled={isCurrentSelectionFilled}
+                        sleepStatusDescriptions={SLEEP_STATUS_DESCRIPTIONS}
+                        formatDate={formatDate}
+                        onMarkAndSubmit={(status) => 
+                          handleMarkAndSubmitSleep(status, formData.dateTaken, formData.markedFor)
+                        }
+                      />
+                    )}
                   </div>
                 </div>
               )
