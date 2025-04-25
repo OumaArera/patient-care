@@ -146,8 +146,8 @@ const SleepPattern = () => {
       reasonFilledLate: null
     }));
     setShowReport(false);
-    setSelectedSlots([]); // Clear selected slots when changing patients
-    setBatchMode(false);  // Exit batch mode when changing patients
+    setSelectedSlots([]); 
+    setBatchMode(false); 
   };
 
   // Function for handling batch slot selection
