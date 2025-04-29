@@ -74,7 +74,12 @@ const LeaveManagement = () => {
     };
 
     const formatDate = (date) => {
-        return new Date(date).toLocaleDateString("en-US");
+        // Create a new date object from the input date
+        const newDate = new Date(date);
+        // Add one day to the date
+        newDate.setDate(newDate.getDate() + 1);
+        // Return the formatted date
+        return newDate.toLocaleDateString("en-US");
     };
 
     // Filter leaves based on the selected status
