@@ -123,6 +123,20 @@ const Charts = () => {
 
   // Get days of the selected month
   const daysInSelectedMonth = getDaysInMonth();
+  
+  // Helper function to find chart for a specific date
+  // The key change is here - we look for charts where the dateTaken matches
+  // the display date + 1 day (because we want to backdate by one day)
+  const findChartForDate = (date) => {
+    const displayDate = new Date(date);
+    const chartDate = new Date(displayDate);
+    chartDate.setDate(chartDate.getDate() + 1); // Add one day to match with chart data
+    
+    return charts.find((c) => {
+      const cDate = new Date(c.dateTaken);
+      return cDate.toISOString().split("T")[0] === chartDate.toISOString().split("T")[0];
+    });
+  };
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
@@ -212,11 +226,8 @@ const Charts = () => {
                 </thead>
                 <tbody>
                   {daysInSelectedMonth.map((date) => {
-                    const chart = charts.find((c) => {
-                      const chartDate = new Date(c.dateTaken);
-                      chartDate.setDate(chartDate.getDate() - 1);
-                      return chartDate.toISOString().split("T")[0] === date;
-                    });
+                    // Use the helper function to find the chart for this date
+                    const chart = findChartForDate(date);
                     
                     const currentDate = new Date();
                     const dateObj = new Date(date);
