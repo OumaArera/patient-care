@@ -63,19 +63,6 @@ const Charts = () => {
         setLoadingCharts(false);
       })
       .catch(() => setLoadingCharts(false));
-
-      const processedCharts = (data?.responseObject || []).map(chart => {
-        const adjustedDate = new Date(chart.dateTaken);
-        adjustedDate.setDate(adjustedDate.getDate() - 1);
-        return {
-          ...chart,
-          backdatedDate: adjustedDate.toISOString().split("T")[0],
-          backdatedMonth: String(adjustedDate.getMonth() + 1).padStart(2, '0'),
-          backdatedYear: String(adjustedDate.getFullYear())
-        };
-      });
-      setCharts(processedCharts);
-      
   };
 
   const closePastChartsModal = () => {
@@ -245,13 +232,11 @@ const Charts = () => {
                 </thead>
                 <tbody>
                   {monthDays.map((date) => {
-                    const chart = charts.find(c =>
-                      c.backdatedDate === date &&
-                      c.backdatedMonth === selectedMonth &&
-                      c.backdatedYear === selectedYear
-                    );
-                    
-                    
+                    const chart = charts.find((c) => {
+                      const chartDate = new Date(c.dateTaken);
+                      chartDate.setDate(chartDate.getDate() - 1);
+                      return chartDate.toISOString().split("T")[0] === date;
+                    });
                     
                     const isPastDate = new Date(date) < new Date().setHours(0, 0, 0, 0);
                     
