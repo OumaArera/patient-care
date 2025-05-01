@@ -6,7 +6,7 @@ const ChartCard = ({ chart }) => {
 
   if (!chart) return null;
 
-  const formattedDate = moment(chart.dateTaken).subtract(0, "days").format("MMMM D, YYYY");
+  const formattedDate = moment(chart.dateTaken).subtract(1, "days").format("MMMM D, YYYY");
 
 
   const behaviorsByCategory = chart.behaviors.reduce((acc, behavior) => {
