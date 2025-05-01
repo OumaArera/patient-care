@@ -73,24 +73,42 @@ const Charts = () => {
     setShow(false);
   };
 
-  // Get days for the selected month
+  // Helper function to backdate a date by one day
+  const backDateByOneDay = (dateString) => {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() - 1);
+    return date;
+  };
+
+  // Format date as YYYY-MM-DD
+  const formatDateToYYYYMMDD = (date) => {
+    return date.toISOString().split("T")[0];
+  };
+
+  // Get days for the selected month, accounting for backdating
   const getDaysInMonth = () => {
     if (!selectedMonth || !selectedYear) return [];
     
+    // Convert selected month/year to integers
     const year = parseInt(selectedYear);
     const month = parseInt(selectedMonth) - 1; // JS months are 0-indexed
     
     // First day of selected month
     const firstDay = new Date(year, month, 1);
     
-    // Last day of selected month
-    const lastDay = new Date(year, month + 1, 0);
+    // Last day of selected month plus one day (to account for backdating)
+    // We need to include the first day of the next month because it will be backdated to the last day of current month
+    const lastDay = new Date(year, month + 1, 1);
     
     const daysArray = [];
     const currentDate = new Date();
     
     // Generate array of dates for the selected month
-    for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+    // We start one day before the first of the month to account for backdating
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - 1);
+    
+    for (let d = new Date(startDate); d < lastDay; d.setDate(d.getDate() + 1)) {
       // Only add days up to current date if viewing current month/year
       if (d <= currentDate || year < currentDate.getFullYear() || 
           (year === currentDate.getFullYear() && month < currentDate.getMonth())) {
@@ -120,6 +138,26 @@ const Charts = () => {
       years.push(currentYear - i);
     }
     return years;
+  };
+
+  // Function to find the chart for a display date, accounting for backdating
+  const findChartForDisplayDate = (displayDate) => {
+    // The display date is already backdated, so we need to add a day to find the chart
+    const chartDate = new Date(displayDate);
+    chartDate.setDate(chartDate.getDate() + 1);
+    const chartDateStr = formatDateToYYYYMMDD(chartDate);
+    
+    return charts.find(c => {
+      const cDate = new Date(c.dateTaken);
+      const cDateStr = formatDateToYYYYMMDD(cDate);
+      return cDateStr === chartDateStr;
+    });
+  };
+
+  // Format display date for UI
+  const formatDisplayDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
   };
 
   return (
@@ -222,7 +260,7 @@ const Charts = () => {
               <table className="w-full border-collapse border border-gray-700 text-white">
                 <thead className="">
                   <tr className="bg-gray-700">
-                    <th className="p-3 border border-gray-600">Date</th>
+                    <th className="p-3 border border-gray-600">Display Date (Backdated)</th>
                     <th className="p-3 border border-gray-600">Resident</th>
                     <th className="p-3 border border-gray-600 w-48">Chart Status</th>
                     <th className="p-3 border border-gray-600 w-48">Reason Filled Late</th>
@@ -231,18 +269,19 @@ const Charts = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {monthDays.map((date) => {
-                    const chart = charts.find((c) => {
-                      const chartDate = new Date(c.dateTaken);
-                      chartDate.setDate(chartDate.getDate() - 1);
-                      return chartDate.toISOString().split("T")[0] === date;
-                    });
+                  {monthDays.map((displayDate) => {
+                    // Find chart for this display date
+                    const chart = findChartForDisplayDate(displayDate);
                     
-                    const isPastDate = new Date(date) < new Date().setHours(0, 0, 0, 0);
+                    // Display date is already backdated for UI
+                    const formattedDisplayDate = formatDisplayDate(displayDate);
+                    
+                    // Check if this date is in the past
+                    const isPastDate = new Date(displayDate) < new Date().setHours(0, 0, 0, 0);
                     
                     return (
-                      <tr key={date} className="bg-gray-900 text-gray-300">
-                        <td className="p-2 border border-gray-700">{date}</td>
+                      <tr key={displayDate} className="bg-gray-900 text-gray-300">
+                        <td className="p-2 border border-gray-700">{formattedDisplayDate}</td>
                         <td className="p-2 border border-gray-700">
                           {chart ? chart.patientName : "Missing"}
                         </td>
@@ -279,6 +318,10 @@ const Charts = () => {
                             <button 
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() => {
+                                // Store chart date (which is display date + 1 day)
+                                const chartDate = new Date(displayDate);
+                                chartDate.setDate(chartDate.getDate() + 1);
+                                // Pass the current display date to know where we're coming from
                                 setShow(true);
                                 setShowEdits(false);
                               }}
