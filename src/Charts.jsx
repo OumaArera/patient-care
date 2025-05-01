@@ -22,13 +22,16 @@ const Charts = () => {
   const [allowLate, setAllowLate] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
   const type = "charts";
-  
-  // New state for month selection
-  const [selectedMonth, setSelectedMonth] = useState(() => {
-    const currentDate = new Date();
-    return `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-  });
+
+  // Initialize with current month and year when component mounts
+  useEffect(() => {
+    const now = new Date();
+    setSelectedMonth(String(now.getMonth() + 1).padStart(2, '0')); // Add 1 because getMonth() returns 0-11
+    setSelectedYear(String(now.getFullYear()));
+  }, []);
 
   const handleReviewChart = () => {
     setShowReview(false);
@@ -62,8 +65,8 @@ const Charts = () => {
       .catch(() => setLoadingCharts(false));
   };
 
-  const closePastChartsModal = () =>{
-     setShowChartCard(false);
+  const closePastChartsModal = () => {
+    setShowChartCard(false);
   }
 
   const closeChartModal = () => {
@@ -72,59 +75,52 @@ const Charts = () => {
 
   // Get days for the selected month
   const getDaysInMonth = () => {
-    const [year, month] = selectedMonth.split('-').map(Number);
-    const firstDay = new Date(year, month - 1, 1);
-    const lastDay = new Date(year, month, 0);
+    if (!selectedMonth || !selectedYear) return [];
+    
+    const year = parseInt(selectedYear);
+    const month = parseInt(selectedMonth) - 1; // JS months are 0-indexed
+    
+    // First day of selected month
+    const firstDay = new Date(year, month, 1);
+    
+    // Last day of selected month
+    const lastDay = new Date(year, month + 1, 0);
+    
     const daysArray = [];
-    
-    const currentDate = new Date();
-    const isCurrentMonth = 
-      currentDate.getFullYear() === year && 
-      currentDate.getMonth() === month - 1;
-    
-    const maxDay = isCurrentMonth 
-      ? currentDate.getDate() 
-      : lastDay.getDate();
-    
-    for (let day = 1; day <= maxDay; day++) {
-      const date = new Date(year, month - 1, day);
-      daysArray.push(date.toISOString().split("T")[0]);
-    }
-    
-    return daysArray.reverse(); // Show most recent dates first
-  };
-
-  // Get list of available months (current month and previous 11 months)
-  const getAvailableMonths = () => {
-    const months = [];
     const currentDate = new Date();
     
-    for (let i = 0; i < 12; i++) {
-      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-      const monthStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-      const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-      months.push({ value: monthStr, label: monthName });
+    // Generate array of dates for the selected month
+    for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+      // Only add days up to current date if viewing current month/year
+      if (d <= currentDate || year < currentDate.getFullYear() || 
+          (year === currentDate.getFullYear() && month < currentDate.getMonth())) {
+        daysArray.push(new Date(d).toISOString().split("T")[0]);
+      }
     }
     
-    return months;
+    // Sort in descending order (newest first)
+    return daysArray.sort((a, b) => new Date(b) - new Date(a));
   };
 
-  const editChart = () =>{
+  const monthDays = getDaysInMonth();
+
+  const editChart = () => {
     setShowEdits(false);
   }
 
-  const lateSubmission = () =>{
+  const lateSubmission = () => {
     setAllowLate(false);
   }
-  
-  const handleMonthChange = (e) => {
-    setSelectedMonth(e.target.value);
-  };
 
-  // Get days of the selected month
-  const daysInSelectedMonth = getDaysInMonth();
-  
-  // Helper function to find chart for a specific date - NOT USED
+  // Generate years for dropdown (current year and 5 years back)
+  const getYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let i = 0; i < 6; i++) {
+      years.push(currentYear - i);
+    }
+    return years;
+  };
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
@@ -174,20 +170,42 @@ const Charts = () => {
             </select>
           </div>
 
-          {/* Month selection dropdown */}
-          <div className="w-full max-w-md">
-            <label className="block mb-2 text-lg">Select Month:</label>
-            <select
-              onChange={handleMonthChange}
-              value={selectedMonth}
-              className="border px-4 py-2 w-full bg-gray-700 text-white rounded"
-            >
-              {getAvailableMonths().map((month) => (
-                <option key={month.value} value={month.value}>
-                  {month.label}
-                </option>
-              ))}
-            </select>
+          <div className="flex w-full max-w-md gap-4">
+            <div className="w-1/2">
+              <label className="block mb-2 text-lg">Month:</label>
+              <select
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                value={selectedMonth}
+                className="border px-4 py-2 w-full bg-gray-700 text-white rounded"
+              >
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </div>
+            <div className="w-1/2">
+              <label className="block mb-2 text-lg">Year:</label>
+              <select
+                onChange={(e) => setSelectedYear(e.target.value)}
+                value={selectedYear}
+                className="border px-4 py-2 w-full bg-gray-700 text-white rounded"
+              >
+                {getYearOptions().map(year => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
       )}
@@ -213,20 +231,14 @@ const Charts = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {daysInSelectedMonth.map((date) => {
-                    // Find chart for this date by looking for a dateTaken that is one day ahead
-                    const nextDay = new Date(date);
-                    nextDay.setDate(nextDay.getDate() + 1);
-                    const nextDayStr = nextDay.toISOString().split("T")[0];
-                    
+                  {monthDays.map((date) => {
                     const chart = charts.find((c) => {
-                      const chartDate = new Date(c.dateTaken).toISOString().split("T")[0];
-                      return chartDate === nextDayStr;
+                      const chartDate = new Date(c.dateTaken);
+                      chartDate.setDate(chartDate.getDate() - 1);
+                      return chartDate.toISOString().split("T")[0] === date;
                     });
                     
-                    const currentDate = new Date();
-                    const dateObj = new Date(date);
-                    const isPastDate = dateObj < new Date(currentDate.setHours(0, 0, 0, 0));
+                    const isPastDate = new Date(date) < new Date().setHours(0, 0, 0, 0);
                     
                     return (
                       <tr key={date} className="bg-gray-900 text-gray-300">
@@ -266,14 +278,14 @@ const Charts = () => {
                           {!chart ? (
                             <button 
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
-                              onClick={() =>{
+                              onClick={() => {
                                 setShow(true);
                                 setShowEdits(false);
                               }}
                             >
-                            Chart
+                              Chart
                             </button>
-                          ):(
+                          ) : (
                             <button
                               className="text-white hover:text-gray-400"
                               onClick={() => {
@@ -294,14 +306,13 @@ const Charts = () => {
           )}
         </>
       )}
-      
       {showOptions && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
           onClick={() => setShowOptions(false)}
         >
           <div
-            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-[40vw] max-h-[50vh] overflow-y-auto"
+            className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md max-h-[50vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -345,8 +356,7 @@ const Charts = () => {
           </div>
         </div>
       )}
-      
-      {show && !showEdits &&(
+      {show && !showEdits && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
           onClick={closeChartModal}
@@ -365,7 +375,6 @@ const Charts = () => {
           </div>
         </div>
       )}
-      
       {showReview && selectedChart && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
