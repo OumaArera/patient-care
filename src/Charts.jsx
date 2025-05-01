@@ -23,6 +23,12 @@ const Charts = () => {
   const [showOptions, setShowOptions] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const type = "charts";
+  
+  // New state for month selection
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const currentDate = new Date();
+    return `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+  });
 
   const handleReviewChart = () => {
     setShowReview(false);
@@ -58,20 +64,50 @@ const Charts = () => {
 
   const closePastChartsModal = () =>{
      setShowChartCard(false);
-
   }
 
   const closeChartModal = () => {
     setShow(false);
   };
 
-  const currentDate = new Date();
-  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  const last20Days = [];
+  // Get days for the selected month
+  const getDaysInMonth = () => {
+    const [year, month] = selectedMonth.split('-').map(Number);
+    const firstDay = new Date(year, month - 1, 1);
+    const lastDay = new Date(year, month, 0);
+    const daysArray = [];
+    
+    const currentDate = new Date();
+    const isCurrentMonth = 
+      currentDate.getFullYear() === year && 
+      currentDate.getMonth() === month - 1;
+    
+    const maxDay = isCurrentMonth 
+      ? currentDate.getDate() 
+      : lastDay.getDate();
+    
+    for (let day = 1; day <= maxDay; day++) {
+      const date = new Date(year, month - 1, day);
+      daysArray.push(date.toISOString().split("T")[0]);
+    }
+    
+    return daysArray.reverse(); // Show most recent dates first
+  };
 
-  for (let d = new Date(currentDate); d >= firstDayOfMonth; d.setDate(d.getDate() - 1)) {
-    last20Days.push(d.toISOString().split("T")[0]);
-  }
+  // Get list of available months (current month and previous 11 months)
+  const getAvailableMonths = () => {
+    const months = [];
+    const currentDate = new Date();
+    
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+      const monthStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+      months.push({ value: monthStr, label: monthName });
+    }
+    
+    return months;
+  };
 
   const editChart = () =>{
     setShowEdits(false);
@@ -81,9 +117,15 @@ const Charts = () => {
     setAllowLate(false);
   }
   
+  const handleMonthChange = (e) => {
+    setSelectedMonth(e.target.value);
+  };
+
+  // Get days of the selected month
+  const daysInSelectedMonth = getDaysInMonth();
 
   return (
-    <div className=" bg-gray-900 text-white min-h-screen">
+    <div className="bg-gray-900 text-white min-h-screen">
       <h2 className="text-2xl font-bold text-center mb-4 text-blue-400">Resident Charts</h2>
 
       {loadingPatients ? (
@@ -129,8 +171,23 @@ const Charts = () => {
                 ))}
             </select>
           </div>
-        </div>
 
+          {/* Month selection dropdown */}
+          <div className="w-full max-w-md">
+            <label className="block mb-2 text-lg">Select Month:</label>
+            <select
+              onChange={handleMonthChange}
+              value={selectedMonth}
+              className="border px-4 py-2 w-full bg-gray-700 text-white rounded"
+            >
+              {getAvailableMonths().map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       )}
 
       {selectedPatient && (
@@ -154,12 +211,17 @@ const Charts = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {last20Days.map((date) => {
+                  {daysInSelectedMonth.map((date) => {
                     const chart = charts.find((c) => {
                       const chartDate = new Date(c.dateTaken);
                       chartDate.setDate(chartDate.getDate() - 1);
                       return chartDate.toISOString().split("T")[0] === date;
                     });
+                    
+                    const currentDate = new Date();
+                    const dateObj = new Date(date);
+                    const isPastDate = dateObj < new Date(currentDate.setHours(0, 0, 0, 0));
+                    
                     return (
                       <tr key={date} className="bg-gray-900 text-gray-300">
                         <td className="p-2 border border-gray-700">{date}</td>
@@ -180,7 +242,7 @@ const Charts = () => {
                             >
                               View
                             </button>
-                          ) : new Date(date) < new Date().setHours(0, 0, 0, 0) ? ( 
+                          ) : isPastDate ? ( 
                             <button
                               className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
                               onClick={() => {
@@ -216,8 +278,6 @@ const Charts = () => {
                               <MoreVertical size={20} />
                             </button>
                           )}
-
-                          
                         </td>
                       </tr>
                     );
@@ -228,6 +288,7 @@ const Charts = () => {
           )}
         </>
       )}
+      
       {showOptions && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
@@ -278,6 +339,7 @@ const Charts = () => {
           </div>
         </div>
       )}
+      
       {show && !showEdits &&(
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
@@ -297,6 +359,7 @@ const Charts = () => {
           </div>
         </div>
       )}
+      
       {showReview && selectedChart && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
@@ -337,7 +400,7 @@ const Charts = () => {
         </div>
       )}
 
-    {allowLate && !showChartCard && (
+      {allowLate && !showChartCard && (
         <div
           className="fixed inset-0 bg-opacity-50 flex justify-center items-center"
           onClick={lateSubmission}
@@ -356,7 +419,6 @@ const Charts = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
