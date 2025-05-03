@@ -62,7 +62,7 @@ export const downloadSleepPatternData = async (sleepData, residentInfo, selected
   filteredData.forEach(entry => {
     const entryDate = new Date(entry.dateTaken);
     // Add 1 to the date to shift data to the next day
-    const day = entryDate.getDate() + 1;
+    const day = entryDate.getDate() + 0;
     
     if (day >= 1 && day <= daysInMonth && timeSlots.includes(entry.markedFor)) {
       dataByHourDay[entry.markedFor][day] = entry.markAs;
@@ -217,7 +217,7 @@ export const downloadSleepPatternCSV = (sleepData, residentInfo, selectedMonth, 
   filteredData.forEach(entry => {
     const entryDate = new Date(entry.dateTaken);
     // Add 1 to the date to shift data to the next day
-    const day = entryDate.getDate() + 1;
+    const day = entryDate.getDate() + 0;
     
     if (day >= 1 && day <= daysInMonth && timeSlots.includes(entry.markedFor)) {
       dataByHourDay[entry.markedFor][day] = entry.markAs;

@@ -90,8 +90,7 @@ const SleepPatternReport = ({ sleepData, resident }) => {
   // Populate data with day shift (map data for a day to the next day)
   filteredData.forEach(entry => {
     const entryDate = new Date(entry.dateTaken);
-    // Add 1 to the date to shift data to the next day
-    const day = entryDate.getDate() + 1;
+    const day = entryDate.getDate() + 0;
     
     // Make sure we're not exceeding the days in month
     if (day >= 1 && day <= daysInMonth && timeSlots.includes(entry.markedFor)) {
@@ -124,7 +123,6 @@ const SleepPatternReport = ({ sleepData, resident }) => {
           <FileText size={24} className="text-blue-400 mr-2" />
           Sleep Pattern Report
         </h2>
-        
         <div className="flex space-x-4">
           <div className="flex items-center">
             <label className="mr-2 flex items-center">
@@ -143,7 +141,6 @@ const SleepPatternReport = ({ sleepData, resident }) => {
               ))}
             </select>
           </div>
-          
           <div className="flex items-center">
             <label className="mr-2">Year:</label>
             <select
@@ -158,7 +155,6 @@ const SleepPatternReport = ({ sleepData, resident }) => {
               ))}
             </select>
           </div>
-          
           <button
             onClick={handleDownloadPDF}
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded flex items-center"
@@ -166,7 +162,6 @@ const SleepPatternReport = ({ sleepData, resident }) => {
             <Download size={16} className="mr-1" />
             PDF
           </button>
-          
           <button
             onClick={handleDownloadCSV}
             className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded flex items-center"
@@ -176,13 +171,11 @@ const SleepPatternReport = ({ sleepData, resident }) => {
           </button>
         </div>
       </div>
-      
       <div className="mb-4">
         <h3 className="text-lg font-medium mb-2">
           {resident?.firstName} {resident?.lastName} - {new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'long' })} {selectedYear}
         </h3>
       </div>
-      
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -231,7 +224,6 @@ const SleepPatternReport = ({ sleepData, resident }) => {
               </tbody>
             </table>
           </div>
-          
           <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gray-800 p-4 rounded-lg">
               <h4 className="text-lg font-medium mb-3">Legend</h4>
@@ -288,5 +280,4 @@ const SleepPatternReport = ({ sleepData, resident }) => {
     </div>
   );
 };
-
 export default SleepPatternReport;

@@ -57,11 +57,11 @@ const Appointment = ({ patientId }) => {
       validationErrors.push("Please fill in all required fields.");
     }
 
-    if (nextAppointmentDate) {
-      if (new Date(nextAppointmentDate) <= new Date(dateTaken)) {
-        validationErrors.push("Next appointment date must be later than the selected date.");
-      }
-    }
+    // if (nextAppointmentDate) {
+    //   if (new Date(nextAppointmentDate) <= new Date(dateTaken)) {
+    //     validationErrors.push("Next appointment date must be later than the selected date.");
+    //   }
+    // }
 
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
