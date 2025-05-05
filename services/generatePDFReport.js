@@ -276,12 +276,12 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
         pageRows.forEach(row => {
             descriptionHTML += `
                 <tr style="font-size: 12px;">
-                    <td style="padding: 10px; border: 1px solid #000;">${row.date}</td>
-                    <td style="padding: 10px; border: 1px solid #000;">${row.Behavior_Description}</td>
-                    <td style="padding: 10px; border: 1px solid #000;">${row.Trigger}</td>
-                    <td style="padding: 10px; border: 1px solid #000;">${row.Care_Giver_Intervention}</td>
-                    <td style="padding: 10px; border: 1px solid #000;">${row.Reported_Provider_And_Careteam}</td>
-                    <td style="padding: 10px; border: 1px solid #000;">${row.Outcome}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.date}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Behavior_Description}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Trigger}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Care_Giver_Intervention}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Reported_Provider_And_Careteam}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Outcome}</td>
                 </tr>`;
         });
         
