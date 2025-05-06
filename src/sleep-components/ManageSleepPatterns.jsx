@@ -5,6 +5,7 @@ import SelectionControls from "./SelectionControls";
 import SleepPatternChart from "./SleepPatternChart";
 import MonthlySummary from "./MonthlySummary";
 import PatternAnalysis from "./PatternAnalysis";
+import SleepEntryEditor from "./SleepEntryEditor";
 import { downloadSleepPatternData } from "../utils/downloadUtils";
 
 const SLEEP_PATTERNS_URLS = "https://patient-care-server.onrender.com/api/v1/sleeps";
@@ -14,7 +15,7 @@ const ManageSleepPatterns = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loadingResidents, setLoadingResidents] = useState(false); // Added specific resident loading state
+  const [loadingResidents, setLoadingResidents] = useState(false);
   const [sleepData, setSleepData] = useState([]);
   const [loadingSleepData, setLoadingSleepData] = useState(false);
   const [selectedResident, setSelectedResident] = useState("");
@@ -23,7 +24,8 @@ const ManageSleepPatterns = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [chartData, setChartData] = useState([]);
   const [viewMode, setViewMode] = useState("bar");
-  const [downloadingData, setDownloadingData] = useState(false); // Added state for download progress
+  const [downloadingData, setDownloadingData] = useState(false);
+  const [showEditPanel, setShowEditPanel] = useState(false); // New state for toggling edit panel
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -53,12 +55,12 @@ const ManageSleepPatterns = () => {
 
   useEffect(() => {
     if (selectedBranch) {
-      setLoadingResidents(true); // Set loading state when filtering residents
+      setLoadingResidents(true);
       const filtered = residents.filter(resident => resident.branchId === parseInt(selectedBranch));
       setFilteredResidents(filtered);
       setSelectedResident(""); 
       setSleepData([]);
-      setLoadingResidents(false); // Clear loading state
+      setLoadingResidents(false);
     } else {
       setFilteredResidents([]);
     }
@@ -78,13 +80,13 @@ const ManageSleepPatterns = () => {
 
   const getResidents = () => {
     setLoading(true);
-    setLoadingResidents(true); // Set loading state for residents specifically
+    setLoadingResidents(true);
     fetchPatients()
       .then((data) => setResidents(data?.responseObject || []))
       .catch(() => {})
       .finally(() => {
         setLoading(false);
-        setLoadingResidents(false); // Clear loading state
+        setLoadingResidents(false);
       });
   };
 
@@ -99,7 +101,6 @@ const ManageSleepPatterns = () => {
   };
 
   const processChartData = () => {
-    // Filter data for selected month and year
     const filteredData = sleepData.filter(entry => {
       const entryDate = new Date(entry.dateTaken);
       return entryDate.getMonth() === parseInt(selectedMonth) && 
@@ -108,7 +109,7 @@ const ManageSleepPatterns = () => {
 
     // Group data by date
     const groupedByDate = {};
-    const hourlyPatterns = {}; // For tracking patterns by hour
+    const hourlyPatterns = {};
     
     filteredData.forEach(entry => {
       const date = entry.dateTaken;
@@ -124,43 +125,36 @@ const ManageSleepPatterns = () => {
           awakeHours: 0,
           sleepHours: 0,
           entries: [],
-          hourlyStatus: Array(24).fill(null) // Track status for each hour
+          hourlyStatus: Array(24).fill(null)
         };
       }
       
-      // Add entry details
       groupedByDate[day].entries.push({
         time: entry.markedFor,
         status: entry.markAs,
         hour
       });
       
-      // Update hourly status
       if (hour >= 0 && hour < 24) {
         groupedByDate[day].hourlyStatus[hour] = entry.markAs;
       }
       
-      // Count sleep/awake hours
       if (entry.markAs === 'A') {
         groupedByDate[day].awakeHours++;
         
-        // Track hourly patterns
         if (!hourlyPatterns[hour]) hourlyPatterns[hour] = { awake: 0, sleep: 0 };
         hourlyPatterns[hour].awake++;
         
       } else if (entry.markAs === 'S') {
         groupedByDate[day].sleepHours++;
         
-        // Track hourly patterns
         if (!hourlyPatterns[hour]) hourlyPatterns[hour] = { awake: 0, sleep: 0 };
         hourlyPatterns[hour].sleep++;
       }
     });
 
-    // Convert to array and sort by day
     const chartData = Object.values(groupedByDate).sort((a, b) => a.day - b.day);
     
-    // Add pattern analysis data
     chartData.patternAnalysis = Object.entries(hourlyPatterns).map(([hour, data]) => ({
       hour: parseInt(hour),
       awakeCount: data.awake,
@@ -210,11 +204,22 @@ const ManageSleepPatterns = () => {
       year: selectedYear
     };
     
-    // Execute download function
     downloadSleepPatternData(sleepData, residentInfo, selectedMonth, selectedYear)
       .finally(() => {
         setDownloadingData(false);
       });
+  };
+
+  const handleSleepEntryUpdate = (updatedEntry) => {
+    setSleepData(prevData => 
+      prevData.map(entry => 
+        entry.sleepId === updatedEntry.sleepId ? updatedEntry : entry
+      )
+    );
+  };
+
+  const toggleEditPanel = () => {
+    setShowEditPanel(!showEditPanel);
   };
 
   const selectedResidentName = selectedResident ? 
@@ -245,7 +250,17 @@ const ManageSleepPatterns = () => {
       />
       
       {selectedResident && (
-        <div className="mb-4 flex justify-end">
+        <div className="mb-4 flex justify-between">
+          <button 
+            onClick={toggleEditPanel}
+            className={`${showEditPanel ? 'bg-gray-600' : 'bg-green-600 hover:bg-green-700'} text-white font-medium py-2 px-4 rounded flex items-center`}
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            {showEditPanel ? "Hide Edit Panel" : "Edit Sleep Data"}
+          </button>
+          
           <button 
             onClick={handleDownloadData}
             disabled={downloadingData || loadingSleepData || chartData.length === 0}
@@ -269,6 +284,14 @@ const ManageSleepPatterns = () => {
             )}
           </button>
         </div>
+      )}
+      
+      {/* Display the edit panel if enabled */}
+      {selectedResident && showEditPanel && (
+        <SleepEntryEditor 
+          sleepData={sleepData} 
+          onUpdate={handleSleepEntryUpdate} 
+        />
       )}
       
       <SleepPatternChart 
