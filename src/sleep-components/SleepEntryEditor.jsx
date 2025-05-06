@@ -6,7 +6,7 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
   const [updatingEntries, setUpdatingEntries] = useState({});
   const [errors, setErrors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [entriesPerPage] = useState(5); // Number of date groups to show per page
+  const [entriesPerPage] = useState(2); // Number of date groups to show per page
   const [showErrorOverlay, setShowErrorOverlay] = useState(false);
   
   // Reset pagination when sleep data changes
