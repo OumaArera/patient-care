@@ -151,10 +151,10 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
                     .map(entry => (
                       <div 
                         key={entry.sleepId} 
-                        className="flex items-center bg-gray-50 rounded p-2 border hover:border-gray-400 transition-colors"
+                        className="flex items-center  bg-gray-50 rounded p-2 border hover:border-gray-400 transition-colors"
                       >
                         <div className="flex-1">
-                          <span className="font-medium">{entry.markedFor}</span>
+                          <span className="font-medium text-gray-950">{entry.markedFor}</span>
                         </div>
                         
                         <button
