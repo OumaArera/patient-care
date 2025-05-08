@@ -6,6 +6,7 @@ import SleepPatternChart from "./SleepPatternChart";
 import MonthlySummary from "./MonthlySummary";
 import PatternAnalysis from "./PatternAnalysis";
 import SleepEntryEditor from "./SleepEntryEditor";
+import SleepPatternPreview from "./SleepPatternPreview"; // Import the new component
 import { downloadSleepPatternData } from "../utils/downloadUtils";
 
 const SLEEP_PATTERNS_URLS = "https://patient-care-server.onrender.com/api/v1/sleeps";
@@ -25,7 +26,7 @@ const ManageSleepPatterns = () => {
   const [chartData, setChartData] = useState([]);
   const [viewMode, setViewMode] = useState("bar");
   const [downloadingData, setDownloadingData] = useState(false);
-  const [showEditPanel, setShowEditPanel] = useState(false); // New state for toggling edit panel
+  const [showEditPanel, setShowEditPanel] = useState(false);
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -251,15 +252,17 @@ const ManageSleepPatterns = () => {
       
       {selectedResident && (
         <div className="mb-4 flex justify-between">
-          <button 
-            onClick={toggleEditPanel}
-            className={`${showEditPanel ? 'bg-gray-600' : 'bg-green-600 hover:bg-green-700'} text-white font-medium py-2 px-4 rounded flex items-center`}
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-            </svg>
-            {showEditPanel ? "Hide Edit Panel" : "Edit Sleep Data"}
-          </button>
+          <div className="flex space-x-3">
+            <button 
+              onClick={toggleEditPanel}
+              className={`${showEditPanel ? 'bg-gray-600' : 'bg-green-600 hover:bg-green-700'} text-white font-medium py-2 px-4 rounded flex items-center`}
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              {showEditPanel ? "Hide Edit Panel" : "Edit Sleep Data"}
+            </button>
+          </div>
           
           <button 
             onClick={handleDownloadData}
@@ -284,6 +287,16 @@ const ManageSleepPatterns = () => {
             )}
           </button>
         </div>
+      )}
+
+      {/* Add the new preview component */}
+      {selectedResident && (
+        <SleepPatternPreview
+          sleepData={sleepData}
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+          selectedResidentName={selectedResidentName}
+        />
       )}
       
       {/* Display the edit panel if enabled */}

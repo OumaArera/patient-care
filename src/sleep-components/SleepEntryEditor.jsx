@@ -6,7 +6,7 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
   const [updatingEntries, setUpdatingEntries] = useState({});
   const [errors, setErrors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [entriesPerPage] = useState(2); // Number of date groups to show per page
+  const [entriesPerPage] = useState(2);
   const [showErrorOverlay, setShowErrorOverlay] = useState(false);
   
   // Reset pagination when sleep data changes
@@ -131,7 +131,6 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                   {entriesByDate[date]
                     .sort((a, b) => {
-                      // Extract hours from time strings like "7:00AM" or "12:00PM"
                       const getTimeValue = (timeStr) => {
                         const [hourMin, ampm] = timeStr.split(/(?:AM|PM)/i);
                         let [hour, min] = hourMin.split(':').map(Number);
