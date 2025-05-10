@@ -6,36 +6,33 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
 
     const { facilityName, branchName, patientName } = charts[0];
     
-    // Create PDF in landscape orientation with precise settings
+    // Create PDF in landscape orientation
     const pdf = new jsPDF({
         orientation: 'landscape',
-        unit: 'pt',  // Use points for more precise control
+        unit: 'mm',
         format: 'a4'
     });
 
-    // Define page dimensions in points (1 pt = 1/72 inch)
-    const pageWidth = pdf.internal.pageSize.getWidth();  // ~841.89 pts for A4 landscape
-    const pageHeight = pdf.internal.pageSize.getHeight(); // ~595.28 pts for A4 landscape
-    const margin = 30; // margins in points
+    // Define page dimensions
+    const pageWidth = 297; // A4 landscape width in mm
+    const pageHeight = 210; // A4 landscape height in mm
+    const margin = 10;
     const contentWidth = pageWidth - (margin * 2);
-    const contentHeight = pageHeight - (margin * 2);
 
     /**
      * Renders HTML content to an image and adds it to the PDF
      * @param {string} htmlContent - The HTML content to render
      * @param {jsPDF} pdfDoc - The PDF document to add the image to
      * @param {boolean} addPage - Whether to add a new page before rendering
-     * @param {string} contentType - Type of content being rendered (for debugging)
-     * @returns {Promise<void>}
      */
-    const renderHTMLToPDF = async (htmlContent, pdfDoc, addPage = false, contentType = "content") => {
+    const renderHTMLToPDF = async (htmlContent, pdfDoc, addPage = false) => {
         if (addPage) {
             pdfDoc.addPage();
         }
         
-        // Create a temporary container with optimal dimensions
+        // Create a temporary container
         const container = document.createElement("div");
-        container.style.width = `${contentWidth * 1.5}px`; // Scale for better quality
+        container.style.width = "1000px"; // Fixed width for consistent rendering
         container.style.padding = "0";
         container.style.margin = "0";
         container.style.fontFamily = "Arial, sans-serif";
@@ -47,55 +44,17 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
         document.body.appendChild(container);
         
         try {
-            // Render at high quality with better scaling options
             const canvas = await html2canvas(container, { 
-                scale: 2.5, // Higher scale for better print quality
+                scale: 2, // Balance between quality and performance
                 useCORS: true,
-                allowTaint: true,
                 logging: false,
-                backgroundColor: "#FFFFFF"
+                width: 1000 // Fixed width matching container
             });
             
-            // Get image data with high quality
-            const imgData = canvas.toDataURL("image/jpeg", 1.0);
-            
-            // Calculate scaling to fit page while maintaining aspect ratio
-            const imgProps = pdfDoc.getImageProperties(imgData);
-            const imgWidth = contentWidth;
-            const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
-            
-            // If image would be too tall for page, scale it to fit
-            if (imgHeight > contentHeight) {
-                // Scale to fit height
-                const scaleFactor = contentHeight / imgHeight;
-                pdfDoc.addImage(
-                    imgData, 
-                    "JPEG", 
-                    margin, 
-                    margin, 
-                    imgWidth * scaleFactor, 
-                    contentHeight,
-                    undefined,
-                    'FAST'
-                );
-            } else {
-                // Use normal dimensions
-                pdfDoc.addImage(
-                    imgData, 
-                    "JPEG", 
-                    margin, 
-                    margin, 
-                    imgWidth, 
-                    imgHeight,
-                    undefined,
-                    'FAST'
-                );
-            }
-            
+            const imgData = canvas.toDataURL("image/png", 0.9);
+            pdfDoc.addImage(imgData, "PNG", margin, margin, contentWidth, 0); // Maintain aspect ratio
         } catch (error) {
-            console.error(`Error rendering ${contentType} to PDF:`, error);
-            // Add error message to PDF for troubleshooting
-            pdfDoc.text(`Error rendering ${contentType}. Please try again.`, margin, margin + 20);
+            console.error("Error rendering HTML to PDF:", error);
         } finally {
             document.body.removeChild(container);
         }
@@ -118,7 +77,7 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             behaviorDate.setDate(behaviorDate.getDate() - 1); // Backdating by 1 day
             const adjustedDay = behaviorDate.getDate() - 1;
             if (adjustedDay >= 0 && adjustedDay < 31) {
-                processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "✓" : "";
+                processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "✔️" : "";
             }
         });
     });
@@ -134,157 +93,106 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             days: behavior.days,
         });
     });
+
+    // Estimate how many categories we can fit per page
+    // This is a conservative estimate to ensure we don't cut tables
+    const estimatedRowsPerCategory = Object.values(categoryGroups).map(behaviors => behaviors.length);
+    const maxRowsPerPage = 15; // Conservative estimate based on table row height
     
-    // Count total behaviors to determine if we need multiple pages
-    const totalBehaviors = Object.values(categoryGroups).reduce(
-        (total, behaviors) => total + behaviors.length, 0
-    );
+    // Create the behavior log pages
+    let currentPage = 0;
+    let currentPageCategories = [];
+    let currentPageRows = 0;
+    const behaviorPages = [];
     
-    // Determine if we need small or large table formatting
-    const useSmallFormatting = totalBehaviors > 15;
+    // Distribute categories across pages
+    Object.entries(categoryGroups).forEach(([category, behaviors]) => {
+        const categoryRows = behaviors.length;
+        
+        // If adding this category would exceed the page limit, create a new page
+        if (currentPageRows + categoryRows > maxRowsPerPage && currentPageCategories.length > 0) {
+            behaviorPages.push({
+                pageNumber: currentPage + 1,
+                categories: currentPageCategories
+            });
+            currentPage++;
+            currentPageCategories = [];
+            currentPageRows = 0;
+        }
+        
+        currentPageCategories.push({
+            name: category,
+            behaviors: behaviors
+        });
+        currentPageRows += categoryRows;
+    });
+    
+    // Add the last page if there are remaining categories
+    if (currentPageCategories.length > 0) {
+        behaviorPages.push({
+            pageNumber: currentPage + 1,
+            categories: currentPageCategories
+        });
+    }
     
     // Generate header content
     const headerHTML = `
-        <div style="text-align: center; font-size: ${useSmallFormatting ? '16px' : '18px'}; font-weight: bold; margin-bottom: 10px;">
+        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;">
             ${facilityName} - ${branchName}
         </div>
-        <div style="font-size: ${useSmallFormatting ? '13px' : '14px'}; margin-bottom: 5px;">
+        <div style="font-size: 16px; margin-bottom: 10px;">
             <strong>Year:</strong> ${selectedYear} &nbsp;&nbsp;
             <strong>Month:</strong> ${selectedMonth} &nbsp;&nbsp;
             <strong>Resident Name:</strong> ${patientName}
         </div>`;
     
-    // Dynamically adjust font and cell sizes based on number of behaviors
-    const cellPadding = useSmallFormatting ? "3px" : "5px";
-    const fontSize = useSmallFormatting ? "10px" : "12px";
-    const headerFontSize = useSmallFormatting ? "11px" : "12px";
-    
-    // If we have a lot of behaviors, split them into multiple pages intelligently
-    const maxBehaviorsPerPage = useSmallFormatting ? 30 : 15;
-    
-    // Calculate how many behaviors we can fit on each page
-    const behaviorPages = [];
-    let currentPage = [];
-    let currentCount = 0;
-    
-    // Distribute behaviors across pages
-    Object.entries(categoryGroups).forEach(([category, behaviors]) => {
-        // If adding this category would exceed the limit, start a new page
-        // But only if we already have some content on the current page
-        if (currentCount + behaviors.length > maxBehaviorsPerPage && currentCount > 0) {
-            behaviorPages.push(currentPage);
-            currentPage = [];
-            currentCount = 0;
-        }
+    // Generate and render behavior log pages
+    for (let i = 0; i < behaviorPages.length; i++) {
+        const page = behaviorPages[i];
+        const totalPages = behaviorPages.length;
         
-        // Add category to current page
-        currentPage.push({
-            category: category,
-            behaviors: behaviors
-        });
-        currentCount += behaviors.length;
-    });
-    
-    // Add the last page if there are remaining behaviors
-    if (currentPage.length > 0) {
-        behaviorPages.push(currentPage);
-    }
-    
-    // If we have a small number of behaviors, try to combine all on one page
-    if (behaviorPages.length === 1 || totalBehaviors <= maxBehaviorsPerPage) {
-        // Generate a single page with all behaviors
-        const allCategoriesHTML = `
+        let pageHTML = `
             ${headerHTML}
-            <div style="font-size: ${useSmallFormatting ? '14px' : '16px'}; margin: 8px 0; font-weight: bold;">
-                Behavior Log
+            <div style="font-size: 16px; margin: 10px 0;">
+                <strong>Behavior Log</strong> (Page ${page.pageNumber} of ${totalPages})
             </div>
             <table border="1" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                 <thead>
-                    <tr style="background: #f0f0f0; text-align: center; font-size: ${headerFontSize}; font-weight: bold;">
-                        <th style="width: 12%; padding: ${cellPadding}; border: 1px solid #000;">Category</th>
-                        <th style="width: 18%; padding: ${cellPadding}; border: 1px solid #000;">Log</th>
+                    <tr style="background: #f0f0f0; text-align: center; font-size: 12px; font-weight: bold;">
+                        <th style="width: 12%; padding: 5px; border: 1px solid #000;">Category</th>
+                        <th style="width: 18%; padding: 5px; border: 1px solid #000;">Log</th>
                         ${Array.from({ length: 31 }, (_, i) => 
-                            `<th style="width: 2.25%; padding: ${cellPadding}; border: 1px solid #000;">${i + 1}</th>`
+                            `<th style="width: 2.25%; padding: 5px; border: 1px solid #000;">${i + 1}</th>`
                         ).join("")}
                     </tr>
                 </thead>
                 <tbody>`;
         
-        // Add all categories and behaviors
-        Object.entries(categoryGroups).forEach(([category, behaviors]) => {
-            behaviors.forEach((behavior, index) => {
-                allCategoriesHTML += `<tr style="font-size: ${fontSize};">`;
+        // Add rows for each category on this page
+        page.categories.forEach(category => {
+            category.behaviors.forEach((behavior, index) => {
+                pageHTML += `<tr style="font-size: 12px;">`;
                 
                 if (index === 0) {
-                    allCategoriesHTML += `
-                        <td style="padding: ${cellPadding}; border: 1px solid #000; text-align: center; font-weight: bold;" rowspan="${behaviors.length}">
-                            ${category}
+                    pageHTML += `
+                        <td style="padding: 5px; border: 1px solid #000; text-align: center; font-weight: bold;" rowspan="${category.behaviors.length}">
+                            ${category.name}
                         </td>`;
                 }
                 
-                allCategoriesHTML += `
-                    <td style="padding: ${cellPadding}; border: 1px solid #000; text-align: left;">${behavior.behavior}</td>
+                pageHTML += `
+                    <td style="padding: 5px; border: 1px solid #000; text-align: left;">${behavior.behavior}</td>
                     ${behavior.days.map(status => 
-                        `<td style="padding: ${cellPadding}; border: 1px solid #000; text-align: center;">${status}</td>`
+                        `<td style="padding: 5px; border: 1px solid #000; text-align: center;">${status}</td>`
                     ).join("")}
                 </tr>`;
             });
         });
         
-        allCategoriesHTML += `</tbody></table>`;
+        pageHTML += `</tbody></table>`;
         
-        // Render single page with all behaviors
-        await renderHTMLToPDF(allCategoriesHTML, pdf, false, "behavior log");
-    } else {
-        // Generate multiple pages for behaviors
-        for (let i = 0; i < behaviorPages.length; i++) {
-            const pageCategories = behaviorPages[i];
-            
-            let pageHTML = `
-                ${headerHTML}
-                <div style="font-size: ${useSmallFormatting ? '14px' : '16px'}; margin: 8px 0; font-weight: bold;">
-                    Behavior Log (Page ${i + 1} of ${behaviorPages.length})
-                </div>
-                <table border="1" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
-                    <thead>
-                        <tr style="background: #f0f0f0; text-align: center; font-size: ${headerFontSize}; font-weight: bold;">
-                            <th style="width: 12%; padding: ${cellPadding}; border: 1px solid #000;">Category</th>
-                            <th style="width: 18%; padding: ${cellPadding}; border: 1px solid #000;">Log</th>
-                            ${Array.from({ length: 31 }, (_, i) => 
-                                `<th style="width: 2.25%; padding: ${cellPadding}; border: 1px solid #000;">${i + 1}</th>`
-                            ).join("")}
-                        </tr>
-                    </thead>
-                    <tbody>`;
-            
-            // Add categories for this page
-            pageCategories.forEach(categoryData => {
-                const behaviors = categoryData.behaviors;
-                
-                behaviors.forEach((behavior, index) => {
-                    pageHTML += `<tr style="font-size: ${fontSize};">`;
-                    
-                    if (index === 0) {
-                        pageHTML += `
-                            <td style="padding: ${cellPadding}; border: 1px solid #000; text-align: center; font-weight: bold;" rowspan="${behaviors.length}">
-                                ${categoryData.category}
-                            </td>`;
-                    }
-                    
-                    pageHTML += `
-                        <td style="padding: ${cellPadding}; border: 1px solid #000; text-align: left;">${behavior.behavior}</td>
-                        ${behavior.days.map(status => 
-                            `<td style="padding: ${cellPadding}; border: 1px solid #000; text-align: center;">${status}</td>`
-                        ).join("")}
-                    </tr>`;
-                });
-            });
-            
-            pageHTML += `</tbody></table>`;
-            
-            // Render this page
-            await renderHTMLToPDF(pageHTML, pdf, i > 0, `behavior log page ${i+1}`);
-        }
+        // Render this page
+        await renderHTMLToPDF(pageHTML, pdf, i > 0);
     }
     
     // Process behavior description data
@@ -338,10 +246,8 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
         });
     }
     
-    // Adjust max descriptions per page based on total number of descriptions
-    // If we have <= 6 descriptions, put them all on one page
-    // Otherwise, split into pages of 4-6 each
-    const maxDescriptionsPerPage = sortedDescriptions.length <= 6 ? 6 : 4;
+    // Maximum description rows per page
+    const maxDescriptionsPerPage = 6;
     
     // Split descriptions into pages
     for (let i = 0; i < sortedDescriptions.length; i += maxDescriptionsPerPage) {
@@ -349,61 +255,48 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
         const pageNumber = Math.floor(i / maxDescriptionsPerPage) + 1;
         const totalPages = Math.ceil(sortedDescriptions.length / maxDescriptionsPerPage);
         
-        // Adjust cell padding based on number of rows
-        const descPadding = pageRows.length > 4 ? "10px" : "15px";
-        const descFontSize = pageRows.length > 4 ? "11px" : "12px";
-        
         let descriptionHTML = `
             ${headerHTML}
-            <div style="text-align: center; font-size: ${useSmallFormatting ? '14px' : '16px'}; font-weight: bold; margin: 8px 0;">
-                Behavior Description ${totalPages > 1 ? `(Page ${pageNumber} of ${totalPages})` : ''}
+            <div style="text-align: center; font-size: 16px; font-weight: bold; margin: 10px 0;">
+                Behavior Description (Page ${pageNumber} of ${totalPages})
             </div>
             <table border="1" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
                 <thead>
-                    <tr style="background: #f0f0f0; text-align: center; font-size: ${headerFontSize}; font-weight: bold;">
-                        <th style="width: 10%; padding: ${cellPadding}; border: 1px solid #000;">Date</th>
-                        <th style="width: 18%; padding: ${cellPadding}; border: 1px solid #000;">Behavior Description</th>
-                        <th style="width: 18%; padding: ${cellPadding}; border: 1px solid #000;">Trigger</th>
-                        <th style="width: 18%; padding: ${cellPadding}; border: 1px solid #000;">Care Giver Intervention</th>
-                        <th style="width: 18%; padding: ${cellPadding}; border: 1px solid #000;">Reported Provider And Careteam</th>
-                        <th style="width: 18%; padding: ${cellPadding}; border: 1px solid #000;">Outcome</th>
+                    <tr style="background: #f0f0f0; text-align: center; font-size: 12px; font-weight: bold;">
+                        <th style="width: 10%; padding: 5px; border: 1px solid #000;">Date</th>
+                        <th style="width: 18%; padding: 5px; border: 1px solid #000;">Behavior Description</th>
+                        <th style="width: 18%; padding: 5px; border: 1px solid #000;">Trigger</th>
+                        <th style="width: 18%; padding: 5px; border: 1px solid #000;">Care Giver Intervention</th>
+                        <th style="width: 18%; padding: 5px; border: 1px solid #000;">Reported Provider And Careteam</th>
+                        <th style="width: 18%; padding: 5px; border: 1px solid #000;">Outcome</th>
                     </tr>
                 </thead>
                 <tbody>`;
         
         pageRows.forEach(row => {
             descriptionHTML += `
-                <tr style="font-size: ${descFontSize};">
-                    <td style="padding: ${descPadding}; border: 1px solid #000;">${row.date}</td>
-                    <td style="padding: ${descPadding}; border: 1px solid #000;">${row.Behavior_Description}</td>
-                    <td style="padding: ${descPadding}; border: 1px solid #000;">${row.Trigger}</td>
-                    <td style="padding: ${descPadding}; border: 1px solid #000;">${row.Care_Giver_Intervention}</td>
-                    <td style="padding: ${descPadding}; border: 1px solid #000;">${row.Reported_Provider_And_Careteam}</td>
-                    <td style="padding: ${descPadding}; border: 1px solid #000;">${row.Outcome}</td>
+                <tr style="font-size: 12px;">
+                    <td style="padding: 15px; border: 1px solid #000;">${row.date}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Behavior_Description}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Trigger}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Care_Giver_Intervention}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Reported_Provider_And_Careteam}</td>
+                    <td style="padding: 15px; border: 1px solid #000;">${row.Outcome}</td>
                 </tr>`;
         });
         
         descriptionHTML += `</tbody></table>`;
         
-        // Add empty rows note if needed
+        // Add empty rows to fill the page
         if (pageRows.length < maxDescriptionsPerPage) {
             descriptionHTML += `
-                <div style="margin-top: 15px; font-style: italic; font-size: 11px;">
+                <div style="margin-top: 20px; font-style: italic; font-size: 12px;">
                     Note: Additional rows available for manual entries as needed.
                 </div>`;
         }
         
         // Render this description page
-        await renderHTMLToPDF(descriptionHTML, pdf, true, `behavior descriptions page ${pageNumber}`);
-    }
-    
-    // Add page numbers
-    const pageCount = pdf.internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-        pdf.setPage(i);
-        pdf.setFontSize(9);
-        pdf.setTextColor(150, 150, 150);
-        pdf.text(`Page ${i} of ${pageCount}`, pageWidth - 60, pageHeight - 20);
+        await renderHTMLToPDF(descriptionHTML, pdf, true);
     }
     
     // Add report metadata
@@ -414,6 +307,5 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
         keywords: `behavior report, ${patientName}, ${selectedMonth}, ${selectedYear}`
     });
     
-    // Save the PDF with higher quality
     pdf.save(`Behavior_${patientName}_${selectedYear}_${selectedMonth}.pdf`);
 };
