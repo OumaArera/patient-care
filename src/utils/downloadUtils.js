@@ -13,20 +13,44 @@ export const downloadSleepPatternData = async (sleepData, residentInfo, selected
   if (!sleepData || sleepData.length === 0) return;
 
   const { residentName, facilityName, branchName, month, year } = residentInfo;
-  const pdf = new jsPDF('landscape');
+  
+  // Create PDF in landscape orientation with more precise dimensions
+  // A4 landscape dimensions in points: 841.89 x 595.28
+  const pdf = new jsPDF({
+    orientation: 'landscape',
+    unit: 'pt',
+    format: 'a4'
+  });
+  
+  // Calculate available space
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 20; // margins in points
+  const contentWidth = pageWidth - (margin * 2);
+  const contentHeight = pageHeight - (margin * 2);
 
   const captureAsImage = async (htmlContent) => {
+    // Create a container with specific dimensions to better control the output
     const container = document.createElement("div");
-    container.style.padding = "15px";
+    container.style.width = `${contentWidth}px`;
+    container.style.padding = "0"; // Remove padding to maximize usable space
     container.style.fontFamily = "Arial, sans-serif";
     container.style.color = "#000";
+    container.style.fontSize = "10px"; // Reduce font size slightly for better fit
     container.innerHTML = htmlContent;
     document.body.appendChild(container);
     
-    const canvas = await html2canvas(container, { scale: 1.5 });
+    // Increase scale for better quality, but keep reasonable for file size
+    const canvas = await html2canvas(container, { 
+      scale: 2.0, // Higher scale for better print quality
+      logging: false,
+      useCORS: true,
+      allowTaint: true
+    });
+    
     document.body.removeChild(container);
     
-    return canvas.toDataURL("image/jpeg", 0.7);
+    return canvas.toDataURL("image/jpeg", 0.9); // Higher quality JPEG
   };
 
   // Filter data for selected month and year
@@ -61,37 +85,36 @@ export const downloadSleepPatternData = async (sleepData, residentInfo, selected
   // Populate data with day shift (map data for a day to the next day)
   filteredData.forEach(entry => {
     const entryDate = new Date(entry.dateTaken);
-    // Add 1 to the date to shift data to the next day
-    const day = entryDate.getDate() + 0;
+    const day = entryDate.getDate();
     
     if (day >= 1 && day <= daysInMonth && timeSlots.includes(entry.markedFor)) {
       dataByHourDay[entry.markedFor][day] = entry.markAs;
     }
   });
 
-  // Generate HTML table - header with resident info
+  // Generate HTML table - header with resident info (more compact)
   let tableHTML = `
-    <div style="text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 10px;">
+    <div style="text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 6px;">
       ${facilityName}
     </div>
-    <div style="text-align: center; font-size: 16px; margin-bottom: 10px;">
+    <div style="text-align: center; font-size: 14px; margin-bottom: 6px;">
       SLEEPING LOG
     </div>
-    <div style="font-size: 14px; margin-bottom: 10px;">
+    <div style="font-size: 12px; margin-bottom: 6px;">
       <strong>MONTH:</strong> ${month} ${year} &nbsp;&nbsp;
       <strong>NAME OF CLIENT:</strong> ${residentName}
     </div>
   `;
   
-  // Create table with time slots as rows and days as columns
-  tableHTML += `<table border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+  // Create more compact table with time slots as rows and days as columns
+  tableHTML += `<table border="1" style="width: 100%; border-collapse: collapse; font-size: 9px;">
     <thead>
       <tr style="background: #f0f0f0; text-align: center; font-weight: bold;">
-        <th style="padding: 4px; border: 1px solid #000; width: 70px;">TIME</th>`;
+        <th style="padding: 2px; border: 1px solid #000; width: 60px;">TIME</th>`;
   
   // Generate day columns (1-31)
   for (let day = 1; day <= daysInMonth; day++) {
-    tableHTML += `<th style="padding: 4px; border: 1px solid #000; width: 25px;">${day}</th>`;
+    tableHTML += `<th style="padding: 2px; border: 1px solid #000; width: 20px;">${day}</th>`;
   }
   
   tableHTML += `</tr></thead><tbody>`;
@@ -99,7 +122,7 @@ export const downloadSleepPatternData = async (sleepData, residentInfo, selected
   // Add time slot rows
   timeSlots.forEach(timeSlot => {
     tableHTML += `<tr>
-      <td style="padding: 5px; border: 1px solid #000; text-align: center; font-weight: bold;">${timeSlot}</td>`;
+      <td style="padding: 3px; border: 1px solid #000; text-align: center; font-weight: bold;">${timeSlot}</td>`;
     
     // Add data for each day
     for (let day = 1; day <= daysInMonth; day++) {
@@ -114,7 +137,7 @@ export const downloadSleepPatternData = async (sleepData, residentInfo, selected
         backgroundColor = "background-color: #EEEEEE;";
       }
       
-      tableHTML += `<td style="padding: 5px; border: 1px solid #000; text-align: center; ${backgroundColor}">
+      tableHTML += `<td style="padding: 3px; border: 1px solid #000; text-align: center; ${backgroundColor}">
         ${status}
       </td>`;
     }
@@ -124,18 +147,22 @@ export const downloadSleepPatternData = async (sleepData, residentInfo, selected
   
   tableHTML += `</tbody></table>`;
   
-  // Create legend
+  // Create more compact legend
   tableHTML += `
-    <div style="margin-top: 20px; font-size: 12px;">
-      <p><strong>Legend:</strong></p>
-      <p><span style="display: inline-block; width: 20px; height: 12px; background-color: #E0F7FA; border: 1px solid #000;"></span> S - Sleeping</p>
-      <p><span style="display: inline-block; width: 20px; height: 12px; background-color: #FFF9C4; border: 1px solid #000;"></span> A - Awake</p>
-      <p><span style="display: inline-block; width: 20px; height: 12px; background-color: #EEEEEE; border: 1px solid #000;"></span> N/A - Resident not at the Facility</p>
-      <p><span style="display: inline-block; width: 20px; height: 12px; border: 1px solid #000;"></span> Empty - No data recorded</p>
-    </div>
+    <div style="margin-top: 10px; font-size: 10px; display: flex; justify-content: space-between;">
+      <div style="flex: 1;">
+        <p style="margin: 2px 0;"><strong>Legend:</strong></p>
+        <p style="margin: 2px 0;"><span style="display: inline-block; width: 12px; height: 12px; background-color: #E0F7FA; border: 1px solid #000;"></span> S - Sleeping</p>
+        <p style="margin: 2px 0;"><span style="display: inline-block; width: 12px; height: 12px; background-color: #FFF9C4; border: 1px solid #000;"></span> A - Awake</p>
+      </div>
+      <div style="flex: 1;">
+        <p style="margin: 2px 0;">&nbsp;</p>
+        <p style="margin: 2px 0;"><span style="display: inline-block; width: 12px; height: 12px; background-color: #EEEEEE; border: 1px solid #000;"></span> N/A - Resident not at the Facility</p>
+        <p style="margin: 2px 0;"><span style="display: inline-block; width: 12px; height: 12px; border: 1px solid #000;"></span> Empty - No data recorded</p>
+      </div>
   `;
   
-  // Add summary section
+  // Add summary section - more compact
   let sleepCount = 0;
   let awakeCount = 0;
   let naCount = 0;
@@ -155,21 +182,44 @@ export const downloadSleepPatternData = async (sleepData, residentInfo, selected
   const naPercentage = totalRecorded > 0 ? ((naCount / totalRecorded) * 100).toFixed(1) : 0;
   
   tableHTML += `
-    <div style="margin-top: 20px; font-size: 14px;">
-      <h3 style="font-size: 16px; margin-bottom: 10px;">Monthly Summary</h3>
-      <p><strong>Total Sleep Hours:</strong> ${sleepCount} (${sleepPercentage}%)</p>
-      <p><strong>Total Awake Hours:</strong> ${awakeCount} (${awakePercentage}%)</p>
-      <p><strong>Total Not at Facility Hours:</strong> ${naCount} (${naPercentage}%)</p>
-      <p><strong>Total Hours Recorded:</strong> ${totalRecorded}</p>
+      <div style="flex: 1; margin-top: 2px;">
+        <p style="margin: 2px 0;"><strong>Monthly Summary:</strong></p>
+        <p style="margin: 2px 0;"><strong>Total Sleep Hours:</strong> ${sleepCount} (${sleepPercentage}%)</p>
+        <p style="margin: 2px 0;"><strong>Total Awake Hours:</strong> ${awakeCount} (${awakePercentage}%)</p>
+        <p style="margin: 2px 0;"><strong>Total Not at Facility Hours:</strong> ${naCount} (${naPercentage}%)</p>
+        <p style="margin: 2px 0;"><strong>Total Hours Recorded:</strong> ${totalRecorded}</p>
+      </div>
     </div>
   `;
   
-  // Capture the HTML content as an image and add to PDF
-  const pageImage = await captureAsImage(tableHTML);
-  pdf.addImage(pageImage, "JPEG", 10, 10, 280, 0);
-  
-  // Save the PDF
-  pdf.save(`SleepPattern_${residentName}_${year}_${month}.pdf`);
+  try {
+    // Capture the HTML content as an image and add to PDF
+    const pageImage = await captureAsImage(tableHTML);
+    
+    // Calculate aspect ratio to maintain proportions while fitting on page
+    const imgProps = pdf.getImageProperties(pageImage);
+    const imgWidth = contentWidth;
+    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+    
+    // If content fits on one page, use it directly
+    if (imgHeight <= contentHeight) {
+      pdf.addImage(pageImage, "JPEG", margin, margin, imgWidth, imgHeight, null, 'FAST');
+    } else {
+      // If content doesn't fit, compress it to fit on one page
+      pdf.addImage(pageImage, "JPEG", margin, margin, imgWidth, contentHeight, null, 'FAST');
+    }
+    
+    // Add watermark or footer with print quality info
+    pdf.setFontSize(8);
+    pdf.setTextColor(100, 100, 100);
+    pdf.text("Generated for print quality - " + new Date().toLocaleString(), margin, pageHeight - 10);
+    
+    // Save the PDF with compression options for better print quality
+    pdf.save(`SleepPattern_${residentName}_${year}_${month}.pdf`);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    alert("There was an error generating the PDF. Please try again.");
+  }
 };
 
 /**
@@ -216,8 +266,7 @@ export const downloadSleepPatternCSV = (sleepData, residentInfo, selectedMonth, 
   // Populate data with day shift (map data for a day to the next day)
   filteredData.forEach(entry => {
     const entryDate = new Date(entry.dateTaken);
-    // Add 1 to the date to shift data to the next day
-    const day = entryDate.getDate() + 0;
+    const day = entryDate.getDate();
     
     if (day >= 1 && day <= daysInMonth && timeSlots.includes(entry.markedFor)) {
       dataByHourDay[entry.markedFor][day] = entry.markAs;
