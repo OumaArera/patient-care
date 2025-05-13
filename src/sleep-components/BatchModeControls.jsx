@@ -26,7 +26,7 @@ const BatchModeControls = ({
       <h4 className="text-lg font-medium mb-2">Batch Selection Mode</h4>
       
       {/* Preset Quick Selects */}
-      <div className="flex flex-wrap gap-2 mb-3">
+      {/* <div className="flex flex-wrap gap-2 mb-3">
         <div className="text-sm">Quick select:</div>
         <button 
           onClick={() => selectTimeRange("11:00PM", "5:00AM")}
@@ -46,7 +46,7 @@ const BatchModeControls = ({
         >
           10:00PM - 6:00AM
         </button>
-      </div>
+      </div> */}
       
       {/* Custom Range Selection */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
