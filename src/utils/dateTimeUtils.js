@@ -16,7 +16,7 @@ export const getCurrentTimeSlot = () => {
   const now = new Date();
   const hours = now.getHours();
   const ampm = hours >= 12 ? 'PM' : 'AM';
-  const hour12 = hours % 12 || 12; // Convert 0 to 12 for 12 AM
+  const hour12 = hours % 12 || 12; 
   return `${hour12}:00${ampm}`;
 };
 
