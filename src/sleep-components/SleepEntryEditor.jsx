@@ -8,6 +8,7 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage] = useState(2);
   const [showErrorOverlay, setShowErrorOverlay] = useState(false);
+  const [showStatusMenu, setShowStatusMenu] = useState({});
   
   // Reset pagination when sleep data changes
   useEffect(() => {
@@ -26,15 +27,32 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
     }
   }, [errors]);
 
-  const toggleSleepStatus = async (entry) => {
+  // Close status menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setShowStatusMenu({});
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  const toggleStatusMenu = (e, sleepId) => {
+    e.stopPropagation();
+    setShowStatusMenu(prev => ({
+      ...prev,
+      [sleepId]: !prev[sleepId]
+    }));
+  };
+
+  const updateSleepStatus = async (entry, newStatus) => {
     if (updatingEntries[entry.sleepId]) return;
     
     try {
       // Set loading state for this specific entry
       setUpdatingEntries(prev => ({ ...prev, [entry.sleepId]: true }));
-      
-      // Create new status (toggle between "A" and "S")
-      const newStatus = entry.markAs === "A" ? "S" : "A";
       
       const payload = {
         markAs: newStatus
@@ -57,6 +75,7 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
       setErrors(["An error occurred while updating sleep status."]);
     } finally {
       setUpdatingEntries(prev => ({ ...prev, [entry.sleepId]: false }));
+      setShowStatusMenu(prev => ({ ...prev, [entry.sleepId]: false }));
     }
   };
 
@@ -83,6 +102,48 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
+
+  // Helper function to get status display info
+  const getStatusInfo = (status) => {
+    switch(status) {
+      case "S":
+        return {
+          label: "Sleep",
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          ),
+          bgColor: "bg-blue-500 hover:bg-blue-600"
+        };
+      case "A":
+        return {
+          label: "Awake",
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          ),
+          bgColor: "bg-yellow-500 hover:bg-yellow-600"
+        };
+      case "N":
+        return {
+          label: "N/A",
+          icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ),
+          bgColor: "bg-gray-500 hover:bg-gray-600"
+        };
+      default:
+        return {
+          label: "Unknown",
+          icon: null,
+          bgColor: "bg-gray-500"
+        };
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 mb-6 relative">
@@ -147,54 +208,83 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
                       
                       return getTimeValue(a.markedFor) - getTimeValue(b.markedFor);
                     })
-                    .map(entry => (
-                      <div 
-                        key={entry.sleepId} 
-                        className="flex items-center  bg-gray-50 rounded p-2 border hover:border-gray-400 transition-colors"
-                      >
-                        <div className="flex-1">
-                          <span className="font-medium text-gray-950">{entry.markedFor}</span>
-                        </div>
-                        
-                        <button
-                          onClick={() => toggleSleepStatus(entry)}
-                          disabled={updatingEntries[entry.sleepId]}
-                          className={`ml-2 px-3 py-1 rounded-full text-white text-sm font-medium transition-colors ${
-                            entry.markAs === "A" 
-                              ? "bg-yellow-500 hover:bg-yellow-600" 
-                              : "bg-blue-500 hover:bg-blue-600"
-                          }`}
+                    .map(entry => {
+                      const statusInfo = getStatusInfo(entry.markAs);
+                      
+                      return (
+                        <div 
+                          key={entry.sleepId} 
+                          className="flex items-center bg-gray-50 rounded p-2 border hover:border-gray-400 transition-colors"
                         >
-                          {updatingEntries[entry.sleepId] ? (
-                            <span className="flex items-center">
-                              <svg className="animate-spin -ml-1 mr-1 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              ...
-                            </span>
-                          ) : (
-                            <span className="flex items-center">
-                              {entry.markAs === "A" ? (
-                                <>
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                          <div className="flex-1">
+                            <span className="font-medium text-gray-950">{entry.markedFor}</span>
+                          </div>
+                          
+                          <div className="relative">
+                            <button
+                              onClick={(e) => toggleStatusMenu(e, entry.sleepId)}
+                              disabled={updatingEntries[entry.sleepId]}
+                              className={`ml-2 px-3 py-1 rounded-full text-white text-sm font-medium transition-colors ${statusInfo.bgColor}`}
+                            >
+                              {updatingEntries[entry.sleepId] ? (
+                                <span className="flex items-center">
+                                  <svg className="animate-spin -ml-1 mr-1 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                   </svg>
-                                  Awake
-                                </>
+                                  ...
+                                </span>
                               ) : (
-                                <>
-                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                                  </svg>
-                                  Sleep
-                                </>
+                                <span className="flex items-center">
+                                  {statusInfo.icon}
+                                  {statusInfo.label}
+                                </span>
                               )}
-                            </span>
-                          )}
-                        </button>
-                      </div>
-                    ))}
+                            </button>
+                            
+                            {/* Status Selection Dropdown */}
+                            {showStatusMenu[entry.sleepId] && (
+                              <div 
+                                className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10 border"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="py-1">
+                                  <button
+                                    onClick={() => updateSleepStatus(entry, "A")}
+                                    className={`flex items-center px-4 py-2 text-sm w-full text-left ${entry.markAs === "A" ? "bg-yellow-100" : "hover:bg-gray-100"}`}
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                    Awake
+                                  </button>
+                                  
+                                  <button
+                                    onClick={() => updateSleepStatus(entry, "S")}
+                                    className={`flex items-center px-4 py-2 text-sm w-full text-left ${entry.markAs === "S" ? "bg-blue-100" : "hover:bg-gray-100"}`}
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                    </svg>
+                                    Sleep
+                                  </button>
+                                  
+                                  <button
+                                    onClick={() => updateSleepStatus(entry, "N")}
+                                    className={`flex items-center px-4 py-2 text-sm w-full text-left ${entry.markAs === "N" ? "bg-gray-100" : "hover:bg-gray-100"}`}
+                                  >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    N/A
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             ))}
