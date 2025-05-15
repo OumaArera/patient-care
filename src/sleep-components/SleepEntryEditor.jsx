@@ -126,7 +126,7 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
           ),
           bgColor: "bg-yellow-500 hover:bg-yellow-600"
         };
-      case "N":
+      case "N/A":
         return {
           label: "N/A",
           icon: (
@@ -270,8 +270,8 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
                                   </button>
                                   
                                   <button
-                                    onClick={() => updateSleepStatus(entry, "N")}
-                                    className={`flex items-center px-4 py-2 text-sm w-full text-left ${entry.markAs === "N" ? "bg-gray-100" : "hover:bg-gray-100"}`}
+                                    onClick={() => updateSleepStatus(entry, "N/A")}
+                                    className={`flex items-center px-4 py-2 text-sm w-full text-left ${entry.markAs === "N/A" ? "bg-gray-100" : "hover:bg-gray-100"}`}
                                   >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
