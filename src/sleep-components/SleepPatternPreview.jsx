@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedResidentName }) => {
   const [previewData, setPreviewData] = useState([]);
   const [showPreview, setShowPreview] = useState(false);
-  const [groupByOption, setGroupByOption] = useState('day'); // 'day' or 'week'
+  const [groupByOption, setGroupByOption] = useState('day'); 
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -44,10 +44,11 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
           day,
           date,
           sleepEntries: [],
-          awakeEntries: []
+          awakeEntries: [],
+          unknownEntries: [] // Add this line
         };
       }
-      
+
       if (entry.markAs === 'S') {
         groupedByDate[day].sleepEntries.push({
           time: entry.markedFor,
@@ -58,7 +59,14 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
           time: entry.markedFor,
           id: entry.sleepId
         });
+      } else {
+        groupedByDate[day].unknownEntries.push({ // Handle 'N/A' or other values
+          time: entry.markedFor,
+          id: entry.sleepId,
+          markAs: entry.markAs
+        });
       }
+
     });
 
     const processed = Object.values(groupedByDate).sort((a, b) => a.day - b.day);
@@ -85,6 +93,7 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
           weekEnd: weekEnd.toISOString().split('T')[0],
           sleepCount: 0,
           awakeCount: 0,
+          unknownCount: 0, 
           days: {}
         };
       }
@@ -94,7 +103,8 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
         groupedByWeek[weekKey].days[day] = {
           date: entry.dateTaken,
           sleepCount: 0,
-          awakeCount: 0
+          awakeCount: 0,
+          unknownCount: 0, 
         };
       }
       
@@ -104,6 +114,9 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
       } else if (entry.markAs === 'A') {
         groupedByWeek[weekKey].awakeCount++;
         groupedByWeek[weekKey].days[day].awakeCount++;
+      } else {
+        groupedByWeek[weekKey].unknownCount++;
+        groupedByWeek[weekKey].days[day].unknownCount++;
       }
     });
 
@@ -197,6 +210,7 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
                     <th className="px-4 py-2 text-left text-gray-700 font-medium">Day</th>
                     <th className="px-4 py-2 text-left text-gray-700 font-medium">Sleep Times</th>
                     <th className="px-4 py-2 text-left text-gray-700 font-medium">Awake Times</th>
+                    <th className="px-4 py-2 text-left text-gray-700 font-medium">Unknown Times</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -230,6 +244,20 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
                             )}
                           </div>
                         </td>
+                        <td className="px-4 py-3">
+                          <div className="flex flex-wrap gap-1">
+                            {dayData.unknownEntries?.length > 0 ? (
+                              dayData.unknownEntries.map((entry) => (
+                                <span key={entry.id} className="bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded">
+                                  {formatTime(entry.time)} ({entry.markAs})
+                                </span>
+                              ))
+                            ) : (
+                              <span className="text-gray-500 italic">No unknown entries</span>
+                            )}
+                          </div>
+                        </td>
+
                       </tr>
                     ))
                   ) : (
@@ -263,6 +291,12 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
                           <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">{weekData.awakeCount} total</span>
                         </div>
                       </div>
+                      <div className="bg-white p-3 rounded shadow-sm">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-700">Unknown Entries</span>
+                          <span className="bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded">{weekData.unknownCount} total</span>
+                        </div>
+                      </div>
                     </div>
                     
                     <div className="mt-3 overflow-x-auto">
@@ -272,6 +306,7 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
                             <th className="px-3 py-2 text-left text-gray-700 font-medium">Day</th>
                             <th className="px-3 py-2 text-center text-gray-700 font-medium">Sleep</th>
                             <th className="px-3 py-2 text-center text-gray-700 font-medium">Awake</th>
+                            <th className="px-3 py-2 text-center text-gray-700 font-medium">Unknown</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -280,6 +315,7 @@ const SleepPatternPreview = ({ sleepData, selectedMonth, selectedYear, selectedR
                               <td className="px-3 py-2">{new Date(dayData.date).toLocaleDateString()}</td>
                               <td className="px-3 py-2 text-center">{dayData.sleepCount}</td>
                               <td className="px-3 py-2 text-center">{dayData.awakeCount}</td>
+                              <td className="px-3 py-2 text-center">{dayData.unknownCount}</td>
                             </tr>
                           ))}
                         </tbody>

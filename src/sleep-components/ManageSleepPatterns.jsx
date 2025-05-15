@@ -289,7 +289,6 @@ const ManageSleepPatterns = () => {
         </div>
       )}
 
-      {/* Add the new preview component */}
       {selectedResident && (
         <SleepPatternPreview
           sleepData={sleepData}
@@ -299,14 +298,13 @@ const ManageSleepPatterns = () => {
         />
       )}
       
-      {/* Display the edit panel if enabled */}
       {selectedResident && showEditPanel && (
         <SleepEntryEditor 
           sleepData={sleepData} 
           onUpdate={handleSleepEntryUpdate} 
         />
       )}
-      
+
       <SleepPatternChart 
         loadingSleepData={loadingSleepData}
         selectedResident={selectedResident}
