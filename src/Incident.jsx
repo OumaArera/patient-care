@@ -1,133 +1,73 @@
 import React, { useState } from "react";
-import { getData } from "../services/updatedata";
-import { errorHandler } from "../services/errorHandler";
-import { Loader } from "lucide-react";
-
-const INCIDENT_URL = "https://patient-care-server.onrender.com/api/v1/incidents";
+import IncidentList from "./incident/IncidentList";
+import IncidentForm from "./incident/IncidentReportForm";
+import IncidentDetail from "./incident/IncidentDetail";
 
 const Incident = () => {
-    const [details, setDetails] = useState("");
-    const [file, setFile] = useState(null);
-    const [error, setError] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [message, setMessage] = useState("");
-    const [errors, setErrors] = useState([]);
+  // State to control which view is currently displayed
+  const [currentView, setCurrentView] = useState("list");
+  const [selectedIncidentId, setSelectedIncidentId] = useState(null);
 
-    const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        if (selectedFile && selectedFile.type !== "application/pdf") {
-            setError("Only PDF files are allowed.");
-            setFile(null);
-            return;
-        }
-        if (selectedFile && selectedFile.size > 30 * 1024 * 1024) {
-            setError("File size must be less than 30MB.");
-            setFile(null);
-            return;
-        }
-        setError("");
-        setFile(selectedFile);
-    };
+  // Function to navigate between views
+  const navigateToView = (view, id = null) => {
+    setCurrentView(view);
+    if (id !== null) {
+      setSelectedIncidentId(id);
+    }
+  };
 
-    const handleSubmit = async () => {
-        if (!details.trim()) {
-            setError("Incident details cannot be empty.");
-            return;
-        }
-
-        if (!file) {
-            setError("Please upload a PDF file.");
-            return;
-        }
-
-        setIsSubmitting(true);
-        setError("");
-        const token = localStorage.getItem("token");
-
-        const formData = new FormData();
-        formData.append("details", details);
-        formData.append("filePath", file);
-
-        try {
-            // Custom fetch for FormData
-            const response = await fetch(INCIDENT_URL, {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: formData,
-            });
-
-            const responseData = await response.json();
-
-            if (!response.ok) {
-                setErrors(errorHandler(responseData?.error || "Server error"));
-                setTimeout(() => setErrors([]), 5000);
-            } else {
-                setMessage("Incident submitted successfully");
-                setFile(null);
-                setDetails("");
-                setTimeout(() => setMessage(""), 5000);
-            }
-        } catch (error) {
-            setErrors(["An error occurred. Please try again."]);
-            setTimeout(() => setErrors([]), 5000);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
-    return (
-        <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
-            <h2 className="text-xl font-bold text-blue-500 mb-4">Report an Incident</h2>
-            
-            <textarea
-                className="w-full p-3 bg-gray-800 text-white border border-gray-700 rounded mb-4"
-                rows="5"
-                placeholder="Enter incident details..."
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
-            ></textarea>
-            
-            <div className="mb-4">
-                <input
-                    type="file"
-                    accept="application/pdf"
-                    className="block w-full text-white bg-gray-800 border border-gray-700 rounded p-2"
-                    onChange={handleFileChange}
-                />
-                {error && <p className="mt-1 text-sm text-red-400">{error}</p>}
-                {file && <p className="mt-1 text-sm text-green-400">File selected: {file.name}</p>}
-            </div>
-            
-            {errors.length > 0 && (
-                <div className="mt-4 p-3 rounded bg-red-900 bg-opacity-20">
-                    {errors.map((error, index) => (
-                        <p key={index} className="text-sm text-red-400">{error}</p>
-                    ))}
-                </div>
-            )}
-            
-            {message && (
-                <p className="mt-4 text-center font-medium text-blue-400">{message}</p>
-            )}
-            
-            <button
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-800 disabled:cursor-not-allowed flex items-center justify-center"
-            >
-                {isSubmitting ? (
-                    <>
-                        <Loader className="animate-spin mr-2 h-4 w-4" />
-                        Submitting...
-                    </>
-                ) : (
-                    "Submit"
-                )}
-            </button>
+  return (
+    <div className="w-full min-h-screen px-4 py-8">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-blue-400">Incident Management</h2>
+        
+        {/* Navigation breadcrumb */}
+        <div className="mt-2 text-sm text-gray-400">
+          {currentView === "list" && "All Incidents"}
+          {currentView === "new" && "Create New Incident"}
+          {currentView === "detail" && `Incident #${selectedIncidentId}`}
         </div>
-    );
+      </div>
+      
+      {/* Render the appropriate component based on currentView */}
+      {currentView === "list" && (
+        <IncidentList 
+          onViewIncident={(id) => navigateToView("detail", id)}
+          onCreateIncident={() => navigateToView("new")}
+        />
+      )}
+      
+      {currentView === "new" && (
+        <div>
+          <button 
+            className="mb-4 bg-gray-700 px-4 py-2 rounded flex items-center text-gray-300 hover:text-white transition-colors"
+            onClick={() => navigateToView("list")}
+          >
+            ← Back to List
+          </button>
+          <IncidentForm 
+            onSuccess={() => navigateToView("list")}
+            onCancel={() => navigateToView("list")}
+          />
+        </div>
+      )}
+      
+      {currentView === "detail" && (
+        <div>
+          <button 
+            className="mb-4 bg-gray-700 px-4 py-2 rounded flex items-center text-gray-300 hover:text-white transition-colors"
+            onClick={() => navigateToView("list")}
+          >
+            ← Back to List
+          </button>
+          <IncidentDetail 
+            incidentId={selectedIncidentId}
+            onBack={() => navigateToView("list")}
+          />
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Incident;

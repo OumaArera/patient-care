@@ -81,15 +81,12 @@ const CareGiverDashboard = () => {
         >
           <FaChartBar /> Charts
         </button>
-
-
         <button 
           className={`p-3 flex items-center gap-2 ${activeTab === "updates" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
           onClick={() => setActiveTab("updates")}
         >
           <FaNewspaper /> Updates
         </button>
-
         <button 
           className={`p-3 flex items-center gap-2 ${activeTab === "medications" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
           onClick={() => setActiveTab("medications")}
@@ -120,6 +117,14 @@ const CareGiverDashboard = () => {
         >
           <Moon /> Sleep Pattern
         </button>
+        
+        {/* Added Incident Report to sidebar */}
+        <button 
+          className={`p-3 flex items-center gap-2 ${activeTab === "incident" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
+          onClick={() => setShowIncident(true)}
+        >
+          <AlertTriangle /> Incident Report
+        </button>
       </div>
       
 
@@ -132,14 +137,7 @@ const CareGiverDashboard = () => {
           <div className="flex items-center space-x-6">
             {/* Appointment Notification Component */}
             <AppointmentNotification />
-            
-            <button 
-              className="flex flex-col items-center cursor-pointer"
-              onClick={() => setShowIncident(true)}
-            >
-              <AlertTriangle className="text-blue-400 text-xl" />
-              <span className="text-sm text-gray-400">Incident Report</span>
-            </button>
+
             {/* Staff Icon */}
             <button 
               className="flex flex-col items-center cursor-pointer"

@@ -34,6 +34,7 @@ import ManageGroceries from "./ManageGroceries";
 import ManageIncidents from "./ManageIncidents";
 import CreateAssessment from "./CreateAssessment";
 import ManageSleepPatterns from "./sleep-components/ManageSleepPatterns";
+import Incident from "./Incident";
 
 const SuperUserDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -112,6 +113,12 @@ const SuperUserDashboard = () => {
         <button className={`p-3 flex items-center gap-2 ${activeTab === "sleeps" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} onClick={() => setActiveTab("sleeps")}>
           <Moon /> Sleep Pattern
         </button>
+        <button 
+          className={`p-3 flex items-center gap-2 ${activeTab === "incident" ? "text-blue-500" : "text-gray-400"} hover:text-blue-500`} 
+          onClick={() => setShowIncident(true)}
+        >
+          <AlertTriangle /> Incident Report
+        </button>
 
         {/* User Management Dropdown */}
         <div>
@@ -173,13 +180,13 @@ const SuperUserDashboard = () => {
             {/* Assessment Notification Component */}
             <Assessment />
             
-            <button 
+            {/* <button 
                 className="flex flex-col items-center cursor-pointer"
                 onClick={() => setShowIncident(true)}
               >
                 <AlertTriangle className="text-blue-400 text-xl" />
                 <span className="text-sm text-gray-400">Incident Reports</span>
-            </button>
+            </button> */}
 
             <button 
                 className="flex flex-col items-center cursor-pointer"
@@ -290,7 +297,7 @@ const SuperUserDashboard = () => {
               className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-[60vw] max-h-[80vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
               >
-              <ManageIncidents  />
+              <Incident  />
               <button
                   className="absolute top-2 right-2 text-white hover:text-gray-400"
                   onClick={() => setShowIncident(false)}
