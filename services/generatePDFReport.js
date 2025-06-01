@@ -74,8 +74,8 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             }
             
             const behaviorDate = new Date(chart.dateTaken);
-            behaviorDate.setDate(behaviorDate.getDate() - 1); // Backdating by 1 day
-            const adjustedDay = behaviorDate.getDate() - 1;
+            behaviorDate.setDate(behaviorDate.getDate() - 2); // Backdating by 1 day
+            const adjustedDay = behaviorDate.getDate() - 2;
             if (adjustedDay >= 0 && adjustedDay < 31) {
                 processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "✔️" : "";
             }
