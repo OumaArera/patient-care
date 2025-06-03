@@ -31,13 +31,7 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             if (adjustedDay >= 0 && adjustedDay < 31) {
                 // SOLUTION 1: Use simple X (most reliable)
                 processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "X" : "";
-                
-                // ALTERNATIVE SOLUTIONS (uncomment one to replace the X):
-                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "*" : "";
-                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "+" : "";
-                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "#" : "";
-                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "1" : "";
-                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "Y" : "";
+
             }
         });
     });
