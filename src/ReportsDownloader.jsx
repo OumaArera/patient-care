@@ -26,14 +26,12 @@ const ReportsDownloader = () => {
   // Get branchId from localStorage and fetch patients on component mount
   useEffect(() => {
     const storedBranchId = localStorage.getItem("branch");
-    console.log("Branch ID from localStorage: ", storedBranchId);
     
     setLoadingPatients(true);
     fetchPatients()
       .then((data) => {
         // Filter patients to only those matching the branchId from localStorage
         const allPatients = data?.responseObject || [];
-        console.log("All patients: ", allPatients);
         
         // Convert the branchId to the same type for comparison (both to numbers)
         const storedBranchIdNum = parseInt(storedBranchId);
@@ -45,8 +43,6 @@ const ReportsDownloader = () => {
           return patientBranchId === storedBranchIdNum;
         });
         
-        console.log("Filtered patients: ", filteredPatients);
-        console.log("Using branch ID for filter: ", storedBranchIdNum);
         setPatients(filteredPatients);
       })
       .catch((error) => {
