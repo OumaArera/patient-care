@@ -6,85 +6,97 @@ export const generateVitalsPDFReport = async (vitals, selectedYear, selectedMont
 
     const { patientName } = vitals[0];
     
-    // Create PDF in landscape orientation for better table fit
+    // Create PDF in portrait orientation for better readability
     const pdf = new jsPDF({
-        orientation: 'landscape',
+        orientation: 'portrait',
         unit: 'mm',
         format: 'a4',
-        compress: true
+        compress: false // Disable compression for better quality
     });
 
     const captureAsImage = async (htmlContent) => {
         const container = document.createElement("div");
-        container.style.padding = "20px";
-        container.style.fontFamily = "Arial, sans-serif";
+        container.style.padding = "15px";
+        container.style.fontFamily = "'Times New Roman', serif"; // Better for printing
         container.style.color = "#000";
-        container.style.width = "1400px"; // Wider for landscape
+        container.style.width = "800px"; // Optimized for portrait
         container.style.backgroundColor = "#ffffff";
+        container.style.fontSize = "16px"; // Base font size
         container.innerHTML = htmlContent;
         document.body.appendChild(container);
         
-        // High scale for print quality while optimizing for single page
+        // Wait for fonts to load
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Very high scale for crisp print quality
         const canvas = await html2canvas(container, { 
-            scale: 2.5, // Good balance of quality and performance
+            scale: 4, // Much higher scale for crisp text
             useCORS: true,
             logging: false,
             allowTaint: true,
             backgroundColor: "#ffffff",
-            width: 1400,
-            height: container.scrollHeight
+            width: 800,
+            height: container.scrollHeight,
+            dpi: 300, // High DPI for print quality
+            windowWidth: 1200,
+            windowHeight: 1600
         });
         document.body.removeChild(container);
         
-        return canvas.toDataURL("image/png", 0.95); // High quality PNG
+        return canvas.toDataURL("image/png", 1.0); // Maximum quality PNG
     };
 
     // Calculate dynamic font sizes based on number of rows
     const rowCount = vitals.length;
     let headerFontSize, titleFontSize, cellFontSize, cellPadding;
     
-    if (rowCount <= 10) {
-        titleFontSize = 24;
-        headerFontSize = 16;
-        cellFontSize = 14;
-        cellPadding = 8;
-    } else if (rowCount <= 20) {
-        titleFontSize = 22;
+    if (rowCount <= 8) {
+        titleFontSize = 20;
         headerFontSize = 14;
         cellFontSize = 12;
+        cellPadding = 8;
+    } else if (rowCount <= 15) {
+        titleFontSize = 18;
+        headerFontSize = 13;
+        cellFontSize = 11;
         cellPadding = 6;
-    } else if (rowCount <= 30) {
-        titleFontSize = 20;
+    } else if (rowCount <= 25) {
+        titleFontSize = 16;
         headerFontSize = 12;
         cellFontSize = 10;
         cellPadding = 4;
-    } else {
-        titleFontSize = 18;
+    } else if (rowCount <= 35) {
+        titleFontSize = 14;
         headerFontSize = 11;
         cellFontSize = 9;
         cellPadding = 3;
+    } else {
+        titleFontSize = 12;
+        headerFontSize = 10;
+        cellFontSize = 8;
+        cellPadding = 2;
     }
 
     // Generate HTML for all vitals in a single page
     let vitalsHTML = `
-        <div style="text-align: center; font-size: ${titleFontSize}px; font-weight: bold; margin-bottom: 8px; line-height: 1.2;">
+        <div style="text-align: center; font-size: ${titleFontSize}px; font-weight: bold; margin-bottom: 10px; line-height: 1.3; color: #000;">
             VITAL SIGNS REPORT
         </div>
-        <div style="text-align: center; font-size: ${titleFontSize - 2}px; font-weight: bold; margin-bottom: 8px; line-height: 1.2;">
+        <div style="text-align: center; font-size: ${titleFontSize - 2}px; font-weight: bold; margin-bottom: 8px; line-height: 1.3; color: #000;">
             Resident: ${patientName}
         </div>
-        <div style="text-align: center; font-size: ${titleFontSize - 4}px; margin-bottom: 12px; line-height: 1.2;">
-            Year: ${selectedYear} | Month: ${selectedMonth}
+        <div style="text-align: center; font-size: ${titleFontSize - 3}px; margin-bottom: 15px; line-height: 1.3; color: #333;">
+            ${selectedMonth} ${selectedYear}
         </div>
-        <table border="1" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+        <table style="width: 100%; border-collapse: collapse; table-layout: fixed; border: 2px solid #000;">
             <thead>
-                <tr style="background: #e6f2ff; text-align: center; font-weight: bold;">
-                    <th style="padding: ${cellPadding}px; border: 1px solid #000; font-size: ${headerFontSize}px; width: 12%;">Date</th>
-                    <th style="padding: ${cellPadding}px; border: 1px solid #000; font-size: ${headerFontSize}px; width: 18%;">Blood Pressure</th>
-                    <th style="padding: ${cellPadding}px; border: 1px solid #000; font-size: ${headerFontSize}px; width: 15%;">Temperature</th>
-                    <th style="padding: ${cellPadding}px; border: 1px solid #000; font-size: ${headerFontSize}px; width: 12%;">Pulse</th>
-                    <th style="padding: ${cellPadding}px; border: 1px solid #000; font-size: ${headerFontSize}px; width: 18%;">Oxygen Saturation</th>
-                    <th style="padding: ${cellPadding}px; border: 1px solid #000; font-size: ${headerFontSize}px; width: 12%;">Pain</th>
+                <tr style="background: #f0f0f0; text-align: center; font-weight: bold;">
+                    <th style="padding: ${cellPadding}px; border: 1.5px solid #000; font-size: ${headerFontSize}px; width: 15%; font-weight: bold;">Date</th>
+                    <th style="padding: ${cellPadding}px; border: 1.5px solid #000; font-size: ${headerFontSize}px; width: 18%; font-weight: bold;">BP</th>
+                    <th style="padding: ${cellPadding}px; border: 1.5px solid #000; font-size: ${headerFontSize}px; width: 15%; font-weight: bold;">Temp</th>
+                    <th style="padding: ${cellPadding}px; border: 1.5px solid #000; font-size: ${headerFontSize}px; width: 12%; font-weight: bold;">Pulse</th>
+                    <th style="padding: ${cellPadding}px; border: 1.5px solid #000; font-size: ${headerFontSize}px; width: 15%; font-weight: bold;">O2 Sat</th>
+                    <th style="padding: ${cellPadding}px; border: 1.5px solid #000; font-size: ${headerFontSize}px; width: 12%; font-weight: bold;">Pain</th>
                 </tr>
             </thead>
             <tbody>`;
@@ -95,21 +107,20 @@ export const generateVitalsPDFReport = async (vitals, selectedYear, selectedMont
         const dateObj = new Date(vital.dateTaken);
         const formattedDate = dateObj.toLocaleDateString('en-US', {
             month: '2-digit',
-            day: '2-digit',
-            year: '2-digit' // Use 2-digit year to save space
+            day: '2-digit'
         });
         
         // Alternate row colors for better readability
-        const backgroundColor = index % 2 === 0 ? '#ffffff' : '#f8f9fa';
+        const backgroundColor = index % 2 === 0 ? '#ffffff' : '#f8f8f8';
         
         vitalsHTML += `
             <tr style="background: ${backgroundColor};">
-                <td style="padding: ${cellPadding}px; border: 1px solid #000; font-size: ${cellFontSize}px; text-align: center; line-height: 1.1;">${formattedDate}</td>
-                <td style="padding: ${cellPadding}px; border: 1px solid #000; text-align: center; font-size: ${cellFontSize}px; font-weight: bold; line-height: 1.1;">${vital.bloodPressure}</td>
-                <td style="padding: ${cellPadding}px; border: 1px solid #000; text-align: center; font-size: ${cellFontSize}px; line-height: 1.1;">${vital.temperature}°F</td>
-                <td style="padding: ${cellPadding}px; border: 1px solid #000; text-align: center; font-size: ${cellFontSize}px; line-height: 1.1;">${vital.pulse}</td>
-                <td style="padding: ${cellPadding}px; border: 1px solid #000; text-align: center; font-size: ${cellFontSize}px; line-height: 1.1;">${vital.oxygenSaturation}%</td>
-                <td style="padding: ${cellPadding}px; border: 1px solid #000; text-align: center; font-size: ${cellFontSize}px; line-height: 1.1;">${vital.pain}</td>
+                <td style="padding: ${cellPadding}px; border: 1.5px solid #000; font-size: ${cellFontSize}px; text-align: center; line-height: 1.2; font-weight: normal;">${formattedDate}</td>
+                <td style="padding: ${cellPadding}px; border: 1.5px solid #000; text-align: center; font-size: ${cellFontSize}px; font-weight: bold; line-height: 1.2;">${vital.bloodPressure}</td>
+                <td style="padding: ${cellPadding}px; border: 1.5px solid #000; text-align: center; font-size: ${cellFontSize}px; line-height: 1.2; font-weight: normal;">${vital.temperature}°</td>
+                <td style="padding: ${cellPadding}px; border: 1.5px solid #000; text-align: center; font-size: ${cellFontSize}px; line-height: 1.2; font-weight: normal;">${vital.pulse}</td>
+                <td style="padding: ${cellPadding}px; border: 1.5px solid #000; text-align: center; font-size: ${cellFontSize}px; line-height: 1.2; font-weight: normal;">${vital.oxygenSaturation}%</td>
+                <td style="padding: ${cellPadding}px; border: 1.5px solid #000; text-align: center; font-size: ${cellFontSize}px; line-height: 1.2; font-weight: normal;">${vital.pain}</td>
             </tr>`;
     });
 
@@ -117,15 +128,18 @@ export const generateVitalsPDFReport = async (vitals, selectedYear, selectedMont
     
     // Add footer with generation info
     vitalsHTML += `
-        <div style="text-align: center; margin-top: 15px; font-size: ${cellFontSize - 1}px; color: #666;">
-            Generated on ${new Date().toLocaleDateString('en-US')} | Total Records: ${vitals.length}
+        <div style="text-align: center; margin-top: 20px; font-size: ${Math.max(cellFontSize - 2, 8)}px; color: #666; font-weight: normal;">
+            Generated: ${new Date().toLocaleDateString('en-US')} | Records: ${vitals.length}
         </div>`;
 
     const vitalsImage = await captureAsImage(vitalsHTML);
     
-    // Add image to PDF with optimal sizing for landscape A4
-    // A4 landscape: 297mm x 210mm, leaving margins
-    pdf.addImage(vitalsImage, "PNG", 5, 5, 287, 0); // Auto-scale height
+    // Add image to PDF with optimal sizing for portrait A4
+    // A4 portrait: 210mm x 297mm, with minimal margins for maximum space
+    const imgWidth = 200; // Leave 5mm margins on each side
+    const imgHeight = 0; // Auto-scale height to maintain aspect ratio
+    
+    pdf.addImage(vitalsImage, "PNG", 5, 5, imgWidth, imgHeight, undefined, 'FAST');
 
     // Add metadata to PDF
     pdf.setProperties({
