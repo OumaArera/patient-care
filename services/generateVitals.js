@@ -1,7 +1,7 @@
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+const pdfMake = await import("pdfmake/build/pdfmake");
+const pdfFonts = await import("pdfmake/build/vfs_fonts");
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.default.vfs = pdfFonts.default.pdfMake.vfs;
 
 export const generateVitalsPDFReport = (vitals, selectedYear, selectedMonth) => {
     if (vitals.length === 0) return;
