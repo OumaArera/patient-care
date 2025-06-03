@@ -1,10 +1,11 @@
-const pdfMake = await import("pdfmake/build/pdfmake");
-const pdfFonts = await import("pdfmake/build/vfs_fonts");
-
-pdfMake.default.vfs = pdfFonts.default.pdfMake.vfs;
-
-export const generateVitalsPDFReport = (vitals, selectedYear, selectedMonth) => {
+export const generateVitalsPDFReport = async (vitals, selectedYear, selectedMonth) => {
     if (vitals.length === 0) return;
+
+    const pdfMakeModule = await import('pdfmake/build/pdfmake');
+    const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
+
+    const pdfMake = pdfMakeModule.default;
+    pdfMake.vfs = pdfFontsModule.default.pdfMake.vfs;
 
     const { patientName } = vitals[0];
     const date = new Date().toLocaleDateString('en-US');
@@ -38,7 +39,7 @@ export const generateVitalsPDFReport = (vitals, selectedYear, selectedMonth) => 
 
     const docDefinition = {
         pageSize: 'A4',
-        pageMargins: [40, 60, 40, 60], // [left, top, right, bottom]
+        pageMargins: [40, 60, 40, 60],
         content: [
             { text: 'VITAL SIGNS REPORT', style: 'header' },
             { text: `Resident: ${patientName}`, style: 'subheader' },
@@ -101,7 +102,7 @@ export const generateVitalsPDFReport = (vitals, selectedYear, selectedMonth) => 
             }
         },
         defaultStyle: {
-            font: 'Times-Roman' // Vector-print friendly font
+            font: 'Helvetica' // Built-in font (no need to declare in vfs)
         },
         info: {
             title: `Vitals Report - ${patientName}`,
