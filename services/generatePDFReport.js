@@ -29,13 +29,15 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             const adjustedDay = dayOfMonth - 1; // Convert to 0-based index for array
             
             if (adjustedDay >= 0 && adjustedDay < 31) {
-                // SOLUTION 1: Use simple text checkmark instead of emoji
-                processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "✓" : "";
+                // SOLUTION 1: Use simple X (most reliable)
+                processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "X" : "";
                 
-                // ALTERNATIVE SOLUTIONS (uncomment one):
-                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "X" : "";
-                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "•" : "";
-                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "√" : "";
+                // ALTERNATIVE SOLUTIONS (uncomment one to replace the X):
+                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "*" : "";
+                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "+" : "";
+                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "#" : "";
+                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "1" : "";
+                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "Y" : "";
             }
         });
     });
