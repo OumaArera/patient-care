@@ -102,7 +102,7 @@ export const generateVitalsPDFReport = async (vitals, selectedYear, selectedMont
             }
         },
         defaultStyle: {
-            font: 'Helvetica'
+            // font: 'Helvetica'
         },
         info: {
             title: `Vitals Report - ${patientName}`,
