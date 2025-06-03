@@ -29,7 +29,13 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
             const adjustedDay = dayOfMonth - 1; // Convert to 0-based index for array
             
             if (adjustedDay >= 0 && adjustedDay < 31) {
-                processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "✔️" : "";
+                // SOLUTION 1: Use simple text checkmark instead of emoji
+                processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "✓" : "";
+                
+                // ALTERNATIVE SOLUTIONS (uncomment one):
+                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "X" : "";
+                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "•" : "";
+                // processedBehaviors[key].days[adjustedDay] = behavior.status === "Yes" ? "√" : "";
             }
         });
     });
@@ -80,11 +86,11 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
                 style: 'tableCell'
             });
             
-            // Add day cells
+            // Add day cells with enhanced styling for checkmarks
             behavior.days.forEach(status => {
                 row.push({
                     text: status,
-                    style: 'tableCellCenter'
+                    style: status ? 'tableCellCheckmark' : 'tableCellCenter'
                 });
             });
             
@@ -285,6 +291,13 @@ export const generatePDFReport = async (charts, selectedYear, selectedMonth) => 
                 fontSize: 9,
                 bold: true,
                 alignment: 'center'
+            },
+            // New style for checkmarks
+            tableCellCheckmark: {
+                fontSize: 12,
+                alignment: 'center',
+                bold: true,
+                color: '#2563eb' // Blue color for better visibility
             },
             footer: {
                 fontSize: 9,
