@@ -53,11 +53,11 @@ const Update = ({ patientId }) => {
     let lateSubmissionEntry = null;
 
     // Check for valid weekly or monthly update time
-    if (updateType === "weekly") {
-      isValid = (day === 4 && hour >= 18) || (day === 5 && hour < 23);
-    } else if (updateType === "monthly") {
-      isValid = [1, 2, 3].includes(dateOfMonth);
-    }
+    // if (updateType === "weekly") {
+    //   isValid = (day === 4 && hour >= 18) || (day === 5 && hour < 23);
+    // } else if (updateType === "monthly") {
+    //   isValid = [1, 2, 3].includes(dateOfMonth);
+    // }
 
     // Check for valid late submission
     for (let entry of lateSubmission) {
