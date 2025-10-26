@@ -1,4 +1,3 @@
-// SleepPatternComponents/MonthlySummary.jsx
 import React from "react";
 
 const MonthlySummary = ({ chartData }) => {

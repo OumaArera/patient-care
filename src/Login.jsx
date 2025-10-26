@@ -7,6 +7,8 @@ import { Eye, EyeOff } from "lucide-react";
 import logo1 from "./assets/1ST EDMONDS_LOGO.png";
 import logo2 from './assets/BSC-LOGO.png';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +35,7 @@ const Login = () => {
     setError([]);
 
     try {
-      const response = await fetch('https://patient-care-server.onrender.com/api/v1/auth/login', {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import './index.css'
 import Login from "./Login";
 import CareGiverDashboard from "./CareGiverDashboard";
 import SuperUserDashboard from "./SuperUserDashboard";

@@ -1,6 +1,8 @@
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 export const updateMedAdmin = async (medicationAdministrationId, updatedData) => {
     const token = localStorage.getItem("token");
-    const url = "https://patient-care-server.onrender.com/api/v1/medication-administrations";
+    const url = `${BASE_URL}/medication-administrations`;
     try {
         const response = await fetch(`${url}/${medicationAdministrationId}`, {
             method: "PUT",

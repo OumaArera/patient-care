@@ -6,10 +6,11 @@ import SleepPatternChart from "./SleepPatternChart";
 import MonthlySummary from "./MonthlySummary";
 import PatternAnalysis from "./PatternAnalysis";
 import SleepEntryEditor from "./SleepEntryEditor";
-import SleepPatternPreview from "./SleepPatternPreview"; // Import the new component
+import SleepPatternPreview from "./SleepPatternPreview"; 
 import { downloadSleepPatternData } from "../utils/downloadUtils";
 
-const SLEEP_PATTERNS_URLS = "https://patient-care-server.onrender.com/api/v1/sleeps";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const SLEEP_PATTERNS_URLS = `${BASE_URL}/sleeps`;
 
 const ManageSleepPatterns = () => {
   const [residents, setResidents] = useState([]);

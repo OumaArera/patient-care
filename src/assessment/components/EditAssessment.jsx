@@ -3,7 +3,8 @@ import { Calendar, User, Save, X } from "lucide-react";
 import { updateData } from "../../../services/updatedata";
 import { errorHandler } from "../../../services/errorHandler";
 
-const ASSESSMENT_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const ASSESSMENT_URL = `${BASE_URL}/assessments`;
 
 const EditAssessment = ({ assessment, fetchAllAssessments, onCancel, onSuccess }) => {
     const [formData, setFormData] = useState({

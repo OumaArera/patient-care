@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import Christopher from './assets/christopher.jpeg';
 import Ouma from './assets/ouma.png';
 
-const ALL_USERS = "https://patient-care-server.onrender.com/api/v1/users";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const ALL_USERS = `${BASE_URL}/users`;
 
 const Birthday = () => {
   const [users, setUsers] = useState([]);

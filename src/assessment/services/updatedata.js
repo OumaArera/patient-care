@@ -1,7 +1,3 @@
-// services/updatedata.js
-
-// Assuming getData is already defined in this file
-// Adding updateData function
 
 /**
  * Makes a PUT request to update data
@@ -15,8 +11,6 @@ export const updateData = async (url, data) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          // Add any authorization headers if needed
-          // 'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(data)
       });
@@ -31,5 +25,4 @@ export const updateData = async (url, data) => {
       throw error;
     }
   };
-  
-  // Export any other functions that might be defined in this file
+ 

@@ -5,7 +5,8 @@ import { errorHandler } from "../services/errorHandler";
 import { generateGroceryPDF } from "../services/generateGroceries";
 import TableOverlayModal from "./TableOverlayModal";
 
-const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const GROCERIES_URL = `${BASE_URL}/groceries`;
 
 const ManageGroceries = () => {
     const [groceries, setGroceries] = useState([]);

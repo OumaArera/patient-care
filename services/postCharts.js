@@ -1,8 +1,10 @@
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 export const postCharts = async (payload) => {
     const token = localStorage.getItem("token");
 
     try {
-        const response = await fetch("https://patient-care-server.onrender.com/api/v1/charts", {
+        const response = await fetch(`${BASE_URL}/charts`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

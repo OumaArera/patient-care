@@ -1,9 +1,11 @@
-// fetchMedications.js
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+
 export const getVitals = async (patient) => {
     try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-        `https://patient-care-server.onrender.com/api/v1/vitals?patient=${patient}`,
+        `${BASE_URL}/vitals?patient=${patient}`,
         {
             headers: { Authorization: `Bearer ${token}` },
         }

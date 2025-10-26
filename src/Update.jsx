@@ -4,7 +4,9 @@ import { errorHandler } from "../services/errorHandler";
 import { getData } from "../services/updatedata";
 import CustomDatePicker from "./CustomDatePicker";
 import { Loader } from "lucide-react";
-const URL = "https://patient-care-server.onrender.com/api/v1/late-submissions"
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const URL = `${BASE_URL}/late-submissions`;
 
 const Update = ({ patientId }) => {
   const [updateType, setUpdateType] = useState("weekly");
@@ -54,7 +56,7 @@ const Update = ({ patientId }) => {
 
     // Check for valid weekly or monthly update time
     if (updateType === "weekly") {
-      isValid = (day === 4 && hour >= 18) || (day === 5 && hour < 23);
+      isValid = (day === 4 && hour >= 11) || (day === 5 && hour < 23);
     } else if (updateType === "monthly") {
       isValid = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].includes(dateOfMonth);
     }
@@ -238,7 +240,8 @@ const Update = ({ patientId }) => {
             CHART ENTRY RESTRICTED
           </p>
           <p className="text-lg md:text-xl text-red-800 mt-2 font-medium">
-          Weekly updates must be submitted on <span className="underline font-bold">Friday before noon</span>.
+            Weekly updates must be submitted from <span className="underline font-bold">Thursday Noon</span> 
+            to <span className="underline font-bold">Friday Evening</span>.
           </p>
         </div>
       )}

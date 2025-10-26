@@ -10,7 +10,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const preloadUsers = async () => {
       if (token) {
-        const data = await fetchUsers(1, 10, token); // Prefetch first page
+        const data = await fetchUsers(1, 10, token);
         setUsers(data);
       }
     };

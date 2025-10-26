@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { errorHandler } from "../services/errorHandler";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const UpdateMedication = ({ medication, onUpdate }) => {
   const [formData, setFormData] = useState({
     medicationName: medication.medicationName,
@@ -15,7 +17,7 @@ const UpdateMedication = ({ medication, onUpdate }) => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState([]);
   const token = localStorage.getItem("token");
-  const URL = `https://patient-care-server.onrender.com/api/v1/medications/${medication.medicationId}`;
+  const URL = `${BASE_URL}/medications/${medication.medicationId}`;
 
   // Handle input changes
   const handleChange = (e) => {

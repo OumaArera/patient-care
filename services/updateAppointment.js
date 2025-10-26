@@ -1,10 +1,13 @@
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+
 export const updateAppointment = async (payload, id) => {
     const token = localStorage.getItem("token");
     if (!token) return;
     console.log("ID: ", id);
     console.log("Payload: ", payload);
     try {
-        const response = await fetch(`https://patient-care-server.onrender.com/api/v1/appointments/${id}`, {
+        const response = await fetch(`${BASE_URL}/appointments/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

@@ -4,7 +4,7 @@ const DateSelector = ({ selectedDate, onDateSelect, getCurrentDate }) => {
   // Get today's date and 7 days before for range
   const today = getCurrentDate();
   const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 366);  // Enable picking for a whole year instead of 7
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 366); 
   const minDate = sevenDaysAgo.toISOString().split('T')[0];
 
   return (

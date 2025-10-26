@@ -1,9 +1,12 @@
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+
 export const postMedications = async (payload) => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
-        const response = await fetch("https://patient-care-server.onrender.com/api/v1/medication-administrations", {
+        const response = await fetch(`${BASE_URL}/medication-administrations`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

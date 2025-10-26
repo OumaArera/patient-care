@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Loader, Eye, EyeOff, CheckCircle, XCircle, X } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const ChangePassword = ({ onClose }) => {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -11,7 +13,7 @@ const ChangePassword = ({ onClose }) => {
     const [success, setSuccess] = useState("");
     const token = localStorage.getItem("token");
 
-    const API_URL = "https://patient-care-server.onrender.com/api/v1/auth/change-password";
+    const API_URL = `${BASE_URL}/auth/change-password`;
 
     const isLongEnough = newPassword.length >= 8;
     const hasUpperCase = /[A-Z]/.test(newPassword);
@@ -66,7 +68,7 @@ const ChangePassword = ({ onClose }) => {
     }, [onClose]);
 
     return (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 z-50 bg-black/30 bg-opacity-50 flex justify-center items-center">
             <div ref={modalRef} className="max-w-md bg-gray-900 text-white p-6 rounded-lg shadow-lg relative">
                 {/* Close Button */}
                 <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-red-500">

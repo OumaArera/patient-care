@@ -4,6 +4,8 @@ import { fetchBranches } from "../services/fetchBranches";
 import PatientCard from "./PatientsCard";
 import { errorHandler } from "../services/errorHandler";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const Patients = () => {
   const [patients, setPatients] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -89,7 +91,7 @@ const Patients = () => {
 
     try {
       const response = await fetch(
-        "https://patient-care-server.onrender.com/api/v1/patients",
+        `${BASE_URL}/patients`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },

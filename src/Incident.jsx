@@ -4,11 +4,9 @@ import IncidentForm from "./incident/IncidentReportForm";
 import IncidentDetail from "./incident/IncidentDetail";
 
 const Incident = () => {
-  // State to control which view is currently displayed
   const [currentView, setCurrentView] = useState("list");
   const [selectedIncidentId, setSelectedIncidentId] = useState(null);
 
-  // Function to navigate between views
   const navigateToView = (view, id = null) => {
     setCurrentView(view);
     if (id !== null) {

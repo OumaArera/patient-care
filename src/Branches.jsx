@@ -4,7 +4,8 @@ import { fetchFacilities } from "../services/fetchFacilities";
 import { errorHandler } from "../services/errorHandler";
 import { updateData } from "../services/updatedata";
 
-const URL = "https://patient-care-server.onrender.com/api/v1/branches"
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const URL = `${BASE_URL}/branches`;
 
 const isValidAddress = (address) => {
   return /\d{1,5}\s\w+(\s\w+)*,\s\w+,\s[A-Z]{2}\s\d{5}/.test(address);

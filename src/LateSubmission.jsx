@@ -3,7 +3,9 @@ import { getCareGivers } from "../services/getCareGivers";
 import { Loader } from "lucide-react";
 import { createData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
-const URL = "https://patient-care-server.onrender.com/api/v1/late-submissions";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const URL = `${BASE_URL}/late-submissions`;
 
 const LateSubmission = ({ patient, type }) => {
     const [careGivers, setCareGivers] = useState([]);

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { updateData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 
-const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const GROCERIES_URL = `${BASE_URL}/groceries`;
 
 const GroceriesCard = ({ groceries, handleGetGroceries }) => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -94,7 +95,6 @@ const GroceriesCard = ({ groceries, handleGetGroceries }) => {
         }
     };
 
-    // Function to group details by category
     const groupDetailsByCategory = (details) => {
         const groupedDetails = {};
         

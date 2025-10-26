@@ -1,5 +1,3 @@
-// SleepPatternConstants.js
-
 export const SLEEP_STATUS_DESCRIPTIONS = {
   "A": "Awake",
   "S": "Sleeping",

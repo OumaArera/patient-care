@@ -4,8 +4,9 @@ import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
 import { FaUserCircle } from "react-icons/fa";
 
-const PATIENTS_URL = "https://patient-care-server.onrender.com/api/v1/patients";
-const ASSESSMENT_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const PATIENTS_URL = `${BASE_URL}/patients`;
+const ASSESSMENT_URL = `${BASE_URL}/assessments`;
 
 const CreateAssessment = () => {
     const [loading, setLoading] = useState(false);

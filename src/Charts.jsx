@@ -78,7 +78,7 @@ const Charts = () => {
     if (!selectedMonth || !selectedYear) return [];
     
     const year = parseInt(selectedYear);
-    const month = parseInt(selectedMonth) - 1; // JS months are 0-indexed
+    const month = parseInt(selectedMonth) - 1;
     
     // First day of selected month
     const firstDay = new Date(year, month, 1);

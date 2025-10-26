@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { errorHandler } from "../services/errorHandler";
 import UpdateMedication from "./UpdateMedication";
-const URL ="https://patient-care-server.onrender.com/api/v1/medications";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const URL =`${BASE_URL}/medications`;
 
 
 const MedicationCard = ({ medication, handleMedication }) => {

@@ -1,6 +1,3 @@
-// dateTimeUtils.js
-
-// Get current date in YYYY-MM-DD format
 export const getCurrentDate = () => {
   const now = new Date();
   return formatDateToYYYYMMDD(now);

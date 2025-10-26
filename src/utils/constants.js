@@ -1,5 +1,3 @@
-// utils/constants.js
-
 export const TIME_SLOTS = [
     { value: "12:00AM", label: "12:00 AM (Midnight)" },
     { value: "1:00AM", label: "1:00 AM" },

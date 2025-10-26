@@ -3,7 +3,8 @@ import { fetchFacilities } from "../services/fetchFacilities";
 import { errorHandler } from "../services/errorHandler";
 import { updateData } from "../services/updatedata";
 
-const URL = "https://patient-care-server.onrender.com/api/v1/facilities"
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const URL = `${BASE_URL}/facilities`;
 
 const Facilities = () => {
   const [facilityName, setFacilityName] = useState("");

@@ -1,5 +1,3 @@
-// SleepPatternUtils.js
-
 /**
  * Downloads sleep pattern data for a specific patient
  * @param {Array} data - The sleep data entries

@@ -4,7 +4,8 @@ import { updateData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
 
-const URL = "https://patient-care-server.onrender.com/api/v1/charts";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const URL = `${BASE_URL}/charts`;
 
 const PendingCharts = ({ patient }) => {
   const [charts, setCharts] = useState([]);

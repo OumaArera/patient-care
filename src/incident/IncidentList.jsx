@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { getData, updateData } from "../../services/updatedata";
 import { Search, Filter, Loader } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const IncidentList = ({ onViewIncident, onCreateIncident }) => {
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,9 +35,7 @@ const IncidentList = ({ onViewIncident, onCreateIncident }) => {
         .map(([key, value]) => `${key}=${value}`)
         .join("&");
       
-      const endpoint = `https://patient-care-server.onrender.com/api/v1/incidents${
-        queryParams ? `?${queryParams}` : ""
-      }`;
+      const endpoint = `${BASE_URL}/incidents${queryParams ? `?${queryParams}` : ""}`;
       
       const response = await getData(endpoint);
       setIncidents(response.responseObject || []);
@@ -55,7 +55,7 @@ const IncidentList = ({ onViewIncident, onCreateIncident }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await getData("https://patient-care-server.onrender.com/api/v1/users");
+      const response = await getData(`${BASE_URL}/users`);
       setUsers(response.responseObject || []);
     } catch (err) {
       console.error("Failed to fetch users:", err);
@@ -89,7 +89,7 @@ const IncidentList = ({ onViewIncident, onCreateIncident }) => {
   const closeIncident = async (incidentId) => {
     setClosingIncident(incidentId);
     try {
-      const endpoint = `https://patient-care-server.onrender.com/api/v1/incidents/${incidentId}`;
+      const endpoint = `${BASE_URL}/incidents/${incidentId}`;
       const payload = { 
         status: "closed",
         resolvedAt: new Date().toISOString()

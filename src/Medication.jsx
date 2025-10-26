@@ -5,6 +5,8 @@ import MedicationCard from "./MedicationCard";
 import { errorHandler } from "../services/errorHandler";
 import { Loader } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const Medication = () => {
     const [medications, setMedications] = useState([]);
     const [patients, setPatients] = useState([]);
@@ -42,8 +44,8 @@ const Medication = () => {
         setLoadingMedications(true);
         fetchMedications(pageNumber, pageSize, formData.patient)
             .then((data) => {
-                setAllMedications(data); // Store all fetched medications
-                setDisplayedMedications(data.slice(0, itemsPerPage)); // Display only first 3
+                setAllMedications(data);
+                setDisplayedMedications(data.slice(0, itemsPerPage));
                 setCurrentPage(1);
                 setLoadingMedications(false);
             })
@@ -85,7 +87,7 @@ const Medication = () => {
         const token = localStorage.getItem("token");
 
         try {
-            const response = await fetch("https://patient-care-server.onrender.com/api/v1/medications", {
+            const response = await fetch(`${BASE_URL}/medications`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify(formData),

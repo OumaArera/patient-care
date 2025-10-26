@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { getData } from "../services/updatedata";
 import { Loader, FileDown, Filter, Calendar, RefreshCw, ChevronLeft, ChevronRight } from "lucide-react";
 
-const INCIDENT_URL = "https://patient-care-server.onrender.com/api/v1/incidents";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const INCIDENT_URL = `${BASE_URL}/incidents`;
 
 const ManageIncidents = () => {
     const [incidents, setIncidents] = useState([]);

@@ -3,6 +3,7 @@ import { getData, createData } from "../../services/updatedata";
 import { errorHandler } from "../../services/errorHandler";
 import { Loader, ArrowLeft } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const IncidentForm = ({ onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ const IncidentForm = ({ onSuccess, onCancel }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await getData("https://patient-care-server.onrender.com/api/v1/users");
+      const response = await getData(`${BASE_URL}/users`);
       setUsers(response.responseObject || []);
     } catch (err) {
       setErrors(["Failed to fetch users"]);
@@ -97,7 +98,7 @@ const IncidentForm = ({ onSuccess, onCancel }) => {
         createdAt: new Date().toISOString(),
       };
 
-      const response = await createData("https://patient-care-server.onrender.com/api/v1/incidents", payload);
+      const response = await createData(`${BASE_URL}/incidents`, payload);
       
       setSuccess("Incident created successfully!");
       setTimeout(() => {

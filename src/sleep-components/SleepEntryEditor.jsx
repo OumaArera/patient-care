@@ -99,7 +99,6 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
   const currentDates = sortedDates.slice(indexOfFirstEntry, indexOfLastEntry);
 
   // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const nextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
   const prevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
@@ -290,55 +289,45 @@ const SleepEntryEditor = ({ sleepData, onUpdate }) => {
             ))}
           </div>
           
-          {/* Pagination Controls */}
+          {/* Controlled Pagination - Only Previous/Next buttons */}
           {totalPages > 1 && (
-            <div className="mt-6 flex justify-center">
-              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <button
-                  onClick={prevPage}
-                  disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${
-                    currentPage === 1 
-                      ? 'text-gray-300 cursor-not-allowed' 
-                      : 'text-gray-500 hover:bg-gray-50'
-                  }`}
-                >
-                  <span className="sr-only">Previous</span>
-                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                
-                {/* Page numbers */}
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
-                  <button
-                    key={pageNumber}
-                    onClick={() => paginate(pageNumber)}
-                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                      currentPage === pageNumber
-                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                    }`}
-                  >
-                    {pageNumber}
-                  </button>
-                ))}
-                
-                <button
-                  onClick={nextPage}
-                  disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${
-                    currentPage === totalPages 
-                      ? 'text-gray-300 cursor-not-allowed' 
-                      : 'text-gray-500 hover:bg-gray-50'
-                  }`}
-                >
-                  <span className="sr-only">Next</span>
-                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </nav>
+            <div className="mt-6 flex justify-center items-center space-x-4">
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className={`flex items-center px-4 py-2 rounded-md border text-sm font-medium transition-colors ${
+                  currentPage === 1 
+                    ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50' 
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50 bg-white'
+                }`}
+              >
+                <svg className="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Previous
+              </button>
+              
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <span>Page</span>
+                <span className="font-medium text-gray-900">{currentPage}</span>
+                <span>of</span>
+                <span className="font-medium text-gray-900">{totalPages}</span>
+              </div>
+              
+              <button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                className={`flex items-center px-4 py-2 rounded-md border text-sm font-medium transition-colors ${
+                  currentPage === totalPages 
+                    ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50' 
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50 bg-white'
+                }`}
+              >
+                Next
+                <svg className="h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
           )}
           

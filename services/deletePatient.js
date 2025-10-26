@@ -1,7 +1,9 @@
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 export const deletePatientManagers = async (ID) => {
     const token = localStorage.getItem("token");
     if (!token) return;
-    const URL = "https://patient-care-server.onrender.com/api/v1/patient-managers";
+    const URL = `${BASE_URL}/patient-managers`;
     try {
         const response = await fetch(`${URL}/${ID}`, {
             method: "DELETE",

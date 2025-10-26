@@ -9,14 +9,14 @@ const MedAdmin = ({ meds, selectedPatient }) => {
     const [message, setMessage] = useState("");
 
     const isTimeWithinRange = (time, instructions) => {
-        if (instructions === "PRN") return true; // Allow PRN meds anytime
+        if (instructions === "PRN") return true;
         const now = dayjs();
         const scheduledTime = dayjs().hour(time.split(":")[0]).minute(time.split(":")[1]);
         return now.isAfter(scheduledTime.subtract(1, "hour")) && now.isBefore(scheduledTime.add(1, "hour"));
     };
 
     const handleSubmit = async (medicationId) => {
-        setLoading(medicationId); // Set loading to medicationId instead of true
+        setLoading(medicationId);
         const time = dayjs().format("YYYY-MM-DD HH:mm:ss");
         const payload = {
             medication: medicationId,

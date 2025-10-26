@@ -1,4 +1,3 @@
-  // PendingMedications.js
   const PendingMedications = () => {
     const meds = [
       { id: 1, name: "Painkiller", status: "Pending Approval" },

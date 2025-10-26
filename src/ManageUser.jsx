@@ -4,7 +4,8 @@ import { getData } from "../services/updatedata";
 import { Loader } from "lucide-react";
 import UpdateUser from "./UpdateUser";
 
-const ALL_USERS = "https://patient-care-server.onrender.com/api/v1/users";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const ALL_USERS = `${BASE_URL}/users`;
 
 const ManageUser = () => {
   const [users, setUsers] = useState([]);

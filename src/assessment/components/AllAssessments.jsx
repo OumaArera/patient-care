@@ -3,7 +3,8 @@ import { getData } from "../../../services/updatedata";
 import { Calendar, User, Save, X, Edit, AlertTriangle } from "lucide-react";
 import EditAssessment from "./EditAssessment";
 
-const ASSESSMENT_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const ASSESSMENT_URL = `${BASE_URL}/assessments`;
 
 const AllAssessments = ({ onClose }) => {
   const [assessments, setAssessments] = useState([]);

@@ -48,7 +48,6 @@ const MedAdministration = () => {
                 setLoading(false);
             });
 
-        // Fetch available medications for the patient
         fetchMedications(1, 366, patientId)
             .then((data) => {
                 console.log("Data: ", data);

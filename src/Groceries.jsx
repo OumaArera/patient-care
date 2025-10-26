@@ -5,8 +5,9 @@ import { errorHandler } from "../services/errorHandler";
 import GroceriesCard from "./GroceriesCard";
 import { Loader } from "lucide-react";
 
-const GROCERIES_URL = "https://patient-care-server.onrender.com/api/v1/groceries";
-const BRANCHES_URL = `https://patient-care-server.onrender.com/api/v1/branches`;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const GROCERIES_URL = `${BASE_URL}/groceries`;
+const BRANCHES_URL = `${BASE_URL}/branches`;
 
 
 const Groceries = () => {

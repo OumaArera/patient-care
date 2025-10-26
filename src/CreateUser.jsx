@@ -4,7 +4,8 @@ import 'react-phone-input-2/lib/style.css';
 import { errorHandler } from '../services/errorHandler';
 import { createData } from '../services/updatedata';
 
-const USERS_URL = 'https://patient-care-server.onrender.com/api/v1/users';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const USERS_URL = `${BASE_URL}/users`;
 
 const CreateUser = () => {
   const [formData, setFormData] = useState({

@@ -1,11 +1,11 @@
-// services/appointmentServices.js
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const getAppointments = async (patientId) => {
     try {
       const response = await fetch(
         patientId
-          ? `https://patient-care-server.onrender.com/api/v1/appointments?patient=${patientId}`
-          : `https://patient-care-server.onrender.com/api/v1/appointments`,
+          ? `${BASE_URL}/appointments?patient=${patientId}`
+          : `${BASE_URL}/appointments`,
         {
           method: "GET",
           headers: {
@@ -24,7 +24,7 @@ export const getAppointments = async (patientId) => {
   export const getAllAppointments = async () => {
     try {
       const response = await fetch(
-        `https://patient-care-server.onrender.com/api/v1/appointments`,
+        `${BASE_URL}/appointments`,
         {
           method: "GET",
           headers: {
@@ -43,7 +43,7 @@ export const getAppointments = async (patientId) => {
   export const postAppointments = async (payload) => {
     try {
       const response = await fetch(
-        "https://patient-care-server.onrender.com/api/v1/appointments",
+        `${BASE_URL}}/appointments`,
         {
           method: "POST",
           headers: {
@@ -63,7 +63,7 @@ export const getAppointments = async (patientId) => {
   export const updateAppointment = async (appointmentId, payload) => {
     try {
       const response = await fetch(
-        `https://patient-care-server.onrender.com/api/v1/appointments/${appointmentId}`,
+        `${BASE_URL}/appointments/${appointmentId}`,
         {
           method: "PUT",
           headers: {

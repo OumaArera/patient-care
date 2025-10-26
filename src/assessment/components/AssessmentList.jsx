@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { getData } from "../../../services/updatedata";
 import { Search, Edit, Save, X, ArrowLeft } from "lucide-react";
 
-const ASSESSMENT_URL = "https://patient-care-server.onrender.com/api/v1/assessments";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const ASSESSMENT_URL = `${BASE_URL}/assessments`;
 
 const AssessmentList = () => {
   const [assessments, setAssessments] = useState([]);

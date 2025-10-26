@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { updateData } from "../../services/updatedata";
 import { Loader, Send } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const CommentSection = ({ incidentId, comments = [], onCommentAdded }) => {
   const [newComment, setNewComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -27,7 +29,7 @@ const CommentSection = ({ incidentId, comments = [], onCommentAdded }) => {
       
       const updatedComments = [...comments, comment];
       
-      await updateData(`https://patient-care-server.onrender.com/api/v1/incidents/${incidentId}`, {
+      await updateData(`${BASE_URL}/incidents/${incidentId}`, {
         comments: updatedComments
       });
       

@@ -5,7 +5,8 @@ import { getCurrentDate, getCurrentTimeSlot, getDatesFromAprilFirst, isTimeInPas
 import { errorHandler } from "../../../services/errorHandler";
 import { TIME_SLOTS } from "../../utils/constants";
 
-const SLEEP_URL = "https://patient-care-server.onrender.com/api/v1/sleeps";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const SLEEP_URL = `${BASE_URL}/sleeps`;
 
 export const useSleepPattern = () => {
   const [loadingPatients, setLoadingPatients] = useState(false);

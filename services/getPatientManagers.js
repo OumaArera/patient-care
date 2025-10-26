@@ -1,10 +1,10 @@
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 export const getpatientManagers = async (careGiver) => {
   const token = localStorage.getItem("token");
 
-  // Construct the base URL
-  let url = "https://patient-care-server.onrender.com/api/v1/patient-managers";
+  let url = `${BASE_URL}/patient-managers`;
 
-  // Append the query parameter only if careGiver is provided
   if (careGiver) {
     url += `?careGiver=${encodeURIComponent(careGiver)}`;
   }
@@ -21,7 +21,7 @@ export const fetchPatients = async (brachId) => {
   const token = localStorage.getItem("token");
 
   // Construct the base URL
-  let url = `https://patient-care-server.onrender.com/api/v1/patients?branch=${brachId}`;
+  let url = `${BASE_URL}/patients?branch=${brachId}`;
 
 
   const response = await fetch(url, {

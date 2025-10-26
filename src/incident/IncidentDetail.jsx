@@ -4,6 +4,8 @@ import { errorHandler } from "../../services/errorHandler";
 import { Loader, ArrowLeft, MessageSquare, AlertCircle } from "lucide-react";
 import CommentSection from "./CommentSection";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const IncidentDetail = ({ incidentId, onBack }) => {
   const [incident, setIncident] = useState(null);
   const [users, setUsers] = useState([]);
@@ -44,7 +46,7 @@ const IncidentDetail = ({ incidentId, onBack }) => {
   const fetchIncident = async () => {
     setLoading(true);
     try {
-      const response = await getData(`https://patient-care-server.onrender.com/api/v1/incidents/${incidentId}`);
+      const response = await getData(`${BASE_URL}/incidents/${incidentId}`);
       setIncident(response.responseObject);
     } catch (err) {
       setError("Failed to fetch incident details");
@@ -56,7 +58,7 @@ const IncidentDetail = ({ incidentId, onBack }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await getData("https://patient-care-server.onrender.com/api/v1/users");
+      const response = await getData(`${BASE_URL}/users`);
       setUsers(response.responseObject || []);
     } catch (err) {
       console.error("Failed to fetch users:", err);
@@ -81,11 +83,11 @@ const IncidentDetail = ({ incidentId, onBack }) => {
         ...formData,
       };
       
-      await updateData(`https://patient-care-server.onrender.com/api/v1/incidents/${incidentId}`, payload);
+      await updateData(`${BASE_URL}/incidents/${incidentId}`, payload);
       
       setSuccess("Incident updated successfully");
       setEditMode(false);
-      fetchIncident(); // Refresh data
+      fetchIncident(); 
       
       setTimeout(() => {
         setSuccess("");
@@ -109,7 +111,7 @@ const IncidentDetail = ({ incidentId, onBack }) => {
         resolvedAt: new Date().toISOString()
       };
       
-      await updateData(`https://patient-care-server.onrender.com/api/v1/incidents/${incidentId}`, payload);
+      await updateData(`${BASE_URL}/incidents/${incidentId}`, payload);
       
       setSuccess("Incident closed successfully");
       fetchIncident(); // Refresh data

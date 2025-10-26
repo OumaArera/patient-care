@@ -1,5 +1,7 @@
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 export const getChartsData = async (patient) => {
-    const url = `https://patient-care-server.onrender.com/api/v1/charts-data?pageNumber=1&pageSize=360&patient=${patient}`;
+    const url = `${BASE_URL}/charts-data?pageNumber=1&pageSize=360&patient=${patient}`;
 
     const token = localStorage.getItem("token");
     try {

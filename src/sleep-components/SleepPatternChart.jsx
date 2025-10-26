@@ -1,4 +1,3 @@
-// SleepPatternComponents/SleepPatternChart.jsx
 import React from "react";
 import { 
   BarChart, 

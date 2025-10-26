@@ -5,8 +5,9 @@ import { updateData } from "../services/updatedata";
 import { createData } from "../services/updatedata";
 import { errorHandler } from "../services/errorHandler";
 
-const RESET_URL = "https://patient-care-server.onrender.com/api/v1/auth/reset-password";
-const USER_URL = 'https://patient-care-server.onrender.com/api/v1/users';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const RESET_URL = `${BASE_URL}/auth/reset-password`;
+const USER_URL = `${BASE_URL}/users`;
 
 const UpdateUser = ({ user, handleUser }) => {
     const [formData, setFormData] = useState({ ...user });

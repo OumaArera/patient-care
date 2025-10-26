@@ -1,23 +1,21 @@
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
-
 export const generateGroceryPDF = async (grocery) => {
     if (!grocery) return;
 
-    // Create a container for the HTML structure
-    const container = document.createElement("div");
-    container.style.padding = "20px";
-    container.style.fontFamily = "Arial, sans-serif";
-    container.style.color = "#000";
-    // Set a fixed width to ensure consistent scaling
-    container.style.width = "780px";
+    const pdfMakeModule = await import('pdfmake/build/pdfmake');
+    const pdfFontsModule = await import('pdfmake/build/vfs_fonts');
+
+    const pdfMake = pdfMakeModule.default;
+    pdfMake.vfs = pdfFontsModule.default.vfs;
+
+    const date = new Date(grocery.createdAt).toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
+    });
 
     // Group items by their categories
     const groupItemsByCategory = (items) => {
-        // Create a dynamic object to store all categories
         const categories = {};
-        
-        // First pass to identify all unique categories
         items.forEach(item => {
             const category = item.category.toUpperCase();
             if (!categories[category]) {
@@ -25,162 +23,259 @@ export const generateGroceryPDF = async (grocery) => {
             }
             categories[category].push(item);
         });
-        
         return categories;
     };
 
     const categorizedItems = groupItemsByCategory(grocery.details);
+    
+    // Create content array
+    const content = [
+        // Header
+        { 
+            text: `${grocery.branch.toUpperCase()} ADULT FAMILY HOME`, 
+            style: 'mainHeader' 
+        },
+        { 
+            text: grocery.address || "1507 128th ST SW EVERETT WA, 98204", 
+            style: 'address' 
+        },
+        { 
+            text: 'REQUISITION FOR FOOD, CLEANING MATERIALS, DETERGENTS ETC', 
+            style: 'subHeader' 
+        },
+        { text: '\n' },
+        
+        // Date and Requested By
+        {
+            columns: [
+                { 
+                    text: `DATE: ${date}`, 
+                    style: 'infoText',
+                    width: '50%'
+                },
+                { 
+                    text: `REQUESTED BY: ${grocery.staffName || ""}`, 
+                    style: 'infoText',
+                    width: '50%'
+                }
+            ]
+        },
+        { text: '\n' }
+    ];
 
-    // Create the header with INCREASED font sizes
-    let headerHTML = `
-        <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 8px; text-decoration: underline;">
-            ${grocery.branch.toUpperCase()} ADULT FAMILY HOME
-        </div>
-        <div style="text-align: center; font-size: 18px; margin-bottom: 8px;">
-            ${grocery.address || "1507 128th ST SW EVERETT WA, 98204"}
-        </div>
-        <div style="text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 20px; text-decoration: underline;">
-            REQUISITION FOR FOOD, CLEANING MATERIALS, DETERGENTS ETC
-        </div>
-        <div style="font-size: 18px; margin-bottom: 15px;">
-            <strong>DATE:</strong> ${new Date(grocery.createdAt).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" })}
-        </div>
-        <div style="font-size: 18px; margin-bottom: 20px;">
-            <strong>REQUESTED BY:</strong> ${grocery.staffName || ""}
-        </div>`;
-
-    // Determine how to split categories between left and right columns
+    // Split categories into two columns for better layout
     const categoryNames = Object.keys(categorizedItems);
     const midpoint = Math.ceil(categoryNames.length / 2);
     const leftColumnCategories = categoryNames.slice(0, midpoint);
     const rightColumnCategories = categoryNames.slice(midpoint);
 
-    // Create a two-column table layout with INCREASED font sizes
-    let tableHTML = `
-        <table border="1" style="width: 100%; border-collapse: collapse; font-size: 16px;">
-            <tr>
-                <td style="width: 50%; vertical-align: top; padding: 0;">
-                    <!-- Left Column -->
-                    <table style="width: 100%; border-collapse: collapse;">`;
-    
-    // Add items for left column categories
-    leftColumnCategories.forEach(category => {
-        tableHTML += `
-                        <tr>
-                            <th colspan="3" style="text-align: left; padding: 8px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000; font-size: 30px;">${category}</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 70%; text-align: left; padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">Item</th>
-                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">Qty</th>
-                        </tr>`;
-        
-        categorizedItems[category].forEach(item => {
-            tableHTML += `
-                        <tr>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">${item.item}</td>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 24px;">${item.quantity || 1}</td>
-                        </tr>`;
-        });
-    });
+    // Create left and right column content
+    const createCategoryContent = (categories) => {
+        const categoryContent = [];
+        categories.forEach(category => {
+            // Category header
+            categoryContent.push({
+                text: category,
+                style: 'categoryHeader',
+                margin: [0, 8, 0, 4]
+            });
 
-    // Close the left column and start the right column
-    tableHTML += `
-                    </table>
-                </td>
-                <td style="width: 50%; vertical-align: top; padding: 0;">
-                    <!-- Right Column -->
-                    <table style="width: 100%; border-collapse: collapse;">`;
-    
-    // Add items for right column categories
-    rightColumnCategories.forEach(category => {
-        tableHTML += `
-                        <tr>
-                            <th colspan="3" style="text-align: left; padding: 8px; font-weight: bold; background-color: #f0f0f0; border-top: 1px solid #000; font-size: 30px;">${category}</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 70%; text-align: left; padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">Item</th>
-                            <th style="width: 15%; text-align: center; padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">Qty</th>
-                        </tr>`;
-        
-        categorizedItems[category].forEach(item => {
-            tableHTML += `
-                        <tr>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; font-size: 24px;">${item.item}</td>
-                            <td style="padding: 8px; border-top: 1px solid #ccc; text-align: center; font-size: 24px;">${item.quantity || 1}</td>
-                        </tr>`;
-        });
-    });
+            // Create table for this category
+            const tableBody = [
+                [
+                    { text: "Item", style: 'itemTableHeader' },
+                    { text: "Qty", style: 'qtyTableHeader' }
+                ]
+            ];
 
-    tableHTML += `
-                    </table>
-                </td>
-            </tr>
-        </table>`;
-    
+            categorizedItems[category].forEach(item => {
+                tableBody.push([
+                    { text: item.item, style: 'itemCell' },
+                    { text: (item.quantity || 1).toString(), style: 'qtyCell' }
+                ]);
+            });
+
+            categoryContent.push({
+                table: {
+                    headerRows: 1,
+                    widths: ['*', 60],
+                    body: tableBody
+                },
+                layout: {
+                    fillColor: (rowIndex) => (rowIndex === 0 ? '#f0f0f0' : (rowIndex % 2 === 0 ? '#FFFFFF' : '#f8f8f8')),
+                    hLineWidth: () => 0.5,
+                    vLineWidth: () => 0.5,
+                    hLineColor: '#cccccc',
+                    vLineColor: '#cccccc',
+                },
+                margin: [0, 0, 0, 10]
+            });
+        });
+        return categoryContent;
+    };
+
+    // Add two-column layout for categories
+    if (categoryNames.length > 0) {
+        content.push({
+            columns: [
+                {
+                    width: '48%',
+                    stack: createCategoryContent(leftColumnCategories)
+                },
+                {
+                    width: '4%',
+                    text: '' // spacer
+                },
+                {
+                    width: '48%',
+                    stack: createCategoryContent(rightColumnCategories)
+                }
+            ]
+        });
+    }
+
     // Add feedback section if it exists
     if (grocery.feedback) {
-        tableHTML += `
-            <div style="margin-top: 20px;">
-                <div style="text-decoration: underline; font-weight: bold; font-size: 24px;">Notes/Feedback</div>
-                <div style="margin-top: 8px; font-size: 16px;">${grocery.feedback}</div>
-            </div>`;
+        content.push(
+            { text: '\n' },
+            { 
+                text: 'Notes/Feedback', 
+                style: 'feedbackHeader' 
+            },
+            { 
+                text: grocery.feedback, 
+                style: 'feedbackText',
+                margin: [0, 4, 0, 0]
+            }
+        );
     }
 
-    // Add signature lines with larger fonts
-    tableHTML += `
-        <div style="margin-top: 40px; display: flex; justify-content: space-between; font-size: 16px;">
-            <div>
-                <div style="margin-bottom: 35px;">Requested by: ________________________</div>
-                <div>Date: _____________________</div>
-            </div>
-            <div>
-                <div style="margin-bottom: 35px;">Approved by: ________________________</div>
-                <div>Date: _____________________</div>
-            </div>
-        </div>`;
-
-    // Append all HTML to the container
-    container.innerHTML = headerHTML + tableHTML;
-
-    // Append container to body (temporarily)
-    document.body.appendChild(container);
-
-    try {
-        // Capture the container using html2canvas with higher scale for better quality
-        const canvas = await html2canvas(container, { 
-            scale: 3,
-            logging: false,
-            useCORS: true,
-            letterRendering: true
-        });
-
-        // Remove container after capturing
-        document.body.removeChild(container);
-
-        // Create PDF with proper dimensions
-        const imgWidth = 210;
-        const pageHeight = 297;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
-        
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        let heightLeft = imgHeight;
-        let position = 0;
-        
-        // Add first page
-        pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-        
-        // Add additional pages if content overflows
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(canvas.toDataURL('image/jpeg', 1.0), 'JPEG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+    // Add signature section
+    content.push(
+        { text: '\n\n' },
+        {
+            columns: [
+                {
+                    width: '45%',
+                    stack: [
+                        { 
+                            text: 'Requested by: ________________________', 
+                            style: 'signatureText',
+                            margin: [0, 0, 0, 20]
+                        },
+                        { 
+                            text: 'Date: _____________________', 
+                            style: 'signatureText' 
+                        }
+                    ]
+                },
+                {
+                    width: '10%',
+                    text: '' // spacer
+                },
+                {
+                    width: '45%',
+                    stack: [
+                        { 
+                            text: 'Approved by: ________________________', 
+                            style: 'signatureText',
+                            margin: [0, 0, 0, 20]
+                        },
+                        { 
+                            text: 'Date: _____________________', 
+                            style: 'signatureText' 
+                        }
+                    ]
+                }
+            ]
         }
-        
-        pdf.save(`${grocery.branch}_Requisition_${new Date(grocery.createdAt).toLocaleDateString("en-US")}.pdf`);
-    } catch (error) {
-        console.error("Error generating PDF:", error);
-        document.body.removeChild(container);
-    }
+    );
+
+    const docDefinition = {
+        pageSize: 'A4',
+        pageMargins: [40, 60, 40, 60],
+        content: content,
+        styles: {
+            mainHeader: {
+                fontSize: 16,
+                bold: true,
+                alignment: 'center',
+                margin: [0, 0, 0, 6],
+                decoration: 'underline'
+            },
+            address: {
+                fontSize: 12,
+                alignment: 'center',
+                margin: [0, 0, 0, 8]
+            },
+            subHeader: {
+                fontSize: 14,
+                bold: true,
+                alignment: 'center',
+                margin: [0, 0, 0, 12],
+                decoration: 'underline'
+            },
+            infoText: {
+                fontSize: 12,
+                bold: true,
+                margin: [0, 0, 0, 4]
+            },
+            categoryHeader: {
+                fontSize: 14,
+                bold: true,
+                fillColor: '#e0e0e0',
+                alignment: 'left',
+                margin: [0, 8, 0, 4]
+            },
+            itemTableHeader: {
+                bold: true,
+                fontSize: 11,
+                color: 'black',
+                alignment: 'left'
+            },
+            qtyTableHeader: {
+                bold: true,
+                fontSize: 11,
+                color: 'black',
+                alignment: 'center'
+            },
+            itemCell: {
+                fontSize: 10,
+                alignment: 'left'
+            },
+            qtyCell: {
+                fontSize: 10,
+                alignment: 'center'
+            },
+            feedbackHeader: {
+                fontSize: 12,
+                bold: true,
+                decoration: 'underline',
+                margin: [0, 0, 0, 4]
+            },
+            feedbackText: {
+                fontSize: 10,
+                margin: [0, 4, 0, 0]
+            },
+            signatureText: {
+                fontSize: 11,
+                margin: [0, 0, 0, 0]
+            }
+        },
+        defaultStyle: {
+            // font: 'Helvetica'
+        },
+        info: {
+            title: `Grocery Requisition - ${grocery.branch}`,
+            author: "Care Facility",
+            subject: `Grocery Requisition for ${date}`,
+            keywords: `grocery, requisition, ${grocery.branch}, ${date}`,
+            creator: "Grocery Management System"
+        }
+    };
+
+    // Generate filename
+    const filename = `${grocery.branch}_Requisition_${date.replace(/\//g, '-')}.pdf`;
+    
+    pdfMake.createPdf(docDefinition).download(filename);
 };
